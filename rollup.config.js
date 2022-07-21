@@ -21,7 +21,7 @@ const onwarn = (warning, warn) => {
 
 export default [
   {
-    input: 'src/Database.js',
+    input: 'src/index.js',
     plugins: [
       resolve({
         extensions: ['.js', '.jsx'],
