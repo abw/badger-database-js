@@ -1,4 +1,4 @@
-import { doNothing, fail, hasValue, isString, splitList } from "@abw/badger";
+import { addDebug, fail, hasValue, isString, splitList } from "@abw/badger";
 import { splitHash } from "./Utils.js";
 
 export class Schema {
@@ -9,10 +9,7 @@ export class Schema {
     this.virtualColumns = spec.virtualColumns || { };
     this.tableColumns = prepareColumns(columns, this.table);
     this.columnSets = prepareColumnSets(columns, spec.columnSets);
-    // addDebug(this, spec.debug, spec.debugPrefix || 'Schema', spec.debugColor);
-    this.debug = spec.debug
-      ? console.log.bind(console)
-      : doNothing;
+    addDebug(this, spec.debug, spec.debugPrefix || 'Schema', spec.debugColor);
   }
   column(name) {
     return this.tableColumns[name]
