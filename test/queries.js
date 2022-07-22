@@ -11,6 +11,8 @@ const spec = {
     moreColumns: 'd, e, f',
     allColumns: '<someColumns>, <moreColumns>',
     select: 'SELECT <allColumns> FROM <table>',
+    loopA: 'loopA then <loopB>',
+    loopB: 'loopB then <loopA>',
   }
 }
 const queries = new Queries(spec);
@@ -28,5 +30,22 @@ test(
   t => {
     const error = t.throws( () => queries.expandFragments('<seletc> WHERE a=10') );
     t.is( error.message, "Invalid fragment in SQL expansion: <seletc>" )
+  }
+);
+
+test(
+  'expand query with runaway throws an error',
+  t => {
+    const error = t.throws( () => queries.expandFragments('<loopA>') );
+    t.is( error.message, "Maximum SQL expansion limit (maxExpansion=16) exceeded: loopA -> loopB -> loopA -> loopB -> loopA -> loopB -> loopA -> loopB -> loopA -> loopB -> loopA -> loopB -> loopA -> loopB -> loopA -> loopB" )
+  }
+);
+
+const queries2 = new Queries({ ...spec, maxExpansion: 5 });
+test(
+  'expand query with runaway throws an error more soonly',
+  t => {
+    const error = t.throws( () => queries2.expandFragments('<loopA>') );
+    t.is( error.message, "Maximum SQL expansion limit (maxExpansion=5) exceeded: loopA -> loopB -> loopA -> loopB -> loopA" )
   }
 );
