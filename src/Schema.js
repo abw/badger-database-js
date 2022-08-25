@@ -1,14 +1,17 @@
-import { addDebug, fail, hasValue, isString, splitList } from "@abw/badger";
-import { splitHash } from "./Utils.js";
+import { hasValue, isString, splitList, fail } from "@abw/badger-utils";
+import { addDebug } from "@abw/badger";
+import { prepareColumns, prepareColumnSets } from "./Utils.js";
+
+// NOTE: this has been moved into Table.js
 
 export class Schema {
   constructor(spec) {
-    const columns = splitList(spec.columns);
-    this.table = spec.table;
-    this.columnNames = columns;
+    const columns       = splitList(spec.columns);
+    this.table          = spec.table;
+    this.columnNames    = columns;
     this.virtualColumns = spec.virtualColumns || { };
-    this.tableColumns = prepareColumns(columns, this.table);
-    this.columnSets = prepareColumnSets(columns, spec.columnSets);
+    this.tableColumns   = prepareColumns(columns, this.table);
+    this.columnSets     = prepareColumnSets(columns, spec.columnSets);
     addDebug(this, spec.debug, spec.debugPrefix || 'Schema', spec.debugColor);
   }
   column(name) {
@@ -58,29 +61,6 @@ export class Schema {
   }
 }
 
-export const prepareColumns = (columns, table) => {
-  let set = { };
-  columns.map(
-    column => set[column] = `${table}.${column}`
-  );
-  return set;
-}
-
-export const prepareColumnSets = (columns, columnSets) => {
-  let sets = { };
-  Object.entries(columnSets).map(
-    ([key, value]) => sets[key] = prepareColumnSet(columns, value)
-  );
-  return sets;
-}
-
-export const prepareColumnSet = (columns, columnSet) => {
-  const basis   = isString(columnSet) ? splitList(columnSet) : columns;
-  const include = splitList(columnSet.include);
-  const exclude = splitHash(columnSet.exclude);
-  return [...basis, ...include]
-    .filter( column => ! exclude[column] );
-}
 
 export const schema = spec => new Schema(spec);
 

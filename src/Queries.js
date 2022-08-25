@@ -1,15 +1,16 @@
-import { addDebug, fail } from "@abw/badger";
+import { addDebug } from "@abw/badger";
+import { fail } from "@abw/badger-utils";
 
 const defaults = {
   maxExpansion: 16
 };
 
 export class Queries {
-  constructor(spec) {
-    this.fragments = spec.fragments || { };
-    this.queries = spec.queries || { };
-    this.maxExpansion = spec.maxExpansion || defaults.maxExpansion;
-    addDebug(this, spec.debug, spec.debugPrefix || 'Queries', spec.debugColor);
+  constructor(schema) {
+    this.fragments = schema.fragments || { };
+    this.queries = schema.queries || { };
+    this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;
+    addDebug(this, schema.debug, schema.debugPrefix || 'Queries', schema.debugColor);
   }
   expandFragments(query) {
     const fragments = this.fragments;

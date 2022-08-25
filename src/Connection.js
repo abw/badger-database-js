@@ -10,7 +10,10 @@ export class Connection {
   }
   query() {
     // most queries should be handled by Knex instance
-    return this.knex;
+    return this.knex(...arguments);
+  }
+  raw() {
+    return this.knex.raw(...arguments);
   }
   acquire() {
     // acquire a connection from the knex client pool in

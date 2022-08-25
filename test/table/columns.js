@@ -1,8 +1,14 @@
 import test from 'ava';
-import Schema from '../src/Schema.js'
+import Table from '../../src/Table.js'
 
-const spec = {
-  debug: false,
+class MockDatabase {
+  raw(...args) {
+    return "[RAW:" + args.join(':') + "]";
+  }
+}
+const db = new MockDatabase();
+
+const usersSchema = {
   table: 'user',
   columns: [
     'id', 'forename', 'surname', 'password',
@@ -28,19 +34,22 @@ const spec = {
       exclude: 'password is_admin'
     },
   }
-}
-const schema = new Schema(spec);
+};
 
-
-test(
-  'table schema',
-  t => t.is( schema.table, 'user' )
+const table = new Table(
+  db,
+  usersSchema
 );
 
 test(
-  'schems columns',
+  'table schema',
+  t => t.is( table.table, 'user' )
+);
+
+test(
+  'schema columns',
   t => t.deepEqual(
-    schema.columnNames,
+    table.columnNames,
     ['id', 'forename', 'surname', 'password', 'email', 'registered', 'last_login', 'is_admin']
   )
 );
@@ -48,7 +57,7 @@ test(
 test(
   'table columns',
   t => t.is(
-    schema.tableColumns.id,
+    table.tableColumns.id,
     'user.id'
   )
 );
@@ -56,7 +65,7 @@ test(
 test(
   'column set include string',
   t => t.deepEqual(
-    schema.columnSets.basic,
+    table.columnSets.basic,
     [ 'forename', 'surname', 'name', 'email' ],
   )
 );
@@ -64,7 +73,7 @@ test(
 test(
   'column set explicit exclude',
   t => t.deepEqual(
-    schema.columnSets.default,
+    table.columnSets.default,
     [ 'id', 'forename', 'surname', 'email', 'registered', 'last_login' ],
   )
 );
@@ -72,7 +81,7 @@ test(
 test(
   'column set explicit include',
   t => t.deepEqual(
-    schema.columnSets.admin,
+    table.columnSets.admin,
     [ 'id', 'forename', 'surname', 'password', 'email', 'registered', 'last_login', 'is_admin', 'name' ],
   )
 );
@@ -80,74 +89,73 @@ test(
 test(
   'column set explicit include and exclude',
   t => t.deepEqual(
-    schema.columnSets.public,
+    table.columnSets.public,
     [ 'id', 'forename', 'surname', 'email', 'registered', 'last_login', 'name' ],
   )
 );
 
 test(
-  'schema.column(id) - real column',
+  'table.column(id) - real column',
   t => t.is(
-    schema.column('id'),
+    table.column('id'),
     'user.id'
   )
 );
 
 test(
-  'schema.column(name) - virtual column',
+  'table.column(name) - virtual column',
   t => {
-    const c = schema.column('name');
-    t.is(c[0], "CONCAT(user.forename, ' ', user.surname)");
-    t.is(c[1], "name");
+    const c = table.column('name');
+    t.is(c, "[RAW:CONCAT(user.forename, ' ', user.surname) as name]");
   }
 );
 
 test(
-  'schema.columns(id) - real column',
+  'table.columns(id) - real column',
   t => t.deepEqual(
-    schema.columns('id'),
+    table.columns('id'),
     ['user.id']
   )
 );
 
 test(
-  'schema.columns(id, forename, surname) - real column',
+  'table.columns(id, forename, surname) - real column',
   t => t.deepEqual(
-    schema.columns('id forename surname'),
+    table.columns('id forename surname'),
     ['user.id', 'user.forename', 'user.surname']
   )
 );
 
 test(
-  'schema.columns(name) - virtual column',
+  'table.columns(name) - virtual column',
   t => t.deepEqual(
-    schema.columns('name'),
-    [["CONCAT(user.forename, ' ', user.surname)", 'name']]
+    table.columns('name'),
+    ["[RAW:CONCAT(user.forename, ' ', user.surname) as name]"]
   )
 );
 
 test(
-  'schema.columns() - implicit default columns',
+  'table.columns() - implicit default columns',
   t => t.deepEqual(
-    schema.columns(),
+    table.columns(),
     [ 'user.id', 'user.forename', 'user.surname', 'user.email', 'user.registered', 'user.last_login' ],
   )
 );
 
 test(
-  'schema.columns(@default) - explicitly named default columns',
+  'table.columns(@default) - explicitly named default columns',
   t => t.deepEqual(
-    schema.columns('@default'),
+    table.columns('@default'),
     [ 'user.id', 'user.forename', 'user.surname', 'user.email', 'user.registered', 'user.last_login' ],
   )
 );
 
 test(
-  'schema.columns(@public registered) - column set and column',
+  'table.columns(@public registered) - column set and column',
   t => t.deepEqual(
-    schema.columns('@public registered'),
+    table.columns('@public registered'),
     [ 'user.id', 'user.forename', 'user.surname', 'user.email', 'user.registered', 'user.last_login',
-      ["CONCAT(user.forename, ' ', user.surname)",'name'],
+      "[RAW:CONCAT(user.forename, ' ', user.surname) as name]",
       'user.registered'
     ]
   )
