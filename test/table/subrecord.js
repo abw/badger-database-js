@@ -1,6 +1,7 @@
 import test from 'ava';
 import Record from '../../src/Record.js';
-import { usersConfig, createUsers, createDatabase, databaseConfig } from '../library/users.js'
+import { createDatabase, databaseConfig } from '../library/database.js';
+import { usersConfig, createUsers } from '../library/users.js'
 
 class User extends Record {
   hello() {

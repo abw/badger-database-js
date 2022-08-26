@@ -1,4 +1,4 @@
-import Database from "../../src/Database.js";
+import { createDatabase, databaseConfig } from "./database.js";
 
 export const usersConfig = {
   table: 'user',
@@ -28,20 +28,12 @@ export const usersConfig = {
   }
 };
 
-export const databaseConfig = {
-  client: 'sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  useNullAsDefault: true,
+export const database = createDatabase({
+  ...databaseConfig,
   tables: {
     users: usersConfig,
   }
-};
-
-export const createDatabase = (config=databaseConfig) => new Database(config);
-
-export const database = createDatabase();
+});
 
 export const createUsers = async database => {
   await database.raw("CREATE TABLE user (id INTEGER PRIMARY KEY ASC, forename TEXT, surname TEXT, email TEXT, password TEXT, is_admin INTEGER)");

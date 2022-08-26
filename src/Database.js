@@ -11,7 +11,6 @@ class Database {
     this.state      = {
       table: { },
     };
-    // console.log('connection: ', this.connection);
   }
   query() {
     return this.connection.query(...arguments);
