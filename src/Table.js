@@ -1,5 +1,5 @@
 import { addDebug } from "@abw/badger";
-import { fail, isObject, isString } from "@abw/badger-utils";
+import { fail } from "@abw/badger-utils";
 import recordProxy from "./Proxy/Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
@@ -10,12 +10,11 @@ import Schema from "./Schema.js";
 // export class Table extends Queries {
 export class Table {
   constructor(database, schema) {
-    this.database = database || fail("No database specified");
-    this.schema   = new Schema(database, schema)
-
+    this.database    = database || fail("No database specified");
+    this.schema      = new Schema(database, schema)
     this.recordClass = schema.record || Record;
-    this.rowProxy = rowProxy(this);
-    this.rowsProxy = rowsProxy(this);
+    this.rowProxy    = rowProxy(this);
+    this.rowsProxy   = rowsProxy(this);
 
     addDebug(this, schema.debug, schema.debugPrefix || `${this.table} table`, schema.debugColor);
   }
@@ -25,82 +24,35 @@ export class Table {
   insert(data) {
     return this.query().insert(data);
   }
-  fetch() {
-    const first = this.query().first();
-    return this.rowProxy(
-      arguments.length
-        ? first.where(...arguments)
-        : first
+  selectAll(columns) {
+    return this.rowsProxy(
+      this.query().select(
+        this.schema.columns(columns)
+      )
     );
   }
-  fetchAll() {
+  selectOne(columns) {
+    return this.rowProxy(
+      this.query().select(
+        this.schema.columns(columns)
+      )
+    ).first();
+  }
+  fetchAll(where) {
     const select = this.query().select();
     return this.rowsProxy(
-      arguments.length
-        ? select.where(...arguments)
+      where
+        ? select.where(where)
         : select
     );
   }
-  fetchOne() {
-    return this.fetchAll(...arguments).then(
-      rows => rows.length === 1
-        ? rows[0]
-        : fail(`fetchOne for ${this.schema.table} returned ${rows.length} records`)
-    )
-  }
-  selectArgs(...args) {
-    // console.log('selectArgs: ', args);
-    if (args.length === 1 && isObject(args[0])) {
-      return {
-        ...args[0],
-        columns: this.schema.columns(args[0].columns)
-      }
-    }
-    else if (isString(args[0])) {
-      return {
-        columns: this.schema.columns(args[0]),
-        where:   args[1]
-      }
-    }
-  }
-  select() {
-    const args = this.selectArgs(...arguments);
-    const select = this.query().select(args.columns).first();
-    //return args.where
-    //  ? select.where(args.where)
-    //  : select;
+  fetchOne(where) {
+    const select = this.query().select().first();
     return this.rowProxy(
-      args.where
-        ? select.where(args.where)
+      where
+        ? select.where(where)
         : select
     );
-  }
-  selectAll() {
-    const args = this.selectArgs(...arguments);
-    const select = this.query().select(args.columns);
-    return this.rowsProxy(
-      args.where
-        ? select.where(args.where)
-        : select
-    );
-  }
-  selectOne() {
-    return this.selectAll(...arguments).then(
-      rows => rows.length === 1
-        ? rows[0]
-        : fail(`selectOne for ${this.schema.table} returned ${rows.length} records`)
-    )
-  }
-  fetchAllProxy() {
-    const select = this.query().select();
-    return arguments.length
-      ? this.proxyRows(select.where(...arguments))
-      : this.proxyRows(select);
-  }
-  proxyRows(query) {
-    // console.log('creating new proxy for query: ', query);
-    // console.log('creating new proxy with handler: ', this.rowsProxy);
-    return new Proxy(query, this.rowsProxy);
   }
   record(query) {
     return query.then(

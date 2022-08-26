@@ -1,8 +1,14 @@
 import test from 'ava';
-import Schema from '../src/Schema.js'
+import Table from '../../src/Table.js'
 
-const spec = {
-  debug: false,
+class MockDatabase {
+  raw(...args) {
+    return "[RAW:" + args.join(':') + "]";
+  }
+}
+const db = new MockDatabase();
+
+const usersSchema = {
   table: 'user',
   columns: [
     'id', 'forename', 'surname', 'password',
@@ -28,17 +34,21 @@ const spec = {
       exclude: 'password is_admin'
     },
   }
-}
-const schema = new Schema(spec);
+};
 
+const table = new Table(
+  db,
+  usersSchema
+);
+const schema = table.schema;
 
 test(
-  'table schema',
+  'schema table',
   t => t.is( schema.table, 'user' )
 );
 
 test(
-  'schems columns',
+  'schema columns',
   t => t.deepEqual(
     schema.columnNames,
     ['id', 'forename', 'surname', 'password', 'email', 'registered', 'last_login', 'is_admin']
@@ -97,8 +107,7 @@ test(
   'schema.column(name) - virtual column',
   t => {
     const c = schema.column('name');
-    t.is(c[0], "CONCAT(user.forename, ' ', user.surname)");
-    t.is(c[1], "name");
+    t.is(c, "[RAW:CONCAT(user.forename, ' ', user.surname) as name]");
   }
 );
 
@@ -122,7 +131,7 @@ test(
   'schema.columns(name) - virtual column',
   t => t.deepEqual(
     schema.columns('name'),
-    [["CONCAT(user.forename, ' ', user.surname)", 'name']]
+    ["[RAW:CONCAT(user.forename, ' ', user.surname) as name]"]
   )
 );
 
@@ -147,7 +156,7 @@ test(
   t => t.deepEqual(
     schema.columns('@public registered'),
     [ 'user.id', 'user.forename', 'user.surname', 'user.email', 'user.registered', 'user.last_login',
-      ["CONCAT(user.forename, ' ', user.surname)",'name'],
+      "[RAW:CONCAT(user.forename, ' ', user.surname) as name]",
       'user.registered'
     ]
   )

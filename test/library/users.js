@@ -1,6 +1,6 @@
 import Database from "../../src/Database.js";
 
-export const users = {
+export const usersConfig = {
   table: 'user',
   columns: [
     'id', 'forename', 'surname', 'email', 'password', 'is_admin',
@@ -28,19 +28,20 @@ export const users = {
   }
 };
 
-export const database = new Database({
+export const databaseConfig = {
   client: 'sqlite3',
   connection: {
     filename: ':memory:',
   },
   useNullAsDefault: true,
   tables: {
-    users: users,
+    users: usersConfig,
   }
-});
+};
 
+export const createDatabase = (config=databaseConfig) => new Database(config);
 
-
+export const database = createDatabase();
 
 export const createUsers = async database => {
   await database.raw("CREATE TABLE user (id INTEGER PRIMARY KEY ASC, forename TEXT, surname TEXT, email TEXT, password TEXT, is_admin INTEGER)");
