@@ -133,73 +133,31 @@ test.serial(
 )
 
 test.serial(
+  'selectOne("...admin").where({ surname: "Badger" } })',
+  async t => {
+    const badger = await users.selectOne("...admin").where({ surname: "Badger" });
+    t.is( badger.forename, 'Bobby' );
+    t.is( badger.surname, 'Badger' );
+    t.is( badger.email, 'bobby@badger.com' );
+    t.is( badger.email, 'bobby@badger.com' );
+    t.is( badger.is_admin, 1 );
+  }
+)
+
+test.serial(
   'selectOne("@admin").where({ surname: "Stoat" })',
   async t => {
     const stoat = await users.selectOne("@admin").where({ surname: "Stoat" });
     t.is( stoat.forename, 'Simon' );
     t.is( stoat.surname, 'Stoat' );
     t.is( stoat.email, 'simon@stoat.com' );
+    t.is( stoat.name, 'Simon Stoat' );
   }
 )
 
-
-/*
-
-test.serial(
-  'select({ columns: "@admin", where: { surname: "Badger" } })',
-  async t => {
-    const badger = await users.select({ columns: "@admin", where: { surname: "Badger" } });
-    t.is( badger.name, 'Bobby Badger' );
-    t.is( badger.email, 'bobby@badger.com' );
-    t.is( badger.password, null );
-    t.is( badger.is_admin, 1 );
-  }
-)
-
-test.serial(
-  'select("@admin", { surname: "Badger" })',
-  async t => {
-    const badger = await users.select("@admin", { surname: "Badger" });
-    t.is( badger.name, 'Bobby Badger' );
-    t.is( badger.email, 'bobby@badger.com' );
-    t.is( badger.password, null );
-    t.is( badger.is_admin, 1 );
-  }
-)
-
-
-
-test.serial(
-  'selectOne("@admin", { surname: "Stoat" })',
-  async t => {
-    const stoat = await users.selectOne("@admin", { surname: "Stoat" });
-    t.is( stoat.forename, 'Simon' );
-    t.is( stoat.surname, 'Stoat' );
-  }
-)
-
-
-test.serial(
-  'selectOne("@admin", { surname: "Badger" })',
-  async t => {
-    const error = await t.throwsAsync(
-      () => users.selectOne("@admin", { surname: "Badger" })
-    );
-    t.is(error.message, "selectOne for user returned 2 records")
-  }
-)
-
-test.serial(
-  'selectOne("@admin", { surname: "Mongoose" })',
-  async t => {
-    const error = await t.throwsAsync(
-      () => users.selectOne("@admin", { surname: "Mongoose" })
-    );
-    t.is(error.message, "selectOne for user returned 0 records")
-  }
-)
-
-*/
+//-----------------------------------------------------------------------------
+// Cleanup
+//-----------------------------------------------------------------------------
 test.after(
   () => database.destroy()
 )

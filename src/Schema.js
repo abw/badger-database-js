@@ -3,6 +3,7 @@ import { prepareColumns, prepareColumnSets, splitHash } from "./Utils.js";
 import { addDebug } from "@abw/badger";
 
 const DEFAULT_ID = 'id';
+const COLUMN_SET_PREFIX = /^(@|\.\.\.)/;
 
 export class Schema {
   constructor(database, schema) {
@@ -57,10 +58,10 @@ export class Schema {
       name => {
         this.debug("resolveColumns(%s) / %s", names, name);
         if (isString(name)) {
-          if (name.match(/^@/)) {
-            this.debug("%s is a columnSet %s", name, name.replace(/^@/, ''));
+          if (name.match(COLUMN_SET_PREFIX)) {
+            this.debug("%s is a columnSet %s", name, name.replace(COLUMN_SET_PREFIX, ''));
             cols.push(
-              ...this.columnSet(name.replace(/^@/, ''))
+              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))
                 .map( name => this.column(name) )
             );
           }
