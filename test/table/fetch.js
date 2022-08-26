@@ -20,6 +20,15 @@ test.serial(
 )
 
 test.serial(
+  'fetch({ surname: "Badger" }).record()',
+  async t => {
+    const badger = await users.fetch({ surname: "Badger" }).record();
+    t.is( badger.forename, 'Bobby' );
+    t.is( badger.surname, 'Badger' );
+  }
+)
+
+test.serial(
   'fetchOne({ surname: "Stoat" })',
   async t => {
     const stoat = await users.fetchOne({ surname: "Stoat" });

@@ -89,6 +89,26 @@ test.serial(
 )
 
 test.serial(
+  'selectAll("@admin").where({ surname: "Badger" })',
+  async t => {
+    const badgers = await users.selectAll("@admin").where({ surname: "Badger" });
+    t.is( badgers.length, 2 );
+    t.is( badgers[0].name, 'Bobby Badger' );
+    t.is( badgers[0].is_admin, 1 );
+    t.is( badgers[1].name, 'Brian Badger' );
+    t.is( badgers[1].is_admin, 0 );
+  }
+)
+test.serial(
+  'selectOne("@admin").where({ surname: "Stoat" })',
+  async t => {
+    const stoat = await users.selectOne("@admin").where({ surname: "Stoat" });
+    t.is( stoat.forename, 'Simon' );
+    t.is( stoat.surname, 'Stoat' );
+  }
+)
+
+test.serial(
   'selectOne("@admin", { surname: "Badger" })',
   async t => {
     const error = await t.throwsAsync(

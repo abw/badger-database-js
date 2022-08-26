@@ -1,23 +1,41 @@
 import { hasValue, isString, splitList, fail } from "@abw/badger-utils";
+import { prepareColumns, prepareColumnSets, splitHash } from "./Utils.js";
 import { addDebug } from "@abw/badger";
-import { prepareColumns, prepareColumnSets } from "./Utils.js";
 
-// NOTE: this has been moved into Table.js
+const DEFAULT_ID = 'id';
 
 export class Schema {
-  constructor(spec) {
-    const columns       = splitList(spec.columns);
-    this.table          = spec.table;
-    this.columnNames    = columns;
-    this.virtualColumns = spec.virtualColumns || { };
-    this.tableColumns   = prepareColumns(columns, this.table);
-    this.columnSets     = prepareColumnSets(columns, spec.columnSets);
-    addDebug(this, spec.debug, spec.debugPrefix || 'Schema', spec.debugColor);
+  constructor(database, schema) {
+    this.database       = database || fail("No database specified");
+    this.table          = schema.table || fail("No table name specified");
+    this.columnNames    = splitList(schema.columns);
+    this.keys           = splitList(schema.keys);
+    this.virtualColumns = schema.virtualColumns || { };
+    this.tableColumns   = prepareColumns(this.columnNames, this.table);
+    this.columnSets     = prepareColumnSets(this.columnNames, schema.columnSets);
+    this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };
+
+    //console.log('columnNames: ', this.columnNames);
+    //console.log('virtualColumns: ', this.virtualColumns);
+    //console.log('allColumns: ', this.allColumns);
+
+    if (schema.id) {
+      this.id = schema.id;
+      this.keys.unshift(schema.id);
+    }
+    else if (this.keys.length === 0) {
+      this.id = DEFAULT_ID;
+      this.keys.unshift(this.id);
+    }
+
+    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
   }
   column(name) {
     return this.tableColumns[name]
-      || (this.virtualColumns[name] && [this.virtualColumns[name], name])
-      || fail('Invalid column specified: ', name);
+      ? this.tableColumns[name]
+      : this.virtualColumns[name]
+        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)
+        : fail('Invalid column specified: ', name);
   }
   columnSet(name) {
     return this.columnSets[name]
@@ -61,7 +79,7 @@ export class Schema {
   }
 }
 
-
-export const schema = spec => new Schema(spec);
+export const schema = (database, schema) =>
+  new Schema(database, schema);
 
 export default Schema

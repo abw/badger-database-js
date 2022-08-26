@@ -1,8 +1,7 @@
 import { isString, splitList } from '@abw/badger-utils'
 
-export function splitHash(value) {
+export function splitHash(value, hash={ }) {
   const items = splitList(value);
-  let hash = { };
   items.forEach( i => hash[i] = true );
   return hash;
 }
