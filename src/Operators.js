@@ -1,3 +1,5 @@
+// work in progress / experiment
+
 import Select from './Operator/Select.js';
 import From from './Operator/From.js';
 import Where from './Operator/Where.js';

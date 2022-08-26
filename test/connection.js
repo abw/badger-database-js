@@ -1,11 +1,11 @@
 import test from 'ava';
-import Config from '../src/Config.js'
 import Connection from '../src/Connection.js'
+import { databaseConfig } from './library/users.js';
 
-const connection = new Connection(Config);
+const connection = new Connection(databaseConfig);
 
 test(
-  'hello',
-  t => t.is( connection.hello(), 'Hello World!' )
+  'connection.config',
+  t => t.is( connection.config.client, 'sqlite3' )
 );
 

@@ -1,3 +1,4 @@
+// TODO: integrate this into Table
 import { addDebug } from "@abw/badger";
 import { fail } from "@abw/badger-utils";
 

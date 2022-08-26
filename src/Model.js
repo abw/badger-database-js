@@ -1,3 +1,5 @@
+// work in progress / experiment
+
 import { fail } from "@abw/badger-utils";
 
 class Model {

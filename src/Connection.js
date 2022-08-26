@@ -3,10 +3,8 @@ import Knex from 'knex'
 
 export class Connection {
   constructor(config=Config) {
-    this.knex = Knex(config);
-  }
-  hello() {
-    return 'Hello World!';
+    this.config = config;
+    this.knex   = Knex(config);
   }
   query() {
     // most queries should be handled by Knex instance
