@@ -6,6 +6,11 @@ export const rowsProxy = table => query =>
         if (prop === 'records') {
           return () => table.records(...arguments);
         }
+        else if (prop === 'then') {
+          return (
+            fn => table.rowsProxy(target.then(fn))
+          ).bind(target)
+        }
         return target[prop];
       }
     }

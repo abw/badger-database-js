@@ -55,6 +55,19 @@ test.serial(
   }
 )
 
+test.serial(
+  'fetchOne().where({ surname: "Badger" }).then().record()',
+  async t => {
+    const badger = await users.fetchOne().where({ surname: "Badger" })
+      .then( r => r )
+      .then( r => r )
+      .record();
+    t.true( badger instanceof Record, 'badger is a Record');
+    t.is( badger.forename, 'Bobby' );
+    t.is( badger.surname, 'Badger' );
+  }
+)
+
 test.after(
   () => database.destroy()
 )

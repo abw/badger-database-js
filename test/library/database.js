@@ -6,6 +6,10 @@ export const databaseConfig = {
     filename: ':memory:',
   },
   useNullAsDefault: true,
+  pool: {
+    min: 2,
+    max: 10,
+  }
 };
 
 export const createDatabase = (config=databaseConfig) => new Database(config);

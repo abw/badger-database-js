@@ -23,6 +23,17 @@ test.serial(
 )
 
 test.serial(
+  'fetchAll().then().records()',
+  async t => {
+    const all = await users.fetchAll().then( r => r ).records();
+    t.is( all.length, 3 );
+    t.true( all[0] instanceof Record, 'badgers[0] is a Record');
+    t.true( all[1] instanceof Record, 'badgers[1] is a Record');
+    t.true( all[2] instanceof Record, 'badgers[2] is a Record');
+  }
+)
+
+test.serial(
   'fetchAll({ surname: "Badger" }).records()',
   async t => {
     const badgers = await users.fetchAll({ surname: "Badger" }).records();
