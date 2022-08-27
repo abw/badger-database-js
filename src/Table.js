@@ -33,18 +33,6 @@ export class Table {
       )
     )
   }
-  async insertRowsAsync(rows) {
-    let results = [ ];
-    for (const row of rows) {
-      const result = await this.query().insert(row)
-        .then(
-          ([id]) => this.query().select().first().where({ [this.schema.id]: id })
-        )
-      // console.log('loaded row: ', result);
-      results.push(result)
-    }
-    return results;
-  }
   insertRows(rows) {
     return this.rowsProxy(
       this.insertRowsAsync(rows)
@@ -64,6 +52,17 @@ export class Table {
       )
     )
     */
+  }
+  async insertRowsAsync(rows) {
+    let results = [ ];
+    for (const row of rows) {
+      const result = await this.query().insert(row)
+        .then(
+          ([id]) => this.query().select().first().where({ [this.schema.id]: id })
+        )
+      results.push(result)
+    }
+    return results;
   }
   selectAll(columns) {
     return this.rowsProxy(
