@@ -1,5 +1,5 @@
 import test from 'ava';
-import { createUsers, usersWithCustomRecord, databaseWithCustomRecord, User } from '../library/users.js'
+import { createUsers, usersWithCustomRecord, databaseWithCustomRecord } from '../library/users.js'
 
 const database = databaseWithCustomRecord;
 const users = usersWithCustomRecord;
