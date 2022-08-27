@@ -34,6 +34,18 @@ test.serial(
 )
 
 test.serial(
+  'selectOne().where({ surname: "Badger" })...record()',
+  async t => {
+    const row = users.selectOne('@basic').where({ surname: "Badger" });
+    const badger = await row.record();
+    t.true( badger instanceof Record, 'badger is a Record');
+    t.is( badger.forename, 'Bobby' );
+    t.is( badger.surname, 'Badger' );
+    t.is( badger.name, 'Bobby Badger' );
+  }
+)
+
+test.serial(
   'fetchOne().where({ surname: "Badger" }).record().then()',
   async t => {
     const badger = await users.fetchOne().where({ surname: "Badger" }).record().then( r => r );

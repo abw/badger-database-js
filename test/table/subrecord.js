@@ -1,25 +1,8 @@
 import test from 'ava';
-import Record from '../../src/Record.js';
-import { createDatabase, databaseConfig } from '../library/database.js';
-import { usersConfig, createUsers } from '../library/users.js'
+import { createUsers, usersWithCustomRecord, databaseWithCustomRecord, User } from '../library/users.js'
 
-class User extends Record {
-  hello() {
-    return `Hello ${this.forename} ${this.surname}`;
-  }
-}
-
-export const database = createDatabase({
-  ...databaseConfig,
-  tables: {
-    users: {
-      ...usersConfig,
-      record: User
-    }
-  }
-});
-
-const users = database.table('users');
+const database = databaseWithCustomRecord;
+const users = usersWithCustomRecord;
 
 test.before(
   async t => {

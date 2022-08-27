@@ -1,3 +1,4 @@
+import Record from "../../src/Record.js";
 import { createDatabase, databaseConfig } from "./database.js";
 
 export const usersConfig = {
@@ -39,21 +40,41 @@ export const createUsers = async database => {
   await database.raw("CREATE TABLE user (id INTEGER PRIMARY KEY ASC, forename TEXT, surname TEXT, email TEXT, password TEXT, is_admin INTEGER)");
   const users = database.table('users');
 
-  await users.insert({
-    forename: 'Bobby',
-    surname: 'Badger',
-    email: 'bobby@badger.com',
-    is_admin: 1,
-  });
-  await users.insert({
-    forename: 'Brian',
-    surname: 'Badger',
-    email: 'brian@badger.com',
-    is_admin: 0,
-  });
-  await users.insert({
-    forename: 'Simon',
-    surname: 'Stoat',
-    email: 'simon@stoat.com',
-  });
+  await users.query().insert([
+    {
+      forename: 'Bobby',
+      surname: 'Badger',
+      email: 'bobby@badger.com',
+      is_admin: 1,
+    },
+    {
+      forename: 'Brian',
+      surname: 'Badger',
+      email: 'brian@badger.com',
+      is_admin: 0,
+    },
+    {
+      forename: 'Simon',
+      surname: 'Stoat',
+      email: 'simon@stoat.com',
+    }
+  ]);
 }
+
+export class User extends Record {
+  hello() {
+    return `Hello ${this.forename} ${this.surname}`;
+  }
+}
+
+export const databaseWithCustomRecord = createDatabase({
+  ...databaseConfig,
+  tables: {
+    users: {
+      ...usersConfig,
+      record: User
+    }
+  }
+});
+
+export const usersWithCustomRecord = databaseWithCustomRecord.table('users');
