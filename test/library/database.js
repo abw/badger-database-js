@@ -16,3 +16,12 @@ export const createDatabase = (config=databaseConfig) => new Database(config);
 
 export const database = createDatabase();
 
+export class MockDatabase {
+  raw(...args) {
+    return "[RAW:" + args.join(':') + "]";
+  }
+}
+
+export const mockDatabase = new MockDatabase();
+
+
