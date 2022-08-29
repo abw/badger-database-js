@@ -840,6 +840,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/record.js~record#update",
+    "class/src/Record.js~Record.html#instance-method-update",
+    "src/Record.js~Record#update",
+    "method"
+  ],
+  [
     "src/schema.js",
     "file/src/Schema.js.html",
     "src/Schema.js",
@@ -1089,12 +1095,6 @@ window.esdocSearchIndex = [
     "src/table.js~table#update",
     "class/src/Table.js~Table.html#instance-method-update",
     "src/Table.js~Table#update",
-    "method"
-  ],
-  [
-    "src/table.js~table#updateasync",
-    "class/src/Table.js~Table.html#instance-method-updateAsync",
-    "src/Table.js~Table#updateAsync",
     "method"
   ],
   [

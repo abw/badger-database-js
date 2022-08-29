@@ -68,7 +68,7 @@ const escapeChars = {
   default: '"',
 };
 
-class Database {
+export class Database {
   constructor(params={ }) {
     const config    = { ...Config, ...params };
     this.connection = new Connection(config);
