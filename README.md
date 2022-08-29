@@ -33,6 +33,8 @@ for.  But if you're looking for a fully-featured, production-ready
 solution then it might not be for you - there are *plenty* of other
 Javascript ORMs that might be a better place to start.
 
+For further information please read the [documentation](https://abw.github.io/badger-database-js/docs/manual/index.html).
+
 ## TODO
 
 Table relations.
