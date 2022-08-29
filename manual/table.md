@@ -2,6 +2,31 @@
 
 This is a wrapper around a database table.
 
+* [Overview](#overview)
+* [Configuration](#configuration)
+  * [table](#table)
+  * [columns](#columns)
+  * [virtualColumns](#virtualcolumns)
+  * [columnSets](#columnsets)
+  * [id](#id)
+  * [keys](#keys)
+  * [tableClass](#tableclass)
+  * [recordClass](#recordclass)
+* [Methods](#methods)
+  * [query](#query)
+  * [insert(data)](#insert-data-)
+  * [insertRow(data)](#insertrow-data-)
+  * [insertRows(data)](#insertrows-data-)
+  * [selectAll(columns)](#selectall-columns-)
+  * [selectOne(columns)](#selectone-columns-)
+  * [fetchAll(where)](#fetchall-where-)
+  * [fetchOne(where)](#fetchone-where-)
+  * [update(set,where)](#update-set-where-)
+  * [record(query)](#record-query-)
+  * [records(query)](#records-query-)
+
+## Overview
+
 Conceptually we think of a table as being a collection of records.  I prefer to use
 plural names (e.g. `users` and `companies` instead of `user` and `company`) in
 keeping with that paradigm, but you can use any names you like.
@@ -543,7 +568,7 @@ const row = await table.fetchOne({ animal: "badger" });
 const rec = await table.fetchOne({ animal: "badger" }).record();
 ```
 
-### update(set, where)
+### update(set,where)
 
 This method can be used to update one or more rows in the database.
 The first argument is an object defining updates to be set in the rows.
