@@ -103,27 +103,38 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="database">Database</h1><p>The <code>Database</code> class provides a wrapper around a
-<a href="https://knexjs.org/">Knex.js</a> database connection.</p>
-<h2 id="configuration">Configuration</h2><p>The configuration parameters should include the
-<code>client</code> and <code>connection</code> parameters as a minimum,
-along with any other optional configuration parameters
-accepted as
-<a href="https://knexjs.org/guide/#configuration-options">Knex.js configuration options</a></p>
-<p>For example, a connection to a <code>sqlite3</code> database might look like this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import Database from '@abw/badger-database'
-
-const database = new Database({
-  client: 'sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  useNullAsDefault: true,
-  pool: {
-    min: 2,
-    max: 10,
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="schema">Schema</h1><p>The <code>Schema</code> object is used internally to manage the schema
+for a table.  You probably don't need to know about this unless
+you're looking under the hood.</p>
+<h2 id="configuration">Configuration</h2><p>A schema is created with two arguments.  The first is a <code>Database</code>
+object reference, the second is a data object defining the schema
+for the table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const scheme = new Scheme(
+  database,
+  {
+    table: 'users',
+    columns: 'id name email'
   }
-})</code></code></pre>
+)</code></code></pre>
+<p>The configuration options are the same as for the <a href="manual/table.html">Table</a>.</p>
+<h3 id="table">table</h3><p>The database table name.</p>
+<h3 id="columns">columns</h3><p>The columns in the table that you want to be able to access.</p>
+<h3 id="virtualcolumns">virtualColumns</h3><p>Columns that are computed from other columns.</p>
+<h3 id="columnsets">columnSets</h3><p>Named sets of columns.</p>
+<h3>id</h3><p>The column that uniquely identifies each row.</p>
+<h3 id="keys">keys</h3><p>The columns that uniquely identifies each row, used where a table
+has a compound key.</p>
+<h2 id="methods">Methods</h2><h3 id="preparecolumns-schema-">prepareColumns(schema)</h3><p>Creates <code>this.columnIndex</code> and <code>this.columnNames</code>.</p>
+<h3 id="preparecolumnsets-schema-">prepareColumnSets(schema)</h3><p>Creates <code>this.columnSets</code>.</p>
+<h3 id="preparekeys-schema-">prepareKeys(schema)</h3><p>Sets <code>this.id</code>, <code>this.keys</code> and <code>this.keyIndex</code>.</p>
+<h3 id="column-name-">column(name)</h3><p>Returns a real column, a virtual column or throws an error.</p>
+<h3 id="columnset-name-">columnSet(name)</h3><p>Returns a column set.</p>
+<h3 id="defaultcolumns--">defaultColumns()</h3><p>Return the default column set, from <code>this.columnSets.default</code> or
+<code>this.columns</code>.</p>
+<h3 id="columns-names-">columns(names)</h3><p>Expands a set of column names.</p>
+<h3 id="resolvecolumns-names-">resolveColumns(names)</h3><p>Resolves a set of columns and/or column sets.</p>
+<h3 id="identity-data-">identity(data)</h3><p>Returns an object containing the <code>id</code> or <code>keys</code> from the data
+passes.</p>
 </div>
 </div>
 

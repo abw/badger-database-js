@@ -72,12 +72,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-utils~xxxpreparecolumns",
-    "function/index.html#static-function-XXXprepareColumns",
-    "<span>XXXprepareColumns</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "function"
-  ],
-  [
     "@abw/badger-utils~client",
     "variable/index.html#static-variable-client",
     "<span>client</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -112,18 +106,6 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-pool",
     "<span>pool</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "variable"
-  ],
-  [
-    "@abw/badger-utils~preparecolumnset",
-    "function/index.html#static-function-prepareColumnSet",
-    "<span>prepareColumnSet</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-utils~preparecolumnsets",
-    "function/index.html#static-function-prepareColumnSets",
-    "<span>prepareColumnSets</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "function"
   ],
   [
     "@abw/badger-utils~record",
@@ -930,6 +912,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/schema.js~schema#identity",
+    "class/src/Schema.js~Schema.html#instance-method-identity",
+    "src/Schema.js~Schema#identity",
+    "method"
+  ],
+  [
     "src/schema.js~schema#keyindex",
     "class/src/Schema.js~Schema.html#instance-member-keyIndex",
     "src/Schema.js~Schema#keyIndex",
@@ -943,9 +931,9 @@ window.esdocSearchIndex = [
   ],
   [
     "src/schema.js~schema#preparecolumnsets",
-    "class/src/Schema.js~Schema.html#instance-member-prepareColumnSets",
+    "class/src/Schema.js~Schema.html#instance-method-prepareColumnSets",
     "src/Schema.js~Schema#prepareColumnSets",
-    "member"
+    "method"
   ],
   [
     "src/schema.js~schema#preparecolumns",
@@ -975,6 +963,12 @@ window.esdocSearchIndex = [
     "src/schema.js~schema#table",
     "class/src/Schema.js~Schema.html#instance-member-table",
     "src/Schema.js~Schema#table",
+    "member"
+  ],
+  [
+    "src/schema.js~schema#tablecolumns",
+    "class/src/Schema.js~Schema.html#instance-member-tableColumns",
+    "src/Schema.js~Schema#tableColumns",
     "member"
   ],
   [

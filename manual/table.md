@@ -261,7 +261,43 @@ employees: {
 }
 ```
 
-### record
+### tableClass
+
+You can create your own subclass of the `Table` module and define your own
+methods for queries on the table.
+
+Here's a simple `Users` class which implements a `badgers()` method to
+fetch all rows where the surname is `Badger`.
+
+```js
+export class Users extends Table {
+  badgers() {
+    return this.fetchAll({ surname: "Badger" });
+  }
+}
+```
+
+Then when you define the `users` class, define the `Users` class as the
+`tableClass` configuration item.
+
+```js
+const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      tableClass: Users
+    },
+  }
+)
+```
+
+Now you can call the `badgers()` method on the table object for the `users` table.
+
+```js
+const badgers = await database.table('users').badgers()
+```
+
+### recordClass
 
 Various table methods have the option to convert rows returned from the database into
 record objects.  This provides a simple implementation of the Active Record pattern.
@@ -271,7 +307,7 @@ the record, delete it, access related records, and so on.
 
 You can also define your own record subclass for a table in which you can provide
 additional methods or wrap the default methods to implement additional business logic,
-data validation, logging, etc.  In this case you should use the `record` configuration
+data validation, logging, etc.  In this case you should use the `recordClass` configuration
 option to provide a reference to your custom record class.
 
 This simple example shows how a custom `User` record class can be defined which adds a
@@ -293,7 +329,7 @@ const database = new Database(
   tables: {
     users: {
       columns: 'id forename surname',
-      record: User,
+      recordClass: User,
     },
   }
 )

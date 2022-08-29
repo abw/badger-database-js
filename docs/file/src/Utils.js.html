@@ -41,9 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-XXXprepareColumns">XXXprepareColumns</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumnSet">prepareColumnSet</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumnSets">prepareColumnSets</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
@@ -60,7 +57,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Utils.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { isFunction, isObject, isString, splitList } from '@abw/badger-utils'
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { isFunction, isObject, splitList } from '@abw/badger-utils'
 
 export function splitHash(string, value=true, hash={ }) {
   // if it's already a hash object then return it unchanged
@@ -78,29 +75,6 @@ export function splitHash(string, value=true, hash={ }) {
   return hash;
 }
 
-export const XXXprepareColumns = (columns, table) =&gt; {
-  let set = { };
-  columns.map(
-    column =&gt; set[column] = `${table}.${column}`
-  );
-  return set;
-}
-
-export const prepareColumnSets = (columns, columnSets={}) =&gt; {
-  let sets = { };
-  Object.entries(columnSets).map(
-    ([key, value]) =&gt; sets[key] = prepareColumnSet(columns, value)
-  );
-  return sets;
-}
-
-export const prepareColumnSet = (columns, columnSet) =&gt; {
-  const basis   = isString(columnSet) ? splitList(columnSet) : columns;
-  const include = splitList(columnSet.include);
-  const exclude = splitHash(columnSet.exclude);
-  return [...basis, ...include]
-    .filter( column =&gt; ! exclude[column] );
-}
 </code></pre>
 
 </div>

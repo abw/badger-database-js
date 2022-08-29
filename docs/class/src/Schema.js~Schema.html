@@ -41,9 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-XXXprepareColumns">XXXprepareColumns</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumnSet">prepareColumnSet</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumnSets">prepareColumnSets</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
@@ -237,6 +234,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-member-columnSets">columnSets</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-member-database">database</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -349,7 +374,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-member-prepareColumnSets">prepareColumnSets</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-member-table">table</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -377,7 +402,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-member-table">table</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-member-tableColumns">tableColumns</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -525,6 +550,62 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-method-defaultColumns">defaultColumns</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-method-identity">identity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Schema.js~Schema.html#instance-method-prepareColumnSets">prepareColumnSets</a></span></span><span class="code" data-ice="signature">(schema: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -836,6 +917,49 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-columnSets">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">columnSets</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber54">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-database">
     <span class="access" data-ice="access">public</span>
     
@@ -890,7 +1014,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber68">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
@@ -933,7 +1057,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber76">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber80">source</a></span></span>
     </span>
   </h3>
 
@@ -976,50 +1100,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber66">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-prepareColumnSets">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">prepareColumnSets</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber48">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber70">source</a></span></span>
     </span>
   </h3>
 
@@ -1063,6 +1144,49 @@
       
       
       <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber11">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-tableColumns">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">tableColumns</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber47">source</a></span></span>
     </span>
   </h3>
 
@@ -1151,7 +1275,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber79">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber84">source</a></span></span>
     </span>
   </h3>
 
@@ -1222,7 +1346,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber86">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -1293,7 +1417,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber94">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber99">source</a></span></span>
     </span>
   </h3>
 
@@ -1364,7 +1488,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber90">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber95">source</a></span></span>
     </span>
   </h3>
 
@@ -1391,6 +1515,136 @@
     <div data-ice="returnProperties">
 </div>
   </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-identity">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">identity</span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber131">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">data</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-prepareColumnSets">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">prepareColumnSets</span><span class="code" data-ice="signature">(schema: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber52">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">schema</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
 
   
 
@@ -1478,7 +1732,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber65">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber69">source</a></span></span>
     </span>
   </h3>
 
@@ -1537,7 +1791,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber99">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber104">source</a></span></span>
     </span>
   </h3>
 
@@ -1608,7 +1862,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber126">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Schema.js.html#lineNumber140">source</a></span></span>
     </span>
   </h3>
 

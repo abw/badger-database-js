@@ -103,27 +103,9 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="database">Database</h1><p>The <code>Database</code> class provides a wrapper around a
-<a href="https://knexjs.org/">Knex.js</a> database connection.</p>
-<h2 id="configuration">Configuration</h2><p>The configuration parameters should include the
-<code>client</code> and <code>connection</code> parameters as a minimum,
-along with any other optional configuration parameters
-accepted as
-<a href="https://knexjs.org/guide/#configuration-options">Knex.js configuration options</a></p>
-<p>For example, a connection to a <code>sqlite3</code> database might look like this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import Database from '@abw/badger-database'
-
-const database = new Database({
-  client: 'sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  useNullAsDefault: true,
-  pool: {
-    min: 2,
-    max: 10,
-  }
-})</code></code></pre>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="record">Record</h1><p>This is a wrapper around a database row.  It is a basic implementation of
+the Active Record pattern.</p>
+<p>TODO: write these docs</p>
 </div>
 </div>
 

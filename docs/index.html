@@ -41,9 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-XXXprepareColumns">XXXprepareColumns</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumnSet">prepareColumnSet</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumnSets">prepareColumnSets</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
@@ -66,25 +63,19 @@ database library loosely based on the Perl
 <p>It is planned to help migrate some old Perl code
 to Javascript and probably isn't going to be
 suitable for new projects.</p>
-<h2 id="todo">TODO</h2><p>Decide on the format for specifying columns/column sets.</p>
-<p>Currently : "column1 column2" for columns and/or "@colset1 @colset2"
-for columns sets.</p>
-<p>Might make more sense to use ...</p>
-<p>e.g. table.select("column1 column2 ...colset1 ...colset2")</p>
-<p>Would be nice to use that to auto-join to related tables.
-e.g. use "@relatedTable" to reference columns in related
-table.</p>
-<p>properties.select("@address")  # default set in related address table
-properties.select("...admin@address")  # admin set in related address table</p>
-<p>How to specify multiple columns from another set?
-properties.select("line1@address line2@address line3@address")  # yawn
+<h2 id="todo">TODO</h2><p>Custom table class, e.g. via <code>tableClass</code>.</p>
+<p>Table relations.</p>
+<p>Deprecate the "@colset1" format for including columns sets.</p>
+<p>Implement "@relatedTable" to reference columns in related table.</p>
+<pre><code><code class="source-code prettyprint">properties.select("@address")  # default set in related address table
+properties.select("...admin@address")  # admin set in related address table</code></code></pre><p>How to specify multiple columns from another set?</p>
+<pre><code><code class="source-code prettyprint">properties.select("line1@address line2@address line3@address")  # yawn
 properties.select("line1,line2@address")   # Nope, we allow "," as a normal column delimiter
 properties.select("line1&amp;line2@address")   # Not loving it
 properties.select("line1|line2@address")   # Nope
 properties.select("[line1 line2]@address") # Yech - space causes parsing hardness
 properties.select("line1+line2@address")   # Maybe
-properties.select("line1+line2@address")   # Maybe - but implies "a+b+c" is valid</p>
-</div>
+properties.select("line1+line2@address")   # Maybe - but implies "a+b+c" is valid</code></code></pre></div>
 </div>
 
 <footer class="footer">
