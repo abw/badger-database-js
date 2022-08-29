@@ -1,0 +1,323 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | Badger Database</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-database-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/getting_started.html"><a href="manual/getting_started.html" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting_started.html"><a href="manual/getting_started.html#installation" data-ice="link">Installation</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/getting_started.html"><a href="manual/getting_started.html#npm" data-ice="link">npm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/getting_started.html"><a href="manual/getting_started.html#pnpm" data-ice="link">pnpm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/getting_started.html"><a href="manual/getting_started.html#yarn" data-ice="link">yarn</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting_started.html"><a href="manual/getting_started.html#basic-use" data-ice="link">Basic Use</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/database.html"><a href="manual/database.html" data-ice="link">Database</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#columns" data-ice="link">columns</a></li>
+<li data-ice="manualNav" class="indent-h4" data-link="manual/tables.html"><a href="manual/tables.html#column-metadata" data-ice="link">column metadata</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#query--" data-ice="link">query()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#insert-data-" data-ice="link">insert(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#selectall-columns---" data-ice="link">selectAll(columns) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#selectone-columns-" data-ice="link">selectOne(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#fetchall-where---" data-ice="link">fetchAll(where) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#fetchone-where---" data-ice="link">fetchOne(where) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#record-query-" data-ice="link">record(query)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#records-query-" data-ice="link">records(query)</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="tables">Tables</h1><p>This is a wrapper around a database table.</p>
+<p>Conceptually we think of a table as being a collection of records.  I prefer to use
+plural names (e.g. <code>users</code> and <code>companies</code> instead of <code>user</code> and <code>company</code>) in
+keeping with that paradigm, but you can use any names you like.</p>
+<p>The names of the tables you define for your application don't have to match the names
+of the underlying database table.</p>
+<h2 id="configuration">Configuration</h2><p>Tables are defined via the <code>tables</code> item in a database configuration.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import Database from '@abw/badger-database'
+
+const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      // ... schema for users table
+    },
+    companies: {
+      // ... schema for companies table
+    }
+  }
+)</code></code></pre>
+<p>You can then access a table object using the <code>table()</code> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const users = database.table('users');</code></code></pre>
+<p>The configuration items for a table are as follows.</p>
+<h3 id="table">table</h3><p>The default behaviour is to assume that the name of the underlying database table
+is the same as the collection name.  If it isn't then you can use the <code>table</code>
+configuration option to define it.</p>
+<p>For example, if you want to define a collection of <code>users</code> in your application but the
+underlying table name is <code>user</code> then you can define it like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      table: 'user'
+    },
+  }
+)</code></code></pre>
+<h3 id="columns">columns</h3><p>The <code>columns</code> configuration item is used to define the columns that you want the
+collection to have access to.  You don't have to include all of the columns in the
+database table if you don't want to.</p>
+<p>In the simplest case you can define the columns as a string of whitespace delimited
+names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      columns: 'id name email'
+    },
+  }
+)</code></code></pre>
+<p>This is shorthand for specifying them as an array, which you can do if you prefer
+or already have the column names in an array.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      columns: ['id', 'name', 'email']
+    },
+  }
+)</code></code></pre>
+<p>The third option is to use a hash object to define the columns.  This allows you to
+provide additional metadata about the columns.  You can add any metadata you like.
+At the time of writing the metadata isn't used internally, but it might be soon.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      columns: {
+        id: {
+          type: 'id',
+          automatic: true,
+        },
+        name: {
+          type: 'text',
+          required: true,
+        },
+        email: {
+          type: 'text',
+          required: true,
+        }
+      }
+    },
+  }
+)</code></code></pre>
+<h4 id="column-metadata">column metadata</h4><p>TODO: add information about column metadata as and when we start to use it.</p>
+<h3 id="virtualcolumns">virtualColumns</h3><p>Any computed columns can be specified as <code>virtualColumns</code>.  For example, if you
+have a user table with separate <code>forename</code> and <code>surname</code> columns then you might
+want to add a virtual column that concatenates them to create a <code>name</code>.</p>
+<p>In MySQL the <code>CONCAT()</code> function can be used.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      columns: 'id forename surname email',
+      virtualColumns: {
+        name: "CONCAT(users.forename, ' ', users.surname)"
+      }
+    },
+  }
+)</code></code></pre>
+<p>In sqlite the <code>||</code> operator is used for concatenation so the <code>name</code>
+virtual column would be defined like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">virtualColumns: {
+  name: "users.forename || ' ' || users.surname"
+}</code></code></pre>
+<p>Note that it is considered good practice to specify the table and column
+name in these cases, e.g. <code>users.forename</code> instead of just <code>forename</code>.
+This will save any ambiguity when you're constructing queries that might
+join onto other tables.  You might also want to escape the table and/or
+column names if either are reserved words.</p>
+<p>For example, MySQL uses the backtick character to escape names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">virtualColumns: {
+  name: "CONCAT(`users`.`forename`, ' ', `users`.`surname`)"
+}</code></code></pre>
+<h3 id="columnsets">columnSets</h3><p>You can define set of columns that provide a shorthand way of referencing
+commonly used subsets of columns.  By default, queries will use all of the
+<code>columns</code> defined.  Any <code>virtualColumns</code> will not be included.</p>
+<p>You can define a <code>default</code> column set to indicate which columns should be
+included in queries by default.  For example, in our <code>users</code> table we might
+want to exclude the <code>password</code> and <code>is_admin</code> columns, but include the <code>name</code>
+virtual column.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">users = {
+  columns: 'id forename surname email password is_admin',
+  virtualColumns: {
+    name: "CONCAT(users.forename, ' ', users.surname)"
+  },
+  columnSets: {
+    default: 'id forename surname name email',
+  }
+};</code></code></pre>
+<p>The columns in a column set can be specified as a string of whitespace delimited column
+names as shown above.  This is shorthand for an array of column names:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">columnSets: {
+  default: ['id', 'forename', 'surname', 'name', 'email'],
+}</code></code></pre>
+<p>The more explicit form is to define an object containing <code>include</code> and/or <code>exclude</code>
+columns.  These operations are performed on the list of <code>columns</code>, so <code>include</code> can be
+used to add in virtual columns or <code>exclude</code> can be used to exclude regular columns
+that you don't want returned by default.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">columnSets: {
+  default: {
+    include: 'name',
+    exclude: 'password is_admin'
+  },
+}</code></code></pre>
+<p>You can define any of your own named column sets in the same way.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">columnSets: {
+  // id forename surname email name
+  default: {
+    include: 'name',
+    exclude: 'password is_admin'
+  },
+  // id forename surname email password is_admin name
+  admin: {
+    include: 'name',
+  },
+  // name email
+  basic: 'name email',
+};</code></code></pre>
+<h3>id</h3><p>The <code>id</code> configuration item can be used to name the column that is the
+unique identifier for a row.  If you don't specify either <code>id</code> or <code>keys</code>
+then it will default to <code>id</code>.</p>
+<p>For example, if the <code>users</code> table uses the <code>user_id</code> column as the unique
+identifier then you should specify it like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">users: {
+  columns: 'user_id forename surname email',
+  id: 'user_id'
+}</code></code></pre>
+<h3 id="keys">keys</h3><p>In some cases you might have a table with a compound key composed from multiple
+columns instead of a single <code>id</code> column.  For example, an <code>employees</code> table might
+have a compound key formed from the <code>user_id</code> and <code>company_id</code> columns.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">employees: {
+  columns: 'user_id company_id job_title start_date end_date',
+  keys: 'user_id company_id'
+}</code></code></pre>
+<h2 id="methods">Methods</h2><h3 id="query--">query()</h3><p>Returns a Knex query with the table name pre-defined.</p>
+<h3 id="insert-data-">insert(data)</h3><p>Insert data into the table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">users.insert({
+  forename: 'Bobby',
+  surname: 'Badger',
+  email: 'bobby@badger.com',
+  is_admin: 1,
+})</code></code></pre>
+<p>You can insert multiple rows in a single call.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">users.insert([
+  {
+    forename: 'Bobby',
+    surname: 'Badger',
+    email: 'bobby@badger.com',
+    is_admin: 1,
+  },
+  {
+    forename: 'Brian',
+    surname: 'Badger',
+    email: 'brian@badger.com',
+    is_admin: 0,
+  },
+  {
+    forename: 'Simon',
+    surname: 'Stoat',
+    email: 'simon@stoat.com',
+  }
+]);</code></code></pre>
+<h3 id="selectall-columns---">selectAll(columns) {</h3><p>Returns a select query.  The optional <code>columns</code> argument can be used to
+specify the columns or column sets you want to select.  Otherwise the
+default column set will be used.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">table.selectAll();
+table.selectAll("column1 column2 ...columnset");
+table.selectAll().where({ animal: "badger" });</code></code></pre>
+<h3 id="selectone-columns-">selectOne(columns)</h3><p>Returns a select query to fetch a single row.  The optional <code>columns</code> argument
+can be used to specify the columns or column sets you want to select.  Otherwise
+the default column set will be used.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">table.selectOne();
+table.selectOne("column1 column2 ...columnset");
+table.selectOne().where({ email: "bobby@badger.com" });</code></code></pre>
+<h3 id="fetchall-where---">fetchAll(where) {</h3><p>Returns a select query.  The optional <code>where</code> argument can be used to
+provide additional constraints.  This is shorthand for chaining a
+<code>where()</code> method afterwards.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">table.fetchAll();
+table.fetchAll({ animal: "badger" });
+table.fetchAll().where({ animal: "badger" });   // same as above</code></code></pre>
+<h3 id="fetchone-where---">fetchOne(where) {</h3><p>Returns a select query that fetches a single record.  The optional <code>where</code>
+argument can be used to provide additional constraints.  This is shorthand
+for chaining a <code>where()</code> method afterwards.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">table.fetchOne();
+table.fetchOne({ animal: "badger" });
+table.fetchOne().where({ animal: "badger" });   // same as above</code></code></pre>
+<h3 id="record-query-">record(query)</h3><p>Method to create a record object from a single row returned by a query.
+This is called automagically by appending a <code>.record()</code> method to the
+end of a query returned by <code>selectOne()</code> or <code>fetchOne()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badger = await table.fetchOne({ animal: "badger" }).record();</code></code></pre>
+<h3 id="records-query-">records(query)</h3><p>Method to create record objects from all rows returned by a query.
+This is called automagically by appending a <code>.records()</code> method to the
+end of a query returned by <code>selectAll()</code> or <code>fetchAll()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await table.fetchAll({ animal: "badger" }).records();</code></code></pre>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>

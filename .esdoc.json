@@ -1,0 +1,43 @@
+{
+  "source": "./src",
+  "excludes": ["index\\.js$"],
+  "destination": "./docs",
+  "index": "./README.md",
+  "package": "./package.json",
+
+  "plugins": [
+    {
+      "name": "@itsjamie/esdoc-standard-plugin",
+      "option": {
+        "brand": {
+          "title": "Badger Database",
+          "logo": "./docs/images/badger2.svg"
+        },
+        "manual": {
+          "index": "./manual/index.md",
+          "files": [
+            "./manual/getting_started.md",
+            "./manual/database.md",
+            "./manual/tables.md"
+          ]
+        }
+      }
+    },
+    {
+      "name": "@itsjamie/esdoc-inject-style-plugin",
+      "option": {
+        "enable": true,
+        "styles": ["./docs/css/badger.css"]
+      }
+    },
+    {
+      "name": "@itsjamie/esdoc-importpath-plugin",
+      "option": {
+        "stripPackageName": true,
+        "replaces": [
+          { "from": ".*", "to": "@abw/badger-utils" }
+        ]
+      }
+    }
+  ]
+}

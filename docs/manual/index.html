@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | Badger Database</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
+<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-database-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/getting_started.html"><a href="manual/getting_started.html" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting_started.html"><a href="manual/getting_started.html#installation" data-ice="link">Installation</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/getting_started.html"><a href="manual/getting_started.html#npm" data-ice="link">npm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/getting_started.html"><a href="manual/getting_started.html#pnpm" data-ice="link">pnpm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/getting_started.html"><a href="manual/getting_started.html#yarn" data-ice="link">yarn</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting_started.html"><a href="manual/getting_started.html#basic-use" data-ice="link">Basic Use</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/database.html"><a href="manual/database.html" data-ice="link">Database</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#columns" data-ice="link">columns</a></li>
+<li data-ice="manualNav" class="indent-h4" data-link="manual/tables.html"><a href="manual/tables.html#column-metadata" data-ice="link">column metadata</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#query--" data-ice="link">query()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#insert-data-" data-ice="link">insert(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#selectall-columns---" data-ice="link">selectAll(columns) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#selectone-columns-" data-ice="link">selectOne(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#fetchall-where---" data-ice="link">fetchAll(where) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#fetchone-where---" data-ice="link">fetchOne(where) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#record-query-" data-ice="link">record(query)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#records-query-" data-ice="link">records(query)</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown">
+  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger-database">badger-database</h1><img width="300" src="./images/badger2.svg">
+
+<p>This is the manual for the <code>badger-database</code> Javascript module.</p>
+<ul>
+<li><a href="manual/getting_started.html">Getting Started</a></li>
+<li><a href="manual/database.html">Database</a></li>
+<li><a href="manual/tables.html">Tables</a></li>
+</ul>
+<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
+</div>
+
+  
+
+  <div class="manual-cards">
+    
+  <div class="manual-card-wrap" data-ice="cards">
+      <div class="manual-card">
+        <div data-ice="card"><h1></h1></div>
+        <a data-ice="link" href="manual/getting_started.html"></a>
+      </div>
+    </div>
+<div class="manual-card-wrap" data-ice="cards">
+      <div class="manual-card">
+        <div data-ice="card"><h1></h1></div>
+        <a data-ice="link" href="manual/database.html"></a>
+      </div>
+    </div>
+<div class="manual-card-wrap" data-ice="cards">
+      <div class="manual-card">
+        <div data-ice="card"><h1></h1></div>
+        <a data-ice="link" href="manual/tables.html"></a>
+      </div>
+    </div>
+</div>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>
