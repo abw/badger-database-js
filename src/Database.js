@@ -3,11 +3,18 @@ import Config from './Config.js'
 import Connection from './Connection.js'
 import Table from './Table.js';
 
+const escapeChars = {
+  mysql:  '`',
+  mysql2: '`',
+  default: '"',
+};
+
 class Database {
   constructor(params={ }) {
     const config    = { ...Config, ...params };
     this.connection = new Connection(config);
     this.tables     = config.tables || { };
+    this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;
     this.state      = {
       table: { },
     };
@@ -24,7 +31,14 @@ class Database {
   }
   initTable(name) {
     const schema = this.tables[name] || fail("Invalid table specified: " + name);
+    schema.table ||= name;
     return new Table(this, schema);
+  }
+  escape(name) {
+    return name
+      .split(/\./)
+      .map( part => this.escapeChar + part + this.escapeChar)
+      .join('.');
   }
   destroy() {
     return this.connection.destroy();
