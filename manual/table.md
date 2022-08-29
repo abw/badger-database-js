@@ -277,7 +277,7 @@ export class Users extends Table {
 }
 ```
 
-Then when you define the `users` class, define the `Users` class as the
+Then in the schema for the `users` class, define the `Users` class as the
 `tableClass` configuration item.
 
 ```js
