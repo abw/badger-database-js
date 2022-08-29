@@ -1086,6 +1086,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#update",
+    "class/src/Table.js~Table.html#instance-method-update",
+    "src/Table.js~Table#update",
+    "method"
+  ],
+  [
+    "src/table.js~table#updateasync",
+    "class/src/Table.js~Table.html#instance-method-updateAsync",
+    "src/Table.js~Table#updateAsync",
+    "method"
+  ],
+  [
     "src/utils.js",
     "file/src/Utils.js.html",
     "src/Utils.js",

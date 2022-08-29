@@ -63,10 +63,11 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insert-data-" data-ice="link">insert(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrow-data-" data-ice="link">insertRow(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrows-data-" data-ice="link">insertRows(data)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectall-columns---" data-ice="link">selectAll(columns) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectall-columns-" data-ice="link">selectAll(columns)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectone-columns-" data-ice="link">selectOne(columns)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchall-where---" data-ice="link">fetchAll(where) {</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchone-where---" data-ice="link">fetchOne(where) {</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchall-where-" data-ice="link">fetchAll(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchone-where-" data-ice="link">fetchOne(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#update-set--where-" data-ice="link">update(set, where)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#record-query-" data-ice="link">record(query)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#records-query-" data-ice="link">records(query)</a></li>
 </ul>
@@ -286,7 +287,7 @@ fetch all rows where the surname is <code>Badger</code>.</p>
     return this.fetchAll({ surname: "Badger" });
   }
 }</code></code></pre>
-<p>Then when you define the <code>users</code> class, define the <code>Users</code> class as the
+<p>Then in the schema for the <code>users</code> class, define the <code>Users</code> class as the
 <code>tableClass</code> configuration item.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
   // ...client, connection, pool, etc...
@@ -421,7 +422,7 @@ out again, as per <a href="#insertrow-data-">insertRow()</a>.</p>
 ]);</code></code></pre>
 <p>The method returns an array of inerted row.  You can call the <code>records()</code> method to
 convert them to <a href="manual/record.html">Record</a> objects.</p>
-<h3 id="selectall-columns---">selectAll(columns) {</h3><p>Returns a select query.  The optional <code>columns</code> argument can be used to
+<h3 id="selectall-columns-">selectAll(columns)</h3><p>Returns a select query.  The optional <code>columns</code> argument can be used to
 specify the <a href="#columns">columns</a> or <a href="#columnsets">columnSets</a> you want to select.
 Otherwise the default column set will be used.</p>
 <p>To include the columns named in a column set, include the name of the column
@@ -445,7 +446,7 @@ the row data to a <a href="manual/record.html">Record</a> object.</p>
 const row = await table.selectOne("column1 column2 ...columnset");
 const row = await table.selectOne().where({ email: "bobby@badger.com" });
 const rec = await table.selectOne().where({ email: "bobby@badger.com" }).record();</code></code></pre>
-<h3 id="fetchall-where---">fetchAll(where) {</h3><p>Returns a select query with the default columns selected.  The optional
+<h3 id="fetchall-where-">fetchAll(where)</h3><p>Returns a select query with the default columns selected.  The optional
 <code>where</code> argument can be used to provide additional constraints.  This is
 shorthand for chaining a <code>where()</code> method.</p>
 <p>You can also chain the <code>records()</code> method to convert the data rows to
@@ -453,7 +454,7 @@ shorthand for chaining a <code>where()</code> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.fetchAll();
 const rows = await table.fetchAll({ animal: "badger" });
 const recs = await table.fetchAll({ animal: "badger" }).records();</code></code></pre>
-<h3 id="fetchone-where---">fetchOne(where) {</h3><p>Returns a select query that fetches a single record with the default columns
+<h3 id="fetchone-where-">fetchOne(where)</h3><p>Returns a select query that fetches a single record with the default columns
 selected.  The optional <code>where</code> argument can be used to provide additional
 constraints.  This is shorthand for chaining a <code>where()</code> method.</p>
 <p>You can also chain the <code>record()</code> method to convert the data row to a
@@ -461,13 +462,36 @@ constraints.  This is shorthand for chaining a <code>where()</code> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.fetchOne();
 const row = await table.fetchOne({ animal: "badger" });
 const rec = await table.fetchOne({ animal: "badger" }).record();</code></code></pre>
+<h3 id="update-set--where-">update(set, where)</h3><p>This method can be used to update one or more rows in the database.
+The first argument is an object defining updates to be set in the rows.
+The second argument is an object providing the criteria to match rows.</p>
+<p>For example, this call will set the <code>is_admin</code> column to <code>1</code> for all rows
+where the <code>surname</code> is <code>Badger</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.update({ is_admin: 1 }, { surname: 'Badger' });</code></code></pre>
+<p>The <code>update()</code> method works like the <a href="#insertrows-data-">insertRows()</a> method
+in that it will perform two queries: the first to apply the changes and the second
+to re-fetch all the matching rows from the database.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' });</code></code></pre>
+<p>This ensures that the data returned will include any columns that are updated
+by the database.  For example, you might have a <code>modified</code> column which is
+automatically updated when the record is modified.  In MySQL that column
+would be defined something like this:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">    modified TIMESTAMP NOT NULL
+             DEFAULT CURRENT_TIMESTAMP
+             ON UPDATE CURRENT_TIMESTAMP</code></code></pre>
+<p>The rows that are returned by the <code>update()</code> method can be converted to records
+by chaining the <code>records()</code> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();</code></code></pre>
+<p>If you don't want this behaviour then you can "roll your own" update using the
+Knex query returned by the <code>query()</code> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.query().update({ is_admin: 1 }).where({ surname: 'Badger' });</code></code></pre>
 <h3 id="record-query-">record(query)</h3><p>Method to create a record object from a single row returned by a query.
 This is called automagically by appending a <code>.record()</code> method to the
 end of a query returned by <code>selectOne()</code> or <code>fetchOne()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const badger = await table.fetchOne({ animal: "badger" }).record();</code></code></pre>
 <h3 id="records-query-">records(query)</h3><p>Method to create record objects from all rows returned by a query.
 This is called automagically by appending a <code>.records()</code> method to the
-end of a query returned by <code>selectAll()</code> or <code>fetchAll()</code>.</p>
+end of a query returned by <code>selectAll()</code>, <code>fetchAll()</code> or <code>update()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await table.fetchAll({ animal: "badger" }).records();</code></code></pre>
 </div>
 </div>
