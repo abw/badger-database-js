@@ -96,12 +96,9 @@ export class Table {
   }
   update(set, where) {
     return this.rowsProxy(
-      this.updateAsync(set, where)
-    )
-  }
-  async updateAsync(set, where) {
-    return await this.query().update(set).where(where).then(
-      () => this.fetchAll(where)
+      this.query().update(set).where(where).then(
+        () => this.fetchAll(where)
+      )
     )
   }
   record(query) {

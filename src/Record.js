@@ -7,6 +7,15 @@ export class Record {
     this.data   = data;
     addDebug(this, options.debug, options.debugPrefix || `${this.table} record`, options.debugColor);
   }
+  update(set) {
+    const where = this.schema.identity(this.data);
+    return this.table.update(set, where).then(
+      rows => {
+        this.data = rows[0];
+        return this;
+      }
+    )
+  }
 }
 
 export const record = (table, data, options) => new Record(table, data, options)
