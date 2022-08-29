@@ -40,6 +40,12 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/overview.html"><a href="manual/overview.html" data-ice="link">Overview</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
     <li data-ice="manualNav" class="indent-h1" data-link="manual/database.html"><a href="manual/database.html" data-ice="link">Database</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#overview" data-ice="link">Overview</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
@@ -126,10 +132,13 @@ from <code>@abw/badger-database</code>.  You should also install
 one of the database driver modules, e.g. <code>pg</code>, <code>mysql</code>,
 <code>sqlite3</code>, etc.  See the <a href="https://knexjs.org/guide/#node-js">Knex.js installation guide</a>
 for further information</p>
-<h3 id="npm">npm</h3><pre><code><code class="source-code prettyprint">npm install @abw/badger-database</code></code></pre><h3 id="pnpm">pnpm</h3><pre><code><code class="source-code prettyprint">pnpm add @abw/badger-database</code></code></pre><h3 id="yarn">yarn</h3><pre><code><code class="source-code prettyprint">yarn add @abw/badger-database</code></code></pre><h2 id="basic-use">Basic Use</h2><p>Import any of the classes or helper functions using ESM syntax.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { Database } from '@abw/badger-database'</code></code></pre>
-<p>Or via <code>require()</code> if you're still using Common JS format.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const { Database } = require('@abw/badger-database')</code></code></pre>
+<h3 id="npm">npm</h3><pre><code><code class="source-code prettyprint">npm install @abw/badger-database</code></code></pre><h3 id="pnpm">pnpm</h3><pre><code><code class="source-code prettyprint">pnpm add @abw/badger-database</code></code></pre><h3 id="yarn">yarn</h3><pre><code><code class="source-code prettyprint">yarn add @abw/badger-database</code></code></pre><h2 id="basic-use">Basic Use</h2><p>Import the <code>Database</code> class using ESM syntax.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import Database from '@abw/badger-database'</code></code></pre>
+<p>The <code>Database</code> class is the default export.  You can also
+use named imports.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Database, Table, Record } from '@abw/badger-database'</code></code></pre>
+<p>Or you can use <code>require()</code> if you're still using Common JS format.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { Database, Table, Record } = require('@abw/badger-database')</code></code></pre>
 </div>
 </div>
 

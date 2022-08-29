@@ -17,7 +17,6 @@ concerns.
 
 It is a work in progress loosely based on the Perl
 [Badger::Database](https://github.com/abw/Badger-Database) library.
-
 It is being written to help migrate a number of old Perl projects
 to Javascript.
 

@@ -431,7 +431,7 @@ out again.  Note that this is different to the [insert() method](https://knexjs.
 provided by Knex.js which only returns the ID of the inserted record.
 
 ```js
-const bobby = users.insertRow({
+const bobby = await users.insertRow({
   forename: 'Bobby',
   surname: 'Badger',
   email: 'bobby@badger.com',
@@ -595,10 +595,13 @@ automatically updated when the record is modified.  In MySQL that column
 would be defined something like this:
 
 ```sql
-    modified TIMESTAMP NOT NULL
-             DEFAULT CURRENT_TIMESTAMP
-             ON UPDATE CURRENT_TIMESTAMP
+modified TIMESTAMP NOT NULL
+         DEFAULT CURRENT_TIMESTAMP
+         ON UPDATE CURRENT_TIMESTAMP
 ```
+
+When you call the `update()` method the rows will contain the `modified` data
+items reflecting the new values set in the database table rows.
 
 The rows that are returned by the `update()` method can be converted to records
 by chaining the `records()` method.
@@ -607,8 +610,9 @@ by chaining the `records()` method.
 const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();
 ```
 
-If you don't want this behaviour then you can "roll your own" update using the
-Knex query returned by the `query()` method.
+If you don't want this behaviour and just want to update the rows without re-fetching
+them, then you can "roll your own" update using the Knex query returned by the `query()`
+method.
 
 ```js
 await users.query().update({ is_admin: 1 }).where({ surname: 'Badger' });

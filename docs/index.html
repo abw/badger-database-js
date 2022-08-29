@@ -56,15 +56,35 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="badger-database">Badger Database</h1><p>This is a work in progress to create a Javascript
-database library loosely based on the Perl
-<a href="https://github.com/abw/Badger-Database">Badger::Database</a> library.</p>
-<p>It is built around <a href="https://knexjs.org/">Knex.js</a></p>
-<p>It is planned to help migrate some old Perl code
-to Javascript and probably isn't going to be
-suitable for new projects.</p>
-<h2 id="todo">TODO</h2><p>Custom table class, e.g. via <code>tableClass</code>.</p>
-<p>Table relations.</p>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="badger-database">Badger Database</h1><p>This is a simple but powerful database management tool that
+is built around <a href="https://knexjs.org/">Knex.js</a>.  It is
+designed for building database abstraction layers that allow
+your application code to access a database while keeping the
+nitty-gritty detail mostly hidden from view.</p>
+<p>It embraces the power of both Knex and raw SQL, but provides
+some of the basic functionality of ORMs to help automate many
+of the tedious and repetitive tasks associated with using a
+relational database.  It uses a variation of the Active Record
+pattern - the variation being that the record objects are used
+only to represent rows in a database with separate table classes
+being employed to represent tables for a better separation of
+concerns.</p>
+<p>It is a work in progress loosely based on the Perl
+<a href="https://github.com/abw/Badger-Database">Badger::Database</a> library.
+It is being written to help migrate a number of old Perl projects
+to Javascript.</p>
+<p>Feel free to use it for your own projects but be warned that
+I wrote it to help me get my own job done.  I don't plan to spend
+too much time supporting it, updating it, or adding features that
+aren't immediately useful to me.</p>
+<p>That said, it's a simple project totalling less than a thousand lines
+of code.  An experienced Javascript programmer with knowledge of
+Knex.js should be able to grok the code in an hour or so.  If you're
+happy to use the source, Luke, then it may be the droids you're looking
+for.  But if you're looking for a fully-featured, production-ready
+solution then it might not be for you - there are <em>plenty</em> of other
+Javascript ORMs that might be a better place to start.</p>
+<h2 id="todo">TODO</h2><p>Table relations.</p>
 <p>Deprecate the "@colset1" format for including columns sets.</p>
 <p>Implement "@relatedTable" to reference columns in related table.</p>
 <pre><code><code class="source-code prettyprint">properties.select("@address")  # default set in related address table

@@ -40,6 +40,12 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/overview.html"><a href="manual/overview.html" data-ice="link">Overview</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
     <li data-ice="manualNav" class="indent-h1" data-link="manual/database.html"><a href="manual/database.html" data-ice="link">Database</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#overview" data-ice="link">Overview</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
@@ -417,7 +423,7 @@ or <a href="#insertrows-data-">insertRows()</a> as appropriate</p>
 <h3 id="insertrow-data-">insertRow(data)</h3><p>This inserts a single row into the database and then fetches the row back
 out again.  Note that this is different to the <a href="https://knexjs.org/guide/query-builder.html#insert">insert() method</a>
 provided by Knex.js which only returns the ID of the inserted record.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = users.insertRow({
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insertRow({
   forename: 'Bobby',
   surname: 'Badger',
   email: 'bobby@badger.com',
@@ -517,14 +523,17 @@ to re-fetch all the matching rows from the database.</p>
 by the database.  For example, you might have a <code>modified</code> column which is
 automatically updated when the record is modified.  In MySQL that column
 would be defined something like this:</p>
-<pre><code class="lang-sql"><code class="source-code prettyprint">    modified TIMESTAMP NOT NULL
-             DEFAULT CURRENT_TIMESTAMP
-             ON UPDATE CURRENT_TIMESTAMP</code></code></pre>
+<pre><code class="lang-sql"><code class="source-code prettyprint">modified TIMESTAMP NOT NULL
+         DEFAULT CURRENT_TIMESTAMP
+         ON UPDATE CURRENT_TIMESTAMP</code></code></pre>
+<p>When you call the <code>update()</code> method the rows will contain the <code>modified</code> data
+items reflecting the new values set in the database table rows.</p>
 <p>The rows that are returned by the <code>update()</code> method can be converted to records
 by chaining the <code>records()</code> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();</code></code></pre>
-<p>If you don't want this behaviour then you can "roll your own" update using the
-Knex query returned by the <code>query()</code> method.</p>
+<p>If you don't want this behaviour and just want to update the rows without re-fetching
+them, then you can "roll your own" update using the Knex query returned by the <code>query()</code>
+method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.query().update({ is_admin: 1 }).where({ surname: 'Badger' });</code></code></pre>
 <h3 id="record-query-">record(query)</h3><p>Method to create a record object from a single row returned by a query.
 This is called automagically by appending a <code>.record()</code> method to the

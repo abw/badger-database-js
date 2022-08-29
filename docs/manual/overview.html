@@ -7,7 +7,7 @@
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 <link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
-<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
@@ -123,62 +123,38 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger-database">badger-database</h1><img width="300" src="./images/badger2.svg">
-
-<p>This is the manual for the <code>badger-database</code> Javascript module.</p>
-<ul>
-<li><a href="manual/getting_started.html">Getting Started</a></li>
-<li><a href="manual/overview.html">Overview</a></li>
-<li><a href="manual/database.html">Database</a></li>
-<li><a href="manual/table.html">Table</a></li>
-<li><a href="manual/record.html">Record</a></li>
-<li><a href="manual/schema.html">Schema</a></li>
-</ul>
-<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
-</div>
-
-  
-
-  <div class="manual-cards">
-    
-  <div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/getting_started.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/overview.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/database.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/table.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/record.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/schema.html"></a>
-      </div>
-    </div>
-</div>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="overview">Overview</h1><p>This is a simple but powerful database management tool that
+is built around <a href="https://knexjs.org/">Knex.js</a>.  It is
+designed for building database abstraction layers that allow
+your application code to access a database while keeping the
+nitty-gritty detail mostly hidden from view.</p>
+<p>It provides some of the most basic functionality of ORMs to
+help automate some of the tedious queries that you need to
+write when using a database.  Things like basic insert, select,
+update and delete queries.</p>
+<p>It encourages you to use the full power of Knex to build more
+complex queries.</p>
+<p>It also embraces the fact that SQL is a powerful and (mostly)
+portable query language.  It doesn't discourage you from writing
+raw SQL queries.  On the contrary, it provides a mechanism to allow
+you to define named SQL queries up front that you can call by
+name.  This allows you to manage your queries in one place instead
+of having SQL queries embedded all over your application code.</p>
+<p>It also provides a way to compose SQL queries from
+reusable SQL "fragments" to avoid repetition and simplify the
+task of maintaining and updating queries when you make changes
+to the database schema.</p>
+<p>On top of that it provides <a href="manual/table.html">Table</a> and
+<a href="manual/record.html">Record</a> modules which implement functionality
+to help you work with database tables and record.  The
+<a href="manual/record.html">Record</a> is based on the Active Record pattern,
+but adopts the philosophy that records should only represent
+individual rows in the database.  The <a href="manual/table.html">Table</a>
+module is used instead for operations on the table like selecting,
+inserting, searching, etc.</p>
+<p>You can write custom table and record modules to implement your
+own business logic, data validation, logging, or any other
+functionality.</p>
 </div>
 </div>
 
