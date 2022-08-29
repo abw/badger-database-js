@@ -12,7 +12,7 @@ export class Table {
   constructor(database, schema) {
     this.database    = database || fail("No database specified");
     this.schema      = new Schema(database, schema)
-    this.recordClass = schema.record || Record;
+    this.recordClass = schema.recordClass || Record;
     this.rowProxy    = rowProxy(this);
     this.rowsProxy   = rowsProxy(this);
 

@@ -77,6 +77,16 @@ test.serial(
 )
 
 test.serial(
+  'selectAll("@admin").where({ surname: "Badger" }).limit(1)',
+  async t => {
+    const badgers = await users.selectAll("@admin").where({ surname: "Badger" }).limit(1);
+    t.is( badgers.length, 1 );
+    t.is( badgers[0].name, 'Bobby Badger' );
+    t.is( badgers[0].is_admin, 1 );
+  }
+)
+
+test.serial(
   'selectAll("@admin").where({ surname: "Stoat" })',
   async t => {
     const stoats = await users.selectAll("@admin").where({ surname: "Stoat" });

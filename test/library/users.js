@@ -1,4 +1,5 @@
 import Record from "../../src/Record.js";
+import Table from "../../src/Table.js";
 import { createDatabase, databaseConfig } from "./database.js";
 
 export const usersConfig = {
@@ -72,9 +73,27 @@ export const databaseWithCustomRecord = createDatabase({
   tables: {
     users: {
       ...usersConfig,
-      record: User
+      recordClass: User
     }
   }
 });
 
 export const usersWithCustomRecord = databaseWithCustomRecord.table('users');
+
+export class Users extends Table {
+  badgers() {
+    return this.fetchAll({ surname: "Badger" });
+  }
+}
+
+export const databaseWithCustomTable = createDatabase({
+  ...databaseConfig,
+  tables: {
+    users: {
+      ...usersConfig,
+      tableClass: Users
+    }
+  }
+});
+
+export const usersWithCustomTable = databaseWithCustomTable.table('users');

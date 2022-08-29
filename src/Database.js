@@ -32,7 +32,8 @@ class Database {
   initTable(name) {
     const schema = this.tables[name] || fail("Invalid table specified: " + name);
     schema.table ||= name;
-    return new Table(this, schema);
+    const tclass = schema.tableClass || Table;
+    return new tclass(this, schema);
   }
   escape(name) {
     return name

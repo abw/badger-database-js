@@ -1,4 +1,4 @@
-# Tables
+# Table
 
 This is a wrapper around a database table.
 
@@ -261,18 +261,77 @@ employees: {
 }
 ```
 
+### record
+
+Various table methods have the option to convert rows returned from the database into
+record objects.  This provides a simple implementation of the Active Record pattern.
+
+The default [Record](manual/record.html) class provides basic functionality to update
+the record, delete it, access related records, and so on.
+
+You can also define your own record subclass for a table in which you can provide
+additional methods or wrap the default methods to implement additional business logic,
+data validation, logging, etc.  In this case you should use the `record` configuration
+option to provide a reference to your custom record class.
+
+This simple example shows how a custom `User` record class can be defined which adds a
+`hello()` method.
+
+```js
+import { Database, Record } from  "@abw/badger-database";
+
+// define User subclass of Record
+class User extends Record {
+  hello() {
+    return `Hello ${this.forename} ${this.surname}`;
+  }
+}
+
+// create database connection with users table
+const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      columns: 'id forename surname',
+      record: User,
+    },
+  }
+)
+
+// insert row and convert returned data to a User record
+const bobby = await database.table('users').insert({
+  forename: 'Bobby',
+  surname: 'Badger',
+}).record()
+
+console.log(bobby.hello())    // Hello Bobby Badger
+```
+
 ## Methods
 
 ### query()
 
 Returns a Knex query with the table name pre-defined.
 
+```js
+const badger =
+  await users
+    .query()
+    .select('forename')
+    .where({ email: "bobby@badger.com" })
+    .first();
+```
+
 ### insert(data)
 
-Insert data into the table.
+Insert data into the table.  You can pass a single object row or an array of
+rows to insert.  This method will then delegate to [insertRow()](#insertrow-data-)
+or [insertRows()](#insertrows-data-) as appropriate
+
+Single row:
 
 ```js
-users.insert({
+const bobby = await users.insert({
   forename: 'Bobby',
   surname: 'Badger',
   email: 'bobby@badger.com',
@@ -280,10 +339,10 @@ users.insert({
 })
 ```
 
-You can insert multiple rows in a single call.
+Multiple rows:
 
 ```js
-users.insert([
+const badgers = await users.insert([
   {
     forename: 'Bobby',
     surname: 'Badger',
@@ -304,16 +363,101 @@ users.insert([
 ]);
 ```
 
+### insertRow(data)
+
+This inserts a single row into the database and then fetches the row back
+out again.  Note that this is different to the [insert() method](https://knexjs.org/guide/query-builder.html#insert)
+provided by Knex.js which only returns the ID of the inserted record.
+
+```js
+const bobby = users.insertRow({
+  forename: 'Bobby',
+  surname: 'Badger',
+  email: 'bobby@badger.com',
+  is_admin: 1,
+})
+```
+
+One benefit of this approach is in situations where you want to insert a row and then do
+something with the inserted data, e.g. return it via an API response.  By fetching the
+record after it has been inserted we guarantee that any automatically created column
+values are included.  For example, this would include any generated ID value, and also
+any columns that have default values, e.g. a `created` column that defaults to have the
+current timestamp.
+
+Another feature is that the value returned from the `insertRow()` method is a proxy which
+intercepts the `record()` method call and converts the raw row data to a record object.
+
+```js
+const bobby = await users.insertRow({
+  forename: 'Bobby',
+  surname: 'Badger',
+  email: 'bobby@badger.com',
+  is_admin: 1,
+}).record()   // convert to record object
+```
+
+The downside is that you're performing two database queries (an insert and a select) instead
+of one.  If you don't want or need this functionality then you can use the underlying
+Knex.js `insert()` method instead.
+
+### insertRows(data)
+
+This inserts multiple row into the database and then fetches the rows back
+out again, as per [insertRow()](#insertrow-data-).
+
+```js
+const badgers = await users.insertRows([
+  {
+    forename: 'Bobby',
+    surname: 'Badger',
+    email: 'bobby@badger.com',
+    is_admin: 1,
+  },
+  {
+    forename: 'Brian',
+    surname: 'Badger',
+    email: 'brian@badger.com',
+    is_admin: 0,
+  },
+  {
+    forename: 'Simon',
+    surname: 'Stoat',
+    email: 'simon@stoat.com',
+  }
+]);
+```
+
+The method returns an array of inerted row.  You can call the `records()` method to
+convert them to [Record](manual/record.html) objects.
+
 ### selectAll(columns) {
 
 Returns a select query.  The optional `columns` argument can be used to
-specify the columns or column sets you want to select.  Otherwise the
-default column set will be used.
+specify the [columns](#columns) or [columnSets](#columnsets) you want to select.
+Otherwise the default column set will be used.
+
+To include the columns named in a column set, include the name of the column
+set prefixed by `...`, e.g. `...admin` to include the columns defined in the
+`admin` column set.
 
 ```js
-table.selectAll();
-table.selectAll("column1 column2 ...columnset");
-table.selectAll().where({ animal: "badger" });
+const rows = await table.selectAll();
+const rows = await table.selectAll("name email ...admin");
+```
+
+The method returns a proxy around the Knex query.  You can call additional Knex
+methods on it.
+
+```js
+const rows = await table.selectAll().where({ animal: "badger" });
+```
+
+You can also call the `records()` method to convert the data rows to
+[Record](manual/record.html) objects.
+
+```js
+const records = await table.selectAll().where({ animal: "badger" }).records();
 ```
 
 ### selectOne(columns)
@@ -322,34 +466,45 @@ Returns a select query to fetch a single row.  The optional `columns` argument
 can be used to specify the columns or column sets you want to select.  Otherwise
 the default column set will be used.
 
+As with [selectAll()](#selectall-columns-) you can call additional Knex methods
+on the returned query object.  You can also call the `record()` method to convert
+the row data to a [Record](manual/record.html) object.
+
 ```js
-table.selectOne();
-table.selectOne("column1 column2 ...columnset");
-table.selectOne().where({ email: "bobby@badger.com" });
+const row = await table.selectOne();
+const row = await table.selectOne("column1 column2 ...columnset");
+const row = await table.selectOne().where({ email: "bobby@badger.com" });
+const rec = await table.selectOne().where({ email: "bobby@badger.com" }).record();
 ```
 
 ### fetchAll(where) {
 
-Returns a select query.  The optional `where` argument can be used to
-provide additional constraints.  This is shorthand for chaining a
-`where()` method afterwards.
+Returns a select query with the default columns selected.  The optional
+`where` argument can be used to provide additional constraints.  This is
+shorthand for chaining a `where()` method.
+
+You can also chain the `records()` method to convert the data rows to
+[Record](manual/record.html) objects.
 
 ```js
-table.fetchAll();
-table.fetchAll({ animal: "badger" });
-table.fetchAll().where({ animal: "badger" });   // same as above
+const rows = await table.fetchAll();
+const rows = await table.fetchAll({ animal: "badger" });
+const recs = await table.fetchAll({ animal: "badger" }).records();
 ```
 
 ### fetchOne(where) {
 
-Returns a select query that fetches a single record.  The optional `where`
-argument can be used to provide additional constraints.  This is shorthand
-for chaining a `where()` method afterwards.
+Returns a select query that fetches a single record with the default columns
+selected.  The optional `where` argument can be used to provide additional
+constraints.  This is shorthand for chaining a `where()` method.
+
+You can also chain the `record()` method to convert the data row to a
+[Record](manual/record.html) object.
 
 ```js
-table.fetchOne();
-table.fetchOne({ animal: "badger" });
-table.fetchOne().where({ animal: "badger" });   // same as above
+const row = await table.fetchOne();
+const row = await table.fetchOne({ animal: "badger" });
+const rec = await table.fetchOne({ animal: "badger" }).record();
 ```
 
 ### record(query)

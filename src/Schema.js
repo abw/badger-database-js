@@ -80,6 +80,7 @@ export class Schema {
     this.keyIndex = splitHash(this.keys);
   }
 
+  // TODO: refactor remaining methods
   column(name) {
     return this.tableColumns[name]
       ? this.tableColumns[name]
