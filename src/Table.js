@@ -94,6 +94,16 @@ export class Table {
         : select
     );
   }
+  update(set, where) {
+    return this.rowsProxy(
+      this.updateAsync(set, where)
+    )
+  }
+  async updateAsync(set, where) {
+    return await this.query().update(set).where(where).then(
+      () => this.fetchAll(where)
+    )
+  }
   record(query) {
     return query.then(
       row => recordProxy(new this.recordClass(this, row))

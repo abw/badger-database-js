@@ -467,7 +467,7 @@ const badgers = await users.insertRows([
 The method returns an array of inerted row.  You can call the `records()` method to
 convert them to [Record](manual/record.html) objects.
 
-### selectAll(columns) {
+### selectAll(columns)
 
 Returns a select query.  The optional `columns` argument can be used to
 specify the [columns](#columns) or [columnSets](#columnsets) you want to select.
@@ -513,7 +513,7 @@ const row = await table.selectOne().where({ email: "bobby@badger.com" });
 const rec = await table.selectOne().where({ email: "bobby@badger.com" }).record();
 ```
 
-### fetchAll(where) {
+### fetchAll(where)
 
 Returns a select query with the default columns selected.  The optional
 `where` argument can be used to provide additional constraints.  This is
@@ -528,7 +528,7 @@ const rows = await table.fetchAll({ animal: "badger" });
 const recs = await table.fetchAll({ animal: "badger" }).records();
 ```
 
-### fetchOne(where) {
+### fetchOne(where)
 
 Returns a select query that fetches a single record with the default columns
 selected.  The optional `where` argument can be used to provide additional
@@ -541,6 +541,52 @@ You can also chain the `record()` method to convert the data row to a
 const row = await table.fetchOne();
 const row = await table.fetchOne({ animal: "badger" });
 const rec = await table.fetchOne({ animal: "badger" }).record();
+```
+
+### update(set, where)
+
+This method can be used to update one or more rows in the database.
+The first argument is an object defining updates to be set in the rows.
+The second argument is an object providing the criteria to match rows.
+
+For example, this call will set the `is_admin` column to `1` for all rows
+where the `surname` is `Badger`.
+
+```js
+await users.update({ is_admin: 1 }, { surname: 'Badger' });
+```
+
+The `update()` method works like the [insertRows()](#insertrows-data-) method
+in that it will perform two queries: the first to apply the changes and the second
+to re-fetch all the matching rows from the database.
+
+```js
+const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' });
+```
+
+This ensures that the data returned will include any columns that are updated
+by the database.  For example, you might have a `modified` column which is
+automatically updated when the record is modified.  In MySQL that column
+would be defined something like this:
+
+```sql
+    modified TIMESTAMP NOT NULL
+             DEFAULT CURRENT_TIMESTAMP
+             ON UPDATE CURRENT_TIMESTAMP
+```
+
+The rows that are returned by the `update()` method can be converted to records
+by chaining the `records()` method.
+
+```js
+const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();
+```
+
+If you don't want this behaviour then you can "roll your own" update using the
+Knex query returned by the `query()` method.
+
+```js
+await users.query().update({ is_admin: 1 }).where({ surname: 'Badger' });
 ```
 
 ### record(query)
@@ -557,7 +603,7 @@ const badger = await table.fetchOne({ animal: "badger" }).record();
 
 Method to create record objects from all rows returned by a query.
 This is called automagically by appending a `.records()` method to the
-end of a query returned by `selectAll()` or `fetchAll()`.
+end of a query returned by `selectAll()`, `fetchAll()` or `update()`.
 
 ```js
 const badgers = await table.fetchAll({ animal: "badger" }).records();
