@@ -5,6 +5,7 @@
 This is the manual for the `badger-database` Javascript module.
 
 * [Getting Started](manual/getting_started.html)
+* [Overview](manual/overview.html)
 * [Database](manual/database.html)
 * [Table](manual/table.html)
 * [Record](manual/record.html)

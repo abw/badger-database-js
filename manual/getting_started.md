@@ -25,14 +25,21 @@ for further information
 
 ## Basic Use
 
-Import any of the classes or helper functions using ESM syntax.
+Import the `Database` class using ESM syntax.
 
 ```js
-import { Database } from '@abw/badger-database'
+import Database from '@abw/badger-database'
 ```
 
-Or via `require()` if you're still using Common JS format.
+The `Database` class is the default export.  You can also
+use named imports.
 
 ```js
-const { Database } = require('@abw/badger-database')
+import { Database, Table, Record } from '@abw/badger-database'
+```
+
+Or you can use `require()` if you're still using Common JS format.
+
+```js
+const { Database, Table, Record } = require('@abw/badger-database')
 ```
