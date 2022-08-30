@@ -27,13 +27,14 @@ export class Database {
   }
   table(name) {
     return this.state.table[name]
-      ||  (this.state.table[name] = this.initTable(name));
+      ||=  this.initTable(name);
   }
   initTable(name) {
-    const schema = this.tables[name] || fail("Invalid table specified: " + name);
+    const schema = this.tables[name]   || fail("Invalid table specified: " + name);
+    const tclass = schema.tableClass   || Table;
+    const topts  = schema.tableOptions || { };
     schema.table ||= name;
-    const tclass = schema.tableClass || Table;
-    return new tclass(this, schema);
+    return new tclass(this, { ...schema, ...topts });
   }
   escape(name) {
     return name

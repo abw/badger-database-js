@@ -10,13 +10,13 @@ import Schema from "./Schema.js";
 // export class Table extends Queries {
 export class Table {
   constructor(database, schema) {
-    this.database    = database || fail("No database specified");
-    this.schema      = new Schema(database, schema)
-    this.recordClass = schema.recordClass || Record;
-    this.rowProxy    = rowProxy(this);
-    this.rowsProxy   = rowsProxy(this);
-
-    addDebug(this, schema.debug, schema.debugPrefix || `${this.table} table`, schema.debugColor);
+    this.database      = database || fail("No database specified");
+    this.schema        = new Schema(database, schema)
+    this.recordClass   = schema.recordClass || Record;
+    this.recordOptions = schema.recordOptions;
+    this.rowProxy      = rowProxy(this);
+    this.rowsProxy     = rowsProxy(this);
+    addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
   query() {
     return this.database.query(this.schema.table);
@@ -103,13 +103,13 @@ export class Table {
   }
   record(query) {
     return query.then(
-      row => recordProxy(new this.recordClass(this, row))
+      row => recordProxy(new this.recordClass(this, row, this.recordOptions))
     );
   }
   records(query) {
     // console.log('table.records()');
     return query.then(
-      rows => rows.map( row => recordProxy(new this.recordClass(this, row)) )
+      rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )
     );
   }
 }

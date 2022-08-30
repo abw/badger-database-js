@@ -15,15 +15,15 @@ export class Schema {
     this.prepareColumnSets(schema);
 
     this.virtualColumns = schema.virtualColumns || { };
+    this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };
+    this.relations      = schema.relations || { };
+
     //this.tableColumns   = prepareColumns(this.columnNames, this.table);
     //this.columnSets     = prepareColumnSets(this.columnNames, schema.columnSets);
-    this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };
-
     //console.log('columnNames: ', this.columnNames);
     //console.log('virtualColumns: ', this.virtualColumns);
     //console.log('allColumns: ', this.allColumns);
     /// this.allKeys = splitHash(this.keys);
-
     // TODO: column sets for select, update, etc.
 
     addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
@@ -59,12 +59,9 @@ export class Schema {
         const exclude = splitHash(spec.exclude);
         const result = [...basis, ...include]
           .filter( column => ! exclude[column] );
-        // console.log('spec: ', spec, ' => ', result);
-        // console.log('basis: ', basis, '   exclude: ', exclude);
         return result;
       }
     )
-    //console.log('mapped columnSets: ', this.columnSets);
   }
   prepareKeys(schema) {
     this.keys = splitList(schema.keys);
@@ -74,7 +71,6 @@ export class Schema {
     }
     else if (this.keys.length === 0) {
       this.id = DEFAULT_ID;
-      // console.log('setting default id: ', this.id);
       this.keys.unshift(this.id);
     }
     this.keyIndex = splitHash(this.keys);
@@ -137,7 +133,7 @@ export class Schema {
       {}
     );
   }
-  separateKeyColumns(data) {
+  XXX_NOT_USED_separateKeyColumns(data) {
     let keys    = { };
     let columns = { };
     let rejects = { };
