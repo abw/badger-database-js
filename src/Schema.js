@@ -6,8 +6,8 @@ const COLUMN_SET_PREFIX = /^(@|\.\.\.)/;
 
 export class Schema {
   constructor(database, schema) {
-    this.database       = database || fail("No database specified");
-    this.table          = schema.table || fail("No table name specified");
+    this.database = database || fail("No database specified");
+    this.table    = schema.table || fail("No table name specified");
 
     this.prepareColumns(schema);
     this.prepareKeys(schema);
@@ -17,13 +17,8 @@ export class Schema {
     this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };
     this.relations      = schema.relations || { };
 
-    //this.tableColumns   = prepareColumns(this.columnNames, this.table);
-    //this.columnSets     = prepareColumnSets(this.columnNames, schema.columnSets);
-    //console.log('columnNames: ', this.columnNames);
-    //console.log('virtualColumns: ', this.virtualColumns);
-    //console.log('allColumns: ', this.allColumns);
-    /// this.allKeys = splitHash(this.keys);
     // TODO: column sets for select, update, etc.
+    //this.prepareFragments(schema);
 
     addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
   }
@@ -38,15 +33,16 @@ export class Schema {
         // the database column name doesn't match the name you want to use
         const column = value.column || (value.column = key);
         // tableColumn is the full "table.column"
-        value.tableColumn = `${table}.${column}`;
+        value.tableColumn = table + '.' + column;
         return value;
       }
     )
     this.columnNames  = Object.keys(this.columnIndex);
-    this.tableColumns = objMap(
-      this.columnIndex,
-      value => value.tableColumn
-    );
+    //this.tableColumns = objMap(
+    //  this.columnIndex,
+    //  value => value.tableColumn
+    //);
+    //console.log('this.tableColumns: ', this.tableColumns);
   }
   prepareColumnSets(schema) {
     const index = splitHash(schema.columnSets, () => ({ }))
@@ -74,11 +70,19 @@ export class Schema {
     }
     this.keyIndex = splitHash(this.keys);
   }
+  /*
+  prepareFragments() {
+    this.fragments = {
+      table:    this.database.escape(this.table),
+      tcolumns: this.tableColumns,
+    }
+  }
+  */
 
   // TODO: refactor remaining methods
   column(name) {
-    return this.tableColumns[name]
-      ? this.tableColumns[name]
+    return this.columnIndex[name]
+      ? this.columnIndex[name].tableColumn
       : this.virtualColumns[name]
         ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)
         : fail('Invalid column specified: ', name);
@@ -131,25 +135,6 @@ export class Schema {
       },
       {}
     );
-  }
-  XXX_NOT_USED_separateKeyColumns(data) {
-    let keys    = { };
-    let columns = { };
-    let rejects = { };
-    Object.entries(data).forEach(
-      ([key, value]) => {
-        if (this.allKeys[key]) {
-          keys[key] = value;
-        }
-        else if (this.allColumns[key]) {
-          columns[key] = value;
-        }
-        else {
-          rejects[key] = value;
-        }
-      }
-    )
-    return { keys, columns, rejects };
   }
 }
 
