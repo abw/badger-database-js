@@ -1,5 +1,4 @@
-import { hasValue, isString, splitList, fail, objMap, isArray } from "@abw/badger-utils";
-import { splitHash } from "./Utils.js";
+import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from "@abw/badger-utils";
 import { addDebug } from "@abw/badger";
 
 const DEFAULT_ID = 'id';
