@@ -17,6 +17,7 @@ looking under the hood.
 
 * [Connection](manual/connection.html)
 * [Schema](manual/schema.html)
+* [Tables](manual/tables.html)
 
 # Author
 

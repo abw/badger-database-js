@@ -4,5 +4,6 @@ export * from './Database.js';
 export * from './Record.js';
 export * from './Schema.js';
 export * from './Table.js';
+export * from './Tables.js';
 export * from './Utils.js';
 export { Database as default } from './Database.js'

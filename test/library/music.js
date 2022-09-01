@@ -20,43 +20,45 @@ export class Album extends Record {
 export class Track extends Record {
 }
 
+export const musicTables = {
+  artists: {
+    columns:      'id name',
+    tableClass:   Artists,
+    recordClass:  Artist
+  },
+  albums: {
+    columns:        'id title artist_id',
+    tableClass:     Albums,
+    recordClass:    Album,
+    // tableOptions:   { debug: true },
+    // recordOptions:  { debug: true },
+    relations: {
+      artist: {
+        type:       'one',
+        table:      'artists',
+        localKey:   'artist_id',
+        remoteKey:  'id',
+        // debug:      true,
+      },
+      tracks: {
+        type:       'many',
+        table:      'tracks',
+        localKey:   'id',
+        remoteKey:  'album_id',
+        // debug:      true,
+      }
+    }
+  },
+  tracks: {
+    columns:      'id title album_id',
+    tableClass:   Tracks,
+    recordClass:  Track
+  },
+};
+
 export const musicdb = createDatabase({
   ...databaseConfig,
-  tables: {
-    artists: {
-      columns:      'id name',
-      tableClass:   Artists,
-      recordClass:  Artist
-    },
-    albums: {
-      columns:        'id title artist_id',
-      tableClass:     Albums,
-      recordClass:    Album,
-      // tableOptions:   { debug: true },
-      // recordOptions:  { debug: true },
-      relations: {
-        artist: {
-          type:       'one',
-          table:      'artists',
-          localKey:   'artist_id',
-          remoteKey:  'id',
-          // debug:      true,
-        },
-        tracks: {
-          type:       'many',
-          table:      'tracks',
-          localKey:   'id',
-          remoteKey:  'album_id',
-          // debug:      true,
-        }
-      }
-    },
-    tracks: {
-      columns:      'id title album_id',
-      tableClass:   Tracks,
-      recordClass:  Track
-    },
-  }
+  tables: musicTables
 });
 
 export const createMusicDb = async (database=musicdb) => {

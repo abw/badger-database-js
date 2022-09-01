@@ -7,6 +7,8 @@ The `Database` class provides a wrapper around a
 * [Configuration](#configuration)
   * [Knex Configuration Options](#knex-configuration-options)
   * [tables](#tables)
+  * [tablesClass](#tablesclass)
+  * [tablesObject](#tablesobject)
 * [Properties](#properties)
   * [connection](#connection)
   * [model](#model)
@@ -93,6 +95,17 @@ const database = new Database(
 
 See the [Table](manual/table.html) manual page for further details.
 
+## tablesClass
+
+This can be used to provide an alternate class for returning table
+configuration options.  The default is the [Tables](manual/tables.html) class.
+
+## tablesObject
+
+This can be used to provide a pre-instantiated object for returning table
+configuration options.  See the [Tables](manual/tables.html) pages for
+further information.
+
 ## Properties
 
 ### connection
@@ -131,6 +144,11 @@ const rows =
   await database
     .raw('select forename from user where email="bobby@badger.com"');
 ```
+
+### hasTable(name)
+
+Method to check if a table exists.  Returns the configuration options
+for the table or a false value if the table doesn't exist.
 
 ### table(name)
 

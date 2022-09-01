@@ -3,19 +3,23 @@ import Config from './Config.js'
 import Connection from './Connection.js'
 import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
+import Tables from './Tables.js';
 
 const escapeChars = {
   mysql:  '`',
   mysql2: '`',
   default: '"',
 };
+const defaults = {
+  tablesClass: Tables
+};
 
 export class Database {
   constructor(params={ }) {
-    const config    = { ...Config, ...params };
+    const config    = { ...defaults, ...Config, ...params };
     this.connection = new Connection(config);
+    this.tables     = config.tablesObject || new config.tablesClass(config.tables);
     this.model      = modelProxy(this);
-    this.tables     = config.tables || { };
     this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;
     this.state      = {
       table: { },
@@ -32,7 +36,7 @@ export class Database {
       ||=  this.initTable(name);
   }
   hasTable(name) {
-    return this.tables[name];
+    return this.tables.table(name);
   }
   initTable(name) {
     const schema = this.hasTable(name) || fail("Invalid table specified: " + name);
