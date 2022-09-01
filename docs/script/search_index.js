@@ -1008,6 +1008,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/schema.js~schema#queries",
+    "class/src/Schema.js~Schema.html#instance-member-queries",
+    "src/Schema.js~Schema#queries",
+    "member"
+  ],
+  [
+    "src/schema.js~schema#query",
+    "class/src/Schema.js~Schema.html#instance-method-query",
+    "src/Schema.js~Schema#query",
+    "method"
+  ],
+  [
     "src/schema.js~schema#relations",
     "class/src/Schema.js~Schema.html#instance-member-relations",
     "src/Schema.js~Schema#relations",
@@ -1089,6 +1101,18 @@ window.esdocSearchIndex = [
     "src/table.js~table#knex",
     "class/src/Table.js~Table.html#instance-method-knex",
     "src/Table.js~Table#knex",
+    "method"
+  ],
+  [
+    "src/table.js~table#query",
+    "class/src/Table.js~Table.html#instance-method-query",
+    "src/Table.js~Table#query",
+    "method"
+  ],
+  [
+    "src/table.js~table#raw",
+    "class/src/Table.js~Table.html#instance-method-raw",
+    "src/Table.js~Table#raw",
     "method"
   ],
   [

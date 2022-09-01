@@ -13,6 +13,8 @@ you're looking under the hood.
   * [id](#id)
   * [keys](#keys)
   * [relations](#relations)
+  * [queries](#queries)
+  * [fragments](#fragments)
   * [tableClass](#tableclass)
   * [recordClass](#recordclass)
 * [Properties](#properties)
@@ -27,10 +29,12 @@ you're looking under the hood.
   * [allColumns](#allcolumns)
   * [columnSets](#columnSets)
   * [relations](#relations)
+  * [fragments](#fragments)
 * [Methods](#methods)
   * [prepareColumns(schema)](#preparecolumns-schema-)
   * [prepareColumnSets(schema)](#preparecolumnsets-schema-)
   * [prepareKeys(schema)](#preparekeys-schema-)
+  * [prepareFragments(schema)](#preparefragments-schema-)
   * [column(name)](#column-name-)
   * [columnSet(name)](#columnset-name-)
   * [defaultColumns()](#defaultcolumns--)
@@ -86,6 +90,15 @@ has a compound key.
 ### relations
 
 Used to define relations that a table has to other tables.
+
+### queries
+
+Used to define named SQL queries that are local to the table.
+
+### fragments
+
+Used to define named SQL query fragments that can be interpolated
+into [queries](#queries).
 
 ### tableClass
 
@@ -144,6 +157,10 @@ A lookup table mapping the names of all column sets to their definitions.
 
 A lookup table mapping relation names to their definitions.
 
+### fragments
+
+A lookup table mapping SQL query fragments to their definitions.
+
 ## Methods
 
 ### prepareColumns(schema)
@@ -159,6 +176,38 @@ Prepares the column sets and creates the [columnSets](#columnsets) property.
 
 Prepares any id or keys definitions and sets the [id](#id),
 [keys](#keys) and [keyIndex](#keyindex) properties.
+
+###  prepareFragments(schema)
+
+Merges any user-supplied [fragments](#fragments) with additional
+fragments specific to the table.  These will all be pre-escaped
+according to the database client in use.  For example, when using
+sqlite3, a table column of `albums.id` will be escaped as `"albums"."id"`
+whereas for MySQL it will be escaped with backticks instead of double
+quote characters.
+
+* `table` - the table name, e.g. `"albums"`
+* `columns` - a comma separated list of all table column names,
+e.g. `"id", "title", "year"`
+* `tcolumns` - a comma separated list of all column names prefixed with
+the table name, e.g. `"albums"."id", "albums"."title", "albums"."year"`
+
+In additional any [virtualColumns](#virtualcolumns) are included in the
+fragments.  For example, consider a [virtualColumn](#virtualcolumns) defined
+like this:
+
+```js
+virtualColumns: {
+  titleYear:    'title || " (" || year || ")"',
+}
+```
+
+It can be embedded in SQL queries as `<titleYear>` and will expand
+to `title || " (" || year || ")" as titleYear`.
+
+Note that you are responsible for escaping any table names or columns that
+might be reserved words in your [virtualColumns](#virtualcolumns) and
+[fragments](#fragments).
 
 ### column(name)
 

@@ -2559,7 +2559,7 @@
     "__docId__": 150,
     "kind": "file",
     "name": "src/Schema.js",
-    "content": "import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from \"@abw/badger-utils\";\nimport { addDebug } from \"@abw/badger\";\n\nconst DEFAULT_ID = 'id';\nconst COLUMN_SET_PREFIX = /^(@|\\.\\.\\.)/;\n\nexport class Schema {\n  constructor(database, schema) {\n    this.database       = database || fail(\"No database specified\");\n    this.table          = schema.table || fail(\"No table name specified\");\n    this.relations      = schema.relations || { };\n    this.prepareColumns(schema);\n    this.prepareKeys(schema);\n    this.prepareColumnSets(schema);\n    this.prepareFragments(schema);\n\n    // TODO: column sets for select, update, etc.\n\n\n    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);\n  }\n  prepareColumns(schema) {\n    const table      = schema.table;\n    const columns    = schema.columns;\n    const index      = splitHash(columns, () => ({ }))\n    this.columnIndex = objMap(\n      index,\n      (value, key) => {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = key);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = table + '.' + column;\n        return value;\n      }\n    )\n    this.columnNames    = Object.keys(this.columnIndex);\n    this.virtualColumns = schema.virtualColumns || { };\n    this.allColumns     = {\n      // ...splitHash(this.columnNames),\n      // ...splitHash(Object.keys(this.virtualColumns))\n      ...this.columnIndex,\n      ...this.virtualColumns\n    };\n  }\n  prepareColumnSets(schema) {\n    const index = splitHash(schema.columnSets, () => ({ }))\n    this.columnSets = objMap(\n      index,\n      (spec) => {\n        const basis   = (isString(spec) || isArray(spec)) ? splitList(spec) : this.columnNames;\n        const include = splitList(spec.include);\n        const exclude = splitHash(spec.exclude);\n        const result = [...basis, ...include]\n          .filter( column => ! exclude[column] );\n        return result;\n      }\n    )\n  }\n  prepareKeys(schema) {\n    this.keys = splitList(schema.keys);\n    if (schema.id) {\n      this.id = schema.id;\n      this.keys.unshift(this.id);\n    }\n    else if (this.keys.length === 0) {\n      this.id = DEFAULT_ID;\n      this.keys.unshift(this.id);\n    }\n    this.keyIndex = splitHash(this.keys);\n  }\n  prepareFragments() {\n    this.fragments = {\n      table:    this.database.escape(this.table),\n      columns:  this.columnNames.join(', '),\n      tcolumns: this.columnNames.map( n => this.columnIndex[n].tableColumn ).join(', '),\n    }\n  }\n\n  // TODO: refactor remaining methods\n  column(name) {\n    return this.columnIndex[name]\n      ? this.columnIndex[name].tableColumn\n      : this.virtualColumns[name]\n        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)\n        : fail('Invalid column specified: ', name);\n  }\n  columnSet(name) {\n    return this.columnSets[name]\n      || fail('Invalid columnSet specified: ', name);\n  }\n  defaultColumns() {\n    return this.columnSets.default\n      || this.columns;\n  }\n  columns(names) {\n    return hasValue(names)\n      ? this.resolveColumns(names)\n      : this.defaultColumns().map( name => this.column(name) );\n  }\n  resolveColumns(names) {\n    const list = splitList(names);\n    let cols = [ ];\n    list.forEach(\n      name => {\n        this.debug(\"resolveColumns(%s) / %s\", names, name);\n        if (isString(name)) {\n          if (name.match(COLUMN_SET_PREFIX)) {\n            this.debug(\"%s is a columnSet %s\", name, name.replace(COLUMN_SET_PREFIX, ''));\n            cols.push(\n              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))\n                .map( name => this.column(name) )\n            );\n          }\n          else {\n            this.debug(\"%s is a column\", name);\n            cols.push(this.column(name));\n          }\n        }\n        else {\n          fail(\"resolveColumns() can only currently resolve strings\");\n        }\n      }\n    )\n    this.debug(\"resolveColumns(%s) => \", names, cols)\n    return cols;\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n}\n\nexport const schema = (database, schema) =>\n  new Schema(database, schema);\n\nexport default Schema\n",
+    "content": "import Queries from \"./Queries.js\";\nimport { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from \"@abw/badger-utils\";\nimport { addDebug } from \"@abw/badger\";\n\nconst DEFAULT_ID = 'id';\nconst COLUMN_SET_PREFIX = /^(@|\\.\\.\\.)/;\n\nexport class Schema {\n  constructor(database, schema) {\n    this.database       = database || fail(\"No database specified\");\n    this.table          = schema.table || fail(\"No table name specified\");\n    this.relations      = schema.relations || { };\n    this.prepareColumns(schema);\n    this.prepareKeys(schema);\n    this.prepareColumnSets(schema);\n    this.prepareFragments(schema);\n    this.queries = new Queries({\n      queries:   schema.queries,\n      fragments: this.fragments\n    });\n    // TODO: column sets for select, update, etc.\n\n    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);\n    this.debug('columnIndex: ', this.columnIndex);\n    this.debug('fragments: ', this.fragments);\n  }\n  prepareColumns(schema) {\n    const table      = schema.table;\n    const columns    = schema.columns;\n    const index      = splitHash(columns, () => ({ }))\n    this.columnIndex = objMap(\n      index,\n      (value, key) => {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = key);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = table + '.' + column;\n        return value;\n      }\n    )\n    this.columnNames    = Object.keys(this.columnIndex);\n    this.virtualColumns = schema.virtualColumns || { };\n    this.allColumns     = {\n      // ...splitHash(this.columnNames),\n      // ...splitHash(Object.keys(this.virtualColumns))\n      ...this.columnIndex,\n      ...this.virtualColumns\n    };\n  }\n  prepareColumnSets(schema) {\n    const index = splitHash(schema.columnSets, () => ({ }))\n    this.columnSets = objMap(\n      index,\n      (spec) => {\n        const basis   = (isString(spec) || isArray(spec)) ? splitList(spec) : this.columnNames;\n        const include = splitList(spec.include);\n        const exclude = splitHash(spec.exclude);\n        const result = [...basis, ...include]\n          .filter( column => ! exclude[column] );\n        return result;\n      }\n    )\n  }\n  prepareKeys(schema) {\n    this.keys = splitList(schema.keys);\n    if (schema.id) {\n      this.id = schema.id;\n      this.keys.unshift(this.id);\n    }\n    else if (this.keys.length === 0) {\n      this.id = DEFAULT_ID;\n      this.keys.unshift(this.id);\n    }\n    this.keyIndex = splitHash(this.keys);\n  }\n  prepareFragments(schema) {\n    const escape    = this.database.escape.bind(this.database);\n    const fragments = schema.fragments || { };\n    const vcolumns  = Object.entries(this.virtualColumns).reduce(\n      (result, [name, defn]) => {\n        result[name] = `${defn} as ${name}`;\n        return result;\n      },\n      { }\n    );\n    this.fragments = {\n      table:    escape(this.table),\n      columns:  this.columnNames.map(escape).join(', '),\n      tcolumns: this.columnNames.map( n => escape(this.columnIndex[n].tableColumn) ).join(', '),\n      ...vcolumns,\n      ...fragments\n    };\n  }\n  query(name) {\n    return this.queries.query(name);\n  }\n\n  // TODO: refactor remaining methods\n  column(name) {\n    return this.columnIndex[name]\n      ? this.columnIndex[name].tableColumn\n      : this.virtualColumns[name]\n        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)\n        : fail('Invalid column specified: ', name);\n  }\n  columnSet(name) {\n    return this.columnSets[name]\n      || fail('Invalid columnSet specified: ', name);\n  }\n  defaultColumns() {\n    return this.columnSets.default\n      || this.columns;\n  }\n  columns(names) {\n    return hasValue(names)\n      ? this.resolveColumns(names)\n      : this.defaultColumns().map( name => this.column(name) );\n  }\n  resolveColumns(names) {\n    const list = splitList(names);\n    let cols = [ ];\n    list.forEach(\n      name => {\n        this.debug(\"resolveColumns(%s) / %s\", names, name);\n        if (isString(name)) {\n          if (name.match(COLUMN_SET_PREFIX)) {\n            this.debug(\"%s is a columnSet %s\", name, name.replace(COLUMN_SET_PREFIX, ''));\n            cols.push(\n              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))\n                .map( name => this.column(name) )\n            );\n          }\n          else {\n            this.debug(\"%s is a column\", name);\n            cols.push(this.column(name));\n          }\n        }\n        else {\n          fail(\"resolveColumns() can only currently resolve strings\");\n        }\n      }\n    )\n    this.debug(\"resolveColumns(%s) => \", names, cols)\n    return cols;\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n}\n\nexport const schema = (database, schema) =>\n  new Schema(database, schema);\n\nexport default Schema\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Schema.js",
     "access": "public",
@@ -2578,7 +2578,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": null,
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 5,
     "undocument": true,
     "type": {
       "types": [
@@ -2599,7 +2599,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": null,
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 6,
     "undocument": true,
     "type": {
       "types": [
@@ -2620,7 +2620,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{Schema}",
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 8,
     "undocument": true,
     "interface": false
   },
@@ -2635,7 +2635,7 @@
     "longname": "src/Schema.js~Schema#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 9,
     "undocument": true
   },
   {
@@ -2647,7 +2647,7 @@
     "longname": "src/Schema.js~Schema#database",
     "access": "public",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 10,
     "undocument": true,
     "type": {
       "types": [
@@ -2664,7 +2664,7 @@
     "longname": "src/Schema.js~Schema#table",
     "access": "public",
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 11,
     "undocument": true,
     "type": {
       "types": [
@@ -2681,7 +2681,7 @@
     "longname": "src/Schema.js~Schema#relations",
     "access": "public",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 12,
     "undocument": true,
     "type": {
       "types": [
@@ -2691,6 +2691,23 @@
   },
   {
     "__docId__": 158,
+    "kind": "member",
+    "name": "queries",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#queries",
+    "access": "public",
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 159,
     "kind": "method",
     "name": "prepareColumns",
     "memberof": "src/Schema.js~Schema",
@@ -2700,7 +2717,7 @@
     "longname": "src/Schema.js~Schema#prepareColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 27,
     "undocument": true,
     "params": [
       {
@@ -2713,7 +2730,7 @@
     "return": null
   },
   {
-    "__docId__": 159,
+    "__docId__": 160,
     "kind": "member",
     "name": "columnIndex",
     "memberof": "src/Schema.js~Schema",
@@ -2721,24 +2738,7 @@
     "longname": "src/Schema.js~Schema#columnIndex",
     "access": "public",
     "description": null,
-    "lineNumber": 26,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 160,
-    "kind": "member",
-    "name": "columnNames",
-    "memberof": "src/Schema.js~Schema",
-    "static": false,
-    "longname": "src/Schema.js~Schema#columnNames",
-    "access": "public",
-    "description": null,
-    "lineNumber": 37,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -2749,13 +2749,13 @@
   {
     "__docId__": 161,
     "kind": "member",
-    "name": "virtualColumns",
+    "name": "columnNames",
     "memberof": "src/Schema.js~Schema",
     "static": false,
-    "longname": "src/Schema.js~Schema#virtualColumns",
+    "longname": "src/Schema.js~Schema#columnNames",
     "access": "public",
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 42,
     "undocument": true,
     "type": {
       "types": [
@@ -2766,13 +2766,30 @@
   {
     "__docId__": 162,
     "kind": "member",
+    "name": "virtualColumns",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#virtualColumns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 43,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 163,
+    "kind": "member",
     "name": "allColumns",
     "memberof": "src/Schema.js~Schema",
     "static": false,
     "longname": "src/Schema.js~Schema#allColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 44,
     "undocument": true,
     "type": {
       "types": [
@@ -2781,7 +2798,7 @@
     }
   },
   {
-    "__docId__": 163,
+    "__docId__": 164,
     "kind": "method",
     "name": "prepareColumnSets",
     "memberof": "src/Schema.js~Schema",
@@ -2791,7 +2808,7 @@
     "longname": "src/Schema.js~Schema#prepareColumnSets",
     "access": "public",
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 51,
     "undocument": true,
     "params": [
       {
@@ -2804,7 +2821,7 @@
     "return": null
   },
   {
-    "__docId__": 164,
+    "__docId__": 165,
     "kind": "member",
     "name": "columnSets",
     "memberof": "src/Schema.js~Schema",
@@ -2812,7 +2829,7 @@
     "longname": "src/Schema.js~Schema#columnSets",
     "access": "public",
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 53,
     "undocument": true,
     "type": {
       "types": [
@@ -2821,7 +2838,7 @@
     }
   },
   {
-    "__docId__": 165,
+    "__docId__": 166,
     "kind": "method",
     "name": "prepareKeys",
     "memberof": "src/Schema.js~Schema",
@@ -2831,7 +2848,7 @@
     "longname": "src/Schema.js~Schema#prepareKeys",
     "access": "public",
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 65,
     "undocument": true,
     "params": [
       {
@@ -2844,7 +2861,7 @@
     "return": null
   },
   {
-    "__docId__": 166,
+    "__docId__": 167,
     "kind": "member",
     "name": "keys",
     "memberof": "src/Schema.js~Schema",
@@ -2852,7 +2869,7 @@
     "longname": "src/Schema.js~Schema#keys",
     "access": "public",
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 66,
     "undocument": true,
     "type": {
       "types": [
@@ -2861,7 +2878,7 @@
     }
   },
   {
-    "__docId__": 167,
+    "__docId__": 168,
     "kind": "member",
     "name": "id",
     "memberof": "src/Schema.js~Schema",
@@ -2869,24 +2886,7 @@
     "longname": "src/Schema.js~Schema#id",
     "access": "public",
     "description": null,
-    "lineNumber": 63,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 169,
-    "kind": "member",
-    "name": "keyIndex",
-    "memberof": "src/Schema.js~Schema",
-    "static": false,
-    "longname": "src/Schema.js~Schema#keyIndex",
-    "access": "public",
-    "description": null,
-    "lineNumber": 70,
+    "lineNumber": 68,
     "undocument": true,
     "type": {
       "types": [
@@ -2896,6 +2896,23 @@
   },
   {
     "__docId__": 170,
+    "kind": "member",
+    "name": "keyIndex",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#keyIndex",
+    "access": "public",
+    "description": null,
+    "lineNumber": 75,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 171,
     "kind": "method",
     "name": "prepareFragments",
     "memberof": "src/Schema.js~Schema",
@@ -2905,13 +2922,20 @@
     "longname": "src/Schema.js~Schema#prepareFragments",
     "access": "public",
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 77,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "schema",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "return": null
   },
   {
-    "__docId__": 171,
+    "__docId__": 172,
     "kind": "member",
     "name": "fragments",
     "memberof": "src/Schema.js~Schema",
@@ -2919,53 +2943,26 @@
     "longname": "src/Schema.js~Schema#fragments",
     "access": "public",
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 87,
     "undocument": true,
     "type": {
       "types": [
-        "{\"table\": *, \"columns\": *, \"tcolumns\": *}"
-      ]
-    }
-  },
-  {
-    "__docId__": 172,
-    "kind": "method",
-    "name": "column",
-    "memberof": "src/Schema.js~Schema",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Schema.js~Schema#column",
-    "access": "public",
-    "description": null,
-    "lineNumber": 81,
-    "undocument": true,
-    "params": [
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
+        "{\"table\": *, \"columns\": *, \"tcolumns\": *, ...vcolumns: Object, ...fragments: Object}"
       ]
     }
   },
   {
     "__docId__": 173,
     "kind": "method",
-    "name": "columnSet",
+    "name": "query",
     "memberof": "src/Schema.js~Schema",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Schema.js~Schema#columnSet",
+    "longname": "src/Schema.js~Schema#query",
     "access": "public",
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 95,
     "undocument": true,
     "params": [
       {
@@ -2984,17 +2981,24 @@
   {
     "__docId__": 174,
     "kind": "method",
-    "name": "defaultColumns",
+    "name": "column",
     "memberof": "src/Schema.js~Schema",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Schema.js~Schema#defaultColumns",
+    "longname": "src/Schema.js~Schema#column",
     "access": "public",
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 100,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "return": {
       "types": [
         "*"
@@ -3004,19 +3008,19 @@
   {
     "__docId__": 175,
     "kind": "method",
-    "name": "columns",
+    "name": "columnSet",
     "memberof": "src/Schema.js~Schema",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Schema.js~Schema#columns",
+    "longname": "src/Schema.js~Schema#columnSet",
     "access": "public",
     "description": null,
-    "lineNumber": 96,
+    "lineNumber": 107,
     "undocument": true,
     "params": [
       {
-        "name": "names",
+        "name": "name",
         "types": [
           "*"
         ]
@@ -3031,15 +3035,35 @@
   {
     "__docId__": 176,
     "kind": "method",
-    "name": "resolveColumns",
+    "name": "defaultColumns",
     "memberof": "src/Schema.js~Schema",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Schema.js~Schema#resolveColumns",
+    "longname": "src/Schema.js~Schema#defaultColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 111,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 177,
+    "kind": "method",
+    "name": "columns",
+    "memberof": "src/Schema.js~Schema",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Schema.js~Schema#columns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 115,
     "undocument": true,
     "params": [
       {
@@ -3056,7 +3080,34 @@
     }
   },
   {
-    "__docId__": 177,
+    "__docId__": 178,
+    "kind": "method",
+    "name": "resolveColumns",
+    "memberof": "src/Schema.js~Schema",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Schema.js~Schema#resolveColumns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 120,
+    "undocument": true,
+    "params": [
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 179,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Schema.js~Schema",
@@ -3066,7 +3117,7 @@
     "longname": "src/Schema.js~Schema#identity",
     "access": "public",
     "description": null,
-    "lineNumber": 128,
+    "lineNumber": 147,
     "undocument": true,
     "params": [
       {
@@ -3083,7 +3134,7 @@
     }
   },
   {
-    "__docId__": 178,
+    "__docId__": 180,
     "kind": "function",
     "name": "schema",
     "memberof": "src/Schema.js",
@@ -3096,7 +3147,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{schema}",
     "description": null,
-    "lineNumber": 139,
+    "lineNumber": 158,
     "undocument": true,
     "params": [
       {
@@ -3115,10 +3166,10 @@
     "return": null
   },
   {
-    "__docId__": 179,
+    "__docId__": 181,
     "kind": "file",
     "name": "src/Table.js",
-    "content": "import { addDebug } from \"@abw/badger\";\nimport { fail, isArray } from \"@abw/badger-utils\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport Record from \"./Record.js\";\nimport Schema from \"./Schema.js\";\n// import Queries from \"./Queries.js\";\n\n// export class Table extends Queries {\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.schema        = new Schema(database, schema)\n    // this.queries       = new Queries(schema);\n    this.recordClass   = schema.recordClass || Record;\n    this.recordOptions = schema.recordOptions;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);\n  }\n  knex() {\n    return this.database.knex(this.schema.table);\n  }\n  insert(data) {\n    return isArray(data)\n      ? this.insertRows(data)\n      : this.insertRow(data);\n  }\n  insertRow(row) {\n    return this.rowProxy(\n      this.knex().insert(row).then(\n        ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n      )\n    )\n  }\n  insertRows(rows) {\n    return this.rowsProxy(\n      this.insertRowsAsync(rows)\n    )\n    /*\n    // I *think* this should work... but it's beyond my ability/patience to\n    // figure out why it doesn't :-(\n    /*\n    return this.rowsProxy(\n      Promise.all(\n        rows.map(\n          data => this.knex().insert(data)\n            .then(\n              ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n            )\n        )\n      )\n    )\n    */\n  }\n  async insertRowsAsync(rows) {\n    let results = [ ];\n    for (const row of rows) {\n      const result = await this.knex().insert(row)\n        .then(\n          ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n        )\n      results.push(result)\n    }\n    return results;\n  }\n  selectAll(columns) {\n    return this.rowsProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    );\n  }\n  selectOne(columns) {\n    return this.rowProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    ).first();\n  }\n  fetchAll(where) {\n    const select = this.knex().select();\n    return this.rowsProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  fetchOne(where) {\n    const select = this.knex().select().first();\n    return this.rowProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  update(set, where) {\n    return this.rowsProxy(\n      this.knex().update(set).where(where).then(\n        () => this.fetchAll(where)\n      )\n    )\n  }\n  record(query) {\n    return query.then(\n      row => recordProxy(new this.recordClass(this, row, this.recordOptions))\n    );\n  }\n  records(query) {\n    // console.log('table.records()');\n    return query.then(\n      rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )\n    );\n  }\n  tableFragments() {\n    return this.tableFragments\n  }\n}\n\nexport const table = (database, schema) =>\n  new Table(database, schema)\n\nexport default Table;\n",
+    "content": "import { addDebug } from \"@abw/badger\";\nimport { fail, isArray } from \"@abw/badger-utils\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport Record from \"./Record.js\";\nimport Schema from \"./Schema.js\";\n// import Queries from \"./Queries.js\";\n\n// export class Table extends Queries {\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.schema        = new Schema(database, schema)\n    this.recordClass   = schema.recordClass || Record;\n    this.recordOptions = schema.recordOptions;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);\n  }\n  knex() {\n    return this.database.knex(this.schema.table);\n  }\n  raw() {\n    return this.database.raw(...arguments);\n  }\n  query(name) {\n    return this.raw(this.schema.query(name));\n  }\n  insert(data) {\n    return isArray(data)\n      ? this.insertRows(data)\n      : this.insertRow(data);\n  }\n  insertRow(row) {\n    return this.rowProxy(\n      this.knex().insert(row).then(\n        ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n      )\n    )\n  }\n  insertRows(rows) {\n    return this.rowsProxy(\n      this.insertRowsAsync(rows)\n    )\n    /*\n    // I *think* this should work... but it's beyond my ability/patience to\n    // figure out why it doesn't :-(\n    /*\n    return this.rowsProxy(\n      Promise.all(\n        rows.map(\n          data => this.knex().insert(data)\n            .then(\n              ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n            )\n        )\n      )\n    )\n    */\n  }\n  async insertRowsAsync(rows) {\n    let results = [ ];\n    for (const row of rows) {\n      const result = await this.knex().insert(row)\n        .then(\n          ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n        )\n      results.push(result)\n    }\n    return results;\n  }\n  selectAll(columns) {\n    return this.rowsProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    );\n  }\n  selectOne(columns) {\n    return this.rowProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    ).first();\n  }\n  fetchAll(where) {\n    const select = this.knex().select();\n    return this.rowsProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  fetchOne(where) {\n    const select = this.knex().select().first();\n    return this.rowProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  update(set, where) {\n    return this.rowsProxy(\n      this.knex().update(set).where(where).then(\n        () => this.fetchAll(where)\n      )\n    )\n  }\n  record(query) {\n    return query.then(\n      row => recordProxy(new this.recordClass(this, row, this.recordOptions))\n    );\n  }\n  records(query) {\n    // console.log('table.records()');\n    return query.then(\n      rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )\n    );\n  }\n  tableFragments() {\n    return this.tableFragments\n  }\n}\n\nexport const table = (database, schema) =>\n  new Table(database, schema)\n\nexport default Table;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Table.js",
     "access": "public",
@@ -3126,7 +3177,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 180,
+    "__docId__": 182,
     "kind": "class",
     "name": "Table",
     "memberof": "src/Table.js",
@@ -3142,7 +3193,7 @@
     "interface": false
   },
   {
-    "__docId__": 181,
+    "__docId__": 183,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Table.js~Table",
@@ -3156,7 +3207,7 @@
     "undocument": true
   },
   {
-    "__docId__": 182,
+    "__docId__": 184,
     "kind": "member",
     "name": "database",
     "memberof": "src/Table.js~Table",
@@ -3173,7 +3224,7 @@
     }
   },
   {
-    "__docId__": 183,
+    "__docId__": 185,
     "kind": "member",
     "name": "schema",
     "memberof": "src/Table.js~Table",
@@ -3190,12 +3241,29 @@
     }
   },
   {
-    "__docId__": 184,
+    "__docId__": 186,
     "kind": "member",
     "name": "recordClass",
     "memberof": "src/Table.js~Table",
     "static": false,
     "longname": "src/Table.js~Table#recordClass",
+    "access": "public",
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 187,
+    "kind": "member",
+    "name": "recordOptions",
+    "memberof": "src/Table.js~Table",
+    "static": false,
+    "longname": "src/Table.js~Table#recordOptions",
     "access": "public",
     "description": null,
     "lineNumber": 16,
@@ -3207,12 +3275,12 @@
     }
   },
   {
-    "__docId__": 185,
+    "__docId__": 188,
     "kind": "member",
-    "name": "recordOptions",
+    "name": "rowProxy",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#recordOptions",
+    "longname": "src/Table.js~Table#rowProxy",
     "access": "public",
     "description": null,
     "lineNumber": 17,
@@ -3224,12 +3292,12 @@
     }
   },
   {
-    "__docId__": 186,
+    "__docId__": 189,
     "kind": "member",
-    "name": "rowProxy",
+    "name": "rowsProxy",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#rowProxy",
+    "longname": "src/Table.js~Table#rowsProxy",
     "access": "public",
     "description": null,
     "lineNumber": 18,
@@ -3241,24 +3309,7 @@
     }
   },
   {
-    "__docId__": 187,
-    "kind": "member",
-    "name": "rowsProxy",
-    "memberof": "src/Table.js~Table",
-    "static": false,
-    "longname": "src/Table.js~Table#rowsProxy",
-    "access": "public",
-    "description": null,
-    "lineNumber": 19,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 188,
+    "__docId__": 190,
     "kind": "method",
     "name": "knex",
     "memberof": "src/Table.js~Table",
@@ -3268,7 +3319,7 @@
     "longname": "src/Table.js~Table#knex",
     "access": "public",
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 21,
     "undocument": true,
     "params": [],
     "return": {
@@ -3278,7 +3329,54 @@
     }
   },
   {
-    "__docId__": 189,
+    "__docId__": 191,
+    "kind": "method",
+    "name": "raw",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#raw",
+    "access": "public",
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 192,
+    "kind": "method",
+    "name": "query",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#query",
+    "access": "public",
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 193,
     "kind": "method",
     "name": "insert",
     "memberof": "src/Table.js~Table",
@@ -3288,7 +3386,7 @@
     "longname": "src/Table.js~Table#insert",
     "access": "public",
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 30,
     "undocument": true,
     "params": [
       {
@@ -3305,7 +3403,7 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 194,
     "kind": "method",
     "name": "insertRow",
     "memberof": "src/Table.js~Table",
@@ -3315,7 +3413,7 @@
     "longname": "src/Table.js~Table#insertRow",
     "access": "public",
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 35,
     "undocument": true,
     "params": [
       {
@@ -3332,7 +3430,7 @@
     }
   },
   {
-    "__docId__": 191,
+    "__docId__": 195,
     "kind": "method",
     "name": "insertRows",
     "memberof": "src/Table.js~Table",
@@ -3342,119 +3440,11 @@
     "longname": "src/Table.js~Table#insertRows",
     "access": "public",
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 42,
     "undocument": true,
     "params": [
       {
         "name": "rows",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 192,
-    "kind": "method",
-    "name": "insertRowsAsync",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Table.js~Table#insertRowsAsync",
-    "access": "public",
-    "description": null,
-    "lineNumber": 57,
-    "undocument": true,
-    "params": [
-      {
-        "name": "rows",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 193,
-    "kind": "method",
-    "name": "selectAll",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Table.js~Table#selectAll",
-    "access": "public",
-    "description": null,
-    "lineNumber": 68,
-    "undocument": true,
-    "params": [
-      {
-        "name": "columns",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 194,
-    "kind": "method",
-    "name": "selectOne",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Table.js~Table#selectOne",
-    "access": "public",
-    "description": null,
-    "lineNumber": 75,
-    "undocument": true,
-    "params": [
-      {
-        "name": "columns",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 195,
-    "kind": "method",
-    "name": "fetchAll",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Table.js~Table#fetchAll",
-    "access": "public",
-    "description": null,
-    "lineNumber": 82,
-    "undocument": true,
-    "params": [
-      {
-        "name": "where",
         "types": [
           "*"
         ]
@@ -3469,15 +3459,96 @@
   {
     "__docId__": 196,
     "kind": "method",
-    "name": "fetchOne",
+    "name": "insertRowsAsync",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#insertRowsAsync",
+    "access": "public",
+    "description": null,
+    "lineNumber": 62,
+    "undocument": true,
+    "params": [
+      {
+        "name": "rows",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 197,
+    "kind": "method",
+    "name": "selectAll",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Table.js~Table#fetchOne",
+    "longname": "src/Table.js~Table#selectAll",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 73,
+    "undocument": true,
+    "params": [
+      {
+        "name": "columns",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 198,
+    "kind": "method",
+    "name": "selectOne",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#selectOne",
+    "access": "public",
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "params": [
+      {
+        "name": "columns",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 199,
+    "kind": "method",
+    "name": "fetchAll",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#fetchAll",
+    "access": "public",
+    "description": null,
+    "lineNumber": 87,
     "undocument": true,
     "params": [
       {
@@ -3494,7 +3565,34 @@
     }
   },
   {
-    "__docId__": 197,
+    "__docId__": 200,
+    "kind": "method",
+    "name": "fetchOne",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#fetchOne",
+    "access": "public",
+    "description": null,
+    "lineNumber": 95,
+    "undocument": true,
+    "params": [
+      {
+        "name": "where",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 201,
     "kind": "method",
     "name": "update",
     "memberof": "src/Table.js~Table",
@@ -3504,7 +3602,7 @@
     "longname": "src/Table.js~Table#update",
     "access": "public",
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 103,
     "undocument": true,
     "params": [
       {
@@ -3527,7 +3625,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 202,
     "kind": "method",
     "name": "record",
     "memberof": "src/Table.js~Table",
@@ -3535,33 +3633,6 @@
     "async": false,
     "static": false,
     "longname": "src/Table.js~Table#record",
-    "access": "public",
-    "description": null,
-    "lineNumber": 105,
-    "undocument": true,
-    "params": [
-      {
-        "name": "query",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 199,
-    "kind": "method",
-    "name": "records",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Table.js~Table#records",
     "access": "public",
     "description": null,
     "lineNumber": 110,
@@ -3581,7 +3652,34 @@
     }
   },
   {
-    "__docId__": 200,
+    "__docId__": 203,
+    "kind": "method",
+    "name": "records",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#records",
+    "access": "public",
+    "description": null,
+    "lineNumber": 115,
+    "undocument": true,
+    "params": [
+      {
+        "name": "query",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 204,
     "kind": "method",
     "name": "tableFragments",
     "memberof": "src/Table.js~Table",
@@ -3591,7 +3689,7 @@
     "longname": "src/Table.js~Table#tableFragments",
     "access": "public",
     "description": null,
-    "lineNumber": 116,
+    "lineNumber": 121,
     "undocument": true,
     "params": [],
     "return": {
@@ -3601,7 +3699,7 @@
     }
   },
   {
-    "__docId__": 201,
+    "__docId__": 205,
     "kind": "function",
     "name": "table",
     "memberof": "src/Table.js",
@@ -3614,7 +3712,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{table}",
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 126,
     "undocument": true,
     "params": [
       {
@@ -3633,7 +3731,7 @@
     "return": null
   },
   {
-    "__docId__": 202,
+    "__docId__": 206,
     "kind": "file",
     "name": "src/Tables.js",
     "content": "export class Tables {\n  constructor(tables={}) {\n    this.tables = tables;\n  }\n  table(name) {\n    return this.tables[name];\n  }\n}\n\nexport default Tables;",
@@ -3644,7 +3742,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 203,
+    "__docId__": 207,
     "kind": "class",
     "name": "Tables",
     "memberof": "src/Tables.js",
@@ -3660,7 +3758,7 @@
     "interface": false
   },
   {
-    "__docId__": 204,
+    "__docId__": 208,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Tables.js~Tables",
@@ -3674,7 +3772,7 @@
     "undocument": true
   },
   {
-    "__docId__": 205,
+    "__docId__": 209,
     "kind": "member",
     "name": "tables",
     "memberof": "src/Tables.js~Tables",
@@ -3691,7 +3789,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 210,
     "kind": "method",
     "name": "table",
     "memberof": "src/Tables.js~Tables",
@@ -3718,7 +3816,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 211,
     "kind": "file",
     "name": "src/Utils.js",
     "content": "// nothing here",
@@ -3772,7 +3870,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/database.md",
     "name": "./manual/database.md",
-    "content": "# Database\n\nThe `Database` class provides a wrapper around a\n[Knex.js](https://knexjs.org/) database connection.\n\n* [Overview](#overview)\n* [Configuration](#configuration)\n  * [Knex Configuration Options](#knex-configuration-options)\n  * [queries](#queries)\n  * [tables](#tables)\n  * [tablesClass](#tablesclass)\n  * [tablesObject](#tablesobject)\n* [Properties](#properties)\n  * [connection](#connection)\n  * [model](#model)\n* [Methods](#methods)\n  * [knex()](#knex--)\n  * [raw(sql)](#raw-sql-)\n  * [query(name)](#query-name-)\n  * [hasTable(name)](#hastable-name-)\n  * [table(name)](#table-name-)\n  * [escape(name)](#escape-name-)\n  * [destroy()](#destroy--)\n* [Function](#functions)\n  * [database()](#database--)\n\n## Overview\n\nThe `Database` class is used to create a top-level interface to your database.\n\nCreate a new database object using the configuration options described below.\n\n```js\nimport Database from '@abw/badger-database';\n\nconst mydb = new Database({\n  // configuration options\n})\n```\n\nYou can also use the `database()` function which is a wrapper around `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\n\nconst mydb = database({\n  // configuration options\n})\n```\n\n## Configuration\n\n### Knex Configuration Options\n\nThe configuration parameters should include the\n`client` and `connection` parameters as a minimum,\nalong with any other optional configuration parameters\naccepted as\n[Knex.js configuration options](https://knexjs.org/guide/#configuration-options)\n\nFor example, a connection to a `sqlite3` database might look like this:\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database({\n  client: 'sqlite3',\n  connection: {\n    filename: ':memory:',\n  },\n  useNullAsDefault: true,\n  pool: {\n    min: 2,\n    max: 10,\n  }\n})\n```\n\n### queries\n\nUsed to define named SQL queries that you can then run by calling the\n[query(name)](#query-name-) method specifying the name of the query.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  queries: {\n    albumsByNumberOfTracks:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id ' +\n      'ORDER BY n_tracks ',\n  }\n)\n```\n\nSee the [Queries](manual/queries.html) manual page for further information.\n\n### fragments\n\nUse to define commonly used SQL fragments that can be interpolated into\nnamed [queries](#queries).\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  fragments: {\n    selectAlbumsWithTrackCount:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id '\n  },\n  queries: {\n    albumsByNumberOfTracks:\n      '<selectAlbumsWithTrackCount> ' +\n      'ORDER BY n_tracks ',\n    albumWithMostTracks:\n      '<selectAlbumsWithTrackCount> ' +\n      'ORDER BY n_tracks DESC ' +\n      'LIMIT 1',\n  }\n)\n```\n\nSee the [Queries](manual/queries.html) manual page for further information.\n\n### tables\n\nUsed to define table schemas.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      // ... schema for users table\n    },\n    companies: {\n      // ... schema for companies table\n    }\n  }\n)\n```\n\nSee the [Table](manual/table.html) manual page for further details.\n\n### tablesClass\n\nThis can be used to provide an alternate class for returning table\nconfiguration options.  The default is the [Tables](manual/tables.html) class.\n\n### tablesObject\n\nThis can be used to provide a pre-instantiated object for returning table\nconfiguration options.  See the [Tables](manual/tables.html) pages for\nfurther information.\n\n## Properties\n\n### connection\n\nThis is a reference to a [Connection](manual/connection.md) instance\nwhich is a wrapper around the underlying Knex instance.\n\n### model\n\nThis is a reference to a [Model](manual/model.html) proxy object which\nprovides a shorthand way to access table instances\n\n### queries\n\nThis is a reference to a [Queries](manual/model.html) proxy object which\nprovides a shorthand way to access table instances\n\n## Methods\n\n### knex()\n\nReturns a Knex query for the database.\nEquivalent to calling `database.connection.knex()`.\n\n```js\nconst row =\n  await database\n    .knex('user')\n    .select('forename')\n    .where({ email: 'bobby@badger.com' })\n    .first()\n```\n\n### raw(sql)\n\nUsed to generate a raw SQL query for the database.  Equivalent to calling\n`knex.raw()`.\n\n```js\nconst rows =\n  await database\n    .raw('select forename from user where email=\"bobby@badger.com\"');\n```\n\n### query(name)\n\nThis method allows you to execute a named query that was previously\ndefined using the [queries](#queries) configuration option.\n\nGiven this database definition:\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  queries: {\n    albumsByNumberOfTracks:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id ' +\n      'ORDER BY n_tracks ',\n  }\n)\n```\n\nYou can then run the query like so:\n\n```js\nconst albums = await database.query('albumsByNumberOfTracks');\n```\n\n### hasTable(name)\n\nMethod to check if a table exists.  Returns the configuration options\nfor the table or a false value if the table doesn't exist.\n\n### table(name)\n\nMethod to return a table object for a pre-defined table in the database.\n\n```js\nconst users = database.table(\"users\");\n```\nSee the [Table](manual/table.html) manual page for further details.\n\n### escape(name)\n\nUsed to escape a name according to the\n\n### destroy()\n\nUsed to disconnect from the database and cleanup when you're finished.\n\n## Functions\n\n### database()\n\nA function of convenience which wraps a call to `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\nconst db = database(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Database } from '@abw/badger-database';\nconst db = new Database(...);\n```\n",
+    "content": "# Database\n\nThe `Database` class provides a wrapper around a\n[Knex.js](https://knexjs.org/) database connection.\n\n* [Overview](#overview)\n* [Configuration](#configuration)\n  * [Knex Configuration Options](#knex-configuration-options)\n  * [queries](#queries)\n  * [fragments](#fragments)\n  * [tables](#tables)\n  * [tablesClass](#tablesclass)\n  * [tablesObject](#tablesobject)\n* [Properties](#properties)\n  * [connection](#connection)\n  * [model](#model)\n* [Methods](#methods)\n  * [knex()](#knex--)\n  * [raw(sql)](#raw-sql-)\n  * [query(name)](#query-name-)\n  * [hasTable(name)](#hastable-name-)\n  * [table(name)](#table-name-)\n  * [escape(name)](#escape-name-)\n  * [destroy()](#destroy--)\n* [Function](#functions)\n  * [database()](#database--)\n\n## Overview\n\nThe `Database` class is used to create a top-level interface to your database.\n\nCreate a new database object using the configuration options described below.\n\n```js\nimport Database from '@abw/badger-database';\n\nconst mydb = new Database({\n  // configuration options\n})\n```\n\nYou can also use the `database()` function which is a wrapper around `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\n\nconst mydb = database({\n  // configuration options\n})\n```\n\n## Configuration\n\n### Knex Configuration Options\n\nThe configuration parameters should include the\n`client` and `connection` parameters as a minimum,\nalong with any other optional configuration parameters\naccepted as\n[Knex.js configuration options](https://knexjs.org/guide/#configuration-options)\n\nFor example, a connection to a `sqlite3` database might look like this:\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database({\n  client: 'sqlite3',\n  connection: {\n    filename: ':memory:',\n  },\n  useNullAsDefault: true,\n  pool: {\n    min: 2,\n    max: 10,\n  }\n})\n```\n\n### queries\n\nUsed to define named SQL queries that you can then run by calling the\n[query(name)](#query-name-) method specifying the name of the query.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  queries: {\n    albumsByNumberOfTracks:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id ' +\n      'ORDER BY n_tracks ',\n  }\n)\n```\n\nSee the [Queries](manual/queries.html) manual page for further information.\n\n### fragments\n\nUse to define commonly used SQL fragments that can be interpolated into\nnamed [queries](#queries).\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  fragments: {\n    selectAlbumsWithTrackCount:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id '\n  },\n  queries: {\n    albumsByNumberOfTracks:\n      '<selectAlbumsWithTrackCount> ' +\n      'ORDER BY n_tracks ',\n    albumWithMostTracks:\n      '<selectAlbumsWithTrackCount> ' +\n      'ORDER BY n_tracks DESC ' +\n      'LIMIT 1',\n  }\n)\n```\n\nSee the [Queries](manual/queries.html) manual page for further information.\n\n### tables\n\nUsed to define table schemas.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      // ... schema for users table\n    },\n    companies: {\n      // ... schema for companies table\n    }\n  }\n)\n```\n\nSee the [Table](manual/table.html) manual page for further details.\n\n### tablesClass\n\nThis can be used to provide an alternate class for returning table\nconfiguration options.  The default is the [Tables](manual/tables.html) class.\n\n### tablesObject\n\nThis can be used to provide a pre-instantiated object for returning table\nconfiguration options.  See the [Tables](manual/tables.html) pages for\nfurther information.\n\n## Properties\n\n### connection\n\nThis is a reference to a [Connection](manual/connection.md) instance\nwhich is a wrapper around the underlying Knex instance.\n\n### model\n\nThis is a reference to a [Model](manual/model.html) proxy object which\nprovides a shorthand way to access table instances\n\n### queries\n\nThis is a reference to a [Queries](manual/model.html) proxy object which\nprovides a shorthand way to access table instances\n\n## Methods\n\n### knex()\n\nReturns a Knex query for the database.\nEquivalent to calling `database.connection.knex()`.\n\n```js\nconst row =\n  await database\n    .knex('user')\n    .select('forename')\n    .where({ email: 'bobby@badger.com' })\n    .first()\n```\n\n### raw(sql)\n\nUsed to generate a raw SQL query for the database.  Equivalent to calling\n`knex.raw()`.\n\n```js\nconst rows =\n  await database\n    .raw('select forename from user where email=\"bobby@badger.com\"');\n```\n\n### query(name)\n\nThis method allows you to execute a named query that was previously\ndefined using the [queries](#queries) configuration option.\n\nGiven this database definition:\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  queries: {\n    albumsByNumberOfTracks:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id ' +\n      'ORDER BY n_tracks ',\n  }\n)\n```\n\nYou can then run the query like so:\n\n```js\nconst albums = await database.query('albumsByNumberOfTracks');\n```\n\n### hasTable(name)\n\nMethod to check if a table exists.  Returns the configuration options\nfor the table or a false value if the table doesn't exist.\n\n### table(name)\n\nMethod to return a table object for a pre-defined table in the database.\n\n```js\nconst users = database.table(\"users\");\n```\nSee the [Table](manual/table.html) manual page for further details.\n\n### escape(name)\n\nUsed to escape a name according to the\n\n### destroy()\n\nUsed to disconnect from the database and cleanup when you're finished.\n\n## Functions\n\n### database()\n\nA function of convenience which wraps a call to `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\nconst db = database(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Database } from '@abw/badger-database';\nconst db = new Database(...);\n```\n",
     "static": true,
     "access": "public"
   },
@@ -3780,7 +3878,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/table.md",
     "name": "./manual/table.md",
-    "content": "# Table\n\nThis is a wrapper around a database table.\n\n* [Overview](#overview)\n* [Configuration](#configuration)\n  * [table](#table)\n  * [columns](#columns)\n  * [virtualColumns](#virtualcolumns)\n  * [columnSets](#columnsets)\n  * [id](#id)\n  * [keys](#keys)\n  * [tableClass](#tableclass)\n  * [recordClass](#recordclass)\n* [Methods](#methods)\n  * [knex()](#knex--)\n  * [insert(data)](#insert-data-)\n  * [insertRow(data)](#insertrow-data-)\n  * [insertRows(data)](#insertrows-data-)\n  * [selectAll(columns)](#selectall-columns-)\n  * [selectOne(columns)](#selectone-columns-)\n  * [fetchAll(where)](#fetchall-where-)\n  * [fetchOne(where)](#fetchone-where-)\n  * [update(set,where)](#update-set-where-)\n  * [record(query)](#record-query-)\n  * [records(query)](#records-query-)\n* [Functions](#functions)\n  * [table(database,schema)](#table-database-schema-)\n\n## Overview\n\nConceptually we think of a table as being a collection of records.  I prefer to use\nplural names (e.g. `users` and `companies` instead of `user` and `company`) in\nkeeping with that paradigm, but you can use any names you like.\n\nThe names of the tables you define for your application don't have to match the names\nof the underlying database table.\n\n## Configuration\n\nTables are defined via the `tables` item in a database configuration.\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      // ... schema for users table\n    },\n    companies: {\n      // ... schema for companies table\n    }\n  }\n)\n```\n\nYou can then access a table object using the `table()` method.\n\n```js\nconst users = database.table('users');\n```\n\nThe configuration items for a table are as follows.\n\n### table\n\nThe default behaviour is to assume that the name of the underlying database table\nis the same as the collection name.  If it isn't then you can use the `table`\nconfiguration option to define it.\n\nFor example, if you want to define a collection of `users` in your application but the\nunderlying table name is `user` then you can define it like so:\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      table: 'user'\n    },\n  }\n)\n```\n\n### columns\n\nThe `columns` configuration item is used to define the columns that you want the\ncollection to have access to.  You don't have to include all of the columns in the\ndatabase table if you don't want to.\n\nIn the simplest case you can define the columns as a string of whitespace delimited\nnames.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: 'id name email'\n    },\n  }\n)\n```\n\nThis is shorthand for specifying them as an array, which you can do if you prefer\nor already have the column names in an array.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: ['id', 'name', 'email']\n    },\n  }\n)\n```\n\nThe third option is to use a hash object to define the columns.  This allows you to\nprovide additional metadata about the columns.  You can add any metadata you like.\nAt the time of writing the metadata isn't used internally, but it might be soon.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: {\n        id: {\n          type: 'id',\n          automatic: true,\n        },\n        name: {\n          type: 'text',\n          required: true,\n        },\n        email: {\n          type: 'text',\n          required: true,\n        }\n      }\n    },\n  }\n)\n```\n\n#### column metadata\n\nTODO: add information about column metadata as and when we start to use it.\n\n### virtualColumns\n\nAny computed columns can be specified as `virtualColumns`.  For example, if you\nhave a user table with separate `forename` and `surname` columns then you might\nwant to add a virtual column that concatenates them to create a `name`.\n\nIn MySQL the `CONCAT()` function can be used.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: 'id forename surname email',\n      virtualColumns: {\n        name: \"CONCAT(users.forename, ' ', users.surname)\"\n      }\n    },\n  }\n)\n```\n\nIn sqlite the `||` operator is used for concatenation so the `name`\nvirtual column would be defined like this:\n\n```js\nvirtualColumns: {\n  name: \"users.forename || ' ' || users.surname\"\n}\n```\n\nNote that it is considered good practice to specify the table and column\nname in these cases, e.g. `users.forename` instead of just `forename`.\nThis will save any ambiguity when you're constructing queries that might\njoin onto other tables.  You might also want to escape the table and/or\ncolumn names if either are reserved words.\n\nFor example, MySQL uses the backtick character to escape names.\n\n```js\nvirtualColumns: {\n  name: \"CONCAT(`users`.`forename`, ' ', `users`.`surname`)\"\n}\n```\n\n### columnSets\n\nYou can define set of columns that provide a shorthand way of referencing\ncommonly used subsets of columns.  By default, queries will use all of the\n`columns` defined.  Any `virtualColumns` will not be included.\n\nYou can define a `default` column set to indicate which columns should be\nincluded in queries by default.  For example, in our `users` table we might\nwant to exclude the `password` and `is_admin` columns, but include the `name`\nvirtual column.\n\n```js\nusers = {\n  columns: 'id forename surname email password is_admin',\n  virtualColumns: {\n    name: \"CONCAT(users.forename, ' ', users.surname)\"\n  },\n  columnSets: {\n    default: 'id forename surname name email',\n  }\n};\n```\n\nThe columns in a column set can be specified as a string of whitespace delimited column\nnames as shown above.  This is shorthand for an array of column names:\n\n```js\ncolumnSets: {\n  default: ['id', 'forename', 'surname', 'name', 'email'],\n}\n```\n\nThe more explicit form is to define an object containing `include` and/or `exclude`\ncolumns.  These operations are performed on the list of `columns`, so `include` can be\nused to add in virtual columns or `exclude` can be used to exclude regular columns\nthat you don't want returned by default.\n\n```js\ncolumnSets: {\n  default: {\n    include: 'name',\n    exclude: 'password is_admin'\n  },\n}\n```\n\nYou can define any of your own named column sets in the same way.\n\n```js\ncolumnSets: {\n  // id forename surname email name\n  default: {\n    include: 'name',\n    exclude: 'password is_admin'\n  },\n  // id forename surname email password is_admin name\n  admin: {\n    include: 'name',\n  },\n  // name email\n  basic: 'name email',\n};\n```\n\n### id\n\nThe `id` configuration item can be used to name the column that is the\nunique identifier for a row.  If you don't specify either `id` or `keys`\nthen it will default to `id`.\n\nFor example, if the `users` table uses the `user_id` column as the unique\nidentifier then you should specify it like so:\n\n```js\nusers: {\n  columns: 'user_id forename surname email',\n  id: 'user_id'\n}\n```\n\n### keys\n\nIn some cases you might have a table with a compound key composed from multiple\ncolumns instead of a single `id` column.  For example, an `employees` table might\nhave a compound key formed from the `user_id` and `company_id` columns.\n\n```js\nemployees: {\n  columns: 'user_id company_id job_title start_date end_date',\n  keys: 'user_id company_id'\n}\n```\n\n### tableClass\n\nYou can create your own subclass of the `Table` module and define your own\nmethods for queries on the table.\n\nHere's a simple `Users` class which implements a `badgers()` method to\nfetch all rows where the surname is `Badger`.\n\n```js\nexport class Users extends Table {\n  badgers() {\n    return this.fetchAll({ surname: \"Badger\" });\n  }\n}\n```\n\nThen in the schema for the `users` class, define the `Users` class as the\n`tableClass` configuration item.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      tableClass: Users\n    },\n  }\n)\n```\n\nNow you can call the `badgers()` method on the table object for the `users` table.\n\n```js\nconst badgers = await database.table('users').badgers()\n```\n\n### recordClass\n\nVarious table methods have the option to convert rows returned from the database into\nrecord objects.  This provides a simple implementation of the Active Record pattern.\n\nThe default [Record](manual/record.html) class provides basic functionality to update\nthe record, delete it, access related records, and so on.\n\nYou can also define your own record subclass for a table in which you can provide\nadditional methods or wrap the default methods to implement additional business logic,\ndata validation, logging, etc.  In this case you should use the `recordClass` configuration\noption to provide a reference to your custom record class.\n\nThis simple example shows how a custom `User` record class can be defined which adds a\n`hello()` method.\n\n```js\nimport { Database, Record } from  \"@abw/badger-database\";\n\n// define User subclass of Record\nclass User extends Record {\n  hello() {\n    return `Hello ${this.forename} ${this.surname}`;\n  }\n}\n\n// create database connection with users table\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: 'id forename surname',\n      recordClass: User,\n    },\n  }\n)\n\n// insert row and convert returned data to a User record\nconst bobby = await database.table('users').insert({\n  forename: 'Bobby',\n  surname: 'Badger',\n}).record()\n\nconsole.log(bobby.hello())    // Hello Bobby Badger\n```\n\n## Methods\n\n### knex()\n\nReturns a Knex query with the table name pre-defined.\n\n```js\nconst badger =\n  await users\n    .knex()\n    .select('forename')\n    .where({ email: \"bobby@badger.com\" })\n    .first();\n```\n\n### insert(data)\n\nInsert data into the table.  You can pass a single object row or an array of\nrows to insert.  This method will then delegate to [insertRow()](#insertrow-data-)\nor [insertRows()](#insertrows-data-) as appropriate\n\nSingle row:\n\n```js\nconst bobby = await users.insert({\n  forename: 'Bobby',\n  surname: 'Badger',\n  email: 'bobby@badger.com',\n  is_admin: 1,\n})\n```\n\nMultiple rows:\n\n```js\nconst badgers = await users.insert([\n  {\n    forename: 'Bobby',\n    surname: 'Badger',\n    email: 'bobby@badger.com',\n    is_admin: 1,\n  },\n  {\n    forename: 'Brian',\n    surname: 'Badger',\n    email: 'brian@badger.com',\n    is_admin: 0,\n  },\n  {\n    forename: 'Simon',\n    surname: 'Stoat',\n    email: 'simon@stoat.com',\n  }\n]);\n```\n\n### insertRow(data)\n\nThis inserts a single row into the database and then fetches the row back\nout again.  Note that this is different to the [insert() method](https://knexjs.org/guide/query-builder.html#insert)\nprovided by Knex.js which only returns the ID of the inserted record.\n\n```js\nconst bobby = await users.insertRow({\n  forename: 'Bobby',\n  surname: 'Badger',\n  email: 'bobby@badger.com',\n  is_admin: 1,\n})\n```\n\nOne benefit of this approach is in situations where you want to insert a row and then do\nsomething with the inserted data, e.g. return it via an API response.  By fetching the\nrecord after it has been inserted we guarantee that any automatically created column\nvalues are included.  For example, this would include any generated ID value, and also\nany columns that have default values, e.g. a `created` column that defaults to have the\ncurrent timestamp.\n\nAnother feature is that the value returned from the `insertRow()` method is a proxy which\nintercepts the `record()` method call and converts the raw row data to a record object.\n\n```js\nconst bobby = await users.insertRow({\n  forename: 'Bobby',\n  surname: 'Badger',\n  email: 'bobby@badger.com',\n  is_admin: 1,\n}).record()   // convert to record object\n```\n\nThe downside is that you're performing two database queries (an insert and a select) instead\nof one.  If you don't want or need this functionality then you can use the underlying\nKnex.js `insert()` method instead.\n\n### insertRows(data)\n\nThis inserts multiple row into the database and then fetches the rows back\nout again, as per [insertRow()](#insertrow-data-).\n\n```js\nconst badgers = await users.insertRows([\n  {\n    forename: 'Bobby',\n    surname: 'Badger',\n    email: 'bobby@badger.com',\n    is_admin: 1,\n  },\n  {\n    forename: 'Brian',\n    surname: 'Badger',\n    email: 'brian@badger.com',\n    is_admin: 0,\n  },\n  {\n    forename: 'Simon',\n    surname: 'Stoat',\n    email: 'simon@stoat.com',\n  }\n]);\n```\n\nThe method returns an array of inerted row.  You can call the `records()` method to\nconvert them to [Record](manual/record.html) objects.\n\n### selectAll(columns)\n\nReturns a select query.  The optional `columns` argument can be used to\nspecify the [columns](#columns) or [columnSets](#columnsets) you want to select.\nOtherwise the default column set will be used.\n\nTo include the columns named in a column set, include the name of the column\nset prefixed by `...`, e.g. `...admin` to include the columns defined in the\n`admin` column set.\n\n```js\nconst rows = await table.selectAll();\nconst rows = await table.selectAll(\"name email ...admin\");\n```\n\nThe method returns a proxy around the Knex query.  You can call additional Knex\nmethods on it.\n\n```js\nconst rows = await table.selectAll().where({ animal: \"badger\" });\n```\n\nYou can also call the `records()` method to convert the data rows to\n[Record](manual/record.html) objects.\n\n```js\nconst records = await table.selectAll().where({ animal: \"badger\" }).records();\n```\n\n### selectOne(columns)\n\nReturns a select query to fetch a single row.  The optional `columns` argument\ncan be used to specify the columns or column sets you want to select.  Otherwise\nthe default column set will be used.\n\nAs with [selectAll()](#selectall-columns-) you can call additional Knex methods\non the returned query object.  You can also call the `record()` method to convert\nthe row data to a [Record](manual/record.html) object.\n\n```js\nconst row = await table.selectOne();\nconst row = await table.selectOne(\"column1 column2 ...columnset\");\nconst row = await table.selectOne().where({ email: \"bobby@badger.com\" });\nconst rec = await table.selectOne().where({ email: \"bobby@badger.com\" }).record();\n```\n\n### fetchAll(where)\n\nReturns a select query with the default columns selected.  The optional\n`where` argument can be used to provide additional constraints.  This is\nshorthand for chaining a `where()` method.\n\nYou can also chain the `records()` method to convert the data rows to\n[Record](manual/record.html) objects.\n\n```js\nconst rows = await table.fetchAll();\nconst rows = await table.fetchAll({ animal: \"badger\" });\nconst recs = await table.fetchAll({ animal: \"badger\" }).records();\n```\n\n### fetchOne(where)\n\nReturns a select query that fetches a single record with the default columns\nselected.  The optional `where` argument can be used to provide additional\nconstraints.  This is shorthand for chaining a `where()` method.\n\nYou can also chain the `record()` method to convert the data row to a\n[Record](manual/record.html) object.\n\n```js\nconst row = await table.fetchOne();\nconst row = await table.fetchOne({ animal: \"badger\" });\nconst rec = await table.fetchOne({ animal: \"badger\" }).record();\n```\n\n### update(set,where)\n\nThis method can be used to update one or more rows in the database.\nThe first argument is an object defining updates to be set in the rows.\nThe second argument is an object providing the criteria to match rows.\n\nFor example, this call will set the `is_admin` column to `1` for all rows\nwhere the `surname` is `Badger`.\n\n```js\nawait users.update({ is_admin: 1 }, { surname: 'Badger' });\n```\n\nThe `update()` method works like the [insertRows()](#insertrows-data-) method\nin that it will perform two queries: the first to apply the changes and the second\nto re-fetch all the matching rows from the database.\n\n```js\nconst badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' });\n```\n\nThis ensures that the data returned will include any columns that are updated\nby the database.  For example, you might have a `modified` column which is\nautomatically updated when the record is modified.  In MySQL that column\nwould be defined something like this:\n\n```sql\nmodified TIMESTAMP NOT NULL\n         DEFAULT CURRENT_TIMESTAMP\n         ON UPDATE CURRENT_TIMESTAMP\n```\n\nWhen you call the `update()` method the rows will contain the `modified` data\nitems reflecting the new values set in the database table rows.\n\nThe rows that are returned by the `update()` method can be converted to records\nby chaining the `records()` method.\n\n```js\nconst badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();\n```\n\nIf you don't want this behaviour and just want to update the rows without re-fetching\nthem, then you can \"roll your own\" update using the Knex query returned by the\n[knex()](#knex--) method.\n\n```js\nawait users.knex().update({ is_admin: 1 }).where({ surname: 'Badger' });\n```\n\n### record(query)\n\nMethod to create a record object from a single row returned by a query.\nThis is called automagically by appending a `.record()` method to the\nend of a query returned by `selectOne()` or `fetchOne()`.\n\n```js\nconst badger = await table.fetchOne({ animal: \"badger\" }).record();\n```\n\n### records(query)\n\nMethod to create record objects from all rows returned by a query.\nThis is called automagically by appending a `.records()` method to the\nend of a query returned by `selectAll()`, `fetchAll()` or `update()`.\n\n```js\nconst badgers = await table.fetchAll({ animal: \"badger\" }).records();\n```\n\n## Functions\n\n### table(database,schema)\n\nA function of convenience which wraps a call to `new Table()`.\n\n```js\nimport { table } from '@abw/badger-database';\nconst tab = table(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Table } from '@abw/badger-database';\nconst tab = new Table(...);\n```\n",
+    "content": "# Table\n\nThis is a wrapper around a database table.\n\n* [Overview](#overview)\n* [Configuration](#configuration)\n  * [table](#table)\n  * [columns](#columns)\n  * [virtualColumns](#virtualcolumns)\n  * [columnSets](#columnsets)\n  * [id](#id)\n  * [keys](#keys)\n  * [queries](#queries)\n  * [fragments](#fragments)\n  * [tableClass](#tableclass)\n  * [recordClass](#recordclass)\n* [Methods](#methods)\n  * [knex()](#knex--)\n  * [raw()](#raw--)\n  * [query(name)](#query-name-)\n  * [insert(data)](#insert-data-)\n  * [insertRow(data)](#insertrow-data-)\n  * [insertRows(data)](#insertrows-data-)\n  * [selectAll(columns)](#selectall-columns-)\n  * [selectOne(columns)](#selectone-columns-)\n  * [fetchAll(where)](#fetchall-where-)\n  * [fetchOne(where)](#fetchone-where-)\n  * [update(set,where)](#update-set-where-)\n  * [record(query)](#record-query-)\n  * [records(query)](#records-query-)\n* [Functions](#functions)\n  * [table(database,schema)](#table-database-schema-)\n\n## Overview\n\nConceptually we think of a table as being a collection of records.  I prefer to use\nplural names (e.g. `users` and `companies` instead of `user` and `company`) in\nkeeping with that paradigm, but you can use any names you like.\n\nThe names of the tables you define for your application don't have to match the names\nof the underlying database table.\n\n## Configuration\n\nTables are defined via the `tables` item in a database configuration.\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      // ... schema for users table\n    },\n    companies: {\n      // ... schema for companies table\n    }\n  }\n)\n```\n\nYou can then access a table object using the `table()` method.\n\n```js\nconst users = database.table('users');\n```\n\nThe configuration items for a table are as follows.\n\n### table\n\nThe default behaviour is to assume that the name of the underlying database table\nis the same as the collection name.  If it isn't then you can use the `table`\nconfiguration option to define it.\n\nFor example, if you want to define a collection of `users` in your application but the\nunderlying table name is `user` then you can define it like so:\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      table: 'user'\n    },\n  }\n)\n```\n\n### columns\n\nThe `columns` configuration item is used to define the columns that you want the\ncollection to have access to.  You don't have to include all of the columns in the\ndatabase table if you don't want to.\n\nIn the simplest case you can define the columns as a string of whitespace delimited\nnames.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: 'id name email'\n    },\n  }\n)\n```\n\nThis is shorthand for specifying them as an array, which you can do if you prefer\nor already have the column names in an array.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: ['id', 'name', 'email']\n    },\n  }\n)\n```\n\nThe third option is to use a hash object to define the columns.  This allows you to\nprovide additional metadata about the columns.  You can add any metadata you like.\nAt the time of writing the metadata isn't used internally, but it might be soon.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: {\n        id: {\n          type: 'id',\n          automatic: true,\n        },\n        name: {\n          type: 'text',\n          required: true,\n        },\n        email: {\n          type: 'text',\n          required: true,\n        }\n      }\n    },\n  }\n)\n```\n\n#### column metadata\n\nTODO: add information about column metadata as and when we start to use it.\n\n### virtualColumns\n\nAny computed columns can be specified as `virtualColumns`.  For example, if you\nhave a user table with separate `forename` and `surname` columns then you might\nwant to add a virtual column that concatenates them to create a `name`.\n\nIn MySQL the `CONCAT()` function can be used.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: 'id forename surname email',\n      virtualColumns: {\n        name: \"CONCAT(users.forename, ' ', users.surname)\"\n      }\n    },\n  }\n)\n```\n\nIn sqlite the `||` operator is used for concatenation so the `name`\nvirtual column would be defined like this:\n\n```js\nvirtualColumns: {\n  name: \"users.forename || ' ' || users.surname\"\n}\n```\n\nNote that it is considered good practice to specify the table and column\nname in these cases, e.g. `users.forename` instead of just `forename`.\nThis will save any ambiguity when you're constructing queries that might\njoin onto other tables.  You might also want to escape the table and/or\ncolumn names if either are reserved words.\n\nFor example, MySQL uses the backtick character to escape names.\n\n```js\nvirtualColumns: {\n  name: \"CONCAT(`users`.`forename`, ' ', `users`.`surname`)\"\n}\n```\n\n### columnSets\n\nYou can define set of columns that provide a shorthand way of referencing\ncommonly used subsets of columns.  By default, queries will use all of the\n`columns` defined.  Any `virtualColumns` will not be included.\n\nYou can define a `default` column set to indicate which columns should be\nincluded in queries by default.  For example, in our `users` table we might\nwant to exclude the `password` and `is_admin` columns, but include the `name`\nvirtual column.\n\n```js\nusers = {\n  columns: 'id forename surname email password is_admin',\n  virtualColumns: {\n    name: \"CONCAT(users.forename, ' ', users.surname)\"\n  },\n  columnSets: {\n    default: 'id forename surname name email',\n  }\n};\n```\n\nThe columns in a column set can be specified as a string of whitespace delimited column\nnames as shown above.  This is shorthand for an array of column names:\n\n```js\ncolumnSets: {\n  default: ['id', 'forename', 'surname', 'name', 'email'],\n}\n```\n\nThe more explicit form is to define an object containing `include` and/or `exclude`\ncolumns.  These operations are performed on the list of `columns`, so `include` can be\nused to add in virtual columns or `exclude` can be used to exclude regular columns\nthat you don't want returned by default.\n\n```js\ncolumnSets: {\n  default: {\n    include: 'name',\n    exclude: 'password is_admin'\n  },\n}\n```\n\nYou can define any of your own named column sets in the same way.\n\n```js\ncolumnSets: {\n  // id forename surname email name\n  default: {\n    include: 'name',\n    exclude: 'password is_admin'\n  },\n  // id forename surname email password is_admin name\n  admin: {\n    include: 'name',\n  },\n  // name email\n  basic: 'name email',\n};\n```\n\n### id\n\nThe `id` configuration item can be used to name the column that is the\nunique identifier for a row.  If you don't specify either `id` or `keys`\nthen it will default to `id`.\n\nFor example, if the `users` table uses the `user_id` column as the unique\nidentifier then you should specify it like so:\n\n```js\nusers: {\n  columns: 'user_id forename surname email',\n  id: 'user_id'\n}\n```\n\n### keys\n\nIn some cases you might have a table with a compound key composed from multiple\ncolumns instead of a single `id` column.  For example, an `employees` table might\nhave a compound key formed from the `user_id` and `company_id` columns.\n\n```js\nemployees: {\n  columns: 'user_id company_id job_title start_date end_date',\n  keys: 'user_id company_id'\n}\n```\n\n### queries\n\nUsed to define named SQL queries that you can then run by calling the\n[query(name)](#query-name-) method specifying the name of the query.\n\nSee the [database queries option](manual/database.html#queries) for examples\nand the [Queries](manual/queries.html) manual page for further information.\n\n### fragments\n\nUse to define commonly used SQL fragments that can be interpolated into\nnamed [queries](#queries).\n\nIn additional to any user-supplied [fragments](#fragments), a number of\nadditional fragments specific to the table will also be defined.  These\nwill all be pre-escaped according to the database client in use.  For\nexample, when using sqlite3, a table column of `albums.id` will be escaped\nas `\"albums\".\"id\"` whereas for MySQL it will be escaped with backticks\ninstead of double quote characters.\n\n* `table` - the table name, e.g. `\"albums\"`\n* `columns` - a comma separated list of all table column names,\ne.g. `\"id\", \"title\", \"year\"`\n* `tcolumns` - a comma separated list of all column names prefixed with\nthe table name, e.g. `\"albums\".\"id\", \"albums\".\"title\", \"albums\".\"year\"`\n\nIn additional any [virtualColumns](#virtualcolumns) are included in the\nfragments.  For example, consider a [virtualColumn](#virtualcolumns) defined\nlike this:\n\n```js\nvirtualColumns: {\n  titleYear:    'title || \" (\" || year || \")\"',\n}\n```\n\nIt can be embedded in SQL queries as `<titleYear>` and will expand\nto `title || \" (\" || year || \")\" as titleYear`.\n\nNote that you are responsible for escaping any table names or columns that\nmight be reserved words in your [virtualColumns](#virtualcolumns) and\n[fragments](#fragments).\n\nSee the [database fragments option](manual/database.html#queries) for examples\nand the [Queries](manual/queries.html) manual page for further information.\n\n### tableClass\n\nYou can create your own subclass of the `Table` module and define your own\nmethods for queries on the table.\n\nHere's a simple `Users` class which implements a `badgers()` method to\nfetch all rows where the surname is `Badger`.\n\n```js\nexport class Users extends Table {\n  badgers() {\n    return this.fetchAll({ surname: \"Badger\" });\n  }\n}\n```\n\nThen in the schema for the `users` class, define the `Users` class as the\n`tableClass` configuration item.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      tableClass: Users\n    },\n  }\n)\n```\n\nNow you can call the `badgers()` method on the table object for the `users` table.\n\n```js\nconst badgers = await database.table('users').badgers()\n```\n\n### recordClass\n\nVarious table methods have the option to convert rows returned from the database into\nrecord objects.  This provides a simple implementation of the Active Record pattern.\n\nThe default [Record](manual/record.html) class provides basic functionality to update\nthe record, delete it, access related records, and so on.\n\nYou can also define your own record subclass for a table in which you can provide\nadditional methods or wrap the default methods to implement additional business logic,\ndata validation, logging, etc.  In this case you should use the `recordClass` configuration\noption to provide a reference to your custom record class.\n\nThis simple example shows how a custom `User` record class can be defined which adds a\n`hello()` method.\n\n```js\nimport { Database, Record } from  \"@abw/badger-database\";\n\n// define User subclass of Record\nclass User extends Record {\n  hello() {\n    return `Hello ${this.forename} ${this.surname}`;\n  }\n}\n\n// create database connection with users table\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      columns: 'id forename surname',\n      recordClass: User,\n    },\n  }\n)\n\n// insert row and convert returned data to a User record\nconst bobby = await database.table('users').insert({\n  forename: 'Bobby',\n  surname: 'Badger',\n}).record()\n\nconsole.log(bobby.hello())    // Hello Bobby Badger\n```\n\n## Methods\n\n### knex()\n\nReturns a Knex query with the table name pre-defined.\n\n```js\nconst badger =\n  await users\n    .knex()\n    .select('forename')\n    .where({ email: \"bobby@badger.com\" })\n    .first();\n```\n### raw()\n\nUsed to generate a raw SQL query for the database.  Equivalent to calling\n`knex.raw()`.\n\n### query(name)\n\nThis method allows you to execute a named query that was previously\ndefined using the [queries](#queries) configuration option.\n\nGiven this database definition:\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    albums: {\n      columns: 'id title'\n      queries: {\n        albumsByNumberOfTracks:\n          'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n          'FROM albums ' +\n          'JOIN tracks ' +\n          'ON tracks.album_id=albums.id ' +\n          'GROUP BY albums.id ' +\n          'ORDER BY n_tracks ',\n      }\n    },\n    tracks: {\n      columns: 'id title album_id'\n    }\n  }\n)\n```\n\nYou can then run the `albumsByNumberOfTracks` query like so:\n\n```js\nconst albums = await database\n  .table(\"albums\")\n  .query('albumsByNumberOfTracks');\n```\n\nYou can embed [fragments](#fragments) in your queries inside angle brackets.\n\nIf the `name` passed to the `query()` method is a single word then it is\nassumed to be a pre-defined named query (and an error will be throw if it\ndoesn't exist).  Otherwise it is assumed to be a raw SQL query.  The query\ncan also include embedded fragments, including those that are auto-generated\nsuch as `table` for the table name and `columns` for the table columns.\n\n```js\nconst albums = await database\n  .table('albums')\n  .query('SELECT <columns> FROM <table> ORDER BY year,id');\n```\n\n### insert(data)\n\nInsert data into the table.  You can pass a single object row or an array of\nrows to insert.  This method will then delegate to [insertRow()](#insertrow-data-)\nor [insertRows()](#insertrows-data-) as appropriate\n\nSingle row:\n\n```js\nconst bobby = await users.insert({\n  forename: 'Bobby',\n  surname: 'Badger',\n  email: 'bobby@badger.com',\n  is_admin: 1,\n})\n```\n\nMultiple rows:\n\n```js\nconst badgers = await users.insert([\n  {\n    forename: 'Bobby',\n    surname: 'Badger',\n    email: 'bobby@badger.com',\n    is_admin: 1,\n  },\n  {\n    forename: 'Brian',\n    surname: 'Badger',\n    email: 'brian@badger.com',\n    is_admin: 0,\n  },\n  {\n    forename: 'Simon',\n    surname: 'Stoat',\n    email: 'simon@stoat.com',\n  }\n]);\n```\n\n### insertRow(data)\n\nThis inserts a single row into the database and then fetches the row back\nout again.  Note that this is different to the [insert() method](https://knexjs.org/guide/query-builder.html#insert)\nprovided by Knex.js which only returns the ID of the inserted record.\n\n```js\nconst bobby = await users.insertRow({\n  forename: 'Bobby',\n  surname: 'Badger',\n  email: 'bobby@badger.com',\n  is_admin: 1,\n})\n```\n\nOne benefit of this approach is in situations where you want to insert a row and then do\nsomething with the inserted data, e.g. return it via an API response.  By fetching the\nrecord after it has been inserted we guarantee that any automatically created column\nvalues are included.  For example, this would include any generated ID value, and also\nany columns that have default values, e.g. a `created` column that defaults to have the\ncurrent timestamp.\n\nAnother feature is that the value returned from the `insertRow()` method is a proxy which\nintercepts the `record()` method call and converts the raw row data to a record object.\n\n```js\nconst bobby = await users.insertRow({\n  forename: 'Bobby',\n  surname: 'Badger',\n  email: 'bobby@badger.com',\n  is_admin: 1,\n}).record()   // convert to record object\n```\n\nThe downside is that you're performing two database queries (an insert and a select) instead\nof one.  If you don't want or need this functionality then you can use the underlying\nKnex.js `insert()` method instead.\n\n### insertRows(data)\n\nThis inserts multiple row into the database and then fetches the rows back\nout again, as per [insertRow()](#insertrow-data-).\n\n```js\nconst badgers = await users.insertRows([\n  {\n    forename: 'Bobby',\n    surname: 'Badger',\n    email: 'bobby@badger.com',\n    is_admin: 1,\n  },\n  {\n    forename: 'Brian',\n    surname: 'Badger',\n    email: 'brian@badger.com',\n    is_admin: 0,\n  },\n  {\n    forename: 'Simon',\n    surname: 'Stoat',\n    email: 'simon@stoat.com',\n  }\n]);\n```\n\nThe method returns an array of inerted row.  You can call the `records()` method to\nconvert them to [Record](manual/record.html) objects.\n\n### selectAll(columns)\n\nReturns a select query.  The optional `columns` argument can be used to\nspecify the [columns](#columns) or [columnSets](#columnsets) you want to select.\nOtherwise the default column set will be used.\n\nTo include the columns named in a column set, include the name of the column\nset prefixed by `...`, e.g. `...admin` to include the columns defined in the\n`admin` column set.\n\n```js\nconst rows = await table.selectAll();\nconst rows = await table.selectAll(\"name email ...admin\");\n```\n\nThe method returns a proxy around the Knex query.  You can call additional Knex\nmethods on it.\n\n```js\nconst rows = await table.selectAll().where({ animal: \"badger\" });\n```\n\nYou can also call the `records()` method to convert the data rows to\n[Record](manual/record.html) objects.\n\n```js\nconst records = await table.selectAll().where({ animal: \"badger\" }).records();\n```\n\n### selectOne(columns)\n\nReturns a select query to fetch a single row.  The optional `columns` argument\ncan be used to specify the columns or column sets you want to select.  Otherwise\nthe default column set will be used.\n\nAs with [selectAll()](#selectall-columns-) you can call additional Knex methods\non the returned query object.  You can also call the `record()` method to convert\nthe row data to a [Record](manual/record.html) object.\n\n```js\nconst row = await table.selectOne();\nconst row = await table.selectOne(\"column1 column2 ...columnset\");\nconst row = await table.selectOne().where({ email: \"bobby@badger.com\" });\nconst rec = await table.selectOne().where({ email: \"bobby@badger.com\" }).record();\n```\n\n### fetchAll(where)\n\nReturns a select query with the default columns selected.  The optional\n`where` argument can be used to provide additional constraints.  This is\nshorthand for chaining a `where()` method.\n\nYou can also chain the `records()` method to convert the data rows to\n[Record](manual/record.html) objects.\n\n```js\nconst rows = await table.fetchAll();\nconst rows = await table.fetchAll({ animal: \"badger\" });\nconst recs = await table.fetchAll({ animal: \"badger\" }).records();\n```\n\n### fetchOne(where)\n\nReturns a select query that fetches a single record with the default columns\nselected.  The optional `where` argument can be used to provide additional\nconstraints.  This is shorthand for chaining a `where()` method.\n\nYou can also chain the `record()` method to convert the data row to a\n[Record](manual/record.html) object.\n\n```js\nconst row = await table.fetchOne();\nconst row = await table.fetchOne({ animal: \"badger\" });\nconst rec = await table.fetchOne({ animal: \"badger\" }).record();\n```\n\n### update(set,where)\n\nThis method can be used to update one or more rows in the database.\nThe first argument is an object defining updates to be set in the rows.\nThe second argument is an object providing the criteria to match rows.\n\nFor example, this call will set the `is_admin` column to `1` for all rows\nwhere the `surname` is `Badger`.\n\n```js\nawait users.update({ is_admin: 1 }, { surname: 'Badger' });\n```\n\nThe `update()` method works like the [insertRows()](#insertrows-data-) method\nin that it will perform two queries: the first to apply the changes and the second\nto re-fetch all the matching rows from the database.\n\n```js\nconst badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' });\n```\n\nThis ensures that the data returned will include any columns that are updated\nby the database.  For example, you might have a `modified` column which is\nautomatically updated when the record is modified.  In MySQL that column\nwould be defined something like this:\n\n```sql\nmodified TIMESTAMP NOT NULL\n         DEFAULT CURRENT_TIMESTAMP\n         ON UPDATE CURRENT_TIMESTAMP\n```\n\nWhen you call the `update()` method the rows will contain the `modified` data\nitems reflecting the new values set in the database table rows.\n\nThe rows that are returned by the `update()` method can be converted to records\nby chaining the `records()` method.\n\n```js\nconst badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();\n```\n\nIf you don't want this behaviour and just want to update the rows without re-fetching\nthem, then you can \"roll your own\" update using the Knex query returned by the\n[knex()](#knex--) method.\n\n```js\nawait users.knex().update({ is_admin: 1 }).where({ surname: 'Badger' });\n```\n\n### record(query)\n\nMethod to create a record object from a single row returned by a query.\nThis is called automagically by appending a `.record()` method to the\nend of a query returned by `selectOne()` or `fetchOne()`.\n\n```js\nconst badger = await table.fetchOne({ animal: \"badger\" }).record();\n```\n\n### records(query)\n\nMethod to create record objects from all rows returned by a query.\nThis is called automagically by appending a `.records()` method to the\nend of a query returned by `selectAll()`, `fetchAll()` or `update()`.\n\n```js\nconst badgers = await table.fetchAll({ animal: \"badger\" }).records();\n```\n\n## Functions\n\n### table(database,schema)\n\nA function of convenience which wraps a call to `new Table()`.\n\n```js\nimport { table } from '@abw/badger-database';\nconst tab = table(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Table } from '@abw/badger-database';\nconst tab = new Table(...);\n```\n",
     "static": true,
     "access": "public"
   },
@@ -3820,7 +3918,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/schema.md",
     "name": "./manual/schema.md",
-    "content": "# Schema\n\nThe `Schema` object is used internally to manage the schema\nfor a table.  You probably don't need to know about this unless\nyou're looking under the hood.\n\n\n* [Configuration](#configuration)\n  * [table](#table)\n  * [columns](#columns)\n  * [virtualColumns](#virtualcolumns)\n  * [columnSets](#columnsets)\n  * [id](#id)\n  * [keys](#keys)\n  * [relations](#relations)\n  * [tableClass](#tableclass)\n  * [recordClass](#recordclass)\n* [Properties](#properties)\n  * [database](#database)\n  * [table](#table)\n  * [id](#id)\n  * [keys](#keys)\n  * [keyIndex](#keyindex)\n  * [columnIndex](#columnindex)\n  * [columnNames](#columnnames)\n  * [virtualColumns](#virtualcolumns)\n  * [allColumns](#allcolumns)\n  * [columnSets](#columnSets)\n  * [relations](#relations)\n* [Methods](#methods)\n  * [prepareColumns(schema)](#preparecolumns-schema-)\n  * [prepareColumnSets(schema)](#preparecolumnsets-schema-)\n  * [prepareKeys(schema)](#preparekeys-schema-)\n  * [column(name)](#column-name-)\n  * [columnSet(name)](#columnset-name-)\n  * [defaultColumns()](#defaultcolumns--)\n  * [columns(names)](#columns-names-)\n  * [resolveColumns(names)](#resolvecolumns-names-)\n  * [identity(data)](#identity-data-)\n* [Functions](#functions)\n  * [schema(database,tableSchema)](#schema-database-tableschema-)\n\n## Configuration\n\nA schema is created with two arguments.  The first is a `Database`\nobject reference, the second is a data object defining the schema\nfor the table.\n\n```js\nconst scheme = new Scheme(\n  database,\n  {\n    table: 'users',\n    columns: 'id name email'\n  }\n)\n```\n\nThe configuration options are the same as for the [Table](manual/table.html).\n\n### table\n\nThe database table name.\n\n### columns\n\nThe columns in the table that you want to be able to access.\n\n### virtualColumns\n\nColumns that are computed from other columns.\n\n### columnSets\n\nNamed sets of columns.\n\n### id\n\nThe column that uniquely identifies each row.\n\n### keys\n\nThe columns that uniquely identifies each row, used where a table\nhas a compound key.\n\n### relations\n\nUsed to define relations that a table has to other tables.\n\n### tableClass\n\nA custom class to use for the table instance.\n\n### recordClass\n\nA custom class to use for the record instances.\n\n## Properties\n\n### database\n\nA reference to the [Database](manual/database.html) object.\n\n### table\n\nThe name of the underlying database table.\n\n### id\n\nThe column that uniquely identifies each row.\n\n### keys\n\nThe columns that uniquely identifies each row, used where a table\nhas a compound key.\n\n### keyIndex\n\nA lookup table for [keys](#keys) mapping the column name to a\n`true` value.  Used to quickly determine if a column is a key.\n\n### columnIndex\n\nA lookup table mapping column names to their specification.\n\n### columnNames\n\nAn array of all column names.\n\n### virtualColumns\n\nA lookup table mapping virtual column names to their definitions.\n\n### allColumns\n\nA lookup table mapping the names of all columns (real columns and virtual\ncolumns) to their definitions.\n\n### columnSets\n\nA lookup table mapping the names of all column sets to their definitions.\n\n### relations\n\nA lookup table mapping relation names to their definitions.\n\n## Methods\n\n### prepareColumns(schema)\n\nCreates the [columnIndex](#columnindex) and [columnNames](#columnnames)\nproperties.\n\n### prepareColumnSets(schema)\n\nPrepares the column sets and creates the [columnSets](#columnsets) property.\n\n###  prepareKeys(schema)\n\nPrepares any id or keys definitions and sets the [id](#id),\n[keys](#keys) and [keyIndex](#keyindex) properties.\n\n### column(name)\n\nReturns a real column, a virtual column or throws an error.\n\n### columnSet(name)\n\nReturns a column set.\n\n### defaultColumns()\n\nReturn the default column set, from `this.columnSets.default` or\n`this.columns`.\n\n### columns(names)\n\nExpands a set of column names.\n\n### resolveColumns(names)\n\nResolves a set of columns and/or column sets.\n\n### identity(data)\n\nReturns an object containing the `id` or `keys` from the data\npasses.\n\n## Functions\n\n### schema(database,tableSchema)\n\nA function of convenience which wraps a call to `new Schema()`.\n\n```js\nimport { schema } from '@abw/badger-database';\nconst sch = schema(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Schema } from '@abw/badger-database';\nconst sch = new Schema(...);\n```\n",
+    "content": "# Schema\n\nThe `Schema` object is used internally to manage the schema\nfor a table.  You probably don't need to know about this unless\nyou're looking under the hood.\n\n\n* [Configuration](#configuration)\n  * [table](#table)\n  * [columns](#columns)\n  * [virtualColumns](#virtualcolumns)\n  * [columnSets](#columnsets)\n  * [id](#id)\n  * [keys](#keys)\n  * [relations](#relations)\n  * [queries](#queries)\n  * [fragments](#fragments)\n  * [tableClass](#tableclass)\n  * [recordClass](#recordclass)\n* [Properties](#properties)\n  * [database](#database)\n  * [table](#table)\n  * [id](#id)\n  * [keys](#keys)\n  * [keyIndex](#keyindex)\n  * [columnIndex](#columnindex)\n  * [columnNames](#columnnames)\n  * [virtualColumns](#virtualcolumns)\n  * [allColumns](#allcolumns)\n  * [columnSets](#columnSets)\n  * [relations](#relations)\n  * [fragments](#fragments)\n* [Methods](#methods)\n  * [prepareColumns(schema)](#preparecolumns-schema-)\n  * [prepareColumnSets(schema)](#preparecolumnsets-schema-)\n  * [prepareKeys(schema)](#preparekeys-schema-)\n  * [prepareFragments(schema)](#preparefragments-schema-)\n  * [column(name)](#column-name-)\n  * [columnSet(name)](#columnset-name-)\n  * [defaultColumns()](#defaultcolumns--)\n  * [columns(names)](#columns-names-)\n  * [resolveColumns(names)](#resolvecolumns-names-)\n  * [identity(data)](#identity-data-)\n* [Functions](#functions)\n  * [schema(database,tableSchema)](#schema-database-tableschema-)\n\n## Configuration\n\nA schema is created with two arguments.  The first is a `Database`\nobject reference, the second is a data object defining the schema\nfor the table.\n\n```js\nconst scheme = new Scheme(\n  database,\n  {\n    table: 'users',\n    columns: 'id name email'\n  }\n)\n```\n\nThe configuration options are the same as for the [Table](manual/table.html).\n\n### table\n\nThe database table name.\n\n### columns\n\nThe columns in the table that you want to be able to access.\n\n### virtualColumns\n\nColumns that are computed from other columns.\n\n### columnSets\n\nNamed sets of columns.\n\n### id\n\nThe column that uniquely identifies each row.\n\n### keys\n\nThe columns that uniquely identifies each row, used where a table\nhas a compound key.\n\n### relations\n\nUsed to define relations that a table has to other tables.\n\n### queries\n\nUsed to define named SQL queries that are local to the table.\n\n### fragments\n\nUsed to define named SQL query fragments that can be interpolated\ninto [queries](#queries).\n\n### tableClass\n\nA custom class to use for the table instance.\n\n### recordClass\n\nA custom class to use for the record instances.\n\n## Properties\n\n### database\n\nA reference to the [Database](manual/database.html) object.\n\n### table\n\nThe name of the underlying database table.\n\n### id\n\nThe column that uniquely identifies each row.\n\n### keys\n\nThe columns that uniquely identifies each row, used where a table\nhas a compound key.\n\n### keyIndex\n\nA lookup table for [keys](#keys) mapping the column name to a\n`true` value.  Used to quickly determine if a column is a key.\n\n### columnIndex\n\nA lookup table mapping column names to their specification.\n\n### columnNames\n\nAn array of all column names.\n\n### virtualColumns\n\nA lookup table mapping virtual column names to their definitions.\n\n### allColumns\n\nA lookup table mapping the names of all columns (real columns and virtual\ncolumns) to their definitions.\n\n### columnSets\n\nA lookup table mapping the names of all column sets to their definitions.\n\n### relations\n\nA lookup table mapping relation names to their definitions.\n\n### fragments\n\nA lookup table mapping SQL query fragments to their definitions.\n\n## Methods\n\n### prepareColumns(schema)\n\nCreates the [columnIndex](#columnindex) and [columnNames](#columnnames)\nproperties.\n\n### prepareColumnSets(schema)\n\nPrepares the column sets and creates the [columnSets](#columnsets) property.\n\n###  prepareKeys(schema)\n\nPrepares any id or keys definitions and sets the [id](#id),\n[keys](#keys) and [keyIndex](#keyindex) properties.\n\n###  prepareFragments(schema)\n\nMerges any user-supplied [fragments](#fragments) with additional\nfragments specific to the table.  These will all be pre-escaped\naccording to the database client in use.  For example, when using\nsqlite3, a table column of `albums.id` will be escaped as `\"albums\".\"id\"`\nwhereas for MySQL it will be escaped with backticks instead of double\nquote characters.\n\n* `table` - the table name, e.g. `\"albums\"`\n* `columns` - a comma separated list of all table column names,\ne.g. `\"id\", \"title\", \"year\"`\n* `tcolumns` - a comma separated list of all column names prefixed with\nthe table name, e.g. `\"albums\".\"id\", \"albums\".\"title\", \"albums\".\"year\"`\n\nIn additional any [virtualColumns](#virtualcolumns) are included in the\nfragments.  For example, consider a [virtualColumn](#virtualcolumns) defined\nlike this:\n\n```js\nvirtualColumns: {\n  titleYear:    'title || \" (\" || year || \")\"',\n}\n```\n\nIt can be embedded in SQL queries as `<titleYear>` and will expand\nto `title || \" (\" || year || \")\" as titleYear`.\n\nNote that you are responsible for escaping any table names or columns that\nmight be reserved words in your [virtualColumns](#virtualcolumns) and\n[fragments](#fragments).\n\n### column(name)\n\nReturns a real column, a virtual column or throws an error.\n\n### columnSet(name)\n\nReturns a column set.\n\n### defaultColumns()\n\nReturn the default column set, from `this.columnSets.default` or\n`this.columns`.\n\n### columns(names)\n\nExpands a set of column names.\n\n### resolveColumns(names)\n\nResolves a set of columns and/or column sets.\n\n### identity(data)\n\nReturns an object containing the `id` or `keys` from the data\npasses.\n\n## Functions\n\n### schema(database,tableSchema)\n\nA function of convenience which wraps a call to `new Schema()`.\n\n```js\nimport { schema } from '@abw/badger-database';\nconst sch = schema(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Schema } from '@abw/badger-database';\nconst sch = new Schema(...);\n```\n",
     "static": true,
     "access": "public"
   },

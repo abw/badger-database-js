@@ -74,7 +74,6 @@ export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
     this.schema        = new Schema(database, schema)
-    // this.queries       = new Queries(schema);
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
@@ -83,6 +82,12 @@ export class Table {
   }
   knex() {
     return this.database.knex(this.schema.table);
+  }
+  raw() {
+    return this.database.raw(...arguments);
+  }
+  query(name) {
+    return this.raw(this.schema.query(name));
   }
   insert(data) {
     return isArray(data)

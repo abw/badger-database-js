@@ -7,6 +7,7 @@ The `Database` class provides a wrapper around a
 * [Configuration](#configuration)
   * [Knex Configuration Options](#knex-configuration-options)
   * [queries](#queries)
+  * [fragments](#fragments)
   * [tables](#tables)
   * [tablesClass](#tablesclass)
   * [tablesObject](#tablesobject)

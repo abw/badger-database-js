@@ -60,7 +60,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Schema.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from "@abw/badger-utils";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Queries from "./Queries.js";
+import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from "@abw/badger-utils";
 import { addDebug } from "@abw/badger";
 
 const DEFAULT_ID = 'id';
@@ -75,11 +76,15 @@ export class Schema {
     this.prepareKeys(schema);
     this.prepareColumnSets(schema);
     this.prepareFragments(schema);
-
+    this.queries = new Queries({
+      queries:   schema.queries,
+      fragments: this.fragments
+    });
     // TODO: column sets for select, update, etc.
 
-
     addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
+    this.debug('columnIndex: ', this.columnIndex);
+    this.debug('fragments: ', this.fragments);
   }
   prepareColumns(schema) {
     const table      = schema.table;
@@ -131,12 +136,26 @@ export class Schema {
     }
     this.keyIndex = splitHash(this.keys);
   }
-  prepareFragments() {
+  prepareFragments(schema) {
+    const escape    = this.database.escape.bind(this.database);
+    const fragments = schema.fragments || { };
+    const vcolumns  = Object.entries(this.virtualColumns).reduce(
+      (result, [name, defn]) =&gt; {
+        result[name] = `${defn} as ${name}`;
+        return result;
+      },
+      { }
+    );
     this.fragments = {
-      table:    this.database.escape(this.table),
-      columns:  this.columnNames.join(', '),
-      tcolumns: this.columnNames.map( n =&gt; this.columnIndex[n].tableColumn ).join(', '),
-    }
+      table:    escape(this.table),
+      columns:  this.columnNames.map(escape).join(', '),
+      tcolumns: this.columnNames.map( n =&gt; escape(this.columnIndex[n].tableColumn) ).join(', '),
+      ...vcolumns,
+      ...fragments
+    };
+  }
+  query(name) {
+    return this.queries.query(name);
   }
 
   // TODO: refactor remaining methods

@@ -10,10 +10,14 @@ This is a wrapper around a database table.
   * [columnSets](#columnsets)
   * [id](#id)
   * [keys](#keys)
+  * [queries](#queries)
+  * [fragments](#fragments)
   * [tableClass](#tableclass)
   * [recordClass](#recordclass)
 * [Methods](#methods)
   * [knex()](#knex--)
+  * [raw()](#raw--)
+  * [query(name)](#query-name-)
   * [insert(data)](#insert-data-)
   * [insertRow(data)](#insertrow-data-)
   * [insertRows(data)](#insertrows-data-)
@@ -288,6 +292,52 @@ employees: {
 }
 ```
 
+### queries
+
+Used to define named SQL queries that you can then run by calling the
+[query(name)](#query-name-) method specifying the name of the query.
+
+See the [database queries option](manual/database.html#queries) for examples
+and the [Queries](manual/queries.html) manual page for further information.
+
+### fragments
+
+Use to define commonly used SQL fragments that can be interpolated into
+named [queries](#queries).
+
+In additional to any user-supplied [fragments](#fragments), a number of
+additional fragments specific to the table will also be defined.  These
+will all be pre-escaped according to the database client in use.  For
+example, when using sqlite3, a table column of `albums.id` will be escaped
+as `"albums"."id"` whereas for MySQL it will be escaped with backticks
+instead of double quote characters.
+
+* `table` - the table name, e.g. `"albums"`
+* `columns` - a comma separated list of all table column names,
+e.g. `"id", "title", "year"`
+* `tcolumns` - a comma separated list of all column names prefixed with
+the table name, e.g. `"albums"."id", "albums"."title", "albums"."year"`
+
+In additional any [virtualColumns](#virtualcolumns) are included in the
+fragments.  For example, consider a [virtualColumn](#virtualcolumns) defined
+like this:
+
+```js
+virtualColumns: {
+  titleYear:    'title || " (" || year || ")"',
+}
+```
+
+It can be embedded in SQL queries as `<titleYear>` and will expand
+to `title || " (" || year || ")" as titleYear`.
+
+Note that you are responsible for escaping any table names or columns that
+might be reserved words in your [virtualColumns](#virtualcolumns) and
+[fragments](#fragments).
+
+See the [database fragments option](manual/database.html#queries) for examples
+and the [Queries](manual/queries.html) manual page for further information.
+
 ### tableClass
 
 You can create your own subclass of the `Table` module and define your own
@@ -383,6 +433,62 @@ const badger =
     .select('forename')
     .where({ email: "bobby@badger.com" })
     .first();
+```
+### raw()
+
+Used to generate a raw SQL query for the database.  Equivalent to calling
+`knex.raw()`.
+
+### query(name)
+
+This method allows you to execute a named query that was previously
+defined using the [queries](#queries) configuration option.
+
+Given this database definition:
+
+```js
+const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    albums: {
+      columns: 'id title'
+      queries: {
+        albumsByNumberOfTracks:
+          'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+          'FROM albums ' +
+          'JOIN tracks ' +
+          'ON tracks.album_id=albums.id ' +
+          'GROUP BY albums.id ' +
+          'ORDER BY n_tracks ',
+      }
+    },
+    tracks: {
+      columns: 'id title album_id'
+    }
+  }
+)
+```
+
+You can then run the `albumsByNumberOfTracks` query like so:
+
+```js
+const albums = await database
+  .table("albums")
+  .query('albumsByNumberOfTracks');
+```
+
+You can embed [fragments](#fragments) in your queries inside angle brackets.
+
+If the `name` passed to the `query()` method is a single word then it is
+assumed to be a pre-defined named query (and an error will be throw if it
+doesn't exist).  Otherwise it is assumed to be a raw SQL query.  The query
+can also include embedded fragments, including those that are auto-generated
+such as `table` for the table name and `columns` for the table columns.
+
+```js
+const albums = await database
+  .table('albums')
+  .query('SELECT <columns> FROM <table> ORDER BY year,id');
 ```
 
 ### insert(data)
