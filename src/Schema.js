@@ -6,19 +6,16 @@ const COLUMN_SET_PREFIX = /^(@|\.\.\.)/;
 
 export class Schema {
   constructor(database, schema) {
-    this.database = database || fail("No database specified");
-    this.table    = schema.table || fail("No table name specified");
-
+    this.database       = database || fail("No database specified");
+    this.table          = schema.table || fail("No table name specified");
+    this.relations      = schema.relations || { };
     this.prepareColumns(schema);
     this.prepareKeys(schema);
     this.prepareColumnSets(schema);
-
-    this.virtualColumns = schema.virtualColumns || { };
-    this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };
-    this.relations      = schema.relations || { };
+    this.prepareFragments(schema);
 
     // TODO: column sets for select, update, etc.
-    //this.prepareFragments(schema);
+
 
     addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
   }
@@ -37,7 +34,14 @@ export class Schema {
         return value;
       }
     )
-    this.columnNames  = Object.keys(this.columnIndex);
+    this.columnNames    = Object.keys(this.columnIndex);
+    this.virtualColumns = schema.virtualColumns || { };
+    this.allColumns     = {
+      // ...splitHash(this.columnNames),
+      // ...splitHash(Object.keys(this.virtualColumns))
+      ...this.columnIndex,
+      ...this.virtualColumns
+    };
   }
   prepareColumnSets(schema) {
     const index = splitHash(schema.columnSets, () => ({ }))
@@ -65,14 +69,13 @@ export class Schema {
     }
     this.keyIndex = splitHash(this.keys);
   }
-  /*
   prepareFragments() {
     this.fragments = {
       table:    this.database.escape(this.table),
-      tcolumns: this.tableColumns,
+      columns:  this.columnNames.join(', '),
+      tcolumns: this.columnNames.map( n => this.columnIndex[n].tableColumn ).join(', '),
     }
   }
-  */
 
   // TODO: refactor remaining methods
   column(name) {

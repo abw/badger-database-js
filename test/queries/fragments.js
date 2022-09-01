@@ -1,5 +1,5 @@
 import test from 'ava';
-import Queries from '../src/Queries.js'
+import Queries from '../../src/Queries.js'
 
 const spec = {
   debug: false,

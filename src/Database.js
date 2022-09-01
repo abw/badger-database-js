@@ -1,9 +1,10 @@
-import { fail } from '@abw/badger-utils';
 import Config from './Config.js'
 import Connection from './Connection.js'
 import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
+import Queries from './Queries.js';
+import { fail } from '@abw/badger-utils';
 
 const escapeChars = {
   mysql:  '`',
@@ -18,6 +19,7 @@ export class Database {
   constructor(params={ }) {
     const config    = { ...defaults, ...Config, ...params };
     this.connection = new Connection(config);
+    this.queries    = new Queries(config);
     this.tables     = config.tablesObject || new config.tablesClass(config.tables);
     this.model      = modelProxy(this);
     this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;
@@ -30,6 +32,9 @@ export class Database {
   }
   raw() {
     return this.connection.raw(...arguments);
+  }
+  query(name) {
+    return this.raw(this.queries.query(name));
   }
   table(name) {
     return this.state.table[name]

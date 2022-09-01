@@ -56,9 +56,35 @@ export const musicTables = {
   },
 };
 
+export const musicFragments = {
+  selectAlbumsWithTrackCount:
+    'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+    'FROM albums ' +
+    'JOIN tracks ' +
+    'ON tracks.album_id=albums.id ' +
+    'GROUP BY albums.id'
+}
+
+export const musicQueries = {
+  albumsByNumberOfTracks:
+    '<selectAlbumsWithTrackCount> ' +
+    'ORDER BY n_tracks ',
+  albumWithMostTracks:
+    '<selectAlbumsWithTrackCount> ' +
+    'ORDER BY n_tracks DESC ' +
+    'LIMIT 1',
+  theBestAlbumEverRecorded:
+    'SELECT * ' +
+    'FROM albums ' +
+    'WHERE title="The Dark Side of the Moon"'
+}
+
+
 export const musicdb = createDatabase({
   ...databaseConfig,
-  tables: musicTables
+  tables: musicTables,
+  fragments: musicFragments,
+  queries: musicQueries
 });
 
 export const createMusicDb = async (database=musicdb) => {

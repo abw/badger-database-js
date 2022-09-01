@@ -20,6 +20,12 @@ export class MockDatabase {
   raw(...args) {
     return "[RAW:" + args.join(':') + "]";
   }
+  escape(name) {
+    return name
+      .split(/\./)
+      .map( part => '"' + part + '"')
+      .join('.');
+  }
 }
 
 export const mockDatabase = new MockDatabase();

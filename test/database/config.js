@@ -1,5 +1,5 @@
 import test from 'ava';
-import { connection, pool } from '../src/Config.js'
+import { connection, pool } from '../../src/Config.js'
 
 test(
   'config host',
