@@ -60,6 +60,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-utils~tables",
+    "class/src/Tables.js~Tables.html",
+    "<span>Tables</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
     "@abw/badger-utils~where",
     "class/src/Operator/Where.js~Where.html",
     "<span>Where</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -1138,6 +1144,30 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-update",
     "src/Table.js~Table#update",
     "method"
+  ],
+  [
+    "src/tables.js",
+    "file/src/Tables.js.html",
+    "src/Tables.js",
+    "file"
+  ],
+  [
+    "src/tables.js~tables#constructor",
+    "class/src/Tables.js~Tables.html#instance-constructor-constructor",
+    "src/Tables.js~Tables#constructor",
+    "method"
+  ],
+  [
+    "src/tables.js~tables#table",
+    "class/src/Tables.js~Tables.html#instance-method-table",
+    "src/Tables.js~Tables#table",
+    "method"
+  ],
+  [
+    "src/tables.js~tables#tables",
+    "class/src/Tables.js~Tables.html#instance-member-tables",
+    "src/Tables.js~Tables#tables",
+    "member"
   ],
   [
     "src/utils.js",

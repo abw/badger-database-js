@@ -37,7 +37,7 @@ For further information please read the [documentation](https://abw.github.io/ba
 
 ## TODO
 
-Table relations.
+Table relations
 
 Table queries.
 

@@ -34,6 +34,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Schema.js~Schema.html">Schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connection">connection</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-database">database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
@@ -63,19 +64,23 @@ import Config from './Config.js'
 import Connection from './Connection.js'
 import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
+import Tables from './Tables.js';
 
 const escapeChars = {
   mysql:  '`',
   mysql2: '`',
   default: '"',
 };
+const defaults = {
+  tablesClass: Tables
+};
 
 export class Database {
   constructor(params={ }) {
-    const config    = { ...Config, ...params };
+    const config    = { ...defaults, ...Config, ...params };
     this.connection = new Connection(config);
+    this.tables     = config.tablesObject || new config.tablesClass(config.tables);
     this.model      = modelProxy(this);
-    this.tables     = config.tables || { };
     this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;
     this.state      = {
       table: { },
@@ -92,7 +97,7 @@ export class Database {
       ||=  this.initTable(name);
   }
   hasTable(name) {
-    return this.tables[name];
+    return this.tables.table(name);
   }
   initTable(name) {
     const schema = this.hasTable(name) || fail("Invalid table specified: " + name);
