@@ -11,7 +11,6 @@ you're looking under the hood.
   * [config](#config)
   * [knex](#knex)
 * [Methods](#methods)
-  * [query()](#query--)
   * [raw(sql)](#raw-sql-)
   * [pool()](#pool--)
   * [acquire()](#acquire--)
@@ -36,23 +35,19 @@ A reference to the underlying Knex function/object.
 
 ## Methods
 
-### query()
-
-TODO - subject to change
-
 ### raw(sql)
 
 A method to execute a raw query on the underlying Knex
 object.
 
 ```js
-connection.raw(query);
+connection.raw(sql);
 ```
 
 This is equivalent to:
 
 ```js
-connection.knex.raw(...arguments);
+connection.knex.raw(sql);
 ```
 
 ### pool()

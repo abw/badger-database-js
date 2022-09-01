@@ -55,7 +55,7 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#connection" data-ice="link">connection</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#model" data-ice="link">model</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#methods" data-ice="link">Methods</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#query-table-" data-ice="link">query(table)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#knex--" data-ice="link">knex()</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#raw-sql-" data-ice="link">raw(sql)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#table-name-" data-ice="link">table(name)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#escape-name-" data-ice="link">escape(name)</a></li>
@@ -80,7 +80,7 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#tableclass" data-ice="link">tableClass</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#recordclass" data-ice="link">recordClass</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#methods" data-ice="link">Methods</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#query--" data-ice="link">query()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#knex--" data-ice="link">knex()</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insert-data-" data-ice="link">insert(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrow-data-" data-ice="link">insertRow(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrows-data-" data-ice="link">insertRows(data)</a></li>
@@ -122,7 +122,6 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#config" data-ice="link">config</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#knex" data-ice="link">knex</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#methods" data-ice="link">Methods</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#query--" data-ice="link">query()</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#raw-sql-" data-ice="link">raw(sql)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#pool--" data-ice="link">pool()</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#acquire--" data-ice="link">acquire()</a></li>
@@ -189,7 +188,7 @@
 </ul>
 </li>
 <li><a href="#methods">Methods</a><ul>
-<li><a href="#query">query</a></li>
+<li><a href="#knex--">knex()</a></li>
 <li><a href="#insert-data-">insert(data)</a></li>
 <li><a href="#insertrow-data-">insertRow(data)</a></li>
 <li><a href="#insertrows-data-">insertRows(data)</a></li>
@@ -438,10 +437,10 @@ const bobby = await database.table('users').insert({
 }).record()
 
 console.log(bobby.hello())    // Hello Bobby Badger</code></code></pre>
-<h2 id="methods">Methods</h2><h3 id="query--">query()</h3><p>Returns a Knex query with the table name pre-defined.</p>
+<h2 id="methods">Methods</h2><h3 id="knex--">knex()</h3><p>Returns a Knex query with the table name pre-defined.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const badger =
   await users
-    .query()
+    .knex()
     .select('forename')
     .where({ email: "bobby@badger.com" })
     .first();</code></code></pre>
@@ -587,9 +586,9 @@ items reflecting the new values set in the database table rows.</p>
 by chaining the <code>records()</code> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();</code></code></pre>
 <p>If you don't want this behaviour and just want to update the rows without re-fetching
-them, then you can "roll your own" update using the Knex query returned by the <code>query()</code>
-method.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">await users.query().update({ is_admin: 1 }).where({ surname: 'Badger' });</code></code></pre>
+them, then you can "roll your own" update using the Knex query returned by the
+<a href="#knex--">knex()</a> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.knex().update({ is_admin: 1 }).where({ surname: 'Badger' });</code></code></pre>
 <h3 id="record-query-">record(query)</h3><p>Method to create a record object from a single row returned by a query.
 This is called automagically by appending a <code>.record()</code> method to the
 end of a query returned by <code>selectOne()</code> or <code>fetchOne()</code>.</p>

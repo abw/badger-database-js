@@ -13,7 +13,7 @@ This is a wrapper around a database table.
   * [tableClass](#tableclass)
   * [recordClass](#recordclass)
 * [Methods](#methods)
-  * [query](#query)
+  * [knex()](#knex--)
   * [insert(data)](#insert-data-)
   * [insertRow(data)](#insertrow-data-)
   * [insertRows(data)](#insertrows-data-)
@@ -372,14 +372,14 @@ console.log(bobby.hello())    // Hello Bobby Badger
 
 ## Methods
 
-### query()
+### knex()
 
 Returns a Knex query with the table name pre-defined.
 
 ```js
 const badger =
   await users
-    .query()
+    .knex()
     .select('forename')
     .where({ email: "bobby@badger.com" })
     .first();
@@ -613,11 +613,11 @@ const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).recor
 ```
 
 If you don't want this behaviour and just want to update the rows without re-fetching
-them, then you can "roll your own" update using the Knex query returned by the `query()`
-method.
+them, then you can "roll your own" update using the Knex query returned by the
+[knex()](#knex--) method.
 
 ```js
-await users.query().update({ is_admin: 1 }).where({ surname: 'Badger' });
+await users.knex().update({ is_admin: 1 }).where({ surname: 'Badger' });
 ```
 
 ### record(query)

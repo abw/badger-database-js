@@ -11,7 +11,7 @@ The `Database` class provides a wrapper around a
   * [connection](#connection)
   * [model](#model)
 * [Methods](#methods)
-  * [query(table)](#query-table-)
+  * [knex()](#knex--)
   * [raw(sql)](#raw-sql-)
   * [table(name)](#table-name-)
   * [escape(name)](#escape-name-)
@@ -107,14 +107,15 @@ provides a shorthand way to access table instances
 
 ## Methods
 
-### query(table)
+### knex()
 
-Returns a Knex query for the database.  Equivalent to calling `knex()`.
+Returns a Knex query for the database.
+Equivalent to calling `database.connection.knex()`.
 
 ```js
 const row =
   await database
-    .query('user')
+    .knex('user')
     .select('forename')
     .where({ email: 'bobby@badger.com' })
     .first()

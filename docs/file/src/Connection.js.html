@@ -66,10 +66,6 @@ export class Connection {
     this.config = config;
     this.knex   = Knex(config);
   }
-  query() {
-    // most queries should be handled by Knex instance
-    return this.knex(...arguments);
-  }
   raw() {
     return this.knex.raw(...arguments);
   }

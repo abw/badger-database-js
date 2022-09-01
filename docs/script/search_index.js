@@ -486,12 +486,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/connection.js~connection#query",
-    "class/src/Connection.js~Connection.html#instance-method-query",
-    "src/Connection.js~Connection#query",
-    "method"
-  ],
-  [
     "src/connection.js~connection#raw",
     "class/src/Connection.js~Connection.html#instance-method-raw",
     "src/Connection.js~Connection#raw",
@@ -546,16 +540,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/database.js~database#knex",
+    "class/src/Database.js~Database.html#instance-method-knex",
+    "src/Database.js~Database#knex",
+    "method"
+  ],
+  [
     "src/database.js~database#model",
     "class/src/Database.js~Database.html#instance-member-model",
     "src/Database.js~Database#model",
     "member"
-  ],
-  [
-    "src/database.js~database#query",
-    "class/src/Database.js~Database.html#instance-method-query",
-    "src/Database.js~Database#query",
-    "method"
   ],
   [
     "src/database.js~database#raw",
@@ -1068,16 +1062,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#knex",
+    "class/src/Table.js~Table.html#instance-method-knex",
+    "src/Table.js~Table#knex",
+    "method"
+  ],
+  [
     "src/table.js~table#queries",
     "class/src/Table.js~Table.html#instance-member-queries",
     "src/Table.js~Table#queries",
     "member"
-  ],
-  [
-    "src/table.js~table#query",
-    "class/src/Table.js~Table.html#instance-method-query",
-    "src/Table.js~Table#query",
-    "method"
   ],
   [
     "src/table.js~table#record",
