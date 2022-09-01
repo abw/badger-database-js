@@ -50,3 +50,7 @@ test.serial(
     t.is( albums[0].title, 'The Dark Side of the Moon' );
   }
 )
+
+test.after(
+  () => musicdb.destroy()
+)

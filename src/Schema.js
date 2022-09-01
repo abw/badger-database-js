@@ -1,3 +1,4 @@
+import Queries from "./Queries.js";
 import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from "@abw/badger-utils";
 import { addDebug } from "@abw/badger";
 
@@ -13,11 +14,15 @@ export class Schema {
     this.prepareKeys(schema);
     this.prepareColumnSets(schema);
     this.prepareFragments(schema);
-
+    this.queries = new Queries({
+      queries:   schema.queries,
+      fragments: this.fragments
+    });
     // TODO: column sets for select, update, etc.
 
-
     addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
+    this.debug('columnIndex: ', this.columnIndex);
+    this.debug('fragments: ', this.fragments);
   }
   prepareColumns(schema) {
     const table      = schema.table;
@@ -69,12 +74,26 @@ export class Schema {
     }
     this.keyIndex = splitHash(this.keys);
   }
-  prepareFragments() {
+  prepareFragments(schema) {
+    const escape    = this.database.escape.bind(this.database);
+    const fragments = schema.fragments || { };
+    const vcolumns  = Object.entries(this.virtualColumns).reduce(
+      (result, [name, defn]) => {
+        result[name] = `${defn} as ${name}`;
+        return result;
+      },
+      { }
+    );
     this.fragments = {
-      table:    this.database.escape(this.table),
-      columns:  this.columnNames.join(', '),
-      tcolumns: this.columnNames.map( n => this.columnIndex[n].tableColumn ).join(', '),
-    }
+      table:    escape(this.table),
+      columns:  this.columnNames.map(escape).join(', '),
+      tcolumns: this.columnNames.map( n => escape(this.columnIndex[n].tableColumn) ).join(', '),
+      ...vcolumns,
+      ...fragments
+    };
+  }
+  query(name) {
+    return this.queries.query(name);
   }
 
   // TODO: refactor remaining methods

@@ -20,6 +20,25 @@ export class Album extends Record {
 export class Track extends Record {
 }
 
+export const albumsFragments = {
+  selectTitleAndTrackCount:
+    'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+    'FROM albums ' +
+    'JOIN tracks ' +
+    'ON tracks.album_id=albums.id ' +
+    'GROUP BY albums.id'
+}
+
+export const albumsQueries = {
+  selectByNumberOfTracks:
+    '<selectTitleAndTrackCount> ' +
+    'ORDER BY n_tracks ',
+  titleByYear:
+    'SELECT <titleYear> ' +
+    'FROM   <table> ' +
+    'ORDER BY year,id',
+}
+
 export const musicTables = {
   artists: {
     columns:      'id name',
@@ -27,11 +46,16 @@ export const musicTables = {
     recordClass:  Artist
   },
   albums: {
-    columns:        'id title artist_id',
+    columns:        'id title year artist_id',
+    virtualColumns: {
+      titleYear:    'title || " (" || year || ")"',
+    },
     tableClass:     Albums,
     recordClass:    Album,
     // tableOptions:   { debug: true },
     // recordOptions:  { debug: true },
+    fragments:      albumsFragments,
+    queries:        albumsQueries,
     relations: {
       artist: {
         type:       'one',
@@ -88,8 +112,8 @@ export const musicdb = createDatabase({
 });
 
 export const createMusicDb = async (database=musicdb) => {
-  await database.raw("CREATE TABLE artists (id INTEGER PRIMARY KEY ASC, name)");
-  await database.raw("CREATE TABLE albums (id INTEGER PRIMARY KEY ASC, title TEXT, artist_id INTEGER, FOREIGN KEY(artist_id) REFERENCES artists(id))");
+  await database.raw("CREATE TABLE artists (id INTEGER PRIMARY KEY ASC, name TEXT)");
+  await database.raw("CREATE TABLE albums (id INTEGER PRIMARY KEY ASC, year INTEGER, title TEXT, artist_id INTEGER, FOREIGN KEY(artist_id) REFERENCES artists(id))");
   await database.raw("CREATE TABLE tracks (id INTEGER PRIMARY KEY ASC, title TEXT, album_id INTEGER, FOREIGN KEY(album_id) REFERENCES albums(id))");
 
   const artists = database.table('artists');
@@ -104,13 +128,13 @@ export const createMusicDb = async (database=musicdb) => {
   // console.log('Genesis: ', Genesis);
 
   const [DSOTM, WYWH] = await albums.insert([
-    { artist_id: PinkFloyd.id, title: 'The Dark Side of the Moon' },
-    { artist_id: PinkFloyd.id, title: 'Wish You Were Here' },
+    { artist_id: PinkFloyd.id, year: 1973, title: 'The Dark Side of the Moon' },
+    { artist_id: PinkFloyd.id, year: 1975, title: 'Wish You Were Here' },
   ]);
 
   const [Foxtrot, Selling] = await albums.insert([
-    { artist_id: Genesis.id, title: 'Foxtrot', },
-    { artist_id: Genesis.id, title: 'Selling England by the Pound', },
+    { artist_id: Genesis.id, year: 1972, title: 'Foxtrot', },
+    { artist_id: Genesis.id, year: 1973, title: 'Selling England by the Pound', },
   ]);
 
   await tracks.insert([
