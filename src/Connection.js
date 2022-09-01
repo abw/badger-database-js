@@ -13,20 +13,21 @@ export class Connection {
   raw() {
     return this.knex.raw(...arguments);
   }
+  pool() {
+    return this.knex.client.pool;
+  }
   acquire() {
     // acquire a connection from the knex client pool in
     // case we need to go direct to the database client
     return this.knex.client.pool.acquire();
-  }
-  pool() {
-    return this.knex.client.pool;
   }
   destroy() {
     return this.knex.destroy();
   }
 }
 
-export const connection = config => new Connection(config)
+export const connection = config =>
+  new Connection(config)
 
 export default Connection
 

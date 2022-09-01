@@ -5,13 +5,14 @@ import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
 import Schema from "./Schema.js";
-// import Queries from "./Queries.js";
+import Queries from "./Queries.js";
 
 // export class Table extends Queries {
 export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
     this.schema        = new Schema(database, schema)
+    this.queries       = new Queries(schema);
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
@@ -112,8 +113,12 @@ export class Table {
       rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )
     );
   }
+  tableFragments() {
+    return this.tableFragments
+  }
 }
 
-export const table = (database, schema) => new Table(database, schema)
+export const table = (database, schema) =>
+  new Table(database, schema)
 
 export default Table;

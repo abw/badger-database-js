@@ -52,7 +52,8 @@ export class Database {
   }
 }
 
-export const database = config => new Database(config)
+export const database = config =>
+  new Database(config)
 
 export default Database
 

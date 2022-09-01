@@ -34,6 +34,7 @@ export class Record {
   }
 }
 
-export const record = (table, data, options) => new Record(table, data, options)
+export const record = (table, data, options) =>
+  new Record(table, data, options)
 
 export default Record;

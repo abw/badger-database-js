@@ -1,3 +1,5 @@
+import { fail } from "@abw/badger-utils";
+
 export const modelProxy = database =>
   new Proxy(
     database,
@@ -6,7 +8,8 @@ export const modelProxy = database =>
         if (target.hasTable(prop)) {
           return target.table(prop);
         }
-        return target[prop];
+        return target[prop]
+          || fail("Invalid table specified: ", prop);
       }
     }
   );

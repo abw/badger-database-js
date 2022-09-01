@@ -38,11 +38,6 @@ export class Schema {
       }
     )
     this.columnNames  = Object.keys(this.columnIndex);
-    //this.tableColumns = objMap(
-    //  this.columnIndex,
-    //  value => value.tableColumn
-    //);
-    //console.log('this.tableColumns: ', this.tableColumns);
   }
   prepareColumnSets(schema) {
     const index = splitHash(schema.columnSets, () => ({ }))
