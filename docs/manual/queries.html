@@ -206,52 +206,107 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="connection">Connection</h1><p>The <code>Connection</code> object is used internally to store the underlying
-Knex connection. It is accessible as <code>database.connection</code>.</p>
-<p>You probably don't need to know about this unless
-you're looking under the hood.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="queries">Queries</h1><p>The <code>Queries</code> object is use by the <a href="manual/database.html">Database</a> and
+<a href="manual/table.html">Table</a> classes to store and retrieve named SQL queries.</p>
 <ul>
-<li><a href="#configuration">Configuration</a></li>
-<li><a href="#properties">Properties</a><ul>
-<li><a href="#config">config</a></li>
-<li><a href="#knex">knex</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#configuration">Configuration</a><ul>
+<li><a href="#queries">queries</a></li>
+<li><a href="#fragments">fragments</a></li>
 </ul>
 </li>
 <li><a href="#methods">Methods</a><ul>
-<li><a href="#raw-sql-">raw(sql)</a></li>
-<li><a href="#pool--">pool()</a></li>
-<li><a href="#acquire--">acquire()</a></li>
-<li><a href="#destroy--">destroy()</a></li>
+<li><a href="#query-name-">query(name)</a></li>
+<li><a href="#expandfragments-query-">expandFragments(query)</a></li>
 </ul>
 </li>
 <li><a href="#functions">Functions</a><ul>
-<li><a href="#connection--">connection()</a></li>
+<li><a href="#queries-schema-">queries(schema)</a></li>
 </ul>
 </li>
 </ul>
-<h2 id="configuration">Configuration</h2><p>The configuration options are the same as for
-<a href="https://knexjs.org/guide/#configuration-options">Knex.js</a>.</p>
-<h2 id="properties">Properties</h2><h3 id="config">config</h3><p>A copy of the configuration options.</p>
-<h3 id="knex">knex</h3><p>A reference to the underlying Knex function/object.</p>
-<h2 id="methods">Methods</h2><h3 id="raw-sql-">raw(sql)</h3><p>A method to execute a raw query on the underlying Knex
-object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">connection.raw(sql);</code></code></pre>
+<h2 id="overview">Overview</h2><p>When you create a database and/or tables in the database you can define
+named queries using the <a href="#queries">queries</a> configuration option.</p>
+<p>This allows you to define your hand-written queries in one place and then
+access them from your application code using their names.  This allows them
+to be re-used and avoids the need to have raw SQL queries dotted around your
+application code.</p>
+<p>If you have fragments of SQL that are repeated in various queries then
+you can define them using the <a href="#fragments">fragments</a>
+configuration option. You can then interpolate them into queries by embedding
+them in angle brackets, e.g. <code>&lt;fragmentName&gt;</code>.</p>
+<h2 id="configuration">Configuration</h2><h3 id="queries">queries</h3><p>This example shows how named <code>queries</code> can be defined in the database.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import Database from '@abw/badger-database'
+
+const database = new Database(
+  // ...client, connection, pool, etc...
+  queries: {
+    albumWithMostTracks:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'ORDER BY n_tracks DESC ' +
+      'LIMIT 1',
+    albumsByNumberOfTracks:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id ' +
+      'ORDER BY n_tracks ',
+    theBestAlbumEverRecorded:
+      'SELECT * ' +
+      'FROM albums ' +
+      'WHERE title="The Dark Side of the Moon"'
+  }
+)</code></code></pre>
+<p>You can then execute a query by calling the <a href="manual/database.html#query-name-">query(name)</a></p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const albums = await database.query('albumsByNumberOfTracks');</code></code></pre>
+<h3 id="fragments">fragments</h3><p>This example shows how the repeated SQL fragment can be moved into the
+<code>fragments</code> configuration option and then interpolated into <code>queries</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  fragments: {
+    selectAlbumsWithTrackCount:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id '
+  },
+  queries: {
+    albumsByNumberOfTracks:
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
+      'ORDER BY n_tracks',
+    albumWithMostTracks:
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
+      'ORDER BY n_tracks DESC ' +
+      'LIMIT 1',
+  }
+)</code></code></pre>
+<p>There is no change to how queries are executed:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const albums = await database.query('albumsByNumberOfTracks');</code></code></pre>
+<h2 id="methods">Methods</h2><h3 id="query-name-">query(name)</h3><p>This is used to fetch and expand any fragments in a query.</p>
+<p>The query can be identified by <code>name</code> as a query previously defined
+in the <a href="#queries">queries</a> configuration option.</p>
+<p>Raw SQL queries can also be passed to the method.  If the <code>name</code> isn't
+a single word then it is assumed to be an SQL query.  You can still use
+any <a href="#fragments">fragments</a> in the query and they will be expanded.</p>
+<p>For example, a query to return the three albums with the most tracks
+could be specified like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const albums = await database.query(
+  '&lt;selectAlbumsWithTrackCount&gt; ' +
+  'ORDER BY n_tracks DESC ',
+  'LIMIT 3',
+);</code></code></pre>
+<h3 id="expandfragments-query-">expandFragments(query)</h3><p>Internal method used to expand fragments in SQL queries.</p>
+<h2 id="functions">Functions</h2><h3 id="queries-schema-">queries(schema)</h3><p>A function of convenience which wraps a call to <code>new Queries()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { queries } from '@abw/badger-database';
+const qs = queries(...);</code></code></pre>
 <p>This is equivalent to:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">connection.knex.raw(sql);</code></code></pre>
-<h3 id="pool--">pool()</h3><p>Returns the Knex client pool.</p>
-<p>Equivalent to:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">connection.knex.client.pool;</code></code></pre>
-<h3 id="acquire--">acquire()</h3><p>Acquire a connection from the Knex client pool.</p>
-<p>Equivalent to:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">connection.knex.client.pool.acquire();</code></code></pre>
-<h3 id="destroy--">destroy()</h3><p>Calls the <a href="https://knexjs.org/guide/#pool">destroy()</a> method
-on the Knex pool.</p>
-<h2 id="functions">Functions</h2><h3 id="connection--">connection()</h3><p>A function of convenience which wraps a call to <code>new Connection()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { connection } from '@abw/badger-database';
-const conn = connection(...);</code></code></pre>
-<p>This is equivalent to:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { Connection } from '@abw/badger-database';
-const conn = new Connection(...);</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Queries } from '@abw/badger-database';
+const qs = new Queries(...);</code></code></pre>
 </div>
 </div>
 

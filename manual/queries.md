@@ -24,9 +24,9 @@ to be re-used and avoids the need to have raw SQL queries dotted around your
 application code.
 
 If you have fragments of SQL that are repeated in various queries then
-you can define them using the [fragments](#fragments) configuration option.
-You can then interpolate them into queries by embedding them in angle
-brackets, e.g. `<fragmentName>`.
+you can define them using the [fragments](#fragments)
+configuration option. You can then interpolate them into queries by embedding
+them in angle brackets, e.g. `<fragmentName>`.
 
 ## Configuration
 
@@ -86,10 +86,10 @@ const database = new Database(
   },
   queries: {
     albumsByNumberOfTracks:
-      '<selectAlbumsWithTrackCount> ' +
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
       'ORDER BY n_tracks',
     albumWithMostTracks:
-      '<selectAlbumsWithTrackCount> ' +
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
       'ORDER BY n_tracks DESC ' +
       'LIMIT 1',
   }
@@ -120,7 +120,7 @@ could be specified like this:
 
 ```js
 const albums = await database.query(
-  '<selectAlbumsWithTrackCount> ' +
+  '&ltselectAlbumsWithTrackCount&gt; ' +
   'ORDER BY n_tracks DESC ',
   'LIMIT 3',
 );
