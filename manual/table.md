@@ -24,6 +24,8 @@ This is a wrapper around a database table.
   * [update(set,where)](#update-set-where-)
   * [record(query)](#record-query-)
   * [records(query)](#records-query-)
+* [Functions](#functions)
+  * [table(database,schema)](#table-database-schema-)
 
 ## Overview
 
@@ -636,4 +638,22 @@ end of a query returned by `selectAll()`, `fetchAll()` or `update()`.
 
 ```js
 const badgers = await table.fetchAll({ animal: "badger" }).records();
+```
+
+## Functions
+
+### table(database,schema)
+
+A function of convenience which wraps a call to `new Table()`.
+
+```js
+import { table } from '@abw/badger-database';
+const tab = table(...);
+```
+
+This is equivalent to:
+
+```js
+import { Table } from '@abw/badger-database';
+const tab = new Table(...);
 ```

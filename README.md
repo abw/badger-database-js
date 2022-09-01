@@ -39,6 +39,8 @@ For further information please read the [documentation](https://abw.github.io/ba
 
 Table relations.
 
+Table queries.
+
 Deprecate the "@colset1" format for including columns sets.
 
 Implement "@relatedTable" to reference columns in related table.

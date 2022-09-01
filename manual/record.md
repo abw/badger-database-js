@@ -6,6 +6,8 @@ the Active Record pattern.
 * [Overview](#overview)
 * [Methods](#methods)
   * [update(set)](#update-set-)
+* [Functions](#functions)
+  * [record(table,data,options)](#record-table-data-options-)
 
 ## Overview
 
@@ -49,3 +51,20 @@ The database row will be updated and then the data will be reloaded into the rec
 Any changes to columns in the row that are changed on update (e.g. a `modified` column
 which sets the current timestamp on update) will be reflected in the record object.
 
+## Functions
+
+### record(table,data,options)
+
+A function of convenience which wraps a call to `new Record()`.
+
+```js
+import { record } from '@abw/badger-database';
+const rec = record(...);
+```
+
+This is equivalent to:
+
+```js
+import { Record } from '@abw/badger-database';
+const rec = new Record(...);
+```

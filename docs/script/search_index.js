@@ -24,12 +24,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-utils~model",
-    "class/src/Model.js~Model.html",
-    "<span>Model</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "class"
-  ],
-  [
     "@abw/badger-utils~operator",
     "class/src/Operator.js~Operator.html",
     "<span>Operator</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -102,6 +96,24 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-utils~many",
+    "function/index.html#static-function-many",
+    "<span>many</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~modelproxy",
+    "function/index.html#static-function-modelProxy",
+    "<span>modelProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~one",
+    "function/index.html#static-function-one",
+    "<span>one</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
     "@abw/badger-utils~pool",
     "variable/index.html#static-variable-pool",
     "<span>pool</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -135,12 +147,6 @@ window.esdocSearchIndex = [
     "@abw/badger-utils~schema",
     "function/index.html#static-function-schema",
     "<span>schema</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-utils~splithash",
-    "function/index.html#static-function-splitHash",
-    "<span>splitHash</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
   ],
   [
@@ -528,10 +534,22 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/database.js~database#hastable",
+    "class/src/Database.js~Database.html#instance-method-hasTable",
+    "src/Database.js~Database#hasTable",
+    "method"
+  ],
+  [
     "src/database.js~database#inittable",
     "class/src/Database.js~Database.html#instance-method-initTable",
     "src/Database.js~Database#initTable",
     "method"
+  ],
+  [
+    "src/database.js~database#model",
+    "class/src/Database.js~Database.html#instance-member-model",
+    "src/Database.js~Database#model",
+    "member"
   ],
   [
     "src/database.js~database#query",
@@ -561,30 +579,6 @@ window.esdocSearchIndex = [
     "src/database.js~database#tables",
     "class/src/Database.js~Database.html#instance-member-tables",
     "src/Database.js~Database#tables",
-    "member"
-  ],
-  [
-    "src/model.js",
-    "file/src/Model.js.html",
-    "src/Model.js",
-    "file"
-  ],
-  [
-    "src/model.js~model#constructor",
-    "class/src/Model.js~Model.html#instance-constructor-constructor",
-    "src/Model.js~Model#constructor",
-    "method"
-  ],
-  [
-    "src/model.js~model#database",
-    "class/src/Model.js~Model.html#instance-member-database",
-    "src/Model.js~Model#database",
-    "member"
-  ],
-  [
-    "src/model.js~model#tables",
-    "class/src/Model.js~Model.html#instance-member-tables",
-    "src/Model.js~Model#tables",
     "member"
   ],
   [
@@ -756,6 +750,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/proxy/model.js",
+    "file/src/Proxy/Model.js.html",
+    "src/Proxy/Model.js",
+    "file"
+  ],
+  [
     "src/proxy/record.js",
     "file/src/Proxy/Record.js.html",
     "src/Proxy/Record.js",
@@ -828,6 +828,30 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/record.js~record#database",
+    "class/src/Record.js~Record.html#instance-member-database",
+    "src/Record.js~Record#database",
+    "member"
+  ],
+  [
+    "src/record.js~record#initrelation",
+    "class/src/Record.js~Record.html#instance-method-initRelation",
+    "src/Record.js~Record#initRelation",
+    "method"
+  ],
+  [
+    "src/record.js~record#relation",
+    "class/src/Record.js~Record.html#instance-method-relation",
+    "src/Record.js~Record#relation",
+    "method"
+  ],
+  [
+    "src/record.js~record#relations",
+    "class/src/Record.js~Record.html#instance-member-relations",
+    "src/Record.js~Record#relations",
+    "member"
+  ],
+  [
     "src/record.js~record#schema",
     "class/src/Record.js~Record.html#instance-member-schema",
     "src/Record.js~Record#schema",
@@ -844,6 +868,18 @@ window.esdocSearchIndex = [
     "class/src/Record.js~Record.html#instance-method-update",
     "src/Record.js~Record#update",
     "method"
+  ],
+  [
+    "src/relation/many.js",
+    "file/src/Relation/many.js.html",
+    "src/Relation/many.js",
+    "file"
+  ],
+  [
+    "src/relation/one.js",
+    "file/src/Relation/one.js.html",
+    "src/Relation/one.js",
+    "file"
   ],
   [
     "src/schema.js",
@@ -954,27 +990,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/schema.js~schema#relations",
+    "class/src/Schema.js~Schema.html#instance-member-relations",
+    "src/Schema.js~Schema#relations",
+    "member"
+  ],
+  [
     "src/schema.js~schema#resolvecolumns",
     "class/src/Schema.js~Schema.html#instance-method-resolveColumns",
     "src/Schema.js~Schema#resolveColumns",
     "method"
   ],
   [
-    "src/schema.js~schema#separatekeycolumns",
-    "class/src/Schema.js~Schema.html#instance-method-separateKeyColumns",
-    "src/Schema.js~Schema#separateKeyColumns",
-    "method"
-  ],
-  [
     "src/schema.js~schema#table",
     "class/src/Schema.js~Schema.html#instance-member-table",
     "src/Schema.js~Schema#table",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#tablecolumns",
-    "class/src/Schema.js~Schema.html#instance-member-tableColumns",
-    "src/Schema.js~Schema#tableColumns",
     "member"
   ],
   [
@@ -1038,6 +1068,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#queries",
+    "class/src/Table.js~Table.html#instance-member-queries",
+    "src/Table.js~Table#queries",
+    "member"
+  ],
+  [
     "src/table.js~table#query",
     "class/src/Table.js~Table.html#instance-method-query",
     "src/Table.js~Table#query",
@@ -1053,6 +1089,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#recordclass",
     "class/src/Table.js~Table.html#instance-member-recordClass",
     "src/Table.js~Table#recordClass",
+    "member"
+  ],
+  [
+    "src/table.js~table#recordoptions",
+    "class/src/Table.js~Table.html#instance-member-recordOptions",
+    "src/Table.js~Table#recordOptions",
     "member"
   ],
   [
@@ -1089,6 +1131,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#selectone",
     "class/src/Table.js~Table.html#instance-method-selectOne",
     "src/Table.js~Table#selectOne",
+    "method"
+  ],
+  [
+    "src/table.js~table#tablefragments",
+    "class/src/Table.js~Table.html#instance-method-tableFragments",
+    "src/Table.js~Table#tableFragments",
     "method"
   ],
   [

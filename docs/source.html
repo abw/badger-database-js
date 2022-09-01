@@ -29,7 +29,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Model.js~Model.html">Model</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
@@ -41,7 +40,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-connection">connection</a></span></span></li>
@@ -49,14 +47,17 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 </ul>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">0/126</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">0/132</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -83,30 +84,22 @@
       <td style="display: none;" data-ice="updated">2022-07-05 17:30:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Connection.js.html#errorLines=13,16,21,24,29,4,5,6,7,9">src/Connection.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Connection.js.html#errorLines=13,16,19,24,29,4,5,6,7,9">src/Connection.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span>
 <span><a href="function/index.html#static-function-connection">connection</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/10</span></td>
-      <td style="display: none;" data-ice="size">702 byte</td>
-      <td style="display: none;" data-ice="lines">32</td>
-      <td style="display: none;" data-ice="updated">2022-08-06 16:36:32 (UTC)</td>
+      <td style="display: none;" data-ice="size">704 byte</td>
+      <td style="display: none;" data-ice="lines">33</td>
+      <td style="display: none;" data-ice="updated">2022-09-05 09:55:22 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Database.js.html#errorLines=12,13,15,16,17,18,22,25,28,32,38,44,49,6">src/Database.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Database.js.html#errorLines=13,14,16,17,18,19,20,24,27,30,34,37,44,50,55,7">src/Database.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Database.js~Database.html">Database</a></span>
 <span><a href="function/index.html#static-function-database">database</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/14</span></td>
-      <td style="display: none;" data-ice="size">1278 byte</td>
-      <td style="display: none;" data-ice="lines">52</td>
-      <td style="display: none;" data-ice="updated">2022-08-02 16:25:02 (UTC)</td>
-    </tr>
-<tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Model.js.html#errorLines=5,6,7,8">src/Model.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="class/src/Model.js~Model.html">Model</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/4</span></td>
-      <td style="display: none;" data-ice="size">260 byte</td>
-      <td style="display: none;" data-ice="lines">12</td>
-      <td style="display: none;" data-ice="updated">2022-08-06 16:39:06 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/16</span></td>
+      <td style="display: none;" data-ice="size">1458 byte</td>
+      <td style="display: none;" data-ice="lines">59</td>
+      <td style="display: none;" data-ice="updated">2022-09-05 09:57:43 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Operator.js.html#errorLines=14,17,20,24,28,32,5,6,7,8,9">src/Operator.js</a></span></td>
@@ -149,12 +142,20 @@
       <td style="display: none;" data-ice="updated">2022-08-06 16:38:59 (UTC)</td>
     </tr>
 <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Proxy/Model.js.html#errorLines=3">src/Proxy/Model.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">352 byte</td>
+      <td style="display: none;" data-ice="lines">17</td>
+      <td style="display: none;" data-ice="updated">2022-09-05 09:15:33 (UTC)</td>
+    </tr>
+<tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Proxy/Record.js.html#errorLines=1">src/Proxy/Record.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
-      <td style="display: none;" data-ice="size">262 byte</td>
-      <td style="display: none;" data-ice="lines">14</td>
-      <td style="display: none;" data-ice="updated">2022-08-06 16:35:09 (UTC)</td>
+      <td style="display: none;" data-ice="size">736 byte</td>
+      <td style="display: none;" data-ice="lines">27</td>
+      <td style="display: none;" data-ice="updated">2022-08-03 09:18:29 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Proxy/Row.js.html#errorLines=1">src/Proxy/Row.js</a></span></td>
@@ -181,39 +182,55 @@
       <td style="display: none;" data-ice="updated">2022-08-06 16:39:33 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Record.js.html#errorLines=10,21,3,4,5,6,7">src/Record.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Record.js.html#errorLines=10,11,14,23,28,37,5,6,7,8,9">src/Record.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Record.js~Record.html">Record</a></span>
 <span><a href="function/index.html#static-function-record">record</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/7</span></td>
-      <td style="display: none;" data-ice="size">597 byte</td>
-      <td style="display: none;" data-ice="lines">23</td>
-      <td style="display: none;" data-ice="updated">2022-08-02 15:39:29 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/11</span></td>
+      <td style="display: none;" data-ice="size">1222 byte</td>
+      <td style="display: none;" data-ice="lines">40</td>
+      <td style="display: none;" data-ice="updated">2022-09-05 09:55:36 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Schema.js.html#errorLines=10,104,11,131,140,161,17,20,31,35,46,47,5,52,54,6,69,70,72,8,80,84,9,91,95,99">src/Schema.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Relation/many.js.html#errorLines=1">src/Relation/many.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-many">many</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">458 byte</td>
+      <td style="display: none;" data-ice="lines">12</td>
+      <td style="display: none;" data-ice="updated">2022-08-03 09:07:36 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Relation/one.js.html#errorLines=1">src/Relation/one.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-one">one</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">452 byte</td>
+      <td style="display: none;" data-ice="lines">12</td>
+      <td style="display: none;" data-ice="updated">2022-08-03 09:01:25 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Schema.js.html#errorLines=10,103,130,141,16,17,18,25,29,4,40,47,49,5,61,62,64,7,71,8,83,9,90,94,98">src/Schema.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Schema.js~Schema.html">Schema</a></span>
 <span><a href="function/index.html#static-function-schema">schema</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/26</span></td>
-      <td style="display: none;" data-ice="size">5104 byte</td>
-      <td style="display: none;" data-ice="lines">164</td>
-      <td style="display: none;" data-ice="updated">2022-08-02 08:40:55 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/25</span></td>
+      <td style="display: none;" data-ice="size">4347 byte</td>
+      <td style="display: none;" data-ice="lines">144</td>
+      <td style="display: none;" data-ice="updated">2022-08-03 18:09:49 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Table.js.html#errorLines=104,109,11,117,12,13,14,15,16,17,21,24,29,36,56,67,74,81,89,97">src/Table.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Table.js.html#errorLines=105,11,110,116,12,121,13,14,15,16,17,18,19,22,25,30,37,57,68,75,82,90,98">src/Table.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Table.js~Table.html">Table</a></span>
 <span><a href="function/index.html#static-function-table">table</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/20</span></td>
-      <td style="display: none;" data-ice="size">3030 byte</td>
-      <td style="display: none;" data-ice="lines">119</td>
-      <td style="display: none;" data-ice="updated">2022-08-02 15:39:45 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/23</span></td>
+      <td style="display: none;" data-ice="size">3231 byte</td>
+      <td style="display: none;" data-ice="lines">124</td>
+      <td style="display: none;" data-ice="updated">2022-09-05 09:55:28 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Utils.js.html#errorLines=3">src/Utils.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
-      <td style="display: none;" data-ice="size">489 byte</td>
-      <td style="display: none;" data-ice="lines">18</td>
-      <td style="display: none;" data-ice="updated">2022-08-02 08:38:45 (UTC)</td>
+      <td data-ice="filePath"><span><a href="file/src/Utils.js.html">src/Utils.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">15 byte</td>
+      
+      <td style="display: none;" data-ice="updated">2022-08-03 17:31:41 (UTC)</td>
     </tr>
 </tbody>
 </table>

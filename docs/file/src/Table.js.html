@@ -29,7 +29,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Model.js~Model.html">Model</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
@@ -41,7 +40,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-connection">connection</a></span></span></li>
@@ -49,9 +47,12 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -64,18 +65,19 @@ import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
 import Schema from "./Schema.js";
-// import Queries from "./Queries.js";
+import Queries from "./Queries.js";
 
 // export class Table extends Queries {
 export class Table {
   constructor(database, schema) {
-    this.database    = database || fail("No database specified");
-    this.schema      = new Schema(database, schema)
-    this.recordClass = schema.recordClass || Record;
-    this.rowProxy    = rowProxy(this);
-    this.rowsProxy   = rowsProxy(this);
-
-    addDebug(this, schema.debug, schema.debugPrefix || `${this.table} table`, schema.debugColor);
+    this.database      = database || fail("No database specified");
+    this.schema        = new Schema(database, schema)
+    this.queries       = new Queries(schema);
+    this.recordClass   = schema.recordClass || Record;
+    this.recordOptions = schema.recordOptions;
+    this.rowProxy      = rowProxy(this);
+    this.rowsProxy     = rowsProxy(this);
+    addDebug(this, schema.debug, schema.debugPrefix || `&lt;${this.table}&gt; table: `, schema.debugColor);
   }
   query() {
     return this.database.query(this.schema.table);
@@ -162,18 +164,22 @@ export class Table {
   }
   record(query) {
     return query.then(
-      row =&gt; recordProxy(new this.recordClass(this, row))
+      row =&gt; recordProxy(new this.recordClass(this, row, this.recordOptions))
     );
   }
   records(query) {
     // console.log('table.records()');
     return query.then(
-      rows =&gt; rows.map( row =&gt; recordProxy(new this.recordClass(this, row)) )
+      rows =&gt; rows.map( row =&gt; recordProxy(new this.recordClass(this, row, this.recordOptions)) )
     );
+  }
+  tableFragments() {
+    return this.tableFragments
   }
 }
 
-export const table = (database, schema) =&gt; new Table(database, schema)
+export const table = (database, schema) =&gt;
+  new Table(database, schema)
 
 export default Table;
 </code></pre>

@@ -29,7 +29,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Model.js~Model.html">Model</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
@@ -41,7 +40,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-connection">connection</a></span></span></li>
@@ -49,16 +47,18 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Schema.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { hasValue, isString, splitList, fail, objMap, isArray } from "@abw/badger-utils";
-import { splitHash } from "./Utils.js";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from "@abw/badger-utils";
 import { addDebug } from "@abw/badger";
 
 const DEFAULT_ID = 'id';
@@ -66,24 +66,19 @@ const COLUMN_SET_PREFIX = /^(@|\.\.\.)/;
 
 export class Schema {
   constructor(database, schema) {
-    this.database       = database || fail("No database specified");
-    this.table          = schema.table || fail("No table name specified");
+    this.database = database || fail("No database specified");
+    this.table    = schema.table || fail("No table name specified");
 
     this.prepareColumns(schema);
     this.prepareKeys(schema);
     this.prepareColumnSets(schema);
 
     this.virtualColumns = schema.virtualColumns || { };
-    //this.tableColumns   = prepareColumns(this.columnNames, this.table);
-    //this.columnSets     = prepareColumnSets(this.columnNames, schema.columnSets);
     this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };
-
-    //console.log('columnNames: ', this.columnNames);
-    //console.log('virtualColumns: ', this.virtualColumns);
-    //console.log('allColumns: ', this.allColumns);
-    /// this.allKeys = splitHash(this.keys);
+    this.relations      = schema.relations || { };
 
     // TODO: column sets for select, update, etc.
+    //this.prepareFragments(schema);
 
     addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);
   }
@@ -98,15 +93,16 @@ export class Schema {
         // the database column name doesn't match the name you want to use
         const column = value.column || (value.column = key);
         // tableColumn is the full "table.column"
-        value.tableColumn = `${table}.${column}`;
+        value.tableColumn = table + '.' + column;
         return value;
       }
     )
     this.columnNames  = Object.keys(this.columnIndex);
-    this.tableColumns = objMap(
-      this.columnIndex,
-      value =&gt; value.tableColumn
-    );
+    //this.tableColumns = objMap(
+    //  this.columnIndex,
+    //  value =&gt; value.tableColumn
+    //);
+    //console.log('this.tableColumns: ', this.tableColumns);
   }
   prepareColumnSets(schema) {
     const index = splitHash(schema.columnSets, () =&gt; ({ }))
@@ -118,12 +114,9 @@ export class Schema {
         const exclude = splitHash(spec.exclude);
         const result = [...basis, ...include]
           .filter( column =&gt; ! exclude[column] );
-        // console.log('spec: ', spec, ' =&gt; ', result);
-        // console.log('basis: ', basis, '   exclude: ', exclude);
         return result;
       }
     )
-    //console.log('mapped columnSets: ', this.columnSets);
   }
   prepareKeys(schema) {
     this.keys = splitList(schema.keys);
@@ -133,16 +126,23 @@ export class Schema {
     }
     else if (this.keys.length === 0) {
       this.id = DEFAULT_ID;
-      // console.log('setting default id: ', this.id);
       this.keys.unshift(this.id);
     }
     this.keyIndex = splitHash(this.keys);
   }
+  /*
+  prepareFragments() {
+    this.fragments = {
+      table:    this.database.escape(this.table),
+      tcolumns: this.tableColumns,
+    }
+  }
+  */
 
   // TODO: refactor remaining methods
   column(name) {
-    return this.tableColumns[name]
-      ? this.tableColumns[name]
+    return this.columnIndex[name]
+      ? this.columnIndex[name].tableColumn
       : this.virtualColumns[name]
         ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)
         : fail('Invalid column specified: ', name);
@@ -195,25 +195,6 @@ export class Schema {
       },
       {}
     );
-  }
-  separateKeyColumns(data) {
-    let keys    = { };
-    let columns = { };
-    let rejects = { };
-    Object.entries(data).forEach(
-      ([key, value]) =&gt; {
-        if (this.allKeys[key]) {
-          keys[key] = value;
-        }
-        else if (this.allColumns[key]) {
-          columns[key] = value;
-        }
-        else {
-          rejects[key] = value;
-        }
-      }
-    )
-    return { keys, columns, rejects };
   }
 }
 

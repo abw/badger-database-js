@@ -29,7 +29,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Model.js~Model.html">Model</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
@@ -41,7 +40,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitHash">splitHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-connection">connection</a></span></span></li>
@@ -49,9 +47,12 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -178,7 +179,63 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-member-queries">queries</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-member-recordClass">recordClass</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-member-recordOptions">recordOptions</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -605,6 +662,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-tableFragments">tableFragments</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-update">update</a></span></span><span class="code" data-ice="signature">(set: <span>*</span>, where: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -719,6 +804,49 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-queries">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">queries</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber15">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-recordClass">
     <span class="access" data-ice="access">public</span>
     
@@ -730,7 +858,50 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber16">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-recordOptions">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">recordOptions</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber17">source</a></span></span>
     </span>
   </h3>
 
@@ -773,7 +944,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber18">source</a></span></span>
     </span>
   </h3>
 
@@ -816,7 +987,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber17">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber19">source</a></span></span>
     </span>
   </h3>
 
@@ -905,7 +1076,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber81">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber82">source</a></span></span>
     </span>
   </h3>
 
@@ -976,7 +1147,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber89">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber90">source</a></span></span>
     </span>
   </h3>
 
@@ -1047,7 +1218,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber24">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber25">source</a></span></span>
     </span>
   </h3>
 
@@ -1118,7 +1289,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber29">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -1189,7 +1360,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber37">source</a></span></span>
     </span>
   </h3>
 
@@ -1260,7 +1431,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber56">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber57">source</a></span></span>
     </span>
   </h3>
 
@@ -1331,7 +1502,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber21">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber22">source</a></span></span>
     </span>
   </h3>
 
@@ -1386,7 +1557,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber104">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber105">source</a></span></span>
     </span>
   </h3>
 
@@ -1457,7 +1628,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber109">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber110">source</a></span></span>
     </span>
   </h3>
 
@@ -1528,7 +1699,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber67">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber68">source</a></span></span>
     </span>
   </h3>
 
@@ -1599,7 +1770,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber75">source</a></span></span>
     </span>
   </h3>
 
@@ -1659,6 +1830,61 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-tableFragments">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">tableFragments</span><span class="code" data-ice="signature">(): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber116">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-update">
     <span class="access" data-ice="access">public</span>
     
@@ -1670,7 +1896,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber98">source</a></span></span>
     </span>
   </h3>
 

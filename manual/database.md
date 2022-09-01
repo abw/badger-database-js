@@ -7,12 +7,17 @@ The `Database` class provides a wrapper around a
 * [Configuration](#configuration)
   * [Knex Configuration Options](#knex-configuration-options)
   * [tables](#tables)
+* [Properties](#properties)
+  * [connection](#connection)
+  * [model](#model)
 * [Methods](#methods)
   * [query(table)](#query-table-)
   * [raw(sql)](#raw-sql-)
   * [table(name)](#table-name-)
   * [escape(name)](#escape-name-)
   * [destroy()](#destroy--)
+* [Function](#functions)
+  * [database()](#database--)
 
 ## Overview
 
@@ -68,7 +73,37 @@ const database = new Database({
 
 ## tables
 
-Used to defined table schemas.  See [Table](manual/table.html).
+Used to define table schemas.
+
+```js
+import Database from '@abw/badger-database'
+
+const database = new Database(
+  // ...client, connection, pool, etc...
+  tables: {
+    users: {
+      // ... schema for users table
+    },
+    companies: {
+      // ... schema for companies table
+    }
+  }
+)
+```
+
+See the [Table](manual/table.html) manual page for further details.
+
+## Properties
+
+### connection
+
+This is a reference to a [Connection](manual/connection.md) instance
+which is a wrapper around the underlying Knex instance.
+
+### model
+
+This is a reference to a [Model](manual/model.md) proxy object which
+provides a shorthand way to access table instances
 
 ## Methods
 
@@ -99,7 +134,11 @@ const rows =
 ### table(name)
 
 Method to return a table object for a pre-defined table in the database.
-See [Table](manual/table.html).
+
+```js
+const users = database.table("users");
+```
+See the [Table](manual/table.html) manual page for further details.
 
 ### escape(name)
 
@@ -108,3 +147,21 @@ Used to escape a name according to the
 ### destroy()
 
 Used to disconnect from the database and cleanup when you're finished.
+
+## Functions
+
+### database()
+
+A function of convenience which wraps a call to `new Database()`.
+
+```js
+import { database } from '@abw/badger-database';
+const db = database(...);
+```
+
+This is equivalent to:
+
+```js
+import { Database } from '@abw/badger-database';
+const db = new Database(...);
+```

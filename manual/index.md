@@ -9,7 +9,15 @@ This is the manual for the `badger-database` Javascript module.
 * [Database](manual/database.html)
 * [Table](manual/table.html)
 * [Record](manual/record.html)
+* [Model](manual/model.html)
+
+These manual pages describe some of the internal implementation.
+You probably don't need to worry about them too much unless you're
+looking under the hood.
+
+* [Connection](manual/connection.html)
 * [Schema](manual/schema.html)
 
 # Author
+
 [Andy Wardley](https://github.com/abw)

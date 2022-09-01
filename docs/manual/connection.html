@@ -7,7 +7,7 @@
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 <link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
-<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
@@ -174,81 +174,54 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger-database">badger-database</h1><img width="300" src="./images/badger2.svg">
-
-<p>This is the manual for the <code>badger-database</code> Javascript module.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="connection">Connection</h1><p>The <code>Connection</code> object is used internally to store the underlying
+Knex connection. It is accessible as <code>database.connection</code>.</p>
+<p>You probably don't need to know about this unless
+you're looking under the hood.</p>
 <ul>
-<li><a href="manual/getting_started.html">Getting Started</a></li>
-<li><a href="manual/overview.html">Overview</a></li>
-<li><a href="manual/database.html">Database</a></li>
-<li><a href="manual/table.html">Table</a></li>
-<li><a href="manual/record.html">Record</a></li>
-<li><a href="manual/model.html">Model</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#config">config</a></li>
+<li><a href="#knex">knex</a></li>
 </ul>
-<p>These manual pages describe some of the internal implementation.
-You probably don't need to worry about them too much unless you're
-looking under the hood.</p>
-<ul>
-<li><a href="manual/connection.html">Connection</a></li>
-<li><a href="manual/schema.html">Schema</a></li>
+</li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#query--">query()</a></li>
+<li><a href="#raw-sql-">raw(sql)</a></li>
+<li><a href="#pool--">pool()</a></li>
+<li><a href="#acquire--">acquire()</a></li>
+<li><a href="#destroy--">destroy()</a></li>
 </ul>
-<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
-</div>
-
-  
-
-  <div class="manual-cards">
-    
-  <div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/getting_started.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/overview.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/database.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/table.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/record.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/model.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/connection.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/schema.html"></a>
-      </div>
-    </div>
-</div>
+</li>
+<li><a href="#functions">Functions</a><ul>
+<li><a href="#connection--">connection()</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="configuration">Configuration</h2><p>The configuration options are the same as for
+<a href="https://knexjs.org/guide/#configuration-options">Knex.js</a>.</p>
+<h2 id="properties">Properties</h2><h3 id="config">config</h3><p>A copy of the configuration options.</p>
+<h3 id="knex">knex</h3><p>A reference to the underlying Knex function/object.</p>
+<h2 id="methods">Methods</h2><h3 id="query--">query()</h3><p>TODO - subject to change</p>
+<h3 id="raw-sql-">raw(sql)</h3><p>A method to execute a raw query on the underlying Knex
+object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">connection.raw(query);</code></code></pre>
+<p>This is equivalent to:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">connection.knex.raw(...arguments);</code></code></pre>
+<h3 id="pool--">pool()</h3><p>Returns the Knex client pool.</p>
+<p>Equivalent to:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">connection.knex.client.pool;</code></code></pre>
+<h3 id="acquire--">acquire()</h3><p>Acquire a connection from the Knex client pool.</p>
+<p>Equivalent to:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">connection.knex.client.pool.acquire();</code></code></pre>
+<h3 id="destroy--">destroy()</h3><p>Calls the <a href="https://knexjs.org/guide/#pool">destroy()</a> method
+on the Knex pool.</p>
+<h2 id="functions">Functions</h2><h3 id="connection--">connection()</h3><p>A function of convenience which wraps a call to <code>new Connection()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connection } from '@abw/badger-database';
+const conn = connection(...);</code></code></pre>
+<p>This is equivalent to:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Connection } from '@abw/badger-database';
+const conn = new Connection(...);</code></code></pre>
 </div>
 </div>
 
