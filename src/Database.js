@@ -1,6 +1,7 @@
 import { fail } from '@abw/badger-utils';
 import Config from './Config.js'
 import Connection from './Connection.js'
+import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 
 const escapeChars = {
@@ -13,6 +14,7 @@ export class Database {
   constructor(params={ }) {
     const config    = { ...Config, ...params };
     this.connection = new Connection(config);
+    this.model      = modelProxy(this);
     this.tables     = config.tables || { };
     this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;
     this.state      = {
@@ -29,8 +31,11 @@ export class Database {
     return this.state.table[name]
       ||=  this.initTable(name);
   }
+  hasTable(name) {
+    return this.tables[name];
+  }
   initTable(name) {
-    const schema = this.tables[name]   || fail("Invalid table specified: " + name);
+    const schema = this.hasTable(name) || fail("Invalid table specified: " + name);
     const tclass = schema.tableClass   || Table;
     const topts  = schema.tableOptions || { };
     schema.table ||= name;
