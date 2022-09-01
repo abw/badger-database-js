@@ -50,15 +50,19 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#overview" data-ice="link">Overview</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#knex-configuration-options" data-ice="link">Knex Configuration Options</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#tables" data-ice="link">tables</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#tablesclass" data-ice="link">tablesClass</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#tablesobject" data-ice="link">tablesObject</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tables" data-ice="link">tables</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tablesclass" data-ice="link">tablesClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tablesobject" data-ice="link">tablesObject</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#properties" data-ice="link">Properties</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#connection" data-ice="link">connection</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#model" data-ice="link">model</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#queries" data-ice="link">queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#methods" data-ice="link">Methods</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#knex--" data-ice="link">knex()</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#raw-sql-" data-ice="link">raw(sql)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#query-name-" data-ice="link">query(name)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#hastable-name-" data-ice="link">hasTable(name)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#table-name-" data-ice="link">table(name)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#escape-name-" data-ice="link">escape(name)</a></li>
@@ -193,6 +197,7 @@
 <li><a href="#overview">Overview</a></li>
 <li><a href="#configuration">Configuration</a><ul>
 <li><a href="#knex-configuration-options">Knex Configuration Options</a></li>
+<li><a href="#queries">queries</a></li>
 <li><a href="#tables">tables</a></li>
 <li><a href="#tablesclass">tablesClass</a></li>
 <li><a href="#tablesobject">tablesObject</a></li>
@@ -206,6 +211,8 @@
 <li><a href="#methods">Methods</a><ul>
 <li><a href="#knex--">knex()</a></li>
 <li><a href="#raw-sql-">raw(sql)</a></li>
+<li><a href="#query-name-">query(name)</a></li>
+<li><a href="#hastable-name-">hasTable(name)</a></li>
 <li><a href="#table-name-">table(name)</a></li>
 <li><a href="#escape-name-">escape(name)</a></li>
 <li><a href="#destroy--">destroy()</a></li>
@@ -248,10 +255,46 @@ const database = new Database({
     max: 10,
   }
 })</code></code></pre>
-<h2 id="tables">tables</h2><p>Used to define table schemas.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import Database from '@abw/badger-database'
-
-const database = new Database(
+<h3 id="queries">queries</h3><p>Used to define named SQL queries that you can then run by calling the
+<a href="#query-name-">query(name)</a> method specifying the name of the query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  queries: {
+    albumsByNumberOfTracks:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id ' +
+      'ORDER BY n_tracks ',
+  }
+)</code></code></pre>
+<p>See the <a href="manual/queries.html">Queries</a> manual page for further information.</p>
+<h3 id="fragments">fragments</h3><p>Use to define commonly used SQL fragments that can be interpolated into
+named <a href="#queries">queries</a>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  fragments: {
+    selectAlbumsWithTrackCount:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id '
+  },
+  queries: {
+    albumsByNumberOfTracks:
+      ' ' +
+      'ORDER BY n_tracks ',
+    albumWithMostTracks:
+      ' ' +
+      'ORDER BY n_tracks DESC ' +
+      'LIMIT 1',
+  }
+)</code></code></pre>
+<p>See the <a href="manual/queries.html">Queries</a> manual page for further information.</p>
+<h3 id="tables">tables</h3><p>Used to define table schemas.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
   // ...client, connection, pool, etc...
   tables: {
     users: {
@@ -263,14 +306,16 @@ const database = new Database(
   }
 )</code></code></pre>
 <p>See the <a href="manual/table.html">Table</a> manual page for further details.</p>
-<h2 id="tablesclass">tablesClass</h2><p>This can be used to provide an alternate class for returning table
+<h3 id="tablesclass">tablesClass</h3><p>This can be used to provide an alternate class for returning table
 configuration options.  The default is the <a href="manual/tables.html">Tables</a> class.</p>
-<h2 id="tablesobject">tablesObject</h2><p>This can be used to provide a pre-instantiated object for returning table
+<h3 id="tablesobject">tablesObject</h3><p>This can be used to provide a pre-instantiated object for returning table
 configuration options.  See the <a href="manual/tables.html">Tables</a> pages for
 further information.</p>
 <h2 id="properties">Properties</h2><h3 id="connection">connection</h3><p>This is a reference to a <a href="manual/connection.md">Connection</a> instance
 which is a wrapper around the underlying Knex instance.</p>
-<h3 id="model">model</h3><p>This is a reference to a <a href="manual/model.md">Model</a> proxy object which
+<h3 id="model">model</h3><p>This is a reference to a <a href="manual/model.html">Model</a> proxy object which
+provides a shorthand way to access table instances</p>
+<h3 id="queries">queries</h3><p>This is a reference to a <a href="manual/model.html">Queries</a> proxy object which
 provides a shorthand way to access table instances</p>
 <h2 id="methods">Methods</h2><h3 id="knex--">knex()</h3><p>Returns a Knex query for the database.
 Equivalent to calling <code>database.connection.knex()</code>.</p>
@@ -285,6 +330,23 @@ Equivalent to calling <code>database.connection.knex()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows =
   await database
     .raw('select forename from user where email="bobby@badger.com"');</code></code></pre>
+<h3 id="query-name-">query(name)</h3><p>This method allows you to execute a named query that was previously
+defined using the <a href="#queries">queries</a> configuration option.</p>
+<p>Given this database definition:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database(
+  // ...client, connection, pool, etc...
+  queries: {
+    albumsByNumberOfTracks:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id ' +
+      'ORDER BY n_tracks ',
+  }
+)</code></code></pre>
+<p>You can then run the query like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const albums = await database.query('albumsByNumberOfTracks');</code></code></pre>
 <h3 id="hastable-name-">hasTable(name)</h3><p>Method to check if a table exists.  Returns the configuration options
 for the table or a false value if the table doesn't exist.</p>
 <h3 id="table-name-">table(name)</h3><p>Method to return a table object for a pre-defined table in the database.</p>

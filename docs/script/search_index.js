@@ -126,6 +126,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-utils~queries",
+    "function/index.html#static-function-queries",
+    "<span>queries</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
     "@abw/badger-utils~record",
     "function/index.html#static-function-record",
     "<span>record</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -558,6 +564,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/database.js~database#queries",
+    "class/src/Database.js~Database.html#instance-member-queries",
+    "src/Database.js~Database#queries",
+    "member"
+  ],
+  [
+    "src/database.js~database#query",
+    "class/src/Database.js~Database.html#instance-method-query",
+    "src/Database.js~Database#query",
+    "method"
+  ],
+  [
     "src/database.js~database#raw",
     "class/src/Database.js~Database.html#instance-method-raw",
     "src/Database.js~Database#raw",
@@ -792,22 +810,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/queries.js~queries#fragments",
-    "class/src/Queries.js~Queries.html#instance-member-fragments",
-    "src/Queries.js~Queries#fragments",
-    "member"
-  ],
-  [
-    "src/queries.js~queries#maxexpansion",
-    "class/src/Queries.js~Queries.html#instance-member-maxExpansion",
-    "src/Queries.js~Queries#maxExpansion",
-    "member"
-  ],
-  [
-    "src/queries.js~queries#queries",
-    "class/src/Queries.js~Queries.html#instance-member-queries",
-    "src/Queries.js~Queries#queries",
-    "member"
+    "src/queries.js~queries#query",
+    "class/src/Queries.js~Queries.html#instance-method-query",
+    "src/Queries.js~Queries#query",
+    "method"
   ],
   [
     "src/record.js",
@@ -948,6 +954,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/schema.js~schema#fragments",
+    "class/src/Schema.js~Schema.html#instance-member-fragments",
+    "src/Schema.js~Schema#fragments",
+    "member"
+  ],
+  [
     "src/schema.js~schema#id",
     "class/src/Schema.js~Schema.html#instance-member-id",
     "src/Schema.js~Schema#id",
@@ -981,6 +993,12 @@ window.esdocSearchIndex = [
     "src/schema.js~schema#preparecolumns",
     "class/src/Schema.js~Schema.html#instance-method-prepareColumns",
     "src/Schema.js~Schema#prepareColumns",
+    "method"
+  ],
+  [
+    "src/schema.js~schema#preparefragments",
+    "class/src/Schema.js~Schema.html#instance-method-prepareFragments",
+    "src/Schema.js~Schema#prepareFragments",
     "method"
   ],
   [
@@ -1072,12 +1090,6 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-knex",
     "src/Table.js~Table#knex",
     "method"
-  ],
-  [
-    "src/table.js~table#queries",
-    "class/src/Table.js~Table.html#instance-member-queries",
-    "src/Table.js~Table#queries",
-    "member"
   ],
   [
     "src/table.js~table#record",

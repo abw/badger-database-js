@@ -860,7 +860,7 @@
     "__docId__": 64,
     "kind": "file",
     "name": "src/Database.js",
-    "content": "import { fail } from '@abw/badger-utils';\nimport Config from './Config.js'\nimport Connection from './Connection.js'\nimport modelProxy from './Proxy/Model.js';\nimport Table from './Table.js';\nimport Tables from './Tables.js';\n\nconst escapeChars = {\n  mysql:  '`',\n  mysql2: '`',\n  default: '\"',\n};\nconst defaults = {\n  tablesClass: Tables\n};\n\nexport class Database {\n  constructor(params={ }) {\n    const config    = { ...defaults, ...Config, ...params };\n    this.connection = new Connection(config);\n    this.tables     = config.tablesObject || new config.tablesClass(config.tables);\n    this.model      = modelProxy(this);\n    this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;\n    this.state      = {\n      table: { },\n    };\n  }\n  knex() {\n    return this.connection.knex(...arguments);\n  }\n  raw() {\n    return this.connection.raw(...arguments);\n  }\n  table(name) {\n    return this.state.table[name]\n      ||=  this.initTable(name);\n  }\n  hasTable(name) {\n    return this.tables.table(name);\n  }\n  initTable(name) {\n    const schema = this.hasTable(name) || fail(\"Invalid table specified: \" + name);\n    const tclass = schema.tableClass   || Table;\n    const topts  = schema.tableOptions || { };\n    schema.table ||= name;\n    return new tclass(this, { ...schema, ...topts });\n  }\n  escape(name) {\n    return name\n      .split(/\\./)\n      .map( part => this.escapeChar + part + this.escapeChar)\n      .join('.');\n  }\n  destroy() {\n    return this.connection.destroy();\n  }\n}\n\nexport const database = config =>\n  new Database(config)\n\nexport default Database\n\n",
+    "content": "import Config from './Config.js'\nimport Connection from './Connection.js'\nimport modelProxy from './Proxy/Model.js';\nimport Table from './Table.js';\nimport Tables from './Tables.js';\nimport Queries from './Queries.js';\nimport { fail } from '@abw/badger-utils';\n\nconst escapeChars = {\n  mysql:  '`',\n  mysql2: '`',\n  default: '\"',\n};\nconst defaults = {\n  tablesClass: Tables\n};\n\nexport class Database {\n  constructor(params={ }) {\n    const config    = { ...defaults, ...Config, ...params };\n    this.connection = new Connection(config);\n    this.queries    = new Queries(config);\n    this.tables     = config.tablesObject || new config.tablesClass(config.tables);\n    this.model      = modelProxy(this);\n    this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;\n    this.state      = {\n      table: { },\n    };\n  }\n  knex() {\n    return this.connection.knex(...arguments);\n  }\n  raw() {\n    return this.connection.raw(...arguments);\n  }\n  query(name) {\n    return this.raw(this.queries.query(name));\n  }\n  table(name) {\n    return this.state.table[name]\n      ||=  this.initTable(name);\n  }\n  hasTable(name) {\n    return this.tables.table(name);\n  }\n  initTable(name) {\n    const schema = this.hasTable(name) || fail(\"Invalid table specified: \" + name);\n    const tclass = schema.tableClass   || Table;\n    const topts  = schema.tableOptions || { };\n    schema.table ||= name;\n    return new tclass(this, { ...schema, ...topts });\n  }\n  escape(name) {\n    return name\n      .split(/\\./)\n      .map( part => this.escapeChar + part + this.escapeChar)\n      .join('.');\n  }\n  destroy() {\n    return this.connection.destroy();\n  }\n}\n\nexport const database = config =>\n  new Database(config)\n\nexport default Database\n\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Database.js",
     "access": "public",
@@ -879,7 +879,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": null,
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 9,
     "undocument": true,
     "type": {
       "types": [
@@ -900,7 +900,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": null,
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 14,
     "undocument": true,
     "type": {
       "types": [
@@ -921,7 +921,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{Database}",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "undocument": true,
     "interface": false
   },
@@ -936,7 +936,7 @@
     "longname": "src/Database.js~Database#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "undocument": true
   },
   {
@@ -948,7 +948,7 @@
     "longname": "src/Database.js~Database#connection",
     "access": "public",
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 21,
     "undocument": true,
     "type": {
       "types": [
@@ -959,27 +959,10 @@
   {
     "__docId__": 70,
     "kind": "member",
-    "name": "tables",
+    "name": "queries",
     "memberof": "src/Database.js~Database",
     "static": false,
-    "longname": "src/Database.js~Database#tables",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 71,
-    "kind": "member",
-    "name": "model",
-    "memberof": "src/Database.js~Database",
-    "static": false,
-    "longname": "src/Database.js~Database#model",
+    "longname": "src/Database.js~Database#queries",
     "access": "public",
     "description": null,
     "lineNumber": 22,
@@ -991,12 +974,12 @@
     }
   },
   {
-    "__docId__": 72,
+    "__docId__": 71,
     "kind": "member",
-    "name": "escapeChar",
+    "name": "tables",
     "memberof": "src/Database.js~Database",
     "static": false,
-    "longname": "src/Database.js~Database#escapeChar",
+    "longname": "src/Database.js~Database#tables",
     "access": "public",
     "description": null,
     "lineNumber": 23,
@@ -1008,7 +991,41 @@
     }
   },
   {
+    "__docId__": 72,
+    "kind": "member",
+    "name": "model",
+    "memberof": "src/Database.js~Database",
+    "static": false,
+    "longname": "src/Database.js~Database#model",
+    "access": "public",
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "__docId__": 73,
+    "kind": "member",
+    "name": "escapeChar",
+    "memberof": "src/Database.js~Database",
+    "static": false,
+    "longname": "src/Database.js~Database#escapeChar",
+    "access": "public",
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 74,
     "kind": "member",
     "name": "state",
     "memberof": "src/Database.js~Database",
@@ -1016,7 +1033,7 @@
     "longname": "src/Database.js~Database#state",
     "access": "public",
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -1025,7 +1042,7 @@
     }
   },
   {
-    "__docId__": 74,
+    "__docId__": 75,
     "kind": "method",
     "name": "knex",
     "memberof": "src/Database.js~Database",
@@ -1035,27 +1052,7 @@
     "longname": "src/Database.js~Database#knex",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 75,
-    "kind": "method",
-    "name": "raw",
-    "memberof": "src/Database.js~Database",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Database.js~Database#raw",
-    "access": "public",
-    "description": null,
-    "lineNumber": 31,
+    "lineNumber": 30,
     "undocument": true,
     "params": [],
     "return": {
@@ -1067,24 +1064,17 @@
   {
     "__docId__": 76,
     "kind": "method",
-    "name": "table",
+    "name": "raw",
     "memberof": "src/Database.js~Database",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Database.js~Database#table",
+    "longname": "src/Database.js~Database#raw",
     "access": "public",
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 33,
     "undocument": true,
-    "params": [
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
+    "params": [],
     "return": {
       "types": [
         "*"
@@ -1094,15 +1084,15 @@
   {
     "__docId__": 77,
     "kind": "method",
-    "name": "hasTable",
+    "name": "query",
     "memberof": "src/Database.js~Database",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Database.js~Database#hasTable",
+    "longname": "src/Database.js~Database#query",
     "access": "public",
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 36,
     "undocument": true,
     "params": [
       {
@@ -1121,15 +1111,15 @@
   {
     "__docId__": 78,
     "kind": "method",
-    "name": "initTable",
+    "name": "table",
     "memberof": "src/Database.js~Database",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Database.js~Database#initTable",
+    "longname": "src/Database.js~Database#table",
     "access": "public",
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 39,
     "undocument": true,
     "params": [
       {
@@ -1148,15 +1138,15 @@
   {
     "__docId__": 79,
     "kind": "method",
-    "name": "escape",
+    "name": "hasTable",
     "memberof": "src/Database.js~Database",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Database.js~Database#escape",
+    "longname": "src/Database.js~Database#hasTable",
     "access": "public",
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 43,
     "undocument": true,
     "params": [
       {
@@ -1175,6 +1165,60 @@
   {
     "__docId__": 80,
     "kind": "method",
+    "name": "initTable",
+    "memberof": "src/Database.js~Database",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Database.js~Database#initTable",
+    "access": "public",
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 81,
+    "kind": "method",
+    "name": "escape",
+    "memberof": "src/Database.js~Database",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Database.js~Database#escape",
+    "access": "public",
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 82,
+    "kind": "method",
     "name": "destroy",
     "memberof": "src/Database.js~Database",
     "generator": false,
@@ -1183,7 +1227,7 @@
     "longname": "src/Database.js~Database#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 59,
     "undocument": true,
     "params": [],
     "return": {
@@ -1193,7 +1237,7 @@
     }
   },
   {
-    "__docId__": 81,
+    "__docId__": 83,
     "kind": "function",
     "name": "database",
     "memberof": "src/Database.js",
@@ -1206,7 +1250,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{database}",
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 64,
     "undocument": true,
     "params": [
       {
@@ -1219,7 +1263,7 @@
     "return": null
   },
   {
-    "__docId__": 82,
+    "__docId__": 84,
     "kind": "file",
     "name": "src/Operator/From.js",
     "content": "import Operator from '../Operator.js';\n\nexport class From extends Operator {\n  initOperator(args) {\n    this.keyword = 'FROM';\n    this.table = args;\n  }\n  dump() {\n    this.debug(\"From dump\")\n    return this.keyword + ' ' + this.table;\n  }\n}\n\nexport default From",
@@ -1230,7 +1274,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 83,
+    "__docId__": 85,
     "kind": "class",
     "name": "From",
     "memberof": "src/Operator/From.js",
@@ -1249,7 +1293,7 @@
     ]
   },
   {
-    "__docId__": 84,
+    "__docId__": 86,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/From.js~From",
@@ -1272,7 +1316,7 @@
     "return": null
   },
   {
-    "__docId__": 85,
+    "__docId__": 87,
     "kind": "member",
     "name": "keyword",
     "memberof": "src/Operator/From.js~From",
@@ -1289,7 +1333,7 @@
     }
   },
   {
-    "__docId__": 86,
+    "__docId__": 88,
     "kind": "member",
     "name": "table",
     "memberof": "src/Operator/From.js~From",
@@ -1306,7 +1350,7 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 89,
     "kind": "method",
     "name": "dump",
     "memberof": "src/Operator/From.js~From",
@@ -1326,7 +1370,7 @@
     }
   },
   {
-    "__docId__": 88,
+    "__docId__": 90,
     "kind": "file",
     "name": "src/Operator/Select.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Select extends Operator {\n  initOperator(args) {\n    this.command = 'SELECT';\n    this.keyword = 'SELECT';\n    this.columns = args;\n  }\n  dump() {\n    this.debug(\"Select dump\")\n    return this.keyword + ' ' + this.columns;\n  }\n}\n\nexport default Select",
@@ -1337,7 +1381,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 89,
+    "__docId__": 91,
     "kind": "class",
     "name": "Select",
     "memberof": "src/Operator/Select.js",
@@ -1356,7 +1400,7 @@
     ]
   },
   {
-    "__docId__": 90,
+    "__docId__": 92,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Select.js~Select",
@@ -1379,7 +1423,7 @@
     "return": null
   },
   {
-    "__docId__": 91,
+    "__docId__": 93,
     "kind": "member",
     "name": "command",
     "memberof": "src/Operator/Select.js~Select",
@@ -1396,7 +1440,7 @@
     }
   },
   {
-    "__docId__": 92,
+    "__docId__": 94,
     "kind": "member",
     "name": "keyword",
     "memberof": "src/Operator/Select.js~Select",
@@ -1413,7 +1457,7 @@
     }
   },
   {
-    "__docId__": 93,
+    "__docId__": 95,
     "kind": "member",
     "name": "columns",
     "memberof": "src/Operator/Select.js~Select",
@@ -1430,7 +1474,7 @@
     }
   },
   {
-    "__docId__": 94,
+    "__docId__": 96,
     "kind": "method",
     "name": "dump",
     "memberof": "src/Operator/Select.js~Select",
@@ -1450,7 +1494,7 @@
     }
   },
   {
-    "__docId__": 95,
+    "__docId__": 97,
     "kind": "file",
     "name": "src/Operator/Where.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Where extends Operator {\n  initOperator(args) {\n    this.keyword = 'WHERE';\n    this.condition = args;\n  }\n  dump() {\n    this.debug(\"Where dump\")\n    return this.keyword + ' ' + this.condition;\n  }\n}\n\nexport default Where",
@@ -1461,7 +1505,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 96,
+    "__docId__": 98,
     "kind": "class",
     "name": "Where",
     "memberof": "src/Operator/Where.js",
@@ -1480,7 +1524,7 @@
     ]
   },
   {
-    "__docId__": 97,
+    "__docId__": 99,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Where.js~Where",
@@ -1503,7 +1547,7 @@
     "return": null
   },
   {
-    "__docId__": 98,
+    "__docId__": 100,
     "kind": "member",
     "name": "keyword",
     "memberof": "src/Operator/Where.js~Where",
@@ -1520,7 +1564,7 @@
     }
   },
   {
-    "__docId__": 99,
+    "__docId__": 101,
     "kind": "member",
     "name": "condition",
     "memberof": "src/Operator/Where.js~Where",
@@ -1537,7 +1581,7 @@
     }
   },
   {
-    "__docId__": 100,
+    "__docId__": 102,
     "kind": "method",
     "name": "dump",
     "memberof": "src/Operator/Where.js~Where",
@@ -1557,7 +1601,7 @@
     }
   },
   {
-    "__docId__": 101,
+    "__docId__": 103,
     "kind": "file",
     "name": "src/Operator.js",
     "content": "// work in progress / experiment\n\nimport { addDebug } from \"@abw/badger\";\n\nexport class Operator {\n  constructor(factory, parent, args) {\n    this.factory = factory;\n    this.parent = parent;\n    this.args = args;\n    this.initOperator(args);\n    addDebug(this, true, 'Operator > ', 'red');\n    this.debug(\"parent: \", parent);\n  }\n  initOperator() {\n    // stub for subclasses\n  }\n  dump() {\n    return undefined;\n  }\n  select(columns) {\n    this.debug(\"+select\")\n    return this.factory(this, 'select', columns);\n  }\n  from(table) {\n    this.debug(\"+from\")\n    return this.factory(this, 'from', table);\n  }\n  where(condition) {\n    this.debug(\"+where\")\n    return this.factory(this, 'where', condition);\n  }\n  dumpChain() {\n    return this.parent\n      ? this.parent.dumpChain() + \"\\n\" + this.dump()\n      : '';\n  }\n}\n\nexport default Operator",
@@ -1568,7 +1612,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 102,
+    "__docId__": 104,
     "kind": "class",
     "name": "Operator",
     "memberof": "src/Operator.js",
@@ -1584,7 +1628,7 @@
     "interface": false
   },
   {
-    "__docId__": 103,
+    "__docId__": 105,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Operator.js~Operator",
@@ -1598,7 +1642,7 @@
     "undocument": true
   },
   {
-    "__docId__": 104,
+    "__docId__": 106,
     "kind": "member",
     "name": "factory",
     "memberof": "src/Operator.js~Operator",
@@ -1615,7 +1659,7 @@
     }
   },
   {
-    "__docId__": 105,
+    "__docId__": 107,
     "kind": "member",
     "name": "parent",
     "memberof": "src/Operator.js~Operator",
@@ -1632,7 +1676,7 @@
     }
   },
   {
-    "__docId__": 106,
+    "__docId__": 108,
     "kind": "member",
     "name": "args",
     "memberof": "src/Operator.js~Operator",
@@ -1649,7 +1693,7 @@
     }
   },
   {
-    "__docId__": 107,
+    "__docId__": 109,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator.js~Operator",
@@ -1665,7 +1709,7 @@
     "return": null
   },
   {
-    "__docId__": 108,
+    "__docId__": 110,
     "kind": "method",
     "name": "dump",
     "memberof": "src/Operator.js~Operator",
@@ -1685,7 +1729,7 @@
     }
   },
   {
-    "__docId__": 109,
+    "__docId__": 111,
     "kind": "method",
     "name": "select",
     "memberof": "src/Operator.js~Operator",
@@ -1712,7 +1756,7 @@
     }
   },
   {
-    "__docId__": 110,
+    "__docId__": 112,
     "kind": "method",
     "name": "from",
     "memberof": "src/Operator.js~Operator",
@@ -1739,7 +1783,7 @@
     }
   },
   {
-    "__docId__": 111,
+    "__docId__": 113,
     "kind": "method",
     "name": "where",
     "memberof": "src/Operator.js~Operator",
@@ -1766,7 +1810,7 @@
     }
   },
   {
-    "__docId__": 112,
+    "__docId__": 114,
     "kind": "method",
     "name": "dumpChain",
     "memberof": "src/Operator.js~Operator",
@@ -1786,7 +1830,7 @@
     }
   },
   {
-    "__docId__": 113,
+    "__docId__": 115,
     "kind": "file",
     "name": "src/Operators.js",
     "content": "// work in progress / experiment\n\nimport Select from './Operator/Select.js';\nimport From from './Operator/From.js';\nimport Where from './Operator/Where.js';\n\nconst operators = {\n  select: Select,\n  from: From,\n  where: Where,\n  whence: Where,\n}\n\nexport const factory = (parent, type, ...args) => {\n  console.log('factory [%s] => ', type, args);\n  return new operators[type](factory, parent, ...args);\n}\n\nexport default factory;",
@@ -1797,7 +1841,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 114,
+    "__docId__": 116,
     "kind": "variable",
     "name": "operators",
     "memberof": "src/Operators.js",
@@ -1818,7 +1862,7 @@
     "ignore": true
   },
   {
-    "__docId__": 115,
+    "__docId__": 117,
     "kind": "function",
     "name": "factory",
     "memberof": "src/Operators.js",
@@ -1861,7 +1905,7 @@
     }
   },
   {
-    "__docId__": 116,
+    "__docId__": 118,
     "kind": "file",
     "name": "src/Proxy/Model.js",
     "content": "import { fail } from \"@abw/badger-utils\";\n\nexport const modelProxy = database =>\n  new Proxy(\n    database,\n    {\n      get(target, prop) {\n        if (target.hasTable(prop)) {\n          return target.table(prop);\n        }\n        return target[prop]\n          || fail(\"Invalid table specified: \", prop);\n      }\n    }\n  );\n\nexport default modelProxy\n",
@@ -1872,7 +1916,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 117,
+    "__docId__": 119,
     "kind": "function",
     "name": "modelProxy",
     "memberof": "src/Proxy/Model.js",
@@ -1902,7 +1946,7 @@
     }
   },
   {
-    "__docId__": 118,
+    "__docId__": 120,
     "kind": "file",
     "name": "src/Proxy/Record.js",
     "content": "export const recordProxy = record =>\n  new Proxy(\n    record,\n    {\n\n      get(target, prop) {\n        // console.log('recordProxy get(%s) on ', prop, target);\n        if (target.schema.allColumns[prop]) {\n          // console.log('recordProxy column: ', prop);\n          return target.data[prop];\n        }\n        else if (target.schema.relations?.[prop]) {\n          // console.log('recordProxy relation: ', prop);\n          return target.relation(prop);\n        }\n        //else if (prop === 'then') {\n        //  console.log('recordProxy.then');\n        //  return (\n        //    fn => recordProxy(target.then(fn))\n        //  ).bind(target)\n        //}\n        return target[prop];\n      }\n    }\n  );\n\nexport default recordProxy\n",
@@ -1913,7 +1957,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 119,
+    "__docId__": 121,
     "kind": "function",
     "name": "recordProxy",
     "memberof": "src/Proxy/Record.js",
@@ -1943,7 +1987,7 @@
     }
   },
   {
-    "__docId__": 120,
+    "__docId__": 122,
     "kind": "file",
     "name": "src/Proxy/Row.js",
     "content": "export const rowProxy = table => query =>\n  new Proxy(\n    query,\n    {\n      get(target, prop) {\n        if (prop === 'record') {\n          return () => table.record(...arguments);\n        }\n        else if (prop === 'then') {\n          return (\n            fn => table.rowProxy(target.then(fn))\n          ).bind(target)\n        }\n        return target[prop];\n      }\n    }\n  );\n\nexport default rowProxy\n",
@@ -1954,7 +1998,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 121,
+    "__docId__": 123,
     "kind": "function",
     "name": "rowProxy",
     "memberof": "src/Proxy/Row.js",
@@ -1984,7 +2028,7 @@
     }
   },
   {
-    "__docId__": 122,
+    "__docId__": 124,
     "kind": "file",
     "name": "src/Proxy/Rows.js",
     "content": "export const rowsProxy = table => query =>\n  new Proxy(\n    query,\n    {\n      get(target, prop) {\n        if (prop === 'records') {\n          return () => table.records(...arguments);\n        }\n        else if (prop === 'then') {\n          return (\n            fn => table.rowsProxy(target.then(fn))\n          ).bind(target)\n        }\n        return target[prop];\n      }\n    }\n  );\n\nexport default rowsProxy\n",
@@ -1995,7 +2039,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 123,
+    "__docId__": 125,
     "kind": "function",
     "name": "rowsProxy",
     "memberof": "src/Proxy/Rows.js",
@@ -2025,10 +2069,10 @@
     }
   },
   {
-    "__docId__": 124,
+    "__docId__": 126,
     "kind": "file",
     "name": "src/Queries.js",
-    "content": "// TODO: integrate this into Table\nimport { addDebug } from \"@abw/badger\";\nimport { fail } from \"@abw/badger-utils\";\n\nconst defaults = {\n  maxExpansion: 16\n};\n\nexport class Queries {\n  constructor(schema) {\n    this.fragments = schema.fragments || { };\n    this.queries = schema.queries || { };\n    this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;\n    addDebug(this, schema.debug, schema.debugPrefix || 'Queries', schema.debugColor);\n  }\n  expandFragments(query) {\n    const fragments = this.fragments;\n    let sql = query;\n    let runaway = 0;\n    let expanded = [ ];\n    this.debug(\"Expanding fragments: \", sql);\n\n    // eslint-disable-next-line no-constant-condition\n    while (true) {\n      let replaced = false;\n      sql = sql.replace(\n        /<(\\w+?)>/g,\n        (match, word) => {\n          replaced = true;\n          expanded.push(word);\n          return fragments[word] || fail(\"Invalid fragment in SQL expansion: <\", word, \">\");\n        }\n      );\n      if (replaced) {\n        this.debug(\"Replaced: \", sql);\n      }\n      else {\n        this.debug(\"No more replacements: \", sql);\n        break;\n      }\n      if (++runaway >= this.maxExpansion) {\n        fail(\n          \"Maximum SQL expansion limit (maxExpansion=\", this.maxExpansion, \") exceeded: \",\n          expanded.join(' -> ', )\n        )\n      }\n    }\n    return sql;\n  }\n}\n\nexport default Queries",
+    "content": "import { addDebug } from \"@abw/badger\";\nimport { fail } from \"@abw/badger-utils\";\n\nconst defaults = {\n  maxExpansion: 16,\n  fragments: { },\n  queries:  { }\n};\n\nexport class Queries {\n  constructor(schema) {\n    const config = this.config = { ...defaults, ...schema };\n    //this.fragments = schema.fragments || { };\n    //this.queries = schema.queries || { };\n    //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;\n    addDebug(this, config.debug, config.debugPrefix || 'Queries', config.debugColor);\n  }\n  query(name) {\n    // if the name is a single word then it must be a named query, otherwise\n    // we assume it's an SQL query possibly with embedded fragments.\n    return this.expandFragments(\n      name.match(/^\\w+$/)\n        ? this.config.queries[name] || fail(\"Invalid query specified: \", name)\n        : name\n    );\n  }\n  expandFragments(query) {\n    const fragments = this.config.fragments;\n    let sql = query;\n    let max = this.config.maxExpansion;\n    let runaway = 0;\n    let expanded = [ ];\n    this.debug(\"Expanding fragments: \", sql);\n\n    // eslint-disable-next-line no-constant-condition\n    while (true) {\n      let replaced = false;\n      sql = sql.replace(\n        /<(\\w+?)>/g,\n        (match, word) => {\n          replaced = true;\n          expanded.push(word);\n          return fragments[word] || fail(\"Invalid fragment in SQL expansion: <\", word, \">\");\n        }\n      );\n      if (replaced) {\n        this.debug(\"Replaced: \", sql);\n      }\n      else {\n        this.debug(\"No more replacements: \", sql);\n        break;\n      }\n      if (++runaway >= max) {\n        fail(\n          \"Maximum SQL expansion limit (maxExpansion=\", max, \") exceeded: \",\n          expanded.join(' -> ', )\n        )\n      }\n    }\n    return sql;\n  }\n}\n\nexport const queries = (schema) =>\n  new Queries(schema)\n\nexport default Queries",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Queries.js",
     "access": "public",
@@ -2036,7 +2080,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 125,
+    "__docId__": 127,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Queries.js",
@@ -2047,17 +2091,17 @@
     "importPath": "@abw/badger-utils",
     "importStyle": null,
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 4,
     "undocument": true,
     "type": {
       "types": [
-        "{\"maxExpansion\": number}"
+        "{\"maxExpansion\": number, \"fragments\": *, \"queries\": *}"
       ]
     },
     "ignore": true
   },
   {
-    "__docId__": 126,
+    "__docId__": 128,
     "kind": "class",
     "name": "Queries",
     "memberof": "src/Queries.js",
@@ -2068,12 +2112,12 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{Queries}",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 10,
     "undocument": true,
     "interface": false
   },
   {
-    "__docId__": 127,
+    "__docId__": 129,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Queries.js~Queries",
@@ -2083,55 +2127,31 @@
     "longname": "src/Queries.js~Queries#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 11,
     "undocument": true
   },
   {
-    "__docId__": 128,
-    "kind": "member",
-    "name": "fragments",
-    "memberof": "src/Queries.js~Queries",
-    "static": false,
-    "longname": "src/Queries.js~Queries#fragments",
-    "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 129,
-    "kind": "member",
-    "name": "queries",
-    "memberof": "src/Queries.js~Queries",
-    "static": false,
-    "longname": "src/Queries.js~Queries#queries",
-    "access": "public",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
     "__docId__": 130,
-    "kind": "member",
-    "name": "maxExpansion",
+    "kind": "method",
+    "name": "query",
     "memberof": "src/Queries.js~Queries",
+    "generator": false,
+    "async": false,
     "static": false,
-    "longname": "src/Queries.js~Queries#maxExpansion",
+    "longname": "src/Queries.js~Queries#query",
     "access": "public",
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 18,
     "undocument": true,
-    "type": {
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
       "types": [
         "*"
       ]
@@ -2148,7 +2168,7 @@
     "longname": "src/Queries.js~Queries#expandFragments",
     "access": "public",
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 27,
     "undocument": true,
     "params": [
       {
@@ -2166,6 +2186,32 @@
   },
   {
     "__docId__": 132,
+    "kind": "function",
+    "name": "queries",
+    "memberof": "src/Queries.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Queries.js~queries",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-utils",
+    "importStyle": "{queries}",
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "params": [
+      {
+        "name": "schema",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 133,
     "kind": "file",
     "name": "src/Record.js",
     "content": "import { addDebug } from \"@abw/badger\";\nimport { fail } from \"@abw/badger-utils\";\nimport relations from \"./Relation/index.js\";\n\nexport class Record {\n  constructor(table, data, options={}) {\n    this.table     = table;\n    this.schema    = table.schema;\n    this.database  = table.database;\n    this.data      = data;\n    this.relations = { };\n    addDebug(this, options.debug, options.debugPrefix || `<${this.schema.table}> record: `, options.debugColor);\n  }\n  update(set) {\n    const where = this.schema.identity(this.data);\n    return this.table.update(set, where).then(\n      rows => {\n        this.data = rows[0];\n        return this;\n      }\n    )\n  }\n  relation(name) {\n    this.debug('relation(%s)', name);\n    return this.relations[name]\n      ||=  this.initRelation(name);\n  }\n  initRelation(name) {\n    this.debug('initRelation(%s)', name);\n    const relation = this.schema.relations[name] || fail(\"Invalid relation specified: \", name);\n    const rfunc    = relations[relation.type] || fail(\"Invalid relation type: \", relation.type);\n    relation.name ||= name;\n    return rfunc(this, relation);\n  }\n}\n\nexport const record = (table, data, options) =>\n  new Record(table, data, options)\n\nexport default Record;\n",
@@ -2176,7 +2222,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 133,
+    "__docId__": 134,
     "kind": "class",
     "name": "Record",
     "memberof": "src/Record.js",
@@ -2192,7 +2238,7 @@
     "interface": false
   },
   {
-    "__docId__": 134,
+    "__docId__": 135,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Record.js~Record",
@@ -2206,7 +2252,7 @@
     "undocument": true
   },
   {
-    "__docId__": 135,
+    "__docId__": 136,
     "kind": "member",
     "name": "table",
     "memberof": "src/Record.js~Record",
@@ -2223,7 +2269,7 @@
     }
   },
   {
-    "__docId__": 136,
+    "__docId__": 137,
     "kind": "member",
     "name": "schema",
     "memberof": "src/Record.js~Record",
@@ -2240,7 +2286,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 138,
     "kind": "member",
     "name": "database",
     "memberof": "src/Record.js~Record",
@@ -2257,7 +2303,7 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 139,
     "kind": "member",
     "name": "data",
     "memberof": "src/Record.js~Record",
@@ -2274,7 +2320,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 140,
     "kind": "member",
     "name": "relations",
     "memberof": "src/Record.js~Record",
@@ -2291,7 +2337,7 @@
     }
   },
   {
-    "__docId__": 140,
+    "__docId__": 141,
     "kind": "method",
     "name": "update",
     "memberof": "src/Record.js~Record",
@@ -2318,7 +2364,7 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 143,
     "kind": "method",
     "name": "relation",
     "memberof": "src/Record.js~Record",
@@ -2345,7 +2391,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 144,
     "kind": "method",
     "name": "initRelation",
     "memberof": "src/Record.js~Record",
@@ -2372,7 +2418,7 @@
     }
   },
   {
-    "__docId__": 144,
+    "__docId__": 145,
     "kind": "function",
     "name": "record",
     "memberof": "src/Record.js",
@@ -2410,7 +2456,7 @@
     "return": null
   },
   {
-    "__docId__": 145,
+    "__docId__": 146,
     "kind": "file",
     "name": "src/Relation/many.js",
     "content": "export const many = (record, spec={}) => {\n  const lkey  = spec.localKey  || spec.local_key;\n  const rkey  = spec.remoteKey || spec.remote_key;\n  const where = { [rkey]: record.data[lkey] };\n  if (spec.debug) {\n    console.log('many() relation: ', spec);\n    console.log('many() relation table: ', spec.table);\n    console.log('many() relation where: ', where);\n  }\n  return record.database.table(spec.table).fetchAll(where).records();\n}\n\nexport default many",
@@ -2421,7 +2467,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 146,
+    "__docId__": 147,
     "kind": "function",
     "name": "many",
     "memberof": "src/Relation/many.js",
@@ -2460,7 +2506,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 148,
     "kind": "file",
     "name": "src/Relation/one.js",
     "content": "export const one = (record, spec={}) => {\n  const lkey  = spec.localKey  || spec.local_key;\n  const rkey  = spec.remoteKey || spec.remote_key;\n  const where = { [rkey]: record.data[lkey] };\n  if (spec.debug) {\n    console.log('one() relation: ', spec);\n    console.log('one() relation table: ', spec.table);\n    console.log('one() relation where: ', where);\n  }\n  return record.database.table(spec.table).fetchOne(where).record();\n}\n\nexport default one",
@@ -2471,7 +2517,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 148,
+    "__docId__": 149,
     "kind": "function",
     "name": "one",
     "memberof": "src/Relation/one.js",
@@ -2510,10 +2556,10 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 150,
     "kind": "file",
     "name": "src/Schema.js",
-    "content": "import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from \"@abw/badger-utils\";\nimport { addDebug } from \"@abw/badger\";\n\nconst DEFAULT_ID = 'id';\nconst COLUMN_SET_PREFIX = /^(@|\\.\\.\\.)/;\n\nexport class Schema {\n  constructor(database, schema) {\n    this.database = database || fail(\"No database specified\");\n    this.table    = schema.table || fail(\"No table name specified\");\n\n    this.prepareColumns(schema);\n    this.prepareKeys(schema);\n    this.prepareColumnSets(schema);\n\n    this.virtualColumns = schema.virtualColumns || { };\n    this.allColumns     = { ...splitHash(this.columnNames), ...splitHash(Object.keys(this.virtualColumns)) };\n    this.relations      = schema.relations || { };\n\n    // TODO: column sets for select, update, etc.\n    //this.prepareFragments(schema);\n\n    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);\n  }\n  prepareColumns(schema) {\n    const table      = schema.table;\n    const columns    = schema.columns;\n    const index      = splitHash(columns, () => ({ }))\n    this.columnIndex = objMap(\n      index,\n      (value, key) => {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = key);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = table + '.' + column;\n        return value;\n      }\n    )\n    this.columnNames  = Object.keys(this.columnIndex);\n  }\n  prepareColumnSets(schema) {\n    const index = splitHash(schema.columnSets, () => ({ }))\n    this.columnSets = objMap(\n      index,\n      (spec) => {\n        const basis   = (isString(spec) || isArray(spec)) ? splitList(spec) : this.columnNames;\n        const include = splitList(spec.include);\n        const exclude = splitHash(spec.exclude);\n        const result = [...basis, ...include]\n          .filter( column => ! exclude[column] );\n        return result;\n      }\n    )\n  }\n  prepareKeys(schema) {\n    this.keys = splitList(schema.keys);\n    if (schema.id) {\n      this.id = schema.id;\n      this.keys.unshift(this.id);\n    }\n    else if (this.keys.length === 0) {\n      this.id = DEFAULT_ID;\n      this.keys.unshift(this.id);\n    }\n    this.keyIndex = splitHash(this.keys);\n  }\n  /*\n  prepareFragments() {\n    this.fragments = {\n      table:    this.database.escape(this.table),\n      tcolumns: this.tableColumns,\n    }\n  }\n  */\n\n  // TODO: refactor remaining methods\n  column(name) {\n    return this.columnIndex[name]\n      ? this.columnIndex[name].tableColumn\n      : this.virtualColumns[name]\n        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)\n        : fail('Invalid column specified: ', name);\n  }\n  columnSet(name) {\n    return this.columnSets[name]\n      || fail('Invalid columnSet specified: ', name);\n  }\n  defaultColumns() {\n    return this.columnSets.default\n      || this.columns;\n  }\n  columns(names) {\n    return hasValue(names)\n      ? this.resolveColumns(names)\n      : this.defaultColumns().map( name => this.column(name) );\n  }\n  resolveColumns(names) {\n    const list = splitList(names);\n    let cols = [ ];\n    list.forEach(\n      name => {\n        this.debug(\"resolveColumns(%s) / %s\", names, name);\n        if (isString(name)) {\n          if (name.match(COLUMN_SET_PREFIX)) {\n            this.debug(\"%s is a columnSet %s\", name, name.replace(COLUMN_SET_PREFIX, ''));\n            cols.push(\n              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))\n                .map( name => this.column(name) )\n            );\n          }\n          else {\n            this.debug(\"%s is a column\", name);\n            cols.push(this.column(name));\n          }\n        }\n        else {\n          fail(\"resolveColumns() can only currently resolve strings\");\n        }\n      }\n    )\n    this.debug(\"resolveColumns(%s) => \", names, cols)\n    return cols;\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n}\n\nexport const schema = (database, schema) =>\n  new Schema(database, schema);\n\nexport default Schema\n",
+    "content": "import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from \"@abw/badger-utils\";\nimport { addDebug } from \"@abw/badger\";\n\nconst DEFAULT_ID = 'id';\nconst COLUMN_SET_PREFIX = /^(@|\\.\\.\\.)/;\n\nexport class Schema {\n  constructor(database, schema) {\n    this.database       = database || fail(\"No database specified\");\n    this.table          = schema.table || fail(\"No table name specified\");\n    this.relations      = schema.relations || { };\n    this.prepareColumns(schema);\n    this.prepareKeys(schema);\n    this.prepareColumnSets(schema);\n    this.prepareFragments(schema);\n\n    // TODO: column sets for select, update, etc.\n\n\n    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);\n  }\n  prepareColumns(schema) {\n    const table      = schema.table;\n    const columns    = schema.columns;\n    const index      = splitHash(columns, () => ({ }))\n    this.columnIndex = objMap(\n      index,\n      (value, key) => {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = key);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = table + '.' + column;\n        return value;\n      }\n    )\n    this.columnNames    = Object.keys(this.columnIndex);\n    this.virtualColumns = schema.virtualColumns || { };\n    this.allColumns     = {\n      // ...splitHash(this.columnNames),\n      // ...splitHash(Object.keys(this.virtualColumns))\n      ...this.columnIndex,\n      ...this.virtualColumns\n    };\n  }\n  prepareColumnSets(schema) {\n    const index = splitHash(schema.columnSets, () => ({ }))\n    this.columnSets = objMap(\n      index,\n      (spec) => {\n        const basis   = (isString(spec) || isArray(spec)) ? splitList(spec) : this.columnNames;\n        const include = splitList(spec.include);\n        const exclude = splitHash(spec.exclude);\n        const result = [...basis, ...include]\n          .filter( column => ! exclude[column] );\n        return result;\n      }\n    )\n  }\n  prepareKeys(schema) {\n    this.keys = splitList(schema.keys);\n    if (schema.id) {\n      this.id = schema.id;\n      this.keys.unshift(this.id);\n    }\n    else if (this.keys.length === 0) {\n      this.id = DEFAULT_ID;\n      this.keys.unshift(this.id);\n    }\n    this.keyIndex = splitHash(this.keys);\n  }\n  prepareFragments() {\n    this.fragments = {\n      table:    this.database.escape(this.table),\n      columns:  this.columnNames.join(', '),\n      tcolumns: this.columnNames.map( n => this.columnIndex[n].tableColumn ).join(', '),\n    }\n  }\n\n  // TODO: refactor remaining methods\n  column(name) {\n    return this.columnIndex[name]\n      ? this.columnIndex[name].tableColumn\n      : this.virtualColumns[name]\n        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)\n        : fail('Invalid column specified: ', name);\n  }\n  columnSet(name) {\n    return this.columnSets[name]\n      || fail('Invalid columnSet specified: ', name);\n  }\n  defaultColumns() {\n    return this.columnSets.default\n      || this.columns;\n  }\n  columns(names) {\n    return hasValue(names)\n      ? this.resolveColumns(names)\n      : this.defaultColumns().map( name => this.column(name) );\n  }\n  resolveColumns(names) {\n    const list = splitList(names);\n    let cols = [ ];\n    list.forEach(\n      name => {\n        this.debug(\"resolveColumns(%s) / %s\", names, name);\n        if (isString(name)) {\n          if (name.match(COLUMN_SET_PREFIX)) {\n            this.debug(\"%s is a columnSet %s\", name, name.replace(COLUMN_SET_PREFIX, ''));\n            cols.push(\n              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))\n                .map( name => this.column(name) )\n            );\n          }\n          else {\n            this.debug(\"%s is a column\", name);\n            cols.push(this.column(name));\n          }\n        }\n        else {\n          fail(\"resolveColumns() can only currently resolve strings\");\n        }\n      }\n    )\n    this.debug(\"resolveColumns(%s) => \", names, cols)\n    return cols;\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n}\n\nexport const schema = (database, schema) =>\n  new Schema(database, schema);\n\nexport default Schema\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Schema.js",
     "access": "public",
@@ -2521,7 +2567,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 150,
+    "__docId__": 151,
     "kind": "variable",
     "name": "DEFAULT_ID",
     "memberof": "src/Schema.js",
@@ -2542,7 +2588,7 @@
     "ignore": true
   },
   {
-    "__docId__": 151,
+    "__docId__": 152,
     "kind": "variable",
     "name": "COLUMN_SET_PREFIX",
     "memberof": "src/Schema.js",
@@ -2563,7 +2609,7 @@
     "ignore": true
   },
   {
-    "__docId__": 152,
+    "__docId__": 153,
     "kind": "class",
     "name": "Schema",
     "memberof": "src/Schema.js",
@@ -2579,7 +2625,7 @@
     "interface": false
   },
   {
-    "__docId__": 153,
+    "__docId__": 154,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Schema.js~Schema",
@@ -2593,7 +2639,7 @@
     "undocument": true
   },
   {
-    "__docId__": 154,
+    "__docId__": 155,
     "kind": "member",
     "name": "database",
     "memberof": "src/Schema.js~Schema",
@@ -2610,7 +2656,7 @@
     }
   },
   {
-    "__docId__": 155,
+    "__docId__": 156,
     "kind": "member",
     "name": "table",
     "memberof": "src/Schema.js~Schema",
@@ -2627,41 +2673,7 @@
     }
   },
   {
-    "__docId__": 156,
-    "kind": "member",
-    "name": "virtualColumns",
-    "memberof": "src/Schema.js~Schema",
-    "static": false,
-    "longname": "src/Schema.js~Schema#virtualColumns",
-    "access": "public",
-    "description": null,
-    "lineNumber": 16,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
     "__docId__": 157,
-    "kind": "member",
-    "name": "allColumns",
-    "memberof": "src/Schema.js~Schema",
-    "static": false,
-    "longname": "src/Schema.js~Schema#allColumns",
-    "access": "public",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{...splitHash: Object}"
-      ]
-    }
-  },
-  {
-    "__docId__": 158,
     "kind": "member",
     "name": "relations",
     "memberof": "src/Schema.js~Schema",
@@ -2669,7 +2681,7 @@
     "longname": "src/Schema.js~Schema#relations",
     "access": "public",
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 11,
     "undocument": true,
     "type": {
       "types": [
@@ -2678,7 +2690,7 @@
     }
   },
   {
-    "__docId__": 159,
+    "__docId__": 158,
     "kind": "method",
     "name": "prepareColumns",
     "memberof": "src/Schema.js~Schema",
@@ -2688,7 +2700,7 @@
     "longname": "src/Schema.js~Schema#prepareColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 22,
     "undocument": true,
     "params": [
       {
@@ -2701,7 +2713,7 @@
     "return": null
   },
   {
-    "__docId__": 160,
+    "__docId__": 159,
     "kind": "member",
     "name": "columnIndex",
     "memberof": "src/Schema.js~Schema",
@@ -2709,7 +2721,24 @@
     "longname": "src/Schema.js~Schema#columnIndex",
     "access": "public",
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 160,
+    "kind": "member",
+    "name": "columnNames",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#columnNames",
+    "access": "public",
+    "description": null,
+    "lineNumber": 37,
     "undocument": true,
     "type": {
       "types": [
@@ -2720,13 +2749,13 @@
   {
     "__docId__": 161,
     "kind": "member",
-    "name": "columnNames",
+    "name": "virtualColumns",
     "memberof": "src/Schema.js~Schema",
     "static": false,
-    "longname": "src/Schema.js~Schema#columnNames",
+    "longname": "src/Schema.js~Schema#virtualColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
@@ -2736,6 +2765,23 @@
   },
   {
     "__docId__": 162,
+    "kind": "member",
+    "name": "allColumns",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#allColumns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{...undefined: Object}"
+      ]
+    }
+  },
+  {
+    "__docId__": 163,
     "kind": "method",
     "name": "prepareColumnSets",
     "memberof": "src/Schema.js~Schema",
@@ -2745,7 +2791,7 @@
     "longname": "src/Schema.js~Schema#prepareColumnSets",
     "access": "public",
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 46,
     "undocument": true,
     "params": [
       {
@@ -2758,7 +2804,7 @@
     "return": null
   },
   {
-    "__docId__": 163,
+    "__docId__": 164,
     "kind": "member",
     "name": "columnSets",
     "memberof": "src/Schema.js~Schema",
@@ -2766,7 +2812,7 @@
     "longname": "src/Schema.js~Schema#columnSets",
     "access": "public",
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 48,
     "undocument": true,
     "type": {
       "types": [
@@ -2775,7 +2821,7 @@
     }
   },
   {
-    "__docId__": 164,
+    "__docId__": 165,
     "kind": "method",
     "name": "prepareKeys",
     "memberof": "src/Schema.js~Schema",
@@ -2785,7 +2831,7 @@
     "longname": "src/Schema.js~Schema#prepareKeys",
     "access": "public",
     "description": null,
-    "lineNumber": 56,
+    "lineNumber": 60,
     "undocument": true,
     "params": [
       {
@@ -2798,7 +2844,7 @@
     "return": null
   },
   {
-    "__docId__": 165,
+    "__docId__": 166,
     "kind": "member",
     "name": "keys",
     "memberof": "src/Schema.js~Schema",
@@ -2806,7 +2852,7 @@
     "longname": "src/Schema.js~Schema#keys",
     "access": "public",
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 61,
     "undocument": true,
     "type": {
       "types": [
@@ -2815,7 +2861,7 @@
     }
   },
   {
-    "__docId__": 166,
+    "__docId__": 167,
     "kind": "member",
     "name": "id",
     "memberof": "src/Schema.js~Schema",
@@ -2823,24 +2869,7 @@
     "longname": "src/Schema.js~Schema#id",
     "access": "public",
     "description": null,
-    "lineNumber": 59,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 168,
-    "kind": "member",
-    "name": "keyIndex",
-    "memberof": "src/Schema.js~Schema",
-    "static": false,
-    "longname": "src/Schema.js~Schema#keyIndex",
-    "access": "public",
-    "description": null,
-    "lineNumber": 66,
+    "lineNumber": 63,
     "undocument": true,
     "type": {
       "types": [
@@ -2850,6 +2879,56 @@
   },
   {
     "__docId__": 169,
+    "kind": "member",
+    "name": "keyIndex",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#keyIndex",
+    "access": "public",
+    "description": null,
+    "lineNumber": 70,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 170,
+    "kind": "method",
+    "name": "prepareFragments",
+    "memberof": "src/Schema.js~Schema",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Schema.js~Schema#prepareFragments",
+    "access": "public",
+    "description": null,
+    "lineNumber": 72,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 171,
+    "kind": "member",
+    "name": "fragments",
+    "memberof": "src/Schema.js~Schema",
+    "static": false,
+    "longname": "src/Schema.js~Schema#fragments",
+    "access": "public",
+    "description": null,
+    "lineNumber": 73,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"table\": *, \"columns\": *, \"tcolumns\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 172,
     "kind": "method",
     "name": "column",
     "memberof": "src/Schema.js~Schema",
@@ -2859,85 +2938,11 @@
     "longname": "src/Schema.js~Schema#column",
     "access": "public",
     "description": null,
-    "lineNumber": 78,
+    "lineNumber": 81,
     "undocument": true,
     "params": [
       {
         "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 170,
-    "kind": "method",
-    "name": "columnSet",
-    "memberof": "src/Schema.js~Schema",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Schema.js~Schema#columnSet",
-    "access": "public",
-    "description": null,
-    "lineNumber": 85,
-    "undocument": true,
-    "params": [
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 171,
-    "kind": "method",
-    "name": "defaultColumns",
-    "memberof": "src/Schema.js~Schema",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Schema.js~Schema#defaultColumns",
-    "access": "public",
-    "description": null,
-    "lineNumber": 89,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 172,
-    "kind": "method",
-    "name": "columns",
-    "memberof": "src/Schema.js~Schema",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Schema.js~Schema#columns",
-    "access": "public",
-    "description": null,
-    "lineNumber": 93,
-    "undocument": true,
-    "params": [
-      {
-        "name": "names",
         "types": [
           "*"
         ]
@@ -2952,15 +2957,62 @@
   {
     "__docId__": 173,
     "kind": "method",
-    "name": "resolveColumns",
+    "name": "columnSet",
     "memberof": "src/Schema.js~Schema",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Schema.js~Schema#resolveColumns",
+    "longname": "src/Schema.js~Schema#columnSet",
     "access": "public",
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 88,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 174,
+    "kind": "method",
+    "name": "defaultColumns",
+    "memberof": "src/Schema.js~Schema",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Schema.js~Schema#defaultColumns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 92,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 175,
+    "kind": "method",
+    "name": "columns",
+    "memberof": "src/Schema.js~Schema",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Schema.js~Schema#columns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 96,
     "undocument": true,
     "params": [
       {
@@ -2977,7 +3029,34 @@
     }
   },
   {
-    "__docId__": 174,
+    "__docId__": 176,
+    "kind": "method",
+    "name": "resolveColumns",
+    "memberof": "src/Schema.js~Schema",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Schema.js~Schema#resolveColumns",
+    "access": "public",
+    "description": null,
+    "lineNumber": 101,
+    "undocument": true,
+    "params": [
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 177,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Schema.js~Schema",
@@ -2987,7 +3066,7 @@
     "longname": "src/Schema.js~Schema#identity",
     "access": "public",
     "description": null,
-    "lineNumber": 125,
+    "lineNumber": 128,
     "undocument": true,
     "params": [
       {
@@ -3004,7 +3083,7 @@
     }
   },
   {
-    "__docId__": 175,
+    "__docId__": 178,
     "kind": "function",
     "name": "schema",
     "memberof": "src/Schema.js",
@@ -3017,7 +3096,7 @@
     "importPath": "@abw/badger-utils",
     "importStyle": "{schema}",
     "description": null,
-    "lineNumber": 136,
+    "lineNumber": 139,
     "undocument": true,
     "params": [
       {
@@ -3036,10 +3115,10 @@
     "return": null
   },
   {
-    "__docId__": 176,
+    "__docId__": 179,
     "kind": "file",
     "name": "src/Table.js",
-    "content": "import { addDebug } from \"@abw/badger\";\nimport { fail, isArray } from \"@abw/badger-utils\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport Record from \"./Record.js\";\nimport Schema from \"./Schema.js\";\nimport Queries from \"./Queries.js\";\n\n// export class Table extends Queries {\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.schema        = new Schema(database, schema)\n    this.queries       = new Queries(schema);\n    this.recordClass   = schema.recordClass || Record;\n    this.recordOptions = schema.recordOptions;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);\n  }\n  knex() {\n    return this.database.knex(this.schema.table);\n  }\n  insert(data) {\n    return isArray(data)\n      ? this.insertRows(data)\n      : this.insertRow(data);\n  }\n  insertRow(row) {\n    return this.rowProxy(\n      this.knex().insert(row).then(\n        ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n      )\n    )\n  }\n  insertRows(rows) {\n    return this.rowsProxy(\n      this.insertRowsAsync(rows)\n    )\n    /*\n    // I *think* this should work... but it's beyond my ability/patience to\n    // figure out why it doesn't :-(\n    /*\n    return this.rowsProxy(\n      Promise.all(\n        rows.map(\n          data => this.knex().insert(data)\n            .then(\n              ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n            )\n        )\n      )\n    )\n    */\n  }\n  async insertRowsAsync(rows) {\n    let results = [ ];\n    for (const row of rows) {\n      const result = await this.knex().insert(row)\n        .then(\n          ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n        )\n      results.push(result)\n    }\n    return results;\n  }\n  selectAll(columns) {\n    return this.rowsProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    );\n  }\n  selectOne(columns) {\n    return this.rowProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    ).first();\n  }\n  fetchAll(where) {\n    const select = this.knex().select();\n    return this.rowsProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  fetchOne(where) {\n    const select = this.knex().select().first();\n    return this.rowProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  update(set, where) {\n    return this.rowsProxy(\n      this.knex().update(set).where(where).then(\n        () => this.fetchAll(where)\n      )\n    )\n  }\n  record(query) {\n    return query.then(\n      row => recordProxy(new this.recordClass(this, row, this.recordOptions))\n    );\n  }\n  records(query) {\n    // console.log('table.records()');\n    return query.then(\n      rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )\n    );\n  }\n  tableFragments() {\n    return this.tableFragments\n  }\n}\n\nexport const table = (database, schema) =>\n  new Table(database, schema)\n\nexport default Table;\n",
+    "content": "import { addDebug } from \"@abw/badger\";\nimport { fail, isArray } from \"@abw/badger-utils\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport Record from \"./Record.js\";\nimport Schema from \"./Schema.js\";\n// import Queries from \"./Queries.js\";\n\n// export class Table extends Queries {\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.schema        = new Schema(database, schema)\n    // this.queries       = new Queries(schema);\n    this.recordClass   = schema.recordClass || Record;\n    this.recordOptions = schema.recordOptions;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);\n  }\n  knex() {\n    return this.database.knex(this.schema.table);\n  }\n  insert(data) {\n    return isArray(data)\n      ? this.insertRows(data)\n      : this.insertRow(data);\n  }\n  insertRow(row) {\n    return this.rowProxy(\n      this.knex().insert(row).then(\n        ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n      )\n    )\n  }\n  insertRows(rows) {\n    return this.rowsProxy(\n      this.insertRowsAsync(rows)\n    )\n    /*\n    // I *think* this should work... but it's beyond my ability/patience to\n    // figure out why it doesn't :-(\n    /*\n    return this.rowsProxy(\n      Promise.all(\n        rows.map(\n          data => this.knex().insert(data)\n            .then(\n              ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n            )\n        )\n      )\n    )\n    */\n  }\n  async insertRowsAsync(rows) {\n    let results = [ ];\n    for (const row of rows) {\n      const result = await this.knex().insert(row)\n        .then(\n          ([id]) => this.knex().select().first().where({ [this.schema.id]: id })\n        )\n      results.push(result)\n    }\n    return results;\n  }\n  selectAll(columns) {\n    return this.rowsProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    );\n  }\n  selectOne(columns) {\n    return this.rowProxy(\n      this.knex().select(\n        this.schema.columns(columns)\n      )\n    ).first();\n  }\n  fetchAll(where) {\n    const select = this.knex().select();\n    return this.rowsProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  fetchOne(where) {\n    const select = this.knex().select().first();\n    return this.rowProxy(\n      where\n        ? select.where(where)\n        : select\n    );\n  }\n  update(set, where) {\n    return this.rowsProxy(\n      this.knex().update(set).where(where).then(\n        () => this.fetchAll(where)\n      )\n    )\n  }\n  record(query) {\n    return query.then(\n      row => recordProxy(new this.recordClass(this, row, this.recordOptions))\n    );\n  }\n  records(query) {\n    // console.log('table.records()');\n    return query.then(\n      rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )\n    );\n  }\n  tableFragments() {\n    return this.tableFragments\n  }\n}\n\nexport const table = (database, schema) =>\n  new Table(database, schema)\n\nexport default Table;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Table.js",
     "access": "public",
@@ -3047,7 +3126,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 177,
+    "__docId__": 180,
     "kind": "class",
     "name": "Table",
     "memberof": "src/Table.js",
@@ -3063,7 +3142,7 @@
     "interface": false
   },
   {
-    "__docId__": 178,
+    "__docId__": 181,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Table.js~Table",
@@ -3077,7 +3156,7 @@
     "undocument": true
   },
   {
-    "__docId__": 179,
+    "__docId__": 182,
     "kind": "member",
     "name": "database",
     "memberof": "src/Table.js~Table",
@@ -3094,7 +3173,7 @@
     }
   },
   {
-    "__docId__": 180,
+    "__docId__": 183,
     "kind": "member",
     "name": "schema",
     "memberof": "src/Table.js~Table",
@@ -3111,24 +3190,7 @@
     }
   },
   {
-    "__docId__": 181,
-    "kind": "member",
-    "name": "queries",
-    "memberof": "src/Table.js~Table",
-    "static": false,
-    "longname": "src/Table.js~Table#queries",
-    "access": "public",
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 182,
+    "__docId__": 184,
     "kind": "member",
     "name": "recordClass",
     "memberof": "src/Table.js~Table",
@@ -3145,7 +3207,7 @@
     }
   },
   {
-    "__docId__": 183,
+    "__docId__": 185,
     "kind": "member",
     "name": "recordOptions",
     "memberof": "src/Table.js~Table",
@@ -3162,7 +3224,7 @@
     }
   },
   {
-    "__docId__": 184,
+    "__docId__": 186,
     "kind": "member",
     "name": "rowProxy",
     "memberof": "src/Table.js~Table",
@@ -3179,7 +3241,7 @@
     }
   },
   {
-    "__docId__": 185,
+    "__docId__": 187,
     "kind": "member",
     "name": "rowsProxy",
     "memberof": "src/Table.js~Table",
@@ -3196,7 +3258,7 @@
     }
   },
   {
-    "__docId__": 186,
+    "__docId__": 188,
     "kind": "method",
     "name": "knex",
     "memberof": "src/Table.js~Table",
@@ -3216,7 +3278,7 @@
     }
   },
   {
-    "__docId__": 187,
+    "__docId__": 189,
     "kind": "method",
     "name": "insert",
     "memberof": "src/Table.js~Table",
@@ -3243,7 +3305,7 @@
     }
   },
   {
-    "__docId__": 188,
+    "__docId__": 190,
     "kind": "method",
     "name": "insertRow",
     "memberof": "src/Table.js~Table",
@@ -3270,7 +3332,7 @@
     }
   },
   {
-    "__docId__": 189,
+    "__docId__": 191,
     "kind": "method",
     "name": "insertRows",
     "memberof": "src/Table.js~Table",
@@ -3297,7 +3359,7 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 192,
     "kind": "method",
     "name": "insertRowsAsync",
     "memberof": "src/Table.js~Table",
@@ -3324,7 +3386,7 @@
     }
   },
   {
-    "__docId__": 191,
+    "__docId__": 193,
     "kind": "method",
     "name": "selectAll",
     "memberof": "src/Table.js~Table",
@@ -3351,7 +3413,7 @@
     }
   },
   {
-    "__docId__": 192,
+    "__docId__": 194,
     "kind": "method",
     "name": "selectOne",
     "memberof": "src/Table.js~Table",
@@ -3378,7 +3440,7 @@
     }
   },
   {
-    "__docId__": 193,
+    "__docId__": 195,
     "kind": "method",
     "name": "fetchAll",
     "memberof": "src/Table.js~Table",
@@ -3405,7 +3467,7 @@
     }
   },
   {
-    "__docId__": 194,
+    "__docId__": 196,
     "kind": "method",
     "name": "fetchOne",
     "memberof": "src/Table.js~Table",
@@ -3432,7 +3494,7 @@
     }
   },
   {
-    "__docId__": 195,
+    "__docId__": 197,
     "kind": "method",
     "name": "update",
     "memberof": "src/Table.js~Table",
@@ -3465,7 +3527,7 @@
     }
   },
   {
-    "__docId__": 196,
+    "__docId__": 198,
     "kind": "method",
     "name": "record",
     "memberof": "src/Table.js~Table",
@@ -3492,7 +3554,7 @@
     }
   },
   {
-    "__docId__": 197,
+    "__docId__": 199,
     "kind": "method",
     "name": "records",
     "memberof": "src/Table.js~Table",
@@ -3519,7 +3581,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 200,
     "kind": "method",
     "name": "tableFragments",
     "memberof": "src/Table.js~Table",
@@ -3539,7 +3601,7 @@
     }
   },
   {
-    "__docId__": 199,
+    "__docId__": 201,
     "kind": "function",
     "name": "table",
     "memberof": "src/Table.js",
@@ -3571,7 +3633,7 @@
     "return": null
   },
   {
-    "__docId__": 200,
+    "__docId__": 202,
     "kind": "file",
     "name": "src/Tables.js",
     "content": "export class Tables {\n  constructor(tables={}) {\n    this.tables = tables;\n  }\n  table(name) {\n    return this.tables[name];\n  }\n}\n\nexport default Tables;",
@@ -3582,7 +3644,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 201,
+    "__docId__": 203,
     "kind": "class",
     "name": "Tables",
     "memberof": "src/Tables.js",
@@ -3598,7 +3660,7 @@
     "interface": false
   },
   {
-    "__docId__": 202,
+    "__docId__": 204,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Tables.js~Tables",
@@ -3612,7 +3674,7 @@
     "undocument": true
   },
   {
-    "__docId__": 203,
+    "__docId__": 205,
     "kind": "member",
     "name": "tables",
     "memberof": "src/Tables.js~Tables",
@@ -3629,7 +3691,7 @@
     }
   },
   {
-    "__docId__": 204,
+    "__docId__": 206,
     "kind": "method",
     "name": "table",
     "memberof": "src/Tables.js~Tables",
@@ -3656,7 +3718,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 207,
     "kind": "file",
     "name": "src/Utils.js",
     "content": "// nothing here",
@@ -3710,7 +3772,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/database.md",
     "name": "./manual/database.md",
-    "content": "# Database\n\nThe `Database` class provides a wrapper around a\n[Knex.js](https://knexjs.org/) database connection.\n\n* [Overview](#overview)\n* [Configuration](#configuration)\n  * [Knex Configuration Options](#knex-configuration-options)\n  * [tables](#tables)\n  * [tablesClass](#tablesclass)\n  * [tablesObject](#tablesobject)\n* [Properties](#properties)\n  * [connection](#connection)\n  * [model](#model)\n* [Methods](#methods)\n  * [knex()](#knex--)\n  * [raw(sql)](#raw-sql-)\n  * [table(name)](#table-name-)\n  * [escape(name)](#escape-name-)\n  * [destroy()](#destroy--)\n* [Function](#functions)\n  * [database()](#database--)\n\n## Overview\n\nThe `Database` class is used to create a top-level interface to your database.\n\nCreate a new database object using the configuration options described below.\n\n```js\nimport Database from '@abw/badger-database';\n\nconst mydb = new Database({\n  // configuration options\n})\n```\n\nYou can also use the `database()` function which is a wrapper around `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\n\nconst mydb = database({\n  // configuration options\n})\n```\n\n## Configuration\n\n### Knex Configuration Options\n\nThe configuration parameters should include the\n`client` and `connection` parameters as a minimum,\nalong with any other optional configuration parameters\naccepted as\n[Knex.js configuration options](https://knexjs.org/guide/#configuration-options)\n\nFor example, a connection to a `sqlite3` database might look like this:\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database({\n  client: 'sqlite3',\n  connection: {\n    filename: ':memory:',\n  },\n  useNullAsDefault: true,\n  pool: {\n    min: 2,\n    max: 10,\n  }\n})\n```\n\n## tables\n\nUsed to define table schemas.\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      // ... schema for users table\n    },\n    companies: {\n      // ... schema for companies table\n    }\n  }\n)\n```\n\nSee the [Table](manual/table.html) manual page for further details.\n\n## tablesClass\n\nThis can be used to provide an alternate class for returning table\nconfiguration options.  The default is the [Tables](manual/tables.html) class.\n\n## tablesObject\n\nThis can be used to provide a pre-instantiated object for returning table\nconfiguration options.  See the [Tables](manual/tables.html) pages for\nfurther information.\n\n## Properties\n\n### connection\n\nThis is a reference to a [Connection](manual/connection.md) instance\nwhich is a wrapper around the underlying Knex instance.\n\n### model\n\nThis is a reference to a [Model](manual/model.md) proxy object which\nprovides a shorthand way to access table instances\n\n## Methods\n\n### knex()\n\nReturns a Knex query for the database.\nEquivalent to calling `database.connection.knex()`.\n\n```js\nconst row =\n  await database\n    .knex('user')\n    .select('forename')\n    .where({ email: 'bobby@badger.com' })\n    .first()\n```\n\n### raw(sql)\n\nUsed to generate a raw SQL query for the database.  Equivalent to calling\n`knex.raw()`.\n\n```js\nconst rows =\n  await database\n    .raw('select forename from user where email=\"bobby@badger.com\"');\n```\n\n### hasTable(name)\n\nMethod to check if a table exists.  Returns the configuration options\nfor the table or a false value if the table doesn't exist.\n\n### table(name)\n\nMethod to return a table object for a pre-defined table in the database.\n\n```js\nconst users = database.table(\"users\");\n```\nSee the [Table](manual/table.html) manual page for further details.\n\n### escape(name)\n\nUsed to escape a name according to the\n\n### destroy()\n\nUsed to disconnect from the database and cleanup when you're finished.\n\n## Functions\n\n### database()\n\nA function of convenience which wraps a call to `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\nconst db = database(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Database } from '@abw/badger-database';\nconst db = new Database(...);\n```\n",
+    "content": "# Database\n\nThe `Database` class provides a wrapper around a\n[Knex.js](https://knexjs.org/) database connection.\n\n* [Overview](#overview)\n* [Configuration](#configuration)\n  * [Knex Configuration Options](#knex-configuration-options)\n  * [queries](#queries)\n  * [tables](#tables)\n  * [tablesClass](#tablesclass)\n  * [tablesObject](#tablesobject)\n* [Properties](#properties)\n  * [connection](#connection)\n  * [model](#model)\n* [Methods](#methods)\n  * [knex()](#knex--)\n  * [raw(sql)](#raw-sql-)\n  * [query(name)](#query-name-)\n  * [hasTable(name)](#hastable-name-)\n  * [table(name)](#table-name-)\n  * [escape(name)](#escape-name-)\n  * [destroy()](#destroy--)\n* [Function](#functions)\n  * [database()](#database--)\n\n## Overview\n\nThe `Database` class is used to create a top-level interface to your database.\n\nCreate a new database object using the configuration options described below.\n\n```js\nimport Database from '@abw/badger-database';\n\nconst mydb = new Database({\n  // configuration options\n})\n```\n\nYou can also use the `database()` function which is a wrapper around `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\n\nconst mydb = database({\n  // configuration options\n})\n```\n\n## Configuration\n\n### Knex Configuration Options\n\nThe configuration parameters should include the\n`client` and `connection` parameters as a minimum,\nalong with any other optional configuration parameters\naccepted as\n[Knex.js configuration options](https://knexjs.org/guide/#configuration-options)\n\nFor example, a connection to a `sqlite3` database might look like this:\n\n```js\nimport Database from '@abw/badger-database'\n\nconst database = new Database({\n  client: 'sqlite3',\n  connection: {\n    filename: ':memory:',\n  },\n  useNullAsDefault: true,\n  pool: {\n    min: 2,\n    max: 10,\n  }\n})\n```\n\n### queries\n\nUsed to define named SQL queries that you can then run by calling the\n[query(name)](#query-name-) method specifying the name of the query.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  queries: {\n    albumsByNumberOfTracks:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id ' +\n      'ORDER BY n_tracks ',\n  }\n)\n```\n\nSee the [Queries](manual/queries.html) manual page for further information.\n\n### fragments\n\nUse to define commonly used SQL fragments that can be interpolated into\nnamed [queries](#queries).\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  fragments: {\n    selectAlbumsWithTrackCount:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id '\n  },\n  queries: {\n    albumsByNumberOfTracks:\n      '<selectAlbumsWithTrackCount> ' +\n      'ORDER BY n_tracks ',\n    albumWithMostTracks:\n      '<selectAlbumsWithTrackCount> ' +\n      'ORDER BY n_tracks DESC ' +\n      'LIMIT 1',\n  }\n)\n```\n\nSee the [Queries](manual/queries.html) manual page for further information.\n\n### tables\n\nUsed to define table schemas.\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  tables: {\n    users: {\n      // ... schema for users table\n    },\n    companies: {\n      // ... schema for companies table\n    }\n  }\n)\n```\n\nSee the [Table](manual/table.html) manual page for further details.\n\n### tablesClass\n\nThis can be used to provide an alternate class for returning table\nconfiguration options.  The default is the [Tables](manual/tables.html) class.\n\n### tablesObject\n\nThis can be used to provide a pre-instantiated object for returning table\nconfiguration options.  See the [Tables](manual/tables.html) pages for\nfurther information.\n\n## Properties\n\n### connection\n\nThis is a reference to a [Connection](manual/connection.md) instance\nwhich is a wrapper around the underlying Knex instance.\n\n### model\n\nThis is a reference to a [Model](manual/model.html) proxy object which\nprovides a shorthand way to access table instances\n\n### queries\n\nThis is a reference to a [Queries](manual/model.html) proxy object which\nprovides a shorthand way to access table instances\n\n## Methods\n\n### knex()\n\nReturns a Knex query for the database.\nEquivalent to calling `database.connection.knex()`.\n\n```js\nconst row =\n  await database\n    .knex('user')\n    .select('forename')\n    .where({ email: 'bobby@badger.com' })\n    .first()\n```\n\n### raw(sql)\n\nUsed to generate a raw SQL query for the database.  Equivalent to calling\n`knex.raw()`.\n\n```js\nconst rows =\n  await database\n    .raw('select forename from user where email=\"bobby@badger.com\"');\n```\n\n### query(name)\n\nThis method allows you to execute a named query that was previously\ndefined using the [queries](#queries) configuration option.\n\nGiven this database definition:\n\n```js\nconst database = new Database(\n  // ...client, connection, pool, etc...\n  queries: {\n    albumsByNumberOfTracks:\n      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +\n      'FROM albums ' +\n      'JOIN tracks ' +\n      'ON tracks.album_id=albums.id ' +\n      'GROUP BY albums.id ' +\n      'ORDER BY n_tracks ',\n  }\n)\n```\n\nYou can then run the query like so:\n\n```js\nconst albums = await database.query('albumsByNumberOfTracks');\n```\n\n\n### hasTable(name)\n\nMethod to check if a table exists.  Returns the configuration options\nfor the table or a false value if the table doesn't exist.\n\n### table(name)\n\nMethod to return a table object for a pre-defined table in the database.\n\n```js\nconst users = database.table(\"users\");\n```\nSee the [Table](manual/table.html) manual page for further details.\n\n### escape(name)\n\nUsed to escape a name according to the\n\n### destroy()\n\nUsed to disconnect from the database and cleanup when you're finished.\n\n## Functions\n\n### database()\n\nA function of convenience which wraps a call to `new Database()`.\n\n```js\nimport { database } from '@abw/badger-database';\nconst db = database(...);\n```\n\nThis is equivalent to:\n\n```js\nimport { Database } from '@abw/badger-database';\nconst db = new Database(...);\n```\n",
     "static": true,
     "access": "public"
   },

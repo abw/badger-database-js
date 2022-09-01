@@ -6,6 +6,7 @@ The `Database` class provides a wrapper around a
 * [Overview](#overview)
 * [Configuration](#configuration)
   * [Knex Configuration Options](#knex-configuration-options)
+  * [queries](#queries)
   * [tables](#tables)
   * [tablesClass](#tablesclass)
   * [tablesObject](#tablesobject)
@@ -15,6 +16,8 @@ The `Database` class provides a wrapper around a
 * [Methods](#methods)
   * [knex()](#knex--)
   * [raw(sql)](#raw-sql-)
+  * [query(name)](#query-name-)
+  * [hasTable(name)](#hastable-name-)
   * [table(name)](#table-name-)
   * [escape(name)](#escape-name-)
   * [destroy()](#destroy--)
@@ -73,13 +76,63 @@ const database = new Database({
 })
 ```
 
-## tables
+### queries
+
+Used to define named SQL queries that you can then run by calling the
+[query(name)](#query-name-) method specifying the name of the query.
+
+```js
+const database = new Database(
+  // ...client, connection, pool, etc...
+  queries: {
+    albumsByNumberOfTracks:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id ' +
+      'ORDER BY n_tracks ',
+  }
+)
+```
+
+See the [Queries](manual/queries.html) manual page for further information.
+
+### fragments
+
+Use to define commonly used SQL fragments that can be interpolated into
+named [queries](#queries).
+
+```js
+const database = new Database(
+  // ...client, connection, pool, etc...
+  fragments: {
+    selectAlbumsWithTrackCount:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id '
+  },
+  queries: {
+    albumsByNumberOfTracks:
+      '<selectAlbumsWithTrackCount> ' +
+      'ORDER BY n_tracks ',
+    albumWithMostTracks:
+      '<selectAlbumsWithTrackCount> ' +
+      'ORDER BY n_tracks DESC ' +
+      'LIMIT 1',
+  }
+)
+```
+
+See the [Queries](manual/queries.html) manual page for further information.
+
+### tables
 
 Used to define table schemas.
 
 ```js
-import Database from '@abw/badger-database'
-
 const database = new Database(
   // ...client, connection, pool, etc...
   tables: {
@@ -95,12 +148,12 @@ const database = new Database(
 
 See the [Table](manual/table.html) manual page for further details.
 
-## tablesClass
+### tablesClass
 
 This can be used to provide an alternate class for returning table
 configuration options.  The default is the [Tables](manual/tables.html) class.
 
-## tablesObject
+### tablesObject
 
 This can be used to provide a pre-instantiated object for returning table
 configuration options.  See the [Tables](manual/tables.html) pages for
@@ -115,7 +168,12 @@ which is a wrapper around the underlying Knex instance.
 
 ### model
 
-This is a reference to a [Model](manual/model.md) proxy object which
+This is a reference to a [Model](manual/model.html) proxy object which
+provides a shorthand way to access table instances
+
+### queries
+
+This is a reference to a [Queries](manual/model.html) proxy object which
 provides a shorthand way to access table instances
 
 ## Methods
@@ -143,6 +201,34 @@ Used to generate a raw SQL query for the database.  Equivalent to calling
 const rows =
   await database
     .raw('select forename from user where email="bobby@badger.com"');
+```
+
+### query(name)
+
+This method allows you to execute a named query that was previously
+defined using the [queries](#queries) configuration option.
+
+Given this database definition:
+
+```js
+const database = new Database(
+  // ...client, connection, pool, etc...
+  queries: {
+    albumsByNumberOfTracks:
+      'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
+      'FROM albums ' +
+      'JOIN tracks ' +
+      'ON tracks.album_id=albums.id ' +
+      'GROUP BY albums.id ' +
+      'ORDER BY n_tracks ',
+  }
+)
+```
+
+You can then run the query like so:
+
+```js
+const albums = await database.query('albumsByNumberOfTracks');
 ```
 
 ### hasTable(name)

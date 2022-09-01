@@ -38,6 +38,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connection">connection</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-database">database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
@@ -66,14 +67,14 @@ import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
 import Schema from "./Schema.js";
-import Queries from "./Queries.js";
+// import Queries from "./Queries.js";
 
 // export class Table extends Queries {
 export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
     this.schema        = new Schema(database, schema)
-    this.queries       = new Queries(schema);
+    // this.queries       = new Queries(schema);
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
