@@ -15,7 +15,7 @@ test.serial(
   async t => {
     const bobby =
       await users
-        .query()
+        .knex()
         .select('forename')
         .where({ email: "bobby@badger.com" })
         .first();
@@ -31,7 +31,7 @@ test.serial(
   async t => {
     const frank =
       await users
-        .query()
+        .knex()
         .insert({ forename: 'Frank', surname: 'Ferret', email: "frank@ferret.com" })
     t.is(frank[0], 4)
   }

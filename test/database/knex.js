@@ -9,9 +9,9 @@ test.before(
 );
 
 test.serial(
-  'database.query()',
+  'database.knex()',
   async t => {
-    const bobby = await database.query('user').select('forename').where({ email: 'bobby@badger.com' }).first();
+    const bobby = await database.knex('user').select('forename').where({ email: 'bobby@badger.com' }).first();
     t.is( bobby.forename, 'Bobby' );
   }
 )

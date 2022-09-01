@@ -41,7 +41,7 @@ export const createUsers = async database => {
   await database.raw("CREATE TABLE user (id INTEGER PRIMARY KEY ASC, forename TEXT, surname TEXT, email TEXT, password TEXT, is_admin INTEGER)");
   const users = database.table('users');
 
-  await users.query().insert([
+  await users.knex().insert([
     {
       forename: 'Bobby',
       surname: 'Badger',

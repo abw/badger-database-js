@@ -19,8 +19,8 @@ export class Table {
     this.rowsProxy     = rowsProxy(this);
     addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
-  query() {
-    return this.database.query(this.schema.table);
+  knex() {
+    return this.database.knex(this.schema.table);
   }
   insert(data) {
     return isArray(data)
@@ -29,8 +29,8 @@ export class Table {
   }
   insertRow(row) {
     return this.rowProxy(
-      this.query().insert(row).then(
-        ([id]) => this.query().select().first().where({ [this.schema.id]: id })
+      this.knex().insert(row).then(
+        ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
       )
     )
   }
@@ -45,9 +45,9 @@ export class Table {
     return this.rowsProxy(
       Promise.all(
         rows.map(
-          data => this.query().insert(data)
+          data => this.knex().insert(data)
             .then(
-              ([id]) => this.query().select().first().where({ [this.schema.id]: id })
+              ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
             )
         )
       )
@@ -57,9 +57,9 @@ export class Table {
   async insertRowsAsync(rows) {
     let results = [ ];
     for (const row of rows) {
-      const result = await this.query().insert(row)
+      const result = await this.knex().insert(row)
         .then(
-          ([id]) => this.query().select().first().where({ [this.schema.id]: id })
+          ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
         )
       results.push(result)
     }
@@ -67,20 +67,20 @@ export class Table {
   }
   selectAll(columns) {
     return this.rowsProxy(
-      this.query().select(
+      this.knex().select(
         this.schema.columns(columns)
       )
     );
   }
   selectOne(columns) {
     return this.rowProxy(
-      this.query().select(
+      this.knex().select(
         this.schema.columns(columns)
       )
     ).first();
   }
   fetchAll(where) {
-    const select = this.query().select();
+    const select = this.knex().select();
     return this.rowsProxy(
       where
         ? select.where(where)
@@ -88,7 +88,7 @@ export class Table {
     );
   }
   fetchOne(where) {
-    const select = this.query().select().first();
+    const select = this.knex().select().first();
     return this.rowProxy(
       where
         ? select.where(where)
@@ -97,7 +97,7 @@ export class Table {
   }
   update(set, where) {
     return this.rowsProxy(
-      this.query().update(set).where(where).then(
+      this.knex().update(set).where(where).then(
         () => this.fetchAll(where)
       )
     )

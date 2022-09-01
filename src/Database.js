@@ -21,8 +21,8 @@ export class Database {
       table: { },
     };
   }
-  query() {
-    return this.connection.query(...arguments);
+  knex() {
+    return this.connection.knex(...arguments);
   }
   raw() {
     return this.connection.raw(...arguments);
