@@ -242,7 +242,7 @@
 <li><a href="#destroy--">destroy()</a></li>
 </ul>
 </li>
-<li><a href="#functions">Function</a><ul>
+<li><a href="#functions">Functions</a><ul>
 <li><a href="#database--">database()</a></li>
 </ul>
 </li>
@@ -308,10 +308,10 @@ named <a href="#queries">queries</a>.</p>
   },
   queries: {
     albumsByNumberOfTracks:
-      ' ' +
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
       'ORDER BY n_tracks ',
     albumWithMostTracks:
-      ' ' +
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
       'ORDER BY n_tracks DESC ' +
       'LIMIT 1',
   }
@@ -339,8 +339,8 @@ further information.</p>
 which is a wrapper around the underlying Knex instance.</p>
 <h3 id="model">model</h3><p>This is a reference to a <a href="manual/model.html">Model</a> proxy object which
 provides a shorthand way to access table instances</p>
-<h3 id="queries">queries</h3><p>This is a reference to a <a href="manual/model.html">Queries</a> proxy object which
-provides a shorthand way to access table instances</p>
+<h3 id="queries">queries</h3><p>This is a reference to a <a href="manual/model.html">Queries</a> object which
+manages named SQL <a href="#queries">queries</a>.</p>
 <h2 id="methods">Methods</h2><h3 id="knex--">knex()</h3><p>Returns a Knex query for the database.
 Equivalent to calling <code>database.connection.knex()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row =
@@ -376,7 +376,8 @@ for the table or a false value if the table doesn't exist.</p>
 <h3 id="table-name-">table(name)</h3><p>Method to return a table object for a pre-defined table in the database.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const users = database.table("users");</code></code></pre>
 <p>See the <a href="manual/table.html">Table</a> manual page for further details.</p>
-<h3 id="escape-name-">escape(name)</h3><p>Used to escape a name according to the</p>
+<h3 id="escape-name-">escape(name)</h3><p>Used to escape a name according to the conventions of the current
+database client.</p>
 <h3 id="destroy--">destroy()</h3><p>Used to disconnect from the database and cleanup when you're finished.</p>
 <h2 id="functions">Functions</h2><h3 id="database--">database()</h3><p>A function of convenience which wraps a call to <code>new Database()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { database } from '@abw/badger-database';

@@ -18,7 +18,7 @@ trivially simple.
 
 The [Database](manual/database.html) object creates a `Tables`
 object passing it the [tables](manual/database.html#tables) configuration option.
-It implements the [table(name)] method which returns the corresponding
+It implements the [table(name)](#table-name-) method which returns the corresponding
 table configuration.
 
 It exists only as a hook to allow you to provide your own implementation for

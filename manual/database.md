@@ -22,7 +22,7 @@ The `Database` class provides a wrapper around a
   * [table(name)](#table-name-)
   * [escape(name)](#escape-name-)
   * [destroy()](#destroy--)
-* [Function](#functions)
+* [Functions](#functions)
   * [database()](#database--)
 
 ## Overview
@@ -117,10 +117,10 @@ const database = new Database(
   },
   queries: {
     albumsByNumberOfTracks:
-      '<selectAlbumsWithTrackCount> ' +
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
       'ORDER BY n_tracks ',
     albumWithMostTracks:
-      '<selectAlbumsWithTrackCount> ' +
+      '&lt;selectAlbumsWithTrackCount&gt; ' +
       'ORDER BY n_tracks DESC ' +
       'LIMIT 1',
   }
@@ -174,8 +174,8 @@ provides a shorthand way to access table instances
 
 ### queries
 
-This is a reference to a [Queries](manual/model.html) proxy object which
-provides a shorthand way to access table instances
+This is a reference to a [Queries](manual/model.html) object which
+manages named SQL [queries](#queries).
 
 ## Methods
 
@@ -248,7 +248,8 @@ See the [Table](manual/table.html) manual page for further details.
 
 ### escape(name)
 
-Used to escape a name according to the
+Used to escape a name according to the conventions of the current
+database client.
 
 ### destroy()
 

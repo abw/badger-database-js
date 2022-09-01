@@ -548,7 +548,7 @@ defined using the <a href="#queries">queries</a> configuration option.</p>
 )</code></code></pre>
 <p>You can then run the <code>albumsByNumberOfTracks</code> query like so:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const albums = await database
-  .table("albums")
+  .table('albums')
   .query('albumsByNumberOfTracks');</code></code></pre>
 <p>You can embed <a href="#fragments">fragments</a> in your queries inside angle brackets.</p>
 <p>If the <code>name</code> passed to the <code>query()</code> method is a single word then it is
@@ -558,7 +558,7 @@ can also include embedded fragments, including those that are auto-generated
 such as <code>table</code> for the table name and <code>columns</code> for the table columns.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const albums = await database
   .table('albums')
-  .query('SELECT  FROM  ORDER BY year,id');<table></table></code></code></pre>
+  .query('SELECT &lt;columns&gt; FROM &lt;table&gt; ORDER BY year,id');</code></code></pre>
 <h3 id="insert-data-">insert(data)</h3><p>Insert data into the table.  You can pass a single object row or an array of
 rows to insert.  This method will then delegate to <a href="#insertrow-data-">insertRow()</a>
 or <a href="#insertrows-data-">insertRows()</a> as appropriate</p>

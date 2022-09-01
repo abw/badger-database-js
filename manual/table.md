@@ -473,7 +473,7 @@ You can then run the `albumsByNumberOfTracks` query like so:
 
 ```js
 const albums = await database
-  .table("albums")
+  .table('albums')
   .query('albumsByNumberOfTracks');
 ```
 
@@ -488,7 +488,7 @@ such as `table` for the table name and `columns` for the table columns.
 ```js
 const albums = await database
   .table('albums')
-  .query('SELECT <columns> FROM <table> ORDER BY year,id');
+  .query('SELECT &lt;columns&gt; FROM &lt;table&gt; ORDER BY year,id');
 ```
 
 ### insert(data)
