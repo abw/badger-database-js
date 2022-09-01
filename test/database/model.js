@@ -34,6 +34,19 @@ test.serial(
   }
 )
 
+test.serial(
+  'model.missing_table',
+  t => {
+    const error = t.throws(
+      () => {
+        // eslint-disable-next-line no-unused-vars
+        const missing = musicdb.model.missing_table;
+      }
+    )
+    t.is( error.message, "Invalid table specified: missing_table" );
+  }
+)
+
 test.after(
   () => musicdb.destroy()
 )
