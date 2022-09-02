@@ -1,20 +1,25 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser'
+import json from '@rollup/plugin-json';
 import pkg from './package.json';
+import { terser } from 'rollup-plugin-terser'
 
 // Silence circular dependency warnings
-const ignoreWarnings = {
-  //'Circular dependency: src/Badger/Filesystem/File.js -> src/Badger/Filesystem/Directory.js -> src/Badger/Filesystem/File.js': true,
-  //'Circular dependency: src/Badger/Filesystem/Directory.js -> src/Badger/Filesystem/File.js -> src/Badger/Filesystem/Directory.js': true,
-};
+const ignoreWarnings = [
+  /glob\.js/,
+  /node-pre-gyp/,
+  /readable-stream/,
+  /semver/,
+  /mysql2/,
+]
 
 const onwarn = (warning, warn) => {
-  if (
-    warning.code === 'CIRCULAR_DEPENDENCY'
-    && ignoreWarnings[warning.message]
-  ) {
-    return
+  if (warning.code === 'CIRCULAR_DEPENDENCY') {
+    for (let pattern of ignoreWarnings) {
+      if (warning.message.match(pattern)) {
+        return;
+      }
+    }
   }
   warn(warning);
 }
@@ -26,9 +31,46 @@ export default [
       resolve({
         extensions: ['.js', '.jsx'],
       }),
-      commonjs()
+      commonjs(),
+      json()
     ],
-    external: [],
+    // Knex.js includes a bunch of modules that may, or may not
+    // be required depending on which backend database you use
+    external: [
+      "node:fs",
+      "node:path",
+      "node:process",
+      "node:fs/promises",
+      "assert",
+      "aws-sdk",
+      "better-sqlite3",
+      "buffer",
+      "cardinal",
+      "child_process",
+      "crypto",
+      "events",
+      "fs",
+      "mock-aws-s3",
+      "mysql",
+      "net",
+      "nock",
+      "oracledb",
+      "os",
+      "path",
+      "pg",
+      "pg-query-stream",
+      "process",
+      "readline",
+      "stream",
+      "string_decoder",
+      "tedious",
+      "timers",
+      "tls",
+      "tty",
+      "util",
+      "url",
+      "zlib"
+    ],
     onwarn,
     output: [
       {
