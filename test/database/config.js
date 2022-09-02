@@ -1,13 +1,13 @@
 import test from 'ava';
-import { connection, pool } from '../../src/Config.js'
+import Config from '../../src/Config.js'
 
 test(
   'config host',
-  t => t.is( connection.host, 'localhost' )
+  t => t.is( Config.connection.host, 'localhost' )
 );
 
 test(
   'config pool.min',
-  t => t.is( pool.min, 2 )
+  t => t.is( Config.pool.min, 2 )
 );
 

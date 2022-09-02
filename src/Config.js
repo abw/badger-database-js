@@ -10,9 +10,9 @@ const defaults = {
   pool_max: 10,
 }
 
-export const client = process.env.DATABASE_CLIENT || defaults.client;
+const client = process.env.DATABASE_CLIENT || defaults.client;
 
-export const connection = process.env.DATABASE_CONNECTION || {
+const connection = process.env.DATABASE_CONNECTION || {
   host:     process.env.DATABASE_HOST || defaults.host,
   port:     process.env.DATABASE_PORT || defaults.port,
   database: process.env.DATABASE_NAME,
@@ -22,7 +22,7 @@ export const connection = process.env.DATABASE_CONNECTION || {
   // flags:    splitList(process.env.DATABASE_FLAGS),
 };
 
-export const pool = {
+const pool = {
   min: process.env.DB_POOL_MIN || defaults.pool_min,
   max: process.env.DB_POOL_MAX || defaults.pool_max,
 };
