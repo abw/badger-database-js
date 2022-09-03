@@ -33,28 +33,139 @@ for.  But if you're looking for a fully-featured, production-ready
 solution then it might not be for you - there are *plenty* of other
 Javascript ORMs that might be a better place to start.
 
-For further information please read the [documentation](https://abw.github.io/badger-database-js/docs/manual/index.html).
+For further information please read the [manual](docs/manual/index.html).
 
-## TODO
+## Quick Start
 
-Table relations
+Use your favourite package manager (we'll assume `npm` in these examples)
+to install `@abw/badger-database`, `knex` and at least one of the driver modules.
 
-Table queries.
+```sh
+    $ npm install @abw/badger-database knex
 
-Deprecate the "@colset1" format for including columns sets.
+    # Then add one of the following:
+    $ npm install pg
+    $ npm install pg-native
+    $ npm install sqlite3
+    $ npm install better-sqlite3
+    $ npm install mysql
+    $ npm install mysql2
+    $ npm install oracledb
+    $ npm install tedious
+```
 
-Implement "@relatedTable" to reference columns in related table.
+See the [Knex.js installation guide](https://knexjs.org/guide/#node-js)
+for further information.
 
-    properties.select("@address")  # default set in related address table
-    properties.select("...admin@address")  # admin set in related address table
+Import the `Database` module from `@abw/badger-database`
+and create a database.  This example shows a `sqlite3`
+in-memory database which is ideal for testing.
 
-How to specify multiple columns from another set?
+```js
+const database = new Database({
+  // Knex configuration options
+  client: 'sqlite3',
+  connection: {
+    filename: ':memory:',
+  },
+  pool: {
+    min: 2,
+    max: 10,
+  },
+  useNullAsDefault: true,
 
-    properties.select("line1@address line2@address line3@address")  # yawn
-    properties.select("line1,line2@address")   # Nope, we allow "," as a normal column delimiter
-    properties.select("line1&line2@address")   # Not loving it
-    properties.select("line1|line2@address")   # Nope
-    properties.select("[line1 line2]@address") # Yech - space causes parsing hardness
-    properties.select("line1+line2@address")   # Maybe
-    properties.select("line1+line2@address")   # Maybe - but implies "a+b+c" is valid
+  // a simple users tables
+  tables: {
+    users: {
+      columns: 'id name email',
+    }
+  }
+})
+```
 
+Use the [raw()](docs/manual/database.html#raw-sql-) method to
+run raw SQL queries.  For example, to create the `users` table:
+
+```js
+await database.raw(
+  'CREATE TABLE users ( ' +
+  '  id INTEGER PRIMARY KEY ASC, ' +
+  '  name TEXT, ' +
+  '  email TEXT ' +
+  ')'
+)
+```
+
+Use the [table()](docs/manual/database.html#table-name-) to fetch a
+[Table](docs/manual/table.html) object.
+
+```js
+const users = database.table('users');
+```
+
+Use the [insertRow()](docs/manual/table.html#insert-data-) method to
+insert a row.
+
+```js
+const bobby = await users.insertRow({
+  name: 'Bobby Badger',
+  email: 'bobby@badger.com',
+})
+```
+
+Use the [fetchRow()](docs/manual/table#fetchrow-where-) method to fetch
+a single row.
+
+```js
+const bobby = await table.fetchRow({
+  email: 'bobby@badger.com',
+});
+```
+
+Append the [record()](docs/manual/table#record-query-) method to convert
+the returned row to a [Record](docs/manual/record) object.
+
+```js
+const bobby = await table.fetchRow({
+  email: 'bobby@badger.com',
+}).record();
+```
+
+You can then call the [update()](docs/manual/record#update-set-) method on the record.
+
+```js
+const roberto = await badger.update({
+  name: 'Roberto Badger'
+});
+```
+
+To construct more complex queries you can call the
+[knex()](docs/manual/table.html#knex--) method to fetch a Knex
+object.  This will have the table name pre-defined. You can then chain
+as many Knex methods as you like to construct a query.
+
+```js
+const badger =
+  await users
+    .knex()
+    .select('id, name')
+    .where({ email: "bobby@badger.com" })
+    .first();
+```
+
+You can also call the [knex()](doc/manual/database#knex--) method on the
+database.  In this case you need to specify the table that you're working
+on.
+
+```js
+const row =
+  await database
+    .knex('user')
+    .select('name')
+    .where({ email: 'bobby@badger.com' })
+    .first()
+```
+
+# Author
+
+Andy Wardley <abw@wardley.org>
