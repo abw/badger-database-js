@@ -45,13 +45,13 @@ export const createUsers = async database => {
     {
       forename: 'Bobby',
       surname: 'Badger',
-      email: 'bobby@badger.com',
+      email: 'bobby@badgerpower.com',
       is_admin: 1,
     },
     {
       forename: 'Brian',
       surname: 'Badger',
-      email: 'brian@badger.com',
+      email: 'brian@badgerpower.com',
       is_admin: 0,
     },
     {

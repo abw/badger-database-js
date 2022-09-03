@@ -189,7 +189,7 @@ const row =
   await database
     .knex('user')
     .select('forename')
-    .where({ email: 'bobby@badger.com' })
+    .where({ email: 'bobby@badgerpower.com' })
     .first()
 ```
 
@@ -201,7 +201,7 @@ Used to generate a raw SQL query for the database.  Equivalent to calling
 ```js
 const rows =
   await database
-    .raw('select forename from user where email="bobby@badger.com"');
+    .raw('select forename from user where email="bobby@badgerpower.com"');
 ```
 
 ### query(name)

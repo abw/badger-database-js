@@ -14,10 +14,10 @@ test.before(
 test.serial(
   'update()',
   async t => {
-    const badgers = await users.update({ forename: 'Roberto' }, { email: 'bobby@badger.com' });
+    const badgers = await users.update({ forename: 'Roberto' }, { email: 'bobby@badgerpower.com' });
     t.is( badgers.length, 1 );
     t.is( badgers[0].forename, 'Roberto' );
-    const badger = await users.fetchRow({ email: 'bobby@badger.com' });
+    const badger = await users.fetchRow({ email: 'bobby@badgerpower.com' });
     t.is( badger.forename, 'Roberto' );
   }
 )

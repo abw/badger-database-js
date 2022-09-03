@@ -11,7 +11,7 @@ test.before(
 test.serial(
   'database.knex()',
   async t => {
-    const bobby = await database.knex('user').select('forename').where({ email: 'bobby@badger.com' }).first();
+    const bobby = await database.knex('user').select('forename').where({ email: 'bobby@badgerpower.com' }).first();
     t.is( bobby.forename, 'Bobby' );
   }
 )

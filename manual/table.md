@@ -431,7 +431,7 @@ const badger =
   await users
     .knex()
     .select('forename')
-    .where({ email: "bobby@badger.com" })
+    .where({ email: "bobby@badgerpower.com" })
     .first();
 ```
 
@@ -504,7 +504,7 @@ Single row:
 const bobby = await users.insert({
   forename: 'Bobby',
   surname: 'Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
   is_admin: 1,
 })
 ```
@@ -516,13 +516,13 @@ const badgers = await users.insert([
   {
     forename: 'Bobby',
     surname: 'Badger',
-    email: 'bobby@badger.com',
+    email: 'bobby@badgerpower.com',
     is_admin: 1,
   },
   {
     forename: 'Brian',
     surname: 'Badger',
-    email: 'brian@badger.com',
+    email: 'brian@badgerpower.com',
     is_admin: 0,
   },
   {
@@ -543,7 +543,7 @@ provided by Knex.js which only returns the ID of the inserted record.
 const bobby = await users.insertRow({
   forename: 'Bobby',
   surname: 'Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
   is_admin: 1,
 })
 ```
@@ -562,7 +562,7 @@ intercepts the `record()` method call and converts the raw row data to a record 
 const bobby = await users.insertRow({
   forename: 'Bobby',
   surname: 'Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
   is_admin: 1,
 }).record()   // convert to record object
 ```
@@ -581,13 +581,13 @@ const badgers = await users.insertRows([
   {
     forename: 'Bobby',
     surname: 'Badger',
-    email: 'bobby@badger.com',
+    email: 'bobby@badgerpower.com',
     is_admin: 1,
   },
   {
     forename: 'Brian',
     surname: 'Badger',
-    email: 'brian@badger.com',
+    email: 'brian@badgerpower.com',
     is_admin: 0,
   },
   {
@@ -620,8 +620,8 @@ the row data to a [Record](manual/record.html) object.
 ```js
 const row = await table.selectRow();
 const row = await table.selectRow("column1 column2 ...columnset");
-const row = await table.selectRow().where({ email: "bobby@badger.com" });
-const rec = await table.selectRow().where({ email: "bobby@badger.com" }).record();
+const row = await table.selectRow().where({ email: "bobby@badgerpower.com" });
+const rec = await table.selectRow().where({ email: "bobby@badgerpower.com" }).record();
 ```
 
 ### selectRows(columns)

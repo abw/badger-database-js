@@ -16,7 +16,7 @@ test.serial(
     const badger = await users.selectRow();
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
-    t.is( badger.email, 'bobby@badger.com' );
+    t.is( badger.email, 'bobby@badgerpower.com' );
   }
 )
 
@@ -36,7 +36,7 @@ test.serial(
     const badger = await users.selectRow().where({ surname: "Badger" });
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
-    t.is( badger.email, 'bobby@badger.com' );
+    t.is( badger.email, 'bobby@badgerpower.com' );
     t.is( badger.is_admin, undefined );
   }
 )
@@ -47,8 +47,8 @@ test.serial(
     const badger = await users.selectRow("@admin").where({ surname: "Badger" });
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
-    t.is( badger.email, 'bobby@badger.com' );
-    t.is( badger.email, 'bobby@badger.com' );
+    t.is( badger.email, 'bobby@badgerpower.com' );
+    t.is( badger.email, 'bobby@badgerpower.com' );
     t.is( badger.is_admin, 1 );
   }
 )
@@ -59,8 +59,8 @@ test.serial(
     const badger = await users.selectRow("...admin").where({ surname: "Badger" });
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
-    t.is( badger.email, 'bobby@badger.com' );
-    t.is( badger.email, 'bobby@badger.com' );
+    t.is( badger.email, 'bobby@badgerpower.com' );
+    t.is( badger.email, 'bobby@badgerpower.com' );
     t.is( badger.is_admin, 1 );
   }
 )

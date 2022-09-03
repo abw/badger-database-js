@@ -17,7 +17,7 @@ test.serial(
       await users
         .knex()
         .select('forename')
-        .where({ email: "bobby@badger.com" })
+        .where({ email: "bobby@badgerpower.com" })
         .first();
     t.deepEqual(
       bobby,

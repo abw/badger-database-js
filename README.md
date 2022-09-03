@@ -114,7 +114,7 @@ method to insert a row.
 ```js
 const bobby = await users.insertRow({
   name: 'Bobby Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
 })
 ```
 
@@ -124,7 +124,7 @@ method to fetch a single row.
 
 ```js
 const bobby = await table.fetchRow({
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
 });
 ```
 
@@ -135,7 +135,7 @@ method to convert the returned row to a
 
 ```js
 const bobby = await table.fetchRow({
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
 }).record();
 ```
 
@@ -157,7 +157,7 @@ const badger =
   await users
     .knex()
     .select('id, name')
-    .where({ email: "bobby@badger.com" })
+    .where({ email: "bobby@badgerpower.com" })
     .first();
 ```
 
@@ -170,7 +170,7 @@ const row =
   await database
     .knex('user')
     .select('name')
-    .where({ email: 'bobby@badger.com' })
+    .where({ email: 'bobby@badgerpower.com' })
     .first()
 ```
 
