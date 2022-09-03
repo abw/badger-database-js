@@ -7,7 +7,7 @@ export const one = (record, spec={}) => {
     console.log('one() relation table: ', spec.table);
     console.log('one() relation where: ', where);
   }
-  return record.database.table(spec.table).fetchOne(where).record();
+  return record.database.table(spec.table).fetchRow(where).record();
 }
 
 export default one

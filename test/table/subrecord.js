@@ -12,9 +12,9 @@ test.before(
 );
 
 test.serial(
-  'fetchOne({ surname: "Badger" }).record()',
+  'fetchRow({ surname: "Badger" }).record()',
   async t => {
-    const badger = await users.fetchOne({ surname: "Badger" }).record();
+    const badger = await users.fetchRow({ surname: "Badger" }).record();
     t.true( badger instanceof User, 'badger is a User');
     t.is( badger.forename, 'Bobby', 'badger forename is Bobby' );
     t.is( badger.surname, 'Badger', 'badger surname is Badger' );

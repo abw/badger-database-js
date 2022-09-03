@@ -70,31 +70,31 @@ export class Table {
     }
     return results;
   }
-  selectAll(columns) {
-    return this.rowsProxy(
-      this.knex().select(
-        this.schema.columns(columns)
-      )
-    );
-  }
-  selectOne(columns) {
+  selectRow(columns) {
     return this.rowProxy(
       this.knex().select(
         this.schema.columns(columns)
       )
     ).first();
   }
-  fetchAll(where) {
-    const select = this.knex().select();
+  selectRows(columns) {
     return this.rowsProxy(
+      this.knex().select(
+        this.schema.columns(columns)
+      )
+    );
+  }
+  fetchRow(where) {
+    const select = this.knex().select().first();
+    return this.rowProxy(
       where
         ? select.where(where)
         : select
     );
   }
-  fetchOne(where) {
-    const select = this.knex().select().first();
-    return this.rowProxy(
+  fetchRows(where) {
+    const select = this.knex().select();
+    return this.rowsProxy(
       where
         ? select.where(where)
         : select
@@ -103,7 +103,7 @@ export class Table {
   update(set, where) {
     return this.rowsProxy(
       this.knex().update(set).where(where).then(
-        () => this.fetchAll(where)
+        () => this.fetchRows(where)
       )
     )
   }

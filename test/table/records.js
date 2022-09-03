@@ -12,9 +12,9 @@ test.before(
 );
 
 test.serial(
-  'fetchAll().records()',
+  'fetchRows().records()',
   async t => {
-    const all = await users.fetchAll().records();
+    const all = await users.fetchRows().records();
     t.is( all.length, 3 );
     t.true( all[0] instanceof Record, 'badgers[0] is a Record');
     t.true( all[1] instanceof Record, 'badgers[1] is a Record');
@@ -23,9 +23,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchAll().then().records()',
+  'fetchRows().then().records()',
   async t => {
-    const all = await users.fetchAll().then( r => r ).records();
+    const all = await users.fetchRows().then( r => r ).records();
     t.is( all.length, 3 );
     t.true( all[0] instanceof Record, 'badgers[0] is a Record');
     t.true( all[1] instanceof Record, 'badgers[1] is a Record');
@@ -34,9 +34,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchAll({ surname: "Badger" }).records()',
+  'fetchRows({ surname: "Badger" }).records()',
   async t => {
-    const badgers = await users.fetchAll({ surname: "Badger" }).records();
+    const badgers = await users.fetchRows({ surname: "Badger" }).records();
     t.true( badgers[0] instanceof Record, 'badgers[0] is a Record');
     t.is( badgers[0].forename, 'Bobby', 'badgers[0] forename is Bobby' );
     t.is( badgers[0].surname, 'Badger', 'badgers[0] surname is Badger' );
@@ -49,9 +49,9 @@ test.serial(
 )
 
 test.serial(
-  'selectAll("@admin").where({ surname: "Badger" }).records()',
+  'selectRows("@admin").where({ surname: "Badger" }).records()',
   async t => {
-    const badgers = await users.selectAll('@admin').where({ surname: "Badger" }).records();
+    const badgers = await users.selectRows('@admin').where({ surname: "Badger" }).records();
     t.true( badgers[0] instanceof Record, 'badgers[0] is a Record');
     t.is( badgers[0].forename, 'Bobby', 'badgers[0] forename is Bobby' );
     t.is( badgers[0].surname, 'Badger', 'badgers[0] surname is Badger' );

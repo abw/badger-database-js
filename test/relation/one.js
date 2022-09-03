@@ -15,7 +15,7 @@ test.before(
 test.serial(
   'DSOTM.relation("artist")',
   async t => {
-    const dsotm = await albums.fetchOne({ title: 'The Dark Side of the Moon' }).record();
+    const dsotm = await albums.fetchRow({ title: 'The Dark Side of the Moon' }).record();
     t.true( dsotm instanceof Album )
     t.is( dsotm.title, 'The Dark Side of the Moon' );
     const floyd = await dsotm.relation('artist');
@@ -27,7 +27,7 @@ test.serial(
 test.serial(
   'DSOTM.artist',
   async t => {
-    const dsotm = await albums.fetchOne({ title: 'The Dark Side of the Moon' }).record();
+    const dsotm = await albums.fetchRow({ title: 'The Dark Side of the Moon' }).record();
     t.true( dsotm instanceof Album )
     t.is( dsotm.title, 'The Dark Side of the Moon' );
     const floyd = await dsotm.artist;

@@ -11,27 +11,27 @@ test.before(
 );
 
 test.serial(
-  'fetchOne({ surname: "Stoat" })',
+  'fetchRow({ surname: "Stoat" })',
   async t => {
-    const stoat = await users.fetchOne({ surname: "Stoat" });
+    const stoat = await users.fetchRow({ surname: "Stoat" });
     t.is( stoat.forename, 'Simon' );
     t.is( stoat.surname, 'Stoat' );
   }
 )
 
 test.serial(
-  'fetchOne({ surname: "Badger" })',
+  'fetchRow({ surname: "Badger" })',
   async t => {
-    const badger = await users.fetchOne({ surname: "Badger" });
+    const badger = await users.fetchRow({ surname: "Badger" });
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
   }
 )
 
 test.serial(
-  'fetchOne({ surname: "Mongoose" })',
+  'fetchRow({ surname: "Mongoose" })',
   async t => {
-    const mongoose = await users.fetchOne({ surname: "Mongoose" });
+    const mongoose = await users.fetchRow({ surname: "Mongoose" });
     t.is( mongoose, undefined );
   }
 )

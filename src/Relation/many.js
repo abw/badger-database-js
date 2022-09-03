@@ -7,7 +7,7 @@ export const many = (record, spec={}) => {
     console.log('many() relation table: ', spec.table);
     console.log('many() relation where: ', where);
   }
-  return record.database.table(spec.table).fetchAll(where).records();
+  return record.database.table(spec.table).fetchRows(where).records();
 }
 
 export default many

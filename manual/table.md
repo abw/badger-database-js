@@ -21,10 +21,10 @@ This is a wrapper around a database table.
   * [insert(data)](#insert-data-)
   * [insertRow(data)](#insertrow-data-)
   * [insertRows(data)](#insertrows-data-)
-  * [selectAll(columns)](#selectall-columns-)
-  * [selectOne(columns)](#selectone-columns-)
-  * [fetchAll(where)](#fetchall-where-)
-  * [fetchOne(where)](#fetchone-where-)
+  * [selectRows(columns)](#selectrows-columns-)
+  * [selectRow(columns)](#selectrow-columns-)
+  * [fetchRows(where)](#fetchrows-where-)
+  * [fetchRow(where)](#fetchrow-where-)
   * [update(set,where)](#update-set-where-)
   * [record(query)](#record-query-)
   * [records(query)](#records-query-)
@@ -349,7 +349,7 @@ fetch all rows where the surname is `Badger`.
 ```js
 export class Users extends Table {
   badgers() {
-    return this.fetchAll({ surname: "Badger" });
+    return this.fetchRows({ surname: "Badger" });
   }
 }
 ```
@@ -600,7 +600,7 @@ const badgers = await users.insertRows([
 The method returns an array of inerted row.  You can call the `records()` method to
 convert them to [Record](manual/record.html) objects.
 
-### selectAll(columns)
+### selectRows(columns)
 
 Returns a select query.  The optional `columns` argument can be used to
 specify the [columns](#columns) or [columnSets](#columnsets) you want to select.
@@ -611,42 +611,42 @@ set prefixed by `...`, e.g. `...admin` to include the columns defined in the
 `admin` column set.
 
 ```js
-const rows = await table.selectAll();
-const rows = await table.selectAll("name email ...admin");
+const rows = await table.selectRows();
+const rows = await table.selectRows("name email ...admin");
 ```
 
 The method returns a proxy around the Knex query.  You can call additional Knex
 methods on it.
 
 ```js
-const rows = await table.selectAll().where({ animal: "badger" });
+const rows = await table.selectRows().where({ animal: "badger" });
 ```
 
 You can also call the `records()` method to convert the data rows to
 [Record](manual/record.html) objects.
 
 ```js
-const records = await table.selectAll().where({ animal: "badger" }).records();
+const records = await table.selectRows().where({ animal: "badger" }).records();
 ```
 
-### selectOne(columns)
+### selectRow(columns)
 
 Returns a select query to fetch a single row.  The optional `columns` argument
 can be used to specify the columns or column sets you want to select.  Otherwise
 the default column set will be used.
 
-As with [selectAll()](#selectall-columns-) you can call additional Knex methods
+As with [selectRows()](#selectrows-columns-) you can call additional Knex methods
 on the returned query object.  You can also call the `record()` method to convert
 the row data to a [Record](manual/record.html) object.
 
 ```js
-const row = await table.selectOne();
-const row = await table.selectOne("column1 column2 ...columnset");
-const row = await table.selectOne().where({ email: "bobby@badger.com" });
-const rec = await table.selectOne().where({ email: "bobby@badger.com" }).record();
+const row = await table.selectRow();
+const row = await table.selectRow("column1 column2 ...columnset");
+const row = await table.selectRow().where({ email: "bobby@badger.com" });
+const rec = await table.selectRow().where({ email: "bobby@badger.com" }).record();
 ```
 
-### fetchAll(where)
+### fetchRows(where)
 
 Returns a select query with the default columns selected.  The optional
 `where` argument can be used to provide additional constraints.  This is
@@ -656,12 +656,12 @@ You can also chain the `records()` method to convert the data rows to
 [Record](manual/record.html) objects.
 
 ```js
-const rows = await table.fetchAll();
-const rows = await table.fetchAll({ animal: "badger" });
-const recs = await table.fetchAll({ animal: "badger" }).records();
+const rows = await table.fetchRows();
+const rows = await table.fetchRows({ animal: "badger" });
+const recs = await table.fetchRows({ animal: "badger" }).records();
 ```
 
-### fetchOne(where)
+### fetchRow(where)
 
 Returns a select query that fetches a single record with the default columns
 selected.  The optional `where` argument can be used to provide additional
@@ -671,9 +671,9 @@ You can also chain the `record()` method to convert the data row to a
 [Record](manual/record.html) object.
 
 ```js
-const row = await table.fetchOne();
-const row = await table.fetchOne({ animal: "badger" });
-const rec = await table.fetchOne({ animal: "badger" }).record();
+const row = await table.fetchRow();
+const row = await table.fetchRow({ animal: "badger" });
+const rec = await table.fetchRow({ animal: "badger" }).record();
 ```
 
 ### update(set,where)
@@ -730,20 +730,20 @@ await users.knex().update({ is_admin: 1 }).where({ surname: 'Badger' });
 
 Method to create a record object from a single row returned by a query.
 This is called automagically by appending a `.record()` method to the
-end of a query returned by `selectOne()` or `fetchOne()`.
+end of a query returned by `selectRow()` or `fetchRow()`.
 
 ```js
-const badger = await table.fetchOne({ animal: "badger" }).record();
+const badger = await table.fetchRow({ animal: "badger" }).record();
 ```
 
 ### records(query)
 
 Method to create record objects from all rows returned by a query.
 This is called automagically by appending a `.records()` method to the
-end of a query returned by `selectAll()`, `fetchAll()` or `update()`.
+end of a query returned by `selectRows()`, `fetchRows()` or `update()`.
 
 ```js
-const badgers = await table.fetchAll({ animal: "badger" }).records();
+const badgers = await table.fetchRows({ animal: "badger" }).records();
 ```
 
 ## Functions

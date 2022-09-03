@@ -13,22 +13,22 @@ the Active Record pattern.
 
 A record is created from a row by chaining the `record()` method on the
 query returned by the [insertRow()](manual/table.html#insertrow-data-),
-[selectOne()](manual/table.html#selectone-columns-) or
-[fetchOne()](manual/table.html#fetchone-where-) methods of a [Table](manual/table.html).
+[selectRow()](manual/table.html#selectrow-columns-) or
+[fetchRow()](manual/table.html#fetchrow-where-) methods of a [Table](manual/table.html).
 
 ```js
-const rec = await table.fetchOne({ animal: "badger" }).record();
+const rec = await table.fetchRow({ animal: "badger" }).record();
 ```
 
 Similarly, an array of records is created from an array of rows by chaining the
 `records()` method on the query returned by the [insertRows()](manual/table.html#insertrows-data-),
-[selectAll()](manual/table.html#selectall-columns-) or
-[fetchAll()](manual/table.html#fetchall-where-) methods.
+[selectRows()](manual/table.html#selectrows-columns-) or
+[fetchRows()](manual/table.html#fetchrows-where-) methods.
 
 The data items returned in the row can be accessed as properties of the record.
 
 ```js
-const badger = await table.fetchOne({ animal: "badger" }).record();
+const badger = await table.fetchRow({ animal: "badger" }).record();
 console.log("badger email is", badger.email);
 ```
 

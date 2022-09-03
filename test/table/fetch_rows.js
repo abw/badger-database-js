@@ -11,9 +11,9 @@ test.before(
 );
 
 test.serial(
-  'fetchAll()',
+  'fetchRows()',
   async t => {
-    const all = await users.fetchAll();
+    const all = await users.fetchRows();
     t.is( all.length, 3 );
     t.is( all[0].forename, 'Bobby' );
     t.is( all[1].forename, 'Brian' );
@@ -22,9 +22,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchAll({ surname: "Badger" })',
+  'fetchRows({ surname: "Badger" })',
   async t => {
-    const badgers = await users.fetchAll({ surname: "Badger" });
+    const badgers = await users.fetchRows({ surname: "Badger" });
     t.is( badgers.length, 2 );
     t.is( badgers[0].forename, 'Bobby' );
     t.is( badgers[1].forename, 'Brian' );
@@ -32,9 +32,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchAll().where({ surname: "Badger" })',
+  'fetchRows().where({ surname: "Badger" })',
   async t => {
-    const badgers = await users.fetchAll().where({ surname: "Badger" });
+    const badgers = await users.fetchRows().where({ surname: "Badger" });
     t.is( badgers.length, 2 );
     t.is( badgers[0].forename, 'Bobby' );
     t.is( badgers[1].forename, 'Brian' );
@@ -42,9 +42,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchAll({ surname: "Mongoose" })',
+  'fetchRows({ surname: "Mongoose" })',
   async t => {
-    const mongeese = await users.fetchAll({ surname: "Mongoose" });
+    const mongeese = await users.fetchRows({ surname: "Mongoose" });
     t.is( mongeese.length, 0 );
   }
 )

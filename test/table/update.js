@@ -17,7 +17,7 @@ test.serial(
     const badgers = await users.update({ forename: 'Roberto' }, { email: 'bobby@badger.com' });
     t.is( badgers.length, 1 );
     t.is( badgers[0].forename, 'Roberto' );
-    const badger = await users.fetchOne({ email: 'bobby@badger.com' });
+    const badger = await users.fetchRow({ email: 'bobby@badger.com' });
     t.is( badger.forename, 'Roberto' );
   }
 )
@@ -32,7 +32,7 @@ test.serial(
     t.is( badgers[1].forename, 'Brian' );
     t.is( badgers[1].is_admin, 1 );
 
-    const badgers2 = await users.fetchAll({ surname: 'Badger' });
+    const badgers2 = await users.fetchRows({ surname: 'Badger' });
     t.is(badgers2.length, 2)
     t.is( badgers2[0].forename, 'Roberto' );
     t.is( badgers2[0].is_admin, 1 );

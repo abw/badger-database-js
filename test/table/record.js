@@ -12,9 +12,9 @@ test.before(
 );
 
 test.serial(
-  'fetchOne({ surname: "Badger" }).record()',
+  'fetchRow({ surname: "Badger" }).record()',
   async t => {
-    const badger = await users.fetchOne({ surname: "Badger" }).record();
+    const badger = await users.fetchRow({ surname: "Badger" }).record();
     t.true( badger instanceof Record, 'badger is a Record');
     t.is( badger.forename, 'Bobby', 'badger forename is Bobby' );
     t.is( badger.surname, 'Badger', 'badger surname is Badger' );
@@ -23,9 +23,9 @@ test.serial(
 )
 
 test.serial(
-  'selectOne().where({ surname: "Badger" }).record()',
+  'selectRow().where({ surname: "Badger" }).record()',
   async t => {
-    const badger = await users.selectOne('@basic').where({ surname: "Badger" }).record();
+    const badger = await users.selectRow('@basic').where({ surname: "Badger" }).record();
     t.true( badger instanceof Record, 'badger is a Record');
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
@@ -34,9 +34,9 @@ test.serial(
 )
 
 test.serial(
-  'selectOne().where({ surname: "Badger" })...record()',
+  'selectRow().where({ surname: "Badger" })...record()',
   async t => {
-    const row = users.selectOne('@basic').where({ surname: "Badger" });
+    const row = users.selectRow('@basic').where({ surname: "Badger" });
     const badger = await row.record();
     t.true( badger instanceof Record, 'badger is a Record');
     t.is( badger.forename, 'Bobby' );
@@ -46,9 +46,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchOne().where({ surname: "Badger" }).record().then()',
+  'fetchRow().where({ surname: "Badger" }).record().then()',
   async t => {
-    const badger = await users.fetchOne().where({ surname: "Badger" }).record().then( r => r );
+    const badger = await users.fetchRow().where({ surname: "Badger" }).record().then( r => r );
     t.true( badger instanceof Record, 'badger is a Record');
     t.is( badger.forename, 'Bobby' );
     t.is( badger.surname, 'Badger' );
@@ -56,9 +56,9 @@ test.serial(
 )
 
 test.serial(
-  'fetchOne().where({ surname: "Badger" }).then().record()',
+  'fetchRow().where({ surname: "Badger" }).then().record()',
   async t => {
-    const badger = await users.fetchOne().where({ surname: "Badger" })
+    const badger = await users.fetchRow().where({ surname: "Badger" })
       .then( r => r )
       .then( r => r )
       .record();
