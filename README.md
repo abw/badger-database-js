@@ -33,7 +33,7 @@ for.  But if you're looking for a fully-featured, production-ready
 solution then it might not be for you - there are *plenty* of other
 Javascript ORMs that might be a better place to start.
 
-For further information please read the [manual](docs/manual/index.html).
+For further information please read the [manual](https://abw.github.io/badger-database-js/docs/manual/index.html).
 
 ## Quick Start
 
@@ -83,7 +83,7 @@ const database = new Database({
 })
 ```
 
-Use the [raw()](docs/manual/database.html#raw-sql-) method to
+Use the [raw()](https://abw.github.io/badger-database-js/docs/manual/database.html#raw-sql-) method to
 run raw SQL queries.  For example, to create the `users` table:
 
 ```js
@@ -96,15 +96,18 @@ await database.raw(
 )
 ```
 
-Use the [table()](docs/manual/database.html#table-name-) to fetch a
-[Table](docs/manual/table.html) object.
+Use the
+[table()](https://abw.github.io/badger-database-js/docs/manual/database.html#table-name-) method to fetch a
+[Table](https://abw.github.io/badger-database-js/docs/manual/table.html)
+object.
 
 ```js
 const users = database.table('users');
 ```
 
-Use the [insertRow()](docs/manual/table.html#insert-data-) method to
-insert a row.
+Use the
+[insertRow()](https://abw.github.io/badger-database-js/docs/manual/table.html#insert-data-)
+method to insert a row.
 
 ```js
 const bobby = await users.insertRow({
@@ -113,8 +116,9 @@ const bobby = await users.insertRow({
 })
 ```
 
-Use the [fetchRow()](docs/manual/table#fetchrow-where-) method to fetch
-a single row.
+Use the
+[fetchRow()](https://abw.github.io/badger-database-js/docs/manual/table.html#fetchrow-where-)
+method to fetch a single row.
 
 ```js
 const bobby = await table.fetchRow({
@@ -122,8 +126,10 @@ const bobby = await table.fetchRow({
 });
 ```
 
-Append the [record()](docs/manual/table#record-query-) method to convert
-the returned row to a [Record](docs/manual/record) object.
+Append the
+[record()](https://abw.github.io/badger-database-js/docs/manual/table.html#record-query-)
+method to convert the returned row to a
+[Record](https://abw.github.io/badger-database-js/docs/manual/record.html) object.
 
 ```js
 const bobby = await table.fetchRow({
@@ -131,7 +137,7 @@ const bobby = await table.fetchRow({
 }).record();
 ```
 
-You can then call the [update()](docs/manual/record#update-set-) method on the record.
+You can then call the [update()](https://abw.github.io/badger-database-js/docs/manual/record.html#update-set-) method on the record.
 
 ```js
 const roberto = await badger.update({
@@ -140,7 +146,7 @@ const roberto = await badger.update({
 ```
 
 To construct more complex queries you can call the
-[knex()](docs/manual/table.html#knex--) method to fetch a Knex
+[knex()](https://abw.github.io/badger-database-js/docs/manual/table.html#knex--) method to fetch a Knex
 object.  This will have the table name pre-defined. You can then chain
 as many Knex methods as you like to construct a query.
 
@@ -153,7 +159,7 @@ const badger =
     .first();
 ```
 
-You can also call the [knex()](doc/manual/database#knex--) method on the
+You can also call the [knex()](https://abw.github.io/badger-database-js/doc/manual/database.html#knex--) method on the
 database.  In this case you need to specify the table that you're working
 on.
 
