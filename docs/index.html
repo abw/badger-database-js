@@ -141,20 +141,20 @@ object.</p>
 method to insert a row.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insertRow({
   name: 'Bobby Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
 })</code></code></pre>
 <p>Use the
 <a href="https://abw.github.io/badger-database-js/docs/manual/table.html#fetchrow-where-">fetchRow()</a>
 method to fetch a single row.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await table.fetchRow({
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
 });</code></code></pre>
 <p>Append the
 <a href="https://abw.github.io/badger-database-js/docs/manual/table.html#record-query-">record()</a>
 method to convert the returned row to a
 <a href="https://abw.github.io/badger-database-js/docs/manual/record.html">Record</a> object.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await table.fetchRow({
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
 }).record();</code></code></pre>
 <p>You can then call the <a href="https://abw.github.io/badger-database-js/docs/manual/record.html#update-set-">update()</a> method on the record.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const roberto = await badger.update({
@@ -168,7 +168,7 @@ as many Knex methods as you like to construct a query.</p>
   await users
     .knex()
     .select('id, name')
-    .where({ email: "bobby@badger.com" })
+    .where({ email: "bobby@badgerpower.com" })
     .first();</code></code></pre>
 <p>You can also call the <a href="https://abw.github.io/badger-database-js/docs/manual/database.html#knex--">knex()</a> method on the
 database.  In this case you need to specify the table that you're working
@@ -177,7 +177,7 @@ on.</p>
   await database
     .knex('user')
     .select('name')
-    .where({ email: 'bobby@badger.com' })
+    .where({ email: 'bobby@badgerpower.com' })
     .first()</code></code></pre>
 <h1 id="author">Author</h1><p>Andy Wardley <a href="mailto:abw@wardley.org">abw@wardley.org</a></p>
 </div>
