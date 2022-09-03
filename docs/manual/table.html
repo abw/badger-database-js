@@ -95,10 +95,10 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insert-data-" data-ice="link">insert(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrow-data-" data-ice="link">insertRow(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrows-data-" data-ice="link">insertRows(data)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectall-columns-" data-ice="link">selectAll(columns)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectone-columns-" data-ice="link">selectOne(columns)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchall-where-" data-ice="link">fetchAll(where)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchone-where-" data-ice="link">fetchOne(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrow-columns-" data-ice="link">selectRow(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrows-columns-" data-ice="link">selectRows(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrow-where-" data-ice="link">fetchRow(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrows-where-" data-ice="link">fetchRows(where)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#update-set-where-" data-ice="link">update(set,where)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#record-query-" data-ice="link">record(query)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#records-query-" data-ice="link">records(query)</a></li>
@@ -237,10 +237,10 @@
 <li><a href="#insert-data-">insert(data)</a></li>
 <li><a href="#insertrow-data-">insertRow(data)</a></li>
 <li><a href="#insertrows-data-">insertRows(data)</a></li>
-<li><a href="#selectall-columns-">selectAll(columns)</a></li>
-<li><a href="#selectone-columns-">selectOne(columns)</a></li>
-<li><a href="#fetchall-where-">fetchAll(where)</a></li>
-<li><a href="#fetchone-where-">fetchOne(where)</a></li>
+<li><a href="#selectrow-columns-">selectRow(columns)</a></li>
+<li><a href="#selectrows-columns-">selectRows(columns)</a></li>
+<li><a href="#fetchrow-where-">fetchRow(where)</a></li>
+<li><a href="#fetchrows-where-">fetchRows(where)</a></li>
 <li><a href="#update-set-where-">update(set,where)</a></li>
 <li><a href="#record-query-">record(query)</a></li>
 <li><a href="#records-query-">records(query)</a></li>
@@ -462,7 +462,7 @@ methods for queries on the table.</p>
 fetch all rows where the surname is <code>Badger</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">export class Users extends Table {
   badgers() {
-    return this.fetchAll({ surname: "Badger" });
+    return this.fetchRows({ surname: "Badger" });
   }
 }</code></code></pre>
 <p>Then in the schema for the <code>users</code> class, define the <code>Users</code> class as the
@@ -638,46 +638,48 @@ out again, as per <a href="#insertrow-data-">insertRow()</a>.</p>
 ]);</code></code></pre>
 <p>The method returns an array of inerted row.  You can call the <code>records()</code> method to
 convert them to <a href="manual/record.html">Record</a> objects.</p>
-<h3 id="selectall-columns-">selectAll(columns)</h3><p>Returns a select query.  The optional <code>columns</code> argument can be used to
+<h3 id="selectrow-columns-">selectRow(columns)</h3><p>Returns a select query to fetch a single row.  The optional <code>columns</code> argument
+can be used to specify the columns or column sets you want to select.  Otherwise
+the default column set will be used.</p>
+<p>The method returns a proxy around the Knex query.  You can call additional Knex
+methods on it.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.selectRow().where({ animal: "badger" });</code></code></pre>
+<p>You can also call the <code>record()</code> method to convert
+the row data to a <a href="manual/record.html">Record</a> object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.selectRow();
+const row = await table.selectRow("column1 column2 ...columnset");
+const row = await table.selectRow().where({ email: "bobby@badger.com" });
+const rec = await table.selectRow().where({ email: "bobby@badger.com" }).record();</code></code></pre>
+<h3 id="selectrows-columns-">selectRows(columns)</h3><p>Returns a select query.  The optional <code>columns</code> argument can be used to
 specify the <a href="#columns">columns</a> or <a href="#columnsets">columnSets</a> you want to select.
 Otherwise the default column set will be used.</p>
 <p>To include the columns named in a column set, include the name of the column
 set prefixed by <code>...</code>, e.g. <code>...admin</code> to include the columns defined in the
 <code>admin</code> column set.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.selectAll();
-const rows = await table.selectAll("name email ...admin");</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.selectRows();
+const rows = await table.selectRows("name email ...admin");</code></code></pre>
 <p>The method returns a proxy around the Knex query.  You can call additional Knex
 methods on it.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.selectAll().where({ animal: "badger" });</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.selectRows().where({ animal: "badger" });</code></code></pre>
 <p>You can also call the <code>records()</code> method to convert the data rows to
 <a href="manual/record.html">Record</a> objects.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const records = await table.selectAll().where({ animal: "badger" }).records();</code></code></pre>
-<h3 id="selectone-columns-">selectOne(columns)</h3><p>Returns a select query to fetch a single row.  The optional <code>columns</code> argument
-can be used to specify the columns or column sets you want to select.  Otherwise
-the default column set will be used.</p>
-<p>As with <a href="#selectall-columns-">selectAll()</a> you can call additional Knex methods
-on the returned query object.  You can also call the <code>record()</code> method to convert
-the row data to a <a href="manual/record.html">Record</a> object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.selectOne();
-const row = await table.selectOne("column1 column2 ...columnset");
-const row = await table.selectOne().where({ email: "bobby@badger.com" });
-const rec = await table.selectOne().where({ email: "bobby@badger.com" }).record();</code></code></pre>
-<h3 id="fetchall-where-">fetchAll(where)</h3><p>Returns a select query with the default columns selected.  The optional
-<code>where</code> argument can be used to provide additional constraints.  This is
-shorthand for chaining a <code>where()</code> method.</p>
-<p>You can also chain the <code>records()</code> method to convert the data rows to
-<a href="manual/record.html">Record</a> objects.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.fetchAll();
-const rows = await table.fetchAll({ animal: "badger" });
-const recs = await table.fetchAll({ animal: "badger" }).records();</code></code></pre>
-<h3 id="fetchone-where-">fetchOne(where)</h3><p>Returns a select query that fetches a single record with the default columns
+<pre><code class="lang-js"><code class="source-code prettyprint">const records = await table.selectRows().where({ animal: "badger" }).records();</code></code></pre>
+<h3 id="fetchrow-where-">fetchRow(where)</h3><p>Returns a select query that fetches a single record with the default columns
 selected.  The optional <code>where</code> argument can be used to provide additional
 constraints.  This is shorthand for chaining a <code>where()</code> method.</p>
 <p>You can also chain the <code>record()</code> method to convert the data row to a
 <a href="manual/record.html">Record</a> object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.fetchOne();
-const row = await table.fetchOne({ animal: "badger" });
-const rec = await table.fetchOne({ animal: "badger" }).record();</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.fetchRow();
+const row = await table.fetchRow({ animal: "badger" });
+const rec = await table.fetchRow({ animal: "badger" }).record();</code></code></pre>
+<h3 id="fetchrows-where-">fetchRows(where)</h3><p>Returns a select query with the default columns selected.  The optional
+<code>where</code> argument can be used to provide additional constraints.  This is
+shorthand for chaining a <code>where()</code> method.</p>
+<p>You can also chain the <code>records()</code> method to convert the data rows to
+<a href="manual/record.html">Record</a> objects.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await table.fetchRows();
+const rows = await table.fetchRows({ animal: "badger" });
+const recs = await table.fetchRows({ animal: "badger" }).records();</code></code></pre>
 <h3 id="update-set-where-">update(set,where)</h3><p>This method can be used to update one or more rows in the database.
 The first argument is an object defining updates to be set in the rows.
 The second argument is an object providing the criteria to match rows.</p>
@@ -706,12 +708,12 @@ them, then you can "roll your own" update using the Knex query returned by the
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.knex().update({ is_admin: 1 }).where({ surname: 'Badger' });</code></code></pre>
 <h3 id="record-query-">record(query)</h3><p>Method to create a record object from a single row returned by a query.
 This is called automagically by appending a <code>.record()</code> method to the
-end of a query returned by <code>selectOne()</code> or <code>fetchOne()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const badger = await table.fetchOne({ animal: "badger" }).record();</code></code></pre>
+end of a query returned by <code>selectRow()</code> or <code>fetchRow()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badger = await table.fetchRow({ animal: "badger" }).record();</code></code></pre>
 <h3 id="records-query-">records(query)</h3><p>Method to create record objects from all rows returned by a query.
 This is called automagically by appending a <code>.records()</code> method to the
-end of a query returned by <code>selectAll()</code>, <code>fetchAll()</code> or <code>update()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await table.fetchAll({ animal: "badger" }).records();</code></code></pre>
+end of a query returned by <code>selectRows()</code>, <code>fetchRows()</code> or <code>update()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await table.fetchRows({ animal: "badger" }).records();</code></code></pre>
 <h2 id="functions">Functions</h2><h3 id="table-database-schema-">table(database,schema)</h3><p>A function of convenience which wraps a call to <code>new Table()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { table } from '@abw/badger-database';
 const tab = table(...);</code></code></pre>

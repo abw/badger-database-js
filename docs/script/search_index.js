@@ -72,18 +72,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-utils~client",
-    "variable/index.html#static-variable-client",
-    "<span>client</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger-utils~connection",
-    "variable/index.html#static-variable-connection",
-    "<span>connection</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "variable"
-  ],
-  [
     "@abw/badger-utils~connection",
     "function/index.html#static-function-connection",
     "<span>connection</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -118,12 +106,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-one",
     "<span>one</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
-  ],
-  [
-    "@abw/badger-utils~pool",
-    "variable/index.html#static-variable-pool",
-    "<span>pool</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "variable"
   ],
   [
     "@abw/badger-utils~queries",
@@ -1062,15 +1044,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/table.js~table#fetchall",
-    "class/src/Table.js~Table.html#instance-method-fetchAll",
-    "src/Table.js~Table#fetchAll",
+    "src/table.js~table#fetchrow",
+    "class/src/Table.js~Table.html#instance-method-fetchRow",
+    "src/Table.js~Table#fetchRow",
     "method"
   ],
   [
-    "src/table.js~table#fetchone",
-    "class/src/Table.js~Table.html#instance-method-fetchOne",
-    "src/Table.js~Table#fetchOne",
+    "src/table.js~table#fetchrows",
+    "class/src/Table.js~Table.html#instance-method-fetchRows",
+    "src/Table.js~Table#fetchRows",
     "method"
   ],
   [
@@ -1158,15 +1140,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/table.js~table#selectall",
-    "class/src/Table.js~Table.html#instance-method-selectAll",
-    "src/Table.js~Table#selectAll",
+    "src/table.js~table#selectrow",
+    "class/src/Table.js~Table.html#instance-method-selectRow",
+    "src/Table.js~Table#selectRow",
     "method"
   ],
   [
-    "src/table.js~table#selectone",
-    "class/src/Table.js~Table.html#instance-method-selectOne",
-    "src/Table.js~Table#selectOne",
+    "src/table.js~table#selectrows",
+    "class/src/Table.js~Table.html#instance-method-selectRows",
+    "src/Table.js~Table#selectRows",
     "method"
   ],
   [

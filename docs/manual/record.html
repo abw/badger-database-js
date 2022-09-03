@@ -95,10 +95,10 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insert-data-" data-ice="link">insert(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrow-data-" data-ice="link">insertRow(data)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrows-data-" data-ice="link">insertRows(data)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectall-columns-" data-ice="link">selectAll(columns)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectone-columns-" data-ice="link">selectOne(columns)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchall-where-" data-ice="link">fetchAll(where)</a></li>
-<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchone-where-" data-ice="link">fetchOne(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrow-columns-" data-ice="link">selectRow(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrows-columns-" data-ice="link">selectRows(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrow-where-" data-ice="link">fetchRow(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrows-where-" data-ice="link">fetchRows(where)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#update-set-where-" data-ice="link">update(set,where)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#record-query-" data-ice="link">record(query)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#records-query-" data-ice="link">records(query)</a></li>
@@ -229,15 +229,15 @@ the Active Record pattern.</p>
 </ul>
 <h2 id="overview">Overview</h2><p>A record is created from a row by chaining the <code>record()</code> method on the
 query returned by the <a href="manual/table.html#insertrow-data-">insertRow()</a>,
-<a href="manual/table.html#selectone-columns-">selectOne()</a> or
-<a href="manual/table.html#fetchone-where-">fetchOne()</a> methods of a <a href="manual/table.html">Table</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rec = await table.fetchOne({ animal: "badger" }).record();</code></code></pre>
+<a href="manual/table.html#selectrow-columns-">selectRow()</a> or
+<a href="manual/table.html#fetchrow-where-">fetchRow()</a> methods of a <a href="manual/table.html">Table</a>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rec = await table.fetchRow({ animal: "badger" }).record();</code></code></pre>
 <p>Similarly, an array of records is created from an array of rows by chaining the
 <code>records()</code> method on the query returned by the <a href="manual/table.html#insertrows-data-">insertRows()</a>,
-<a href="manual/table.html#selectall-columns-">selectAll()</a> or
-<a href="manual/table.html#fetchall-where-">fetchAll()</a> methods.</p>
+<a href="manual/table.html#selectrows-columns-">selectRows()</a> or
+<a href="manual/table.html#fetchrows-where-">fetchRows()</a> methods.</p>
 <p>The data items returned in the row can be accessed as properties of the record.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const badger = await table.fetchOne({ animal: "badger" }).record();
+<pre><code class="lang-js"><code class="source-code prettyprint">const badger = await table.fetchRow({ animal: "badger" }).record();
 console.log("badger email is", badger.email);</code></code></pre>
 <h2 id="methods">Methods</h2><p>In addition to accessing data properties of the record, you can call additional
 methods.</p>

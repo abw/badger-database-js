@@ -43,9 +43,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-client">client</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-connection">connection</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-pool">pool</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
@@ -328,7 +325,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-fetchAll">fetchAll</a></span></span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-fetchRow">fetchRow</a></span></span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -356,7 +353,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-fetchOne">fetchOne</a></span></span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-fetchRows">fetchRows</a></span></span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -636,7 +633,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-selectAll">selectAll</a></span></span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-selectRow">selectRow</a></span></span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -664,7 +661,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-selectOne">selectOne</a></span></span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-selectRows">selectRows</a></span></span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1052,14 +1049,14 @@
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-fetchAll">
+  <h3 data-ice="anchor" id="instance-method-fetchRow">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">fetchAll</span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">fetchRow</span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -1123,14 +1120,14 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-fetchOne">
+  <h3 data-ice="anchor" id="instance-method-fetchRows">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">fetchOne</span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">fetchRows</span><span class="code" data-ice="signature">(where: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -1801,14 +1798,14 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-selectAll">
+  <h3 data-ice="anchor" id="instance-method-selectRow">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">selectAll</span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">selectRow</span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -1872,14 +1869,14 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-selectOne">
+  <h3 data-ice="anchor" id="instance-method-selectRows">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">selectOne</span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">selectRows</span><span class="code" data-ice="signature">(columns: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       

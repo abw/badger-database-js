@@ -21,10 +21,10 @@ This is a wrapper around a database table.
   * [insert(data)](#insert-data-)
   * [insertRow(data)](#insertrow-data-)
   * [insertRows(data)](#insertrows-data-)
-  * [selectRows(columns)](#selectrows-columns-)
   * [selectRow(columns)](#selectrow-columns-)
-  * [fetchRows(where)](#fetchrows-where-)
+  * [selectRows(columns)](#selectrows-columns-)
   * [fetchRow(where)](#fetchrow-where-)
+  * [fetchRows(where)](#fetchrows-where-)
   * [update(set,where)](#update-set-where-)
   * [record(query)](#record-query-)
   * [records(query)](#records-query-)
@@ -434,6 +434,7 @@ const badger =
     .where({ email: "bobby@badger.com" })
     .first();
 ```
+
 ### raw()
 
 Used to generate a raw SQL query for the database.  Equivalent to calling
@@ -600,6 +601,29 @@ const badgers = await users.insertRows([
 The method returns an array of inerted row.  You can call the `records()` method to
 convert them to [Record](manual/record.html) objects.
 
+### selectRow(columns)
+
+Returns a select query to fetch a single row.  The optional `columns` argument
+can be used to specify the columns or column sets you want to select.  Otherwise
+the default column set will be used.
+
+The method returns a proxy around the Knex query.  You can call additional Knex
+methods on it.
+
+```js
+const row = await table.selectRow().where({ animal: "badger" });
+```
+
+You can also call the `record()` method to convert
+the row data to a [Record](manual/record.html) object.
+
+```js
+const row = await table.selectRow();
+const row = await table.selectRow("column1 column2 ...columnset");
+const row = await table.selectRow().where({ email: "bobby@badger.com" });
+const rec = await table.selectRow().where({ email: "bobby@badger.com" }).record();
+```
+
 ### selectRows(columns)
 
 Returns a select query.  The optional `columns` argument can be used to
@@ -629,21 +653,19 @@ You can also call the `records()` method to convert the data rows to
 const records = await table.selectRows().where({ animal: "badger" }).records();
 ```
 
-### selectRow(columns)
+### fetchRow(where)
 
-Returns a select query to fetch a single row.  The optional `columns` argument
-can be used to specify the columns or column sets you want to select.  Otherwise
-the default column set will be used.
+Returns a select query that fetches a single record with the default columns
+selected.  The optional `where` argument can be used to provide additional
+constraints.  This is shorthand for chaining a `where()` method.
 
-As with [selectRows()](#selectrows-columns-) you can call additional Knex methods
-on the returned query object.  You can also call the `record()` method to convert
-the row data to a [Record](manual/record.html) object.
+You can also chain the `record()` method to convert the data row to a
+[Record](manual/record.html) object.
 
 ```js
-const row = await table.selectRow();
-const row = await table.selectRow("column1 column2 ...columnset");
-const row = await table.selectRow().where({ email: "bobby@badger.com" });
-const rec = await table.selectRow().where({ email: "bobby@badger.com" }).record();
+const row = await table.fetchRow();
+const row = await table.fetchRow({ animal: "badger" });
+const rec = await table.fetchRow({ animal: "badger" }).record();
 ```
 
 ### fetchRows(where)
@@ -659,21 +681,6 @@ You can also chain the `records()` method to convert the data rows to
 const rows = await table.fetchRows();
 const rows = await table.fetchRows({ animal: "badger" });
 const recs = await table.fetchRows({ animal: "badger" }).records();
-```
-
-### fetchRow(where)
-
-Returns a select query that fetches a single record with the default columns
-selected.  The optional `where` argument can be used to provide additional
-constraints.  This is shorthand for chaining a `where()` method.
-
-You can also chain the `record()` method to convert the data row to a
-[Record](manual/record.html) object.
-
-```js
-const row = await table.fetchRow();
-const row = await table.fetchRow({ animal: "badger" });
-const rec = await table.fetchRow({ animal: "badger" }).record();
 ```
 
 ### update(set,where)
