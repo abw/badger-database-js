@@ -1,6 +1,4 @@
 import process from 'node:process'
-import dotenv from 'dotenv'
-dotenv.config({ debug: true })
 
 const defaults = {
   client:   'mysql2',
