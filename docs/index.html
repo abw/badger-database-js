@@ -85,7 +85,7 @@ for.  But if you're looking for a fully-featured, production-ready
 solution then it might not be for you - there are <em>plenty</em> of other
 Javascript ORMs that might be a better place to start.</p>
 <p>For further information please read the <a href="https://abw.github.io/badger-database-js/docs/manual/index.html">manual</a>.</p>
-<h2 id="quick-start">Quick Start</h2><p>Use your favourite package manager (we'll assume <code>npm</code> in these examples)
+<h2 id="installation">Installation</h2><p>Use your favourite package manager (we'll assume <code>npm</code> in these examples)
 to install <code>@abw/badger-database</code>, <code>knex</code> and at least one of the driver modules.</p>
 <pre><code class="lang-sh"><code class="source-code prettyprint">    $ npm install @abw/badger-database knex
 
@@ -100,7 +100,7 @@ to install <code>@abw/badger-database</code>, <code>knex</code> and at least one
     $ npm install tedious</code></code></pre>
 <p>See the <a href="https://knexjs.org/guide/#node-js">Knex.js installation guide</a>
 for further information.</p>
-<p>Import the <code>Database</code> module from <code>@abw/badger-database</code>
+<h2 id="quick-start">Quick Start</h2><p>Import the <code>Database</code> module from <code>@abw/badger-database</code>
 and create a database.  This example shows a <code>sqlite3</code>
 in-memory database which is ideal for testing.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database({
@@ -137,7 +137,7 @@ run raw SQL queries.  For example, to create the <code>users</code> table:</p>
 object.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const users = database.table('users');</code></code></pre>
 <p>Use the
-<a href="https://abw.github.io/badger-database-js/docs/manual/table.html#insert-data-">insertRow()</a>
+<a href="https://abw.github.io/badger-database-js/docs/manual/table.html#insertrow-data-">insertRow()</a>
 method to insert a row.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insertRow({
   name: 'Bobby Badger',
@@ -170,7 +170,7 @@ as many Knex methods as you like to construct a query.</p>
     .select('id, name')
     .where({ email: "bobby@badger.com" })
     .first();</code></code></pre>
-<p>You can also call the <a href="https://abw.github.io/badger-database-js/doc/manual/database.html#knex--">knex()</a> method on the
+<p>You can also call the <a href="https://abw.github.io/badger-database-js/docs/manual/database.html#knex--">knex()</a> method on the
 database.  In this case you need to specify the table that you're working
 on.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row =

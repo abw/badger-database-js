@@ -35,7 +35,7 @@ Javascript ORMs that might be a better place to start.
 
 For further information please read the [manual](https://abw.github.io/badger-database-js/docs/manual/index.html).
 
-## Quick Start
+## Installation
 
 Use your favourite package manager (we'll assume `npm` in these examples)
 to install `@abw/badger-database`, `knex` and at least one of the driver modules.
@@ -56,6 +56,8 @@ to install `@abw/badger-database`, `knex` and at least one of the driver modules
 
 See the [Knex.js installation guide](https://knexjs.org/guide/#node-js)
 for further information.
+
+## Quick Start
 
 Import the `Database` module from `@abw/badger-database`
 and create a database.  This example shows a `sqlite3`
@@ -106,7 +108,7 @@ const users = database.table('users');
 ```
 
 Use the
-[insertRow()](https://abw.github.io/badger-database-js/docs/manual/table.html#insert-data-)
+[insertRow()](https://abw.github.io/badger-database-js/docs/manual/table.html#insertrow-data-)
 method to insert a row.
 
 ```js
@@ -159,7 +161,7 @@ const badger =
     .first();
 ```
 
-You can also call the [knex()](https://abw.github.io/badger-database-js/doc/manual/database.html#knex--) method on the
+You can also call the [knex()](https://abw.github.io/badger-database-js/docs/manual/database.html#knex--) method on the
 database.  In this case you need to specify the table that you're working
 on.
 
