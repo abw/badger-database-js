@@ -519,7 +519,7 @@ console.log(bobby.hello())    // Hello Bobby Badger</code></code></pre>
   await users
     .knex()
     .select('forename')
-    .where({ email: "bobby@badger.com" })
+    .where({ email: "bobby@badgerpower.com" })
     .first();</code></code></pre>
 <h3 id="raw--">raw()</h3><p>Used to generate a raw SQL query for the database.  Equivalent to calling
 <code>knex.raw()</code>.</p>
@@ -566,7 +566,7 @@ or <a href="#insertrows-data-">insertRows()</a> as appropriate</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insert({
   forename: 'Bobby',
   surname: 'Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
   is_admin: 1,
 })</code></code></pre>
 <p>Multiple rows:</p>
@@ -574,13 +574,13 @@ or <a href="#insertrows-data-">insertRows()</a> as appropriate</p>
   {
     forename: 'Bobby',
     surname: 'Badger',
-    email: 'bobby@badger.com',
+    email: 'bobby@badgerpower.com',
     is_admin: 1,
   },
   {
     forename: 'Brian',
     surname: 'Badger',
-    email: 'brian@badger.com',
+    email: 'brian@badgerpower.com',
     is_admin: 0,
   },
   {
@@ -595,7 +595,7 @@ provided by Knex.js which only returns the ID of the inserted record.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insertRow({
   forename: 'Bobby',
   surname: 'Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
   is_admin: 1,
 })</code></code></pre>
 <p>One benefit of this approach is in situations where you want to insert a row and then do
@@ -609,7 +609,7 @@ intercepts the <code>record()</code> method call and converts the raw row data t
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insertRow({
   forename: 'Bobby',
   surname: 'Badger',
-  email: 'bobby@badger.com',
+  email: 'bobby@badgerpower.com',
   is_admin: 1,
 }).record()   // convert to record object</code></code></pre>
 <p>The downside is that you're performing two database queries (an insert and a select) instead
@@ -621,13 +621,13 @@ out again, as per <a href="#insertrow-data-">insertRow()</a>.</p>
   {
     forename: 'Bobby',
     surname: 'Badger',
-    email: 'bobby@badger.com',
+    email: 'bobby@badgerpower.com',
     is_admin: 1,
   },
   {
     forename: 'Brian',
     surname: 'Badger',
-    email: 'brian@badger.com',
+    email: 'brian@badgerpower.com',
     is_admin: 0,
   },
   {
@@ -648,8 +648,8 @@ methods on it.</p>
 the row data to a <a href="manual/record.html">Record</a> object.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await table.selectRow();
 const row = await table.selectRow("column1 column2 ...columnset");
-const row = await table.selectRow().where({ email: "bobby@badger.com" });
-const rec = await table.selectRow().where({ email: "bobby@badger.com" }).record();</code></code></pre>
+const row = await table.selectRow().where({ email: "bobby@badgerpower.com" });
+const rec = await table.selectRow().where({ email: "bobby@badgerpower.com" }).record();</code></code></pre>
 <h3 id="selectrows-columns-">selectRows(columns)</h3><p>Returns a select query.  The optional <code>columns</code> argument can be used to
 specify the <a href="#columns">columns</a> or <a href="#columnsets">columnSets</a> you want to select.
 Otherwise the default column set will be used.</p>

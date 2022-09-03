@@ -347,13 +347,13 @@ Equivalent to calling <code>database.connection.knex()</code>.</p>
   await database
     .knex('user')
     .select('forename')
-    .where({ email: 'bobby@badger.com' })
+    .where({ email: 'bobby@badgerpower.com' })
     .first()</code></code></pre>
 <h3 id="raw-sql-">raw(sql)</h3><p>Used to generate a raw SQL query for the database.  Equivalent to calling
 <code>knex.raw()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows =
   await database
-    .raw('select forename from user where email="bobby@badger.com"');</code></code></pre>
+    .raw('select forename from user where email="bobby@badgerpower.com"');</code></code></pre>
 <h3 id="query-name-">query(name)</h3><p>This method allows you to execute a named query that was previously
 defined using the <a href="#queries">queries</a> configuration option.</p>
 <p>Given this database definition:</p>
