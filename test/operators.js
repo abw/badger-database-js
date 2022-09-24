@@ -2,7 +2,7 @@ import test from 'ava';
 import Operator from '../src/Operator.js'
 import factory from '../src/Operators.js'
 
-//const op = new Operator(factory);
+const op = new Operator(factory);
 
 test(
   'TODO',
