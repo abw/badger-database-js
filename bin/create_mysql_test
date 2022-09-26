@@ -1,0 +1,100 @@
+#!/bin/bash
+#------------------------------------------------------------------------
+# Script to create a test database.
+#------------------------------------------------------------------------
+
+# location of mysql and mysqladmin programs
+MYSQL=/usr/local/bin/mysql
+MYSQL_ADMIN=/usr/local/bin/mysqladmin
+MYSQL_USER="root"
+
+DATABASE="test"
+HOSTNAME="localhost"
+USERNAME="test"
+PASSWORD="test"
+PORT="3306"
+
+RED="\033[1;31m"
+YELLOW="\033[0;33m"
+CLEAR="\033[0m"
+
+#---------------------------------------------------------------------------
+# Drop any existing database
+#---------------------------------------------------------------------------
+echo -e "${YELLOW}============================================================="
+echo -e "${RED}                       W A R N I N G"
+cat <<EOF;
+
+You are about to drop the $DATABASE MySQL database.
+
+This will irretrievably destroy all the data in the database.
+
+If you're not ABSOLUTELY SURE that you want to do that then I
+suggest you hit Control-C right now, or answer 'n' to the
+following prompt.
+
+Be careful now!  This could really spoil your day - proceed
+with great caution.  And don't say I didn't warn you!
+EOF
+echo -e "${YELLOW}=============================================================${CLEAR}"
+
+YES="n"
+SLEEP=10
+
+while getopts yhs: flag; do
+  case $flag in
+    s)
+      SLEEP=$OPTARG
+      ;;
+    y)
+      echo "The -y option is rather dangerous."
+      echo "Pausing for $SLEEP seconds to give you a chance to change your mind."
+      read -t $SLEEP -p "Press ENTER to proceed or Ctrl+C to quit";
+      YES="y"
+      ;;
+    h)
+      echo "Options: -s <sleep_seconds> -y"
+      exit
+      ;;
+    ?)
+      echo "Invalid option. Try -h"
+      exit;
+      ;;
+  esac
+done
+
+if [ $YES != "y" ]; then
+    read -p "Are you sure you want to destroy the $DATABASE database (y/n)? " ANSWER
+
+    # set default to 'n'
+    : ${ANSWER:="n"}
+
+    if [ $ANSWER != "y" ]; then
+        echo "Aborted at user request"
+        exit 99
+    fi
+fi
+
+echo "Dropping $DATABASE database"
+$MYSQL -f -h$HOSTNAME -P$PORT -e "drop database $DATABASE;"
+
+#---------------------------------------------------------------------------
+# create database
+#---------------------------------------------------------------------------
+echo "Creating MySQL database: $DATABASE"
+
+$MYSQL -h$HOSTNAME -P$PORT -e "create database $DATABASE;"
+
+#---------------------------------------------------------------------------
+# grant user access
+#---------------------------------------------------------------------------
+echo "Granting access to user $USERNAME"
+
+$MYSQL $MYSQL_ARGS -h$HOSTNAME -P$PORT $MYSQL_PASS_OPT \
+  --default-character-set=utf8 mysql <<EOF || exit
+
+GRANT SELECT, INSERT, UPDATE, DELETE, INDEX,
+      ALTER, CREATE, DROP, REFERENCES
+      ON $DATABASE.* TO $USER@$HOSTNAME IDENTIFIED BY '$PASSWORD';
+
+EOF

@@ -1,7 +1,7 @@
 import Database from "../../src/Database.js";
 
 export const databaseConfig = {
-  client: 'sqlite3',
+  client: 'better-sqlite3',
   connection: {
     filename: ':memory:',
   },
