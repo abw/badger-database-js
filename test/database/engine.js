@@ -1,13 +1,29 @@
 import test from 'ava';
 import Engine from '../../src/Engine.js'
-import Drivers from '../../src/Drivers.js'
 
 test(
-  'new sqlite engine',
+  'connect()',
   async t => {
-    const driver = await Drivers.sqlite({ filename: ':memory:' });
-    const engine = new Engine(driver);
-    // console.log('engine: ', engine);
-    t.is( engine instanceof Engine, true )
+    const engine = new Engine();
+    const error = await t.throwsAsync( () => engine.connect() );
+    t.is( error.message, "connect() is not implemented in the Engine base class" )
+  }
+)
+
+test(
+  'connected()',
+  async t => {
+    const engine = new Engine();
+    const error = await t.throwsAsync( () => engine.connected() );
+    t.is( error.message, "connected() is not implemented in the Engine base class" )
+  }
+)
+
+test(
+  'disconnect()',
+  async t => {
+    const engine = new Engine();
+    const error = await t.throwsAsync( () => engine.disconnect() );
+    t.is( error.message, "disconnect() is not implemented in the Engine base class" )
   }
 )
