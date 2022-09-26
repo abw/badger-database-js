@@ -28,20 +28,20 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async prepare(connection, sql) {
-    return await connection.prepare(sql);
-  }
   async run(sql, ...params) {
-    const [result] = await this.execute(sql, query => query.execute(params));
-    return result;
+    return this
+      .execute(sql, query => query.execute(params))
+      .then( ([result]) => result );
   }
   async any(sql, ...params) {
-    const [rows] = await this.execute(sql, query => query.execute(params));
-    return rows[0];
+    return this
+      .execute(sql, query => query.execute(params))
+      .then( ([rows]) => rows[0] );
   }
   async all(sql, ...params) {
-    const [rows] = await this.execute(sql, query => query.execute(params));
-    return rows;
+    return this
+      .execute(sql, query => query.execute(params))
+      .then( ([rows]) => rows );
   }
 }
 

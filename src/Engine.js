@@ -80,15 +80,17 @@ export class Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async execute(sql, action) {
+    this.debug("execute() ", sql);
     const connection = await this.acquire();
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
     this.release(connection);
     return result;
   }
-  //async prepare(connection, sql) {
-  //  return await connection.prepare(sql);
-  //}
+  async prepare(connection, sql) {
+    this.debug("prepare() ", sql);
+    return connection.prepare(sql);
+  }
 
   //-----------------------------------------------------------------------------
   // Cleanup
