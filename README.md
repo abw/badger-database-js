@@ -1,5 +1,70 @@
 # Badger Database
 
+This a library for building a database abstraction layer for your
+projects.  It has support for accessing Postgres, MySQL and Sqlite
+databases.
+
+The aim is to provide a *Separation of Concerns* between your application
+code and your database code so that you can write application code at a
+higher level of abstraction, with the details of the database hidden away
+in the lower levels.  It effectively allows you to build an API for your
+application code to use (here we're using "API" in the original sense,
+meaning a set of classes and methods which your application code can call,
+rather than the more recent meaning of, say, a REST API which you call via
+http requests).
+
+It is based on the philosphy that ORMs and SQL query builders are considered
+*Mostly Harmful*.  SQL is an industry standard and has been for nearly 40
+years.  Although there are some minor differences between dialects, it is
+the most portable and widely understood way to communicate with a database.
+Any developer who has experience with using relational databases should know
+at least the basics of SQL, regardless of the programming language or database
+toolkits they are most familiar with.
+
+Unlike most ORMs and SQL query builders which try to insulate developers from
+SQL, this library embraces it and encourages you to use it in the way it was
+intended to be used.  One of the keys benefits is transparency.  Your SQL
+queries should not be hidden being an abstraction that can obscure the
+intention or subtly transform the meaning.  This avoids a whole class of
+"translation errors" that can result in the generated queries returning
+the wrong results, being inefficient, or hard to reason about.
+
+That said, there are a number of useful benefits that ORMs and SQL query
+builders provide which this library has adopted.
+
+* Abstraction of the underlying database engine.  Although it's probably not
+that common for a project to migrate from one database engine to another
+(and if that does happens you'll have plenty of other things to worry about),
+it is quite common for developers to work on a number of projects over a
+period of time that use different databases.  Having a library that
+smooths over the differences between them can make it easier to switch from
+one project to another.
+
+* Automatic generation of "trivial" queries to insert, select, update and delete
+records (aka "CRUD" - create, read, update, delete).  As well as removing the need to write lots of "boilerplate" queries to get your project up and running,
+this is also useful when you modify tables at a later date to add or remove
+columns.  Those basic operations should automatically adapt to the new
+schema without requiring you to rewrite lots of queries.
+
+* The ability to compose complex queries in parts, allowing SQL fragments
+to be reused in different queries that are similar, but not identical.
+Doing this programmatically can not only save time, but also avoid potential
+errors, either when writing them initially, or when updating them at a later
+date to accommodate changes in the database schema.
+
+* Entity models to help organise table and record-based code.  Each database
+table can have its own table module defined where you can add custom methods
+for inserting, selecting or performing other operations on rows in the table.
+Similarly, every entity type can have its own record module where you can
+add methods for performing operations on an individual entity instance.  This
+is a lightweight variant of the Active Record pattern.
+
+## Old Notes
+
+NOTE: I'm in the process of rewriting this to remove Knex.  It has
+proved to be more trouble than it's worth.  Everything you read below
+this point may be out of date.
+
 This is a simple but powerful database management tool that
 is built around [Knex.js](https://knexjs.org/).  It is
 designed for building database abstraction layers that allow
