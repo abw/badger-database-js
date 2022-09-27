@@ -1,6 +1,7 @@
 import test from 'ava';
 import Sqlite from '../../src/Engine/Sqlite.js'
 import Engines from '../../src/Engines.js'
+import { UnexpectedRowCount } from '../../src/Error.js';
 
 let sqlite;
 
@@ -21,7 +22,6 @@ test.before(
     t.is(sqlite.pool.numUsed(), 1);
     await sqlite.release(conn);
     t.is(sqlite.pool.numUsed(), 0);
-    await sqlite.destroy();
   }
 )
 
@@ -88,7 +88,7 @@ test.serial(
 )
 
 test.serial(
-  'fetch one row',
+  'fetch any row',
   async t => {
     const bobby = await sqlite.any(
       'SELECT * FROM user WHERE email=?',
@@ -109,4 +109,51 @@ test.serial(
   }
 )
 
+
+test.serial(
+  'fetch one row',
+  async t => {
+    const row = await sqlite.one(
+      `SELECT id, name, email FROM user WHERE email=?`,
+      "bobby@badgerpower.com"
+    );
+    t.is( row.name, 'Bobby Badger' );
+  }
+)
+
+test.serial(
+  'fetch one row but none returned',
+  async t => {
+    const error = await t.throwsAsync(
+      () => sqlite.one(
+        `SELECT id, name, email FROM user WHERE email=?`,
+        "bobby@badgerpower.co.uk"
+      )
+    );
+    t.is( error instanceof UnexpectedRowCount, true )
+    t.is( error.message, "0 rows were returned when one was expected" )
+  }
+)
+
+test.serial(
+  'fetch one row but two returned',
+  async t => {
+    const error = await t.throwsAsync(
+      () => sqlite.one(
+        `SELECT id, name, email FROM user`
+      )
+    );
+    t.is( error instanceof UnexpectedRowCount, true )
+    t.is( error.message, "2 rows were returned when one was expected" )
+    await sqlite.destroy();
+  }
+)
+
+test.after(
+  'destroy',
+  async t => {
+    await sqlite.destroy();
+    t.pass();
+  }
+)
 

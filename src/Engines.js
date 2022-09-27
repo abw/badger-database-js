@@ -8,7 +8,8 @@ export const registerEngine = (name, module) => {
   }
 }
 
-registerEngine('sqlite', './Engine/Sqlite.js');
-registerEngine('mysql',  './Engine/Mysql.js');
+registerEngine('sqlite',   './Engine/Sqlite.js');
+registerEngine('mysql',    './Engine/Mysql.js');
+registerEngine('postgres', './Engine/Postgres.js');
 
 export default Engines;

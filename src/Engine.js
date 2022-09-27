@@ -1,6 +1,7 @@
 import { Pool } from 'tarn';
 import { addDebug } from '@abw/badger';
 import { notImplementedInBaseClass } from "./Utils.js";
+import { unexpectedRowCount } from './Error.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -85,11 +86,32 @@ export class Engine {
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
     this.release(connection);
-    return result;
+    return this.sanitizeResult(result);
   }
   async prepare(connection, sql) {
     this.debug("prepare() ", sql);
     return connection.prepare(sql);
+  }
+  async run() {
+    notImplemented('run()');
+  }
+  async any() {
+    notImplemented('any()');
+  }
+  async all() {
+    notImplemented('all()');
+  }
+  async one(sql, ...params) {
+    const rows = await this.all(sql, ...params);
+    if (rows.length === 1) {
+      return rows[0];
+    }
+    else {
+      unexpectedRowCount(rows.length);
+    }
+  }
+  sanitizeResult(result) {
+    return result;
   }
 
   //-----------------------------------------------------------------------------

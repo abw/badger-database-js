@@ -1,8 +1,8 @@
-import mysql from 'mysql2/promise';
+import pg from 'pg';
 import Engine from '../Engine.js';
 import { missing } from '../Utils.js';
 
-export class SqliteEngine extends Engine {
+export class PostgresEngine extends Engine {
   configure(config) {
     this.connection = config.connection || missing('connection');
     config.debugPrefix ||= 'MysqlEngine> ';
@@ -14,39 +14,47 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debug("connect: ", this.connection);
-    return mysql.createConnection(this.connection);
+    const client = new pg.Client(this.connection);
+    await client.connect();
+    return client;
   }
   async connected() {
     this.debug("connected");
     return true;
   }
-  async disconnect(connection) {
+  async disconnect(client) {
     this.debug("disconnect");
-    connection.destroy();
+    client.end();
   }
 
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
+  async execute(sql, params) {
+    this.debug("execute() ", sql);
+    const client = await this.acquire();
+    const result = await client.query(sql, params);
+    this.release(client);
+    return this.sanitizeResult(result);
+  }
   async run(sql, ...params) {
     return this
-      .execute(sql, query => query.execute(params))
-      .then( ([result]) => result );
+      .execute(sql, params)
   }
   async any(sql, ...params) {
     return this
-      .execute(sql, query => query.execute(params))
-      .then( ([rows]) => rows[0] );
+      .execute(sql, params)
+      .then( ({rows}) => rows[0] );
   }
   async all(sql, ...params) {
     return this
-      .execute(sql, query => query.execute(params))
-      .then( ([rows]) => rows );
+      .execute(sql, params)
+      .then( ({rows}) => rows );
   }
   sanitizeResult(result) {
-    result[0].changes ||= result[0].affectedRows || 0;
+    result.changes ||= result.rowCount || 0;
     return result;
   }
 }
 
-export default SqliteEngine
+export default PostgresEngine

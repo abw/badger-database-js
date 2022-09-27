@@ -1,5 +1,6 @@
 import test from 'ava';
 import Mysql from '../../src/Engine/Mysql.js'
+import { UnexpectedRowCount } from '../../src/Error.js';
 
 const connection = {
   host:     'localhost',
@@ -36,6 +37,7 @@ test.serial(
     const result = await mysql.any('SELECT 99 AS number');
     // console.log('any: ', result);
     t.is(result.number, 99);
+    await mysql.destroy();
   }
 )
 
@@ -46,6 +48,7 @@ test.serial(
     const result = await mysql.all('SELECT 99 as number');
     // console.log('all: ', result);
     t.is(result[0].number, 99);
+    await mysql.destroy();
   }
 )
 
@@ -56,7 +59,8 @@ test.serial(
     const drop = await mysql.run(
       `DROP TABLE IF EXISTS user`
     )
-    t.is( drop.affectedRows, 0 );
+    t.is( drop.changes, 0 );
+    await mysql.destroy();
   }
 )
 
@@ -71,7 +75,8 @@ test.serial(
         email TEXT
       )`
     )
-    t.is( create.affectedRows, 0 );
+    t.is( create.changes, 0 );
+    await mysql.destroy();
   }
 )
 
@@ -83,7 +88,8 @@ test.serial(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       'Bobby Badger', 'bobby@badgerpower.com'
     );
-    t.is(insert.affectedRows, 1);
+    t.is(insert.changes, 1);
+    await mysql.destroy();
   }
 )
 
@@ -95,12 +101,13 @@ test.serial(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       'Brian Badger', 'brian@badgerpower.com'
     );
-    t.is(insert.affectedRows, 1);
+    t.is(insert.changes, 1);
+    await mysql.destroy();
   }
 )
 
 test.serial(
-  'fetch one row',
+  'fetch any row',
   async t => {
     const mysql = new Mysql({ connection });
     const bobby = await mysql.any(
@@ -108,6 +115,7 @@ test.serial(
       'bobby@badgerpower.com'
     );
     t.is(bobby.name, 'Bobby Badger');
+    await mysql.destroy();
   }
 )
 
@@ -120,6 +128,51 @@ test.serial(
     );
     t.is( rows[0].name, 'Bobby Badger' );
     t.is( rows[1].name, 'Brian Badger' );
+    await mysql.destroy();
+  }
+)
+
+test.serial(
+  'fetch one row',
+  async t => {
+    const mysql = new Mysql({ connection });
+    const row   = await mysql.one(
+      `SELECT id, name, email FROM user WHERE email=?`,
+      "bobby@badgerpower.com"
+    );
+    t.is( row.name, 'Bobby Badger' );
+    await mysql.destroy();
+  }
+)
+
+test.serial(
+  'fetch one row but none returned',
+  async t => {
+    const mysql = new Mysql({ connection });
+    const error = await t.throwsAsync(
+      () => mysql.one(
+        `SELECT id, name, email FROM user WHERE email=?`,
+        "bobby@badgerpower.co.uk"
+      )
+    );
+    t.is( error instanceof UnexpectedRowCount, true )
+    t.is( error.message, "0 rows were returned when one was expected" )
+    await mysql.destroy();
+  }
+)
+
+test.serial(
+  'fetch one row but two returned',
+  async t => {
+    const mysql = new Mysql({ connection });
+    const error = await t.throwsAsync(
+      () => mysql.one(
+        `SELECT id, name, email FROM user`
+      )
+    );
+    t.is( error instanceof UnexpectedRowCount, true )
+    t.is( error.message, "2 rows were returned when one was expected" )
+    await mysql.destroy();
   }
 )
 
