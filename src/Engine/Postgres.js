@@ -1,10 +1,8 @@
 import pg from 'pg';
 import Engine from '../Engine.js';
-import { missing } from '../Utils.js';
 
 export class PostgresEngine extends Engine {
   configure(config) {
-    this.connection = config.connection || missing('connection');
     config.debugPrefix ||= 'MysqlEngine> ';
     return config;
   }
@@ -13,8 +11,8 @@ export class PostgresEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect: ", this.connection);
-    const client = new pg.Client(this.connection);
+    this.debug("connect: ", this.engine);
+    const client = new pg.Client(this.engine);
     await client.connect();
     return client;
   }

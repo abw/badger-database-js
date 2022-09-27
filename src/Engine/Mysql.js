@@ -1,10 +1,8 @@
 import mysql from 'mysql2/promise';
 import Engine from '../Engine.js';
-import { missing } from '../Utils.js';
 
-export class SqliteEngine extends Engine {
+export class MysqlEngine extends Engine {
   configure(config) {
-    this.connection = config.connection || missing('connection');
     config.debugPrefix ||= 'MysqlEngine> ';
     return config;
   }
@@ -13,8 +11,8 @@ export class SqliteEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect: ", this.connection);
-    return mysql.createConnection(this.connection);
+    this.debug("connect: ", this.engine);
+    return mysql.createConnection(this.engine);
   }
   async connected() {
     this.debug("connected");
@@ -49,4 +47,4 @@ export class SqliteEngine extends Engine {
   }
 }
 
-export default SqliteEngine
+export default MysqlEngine

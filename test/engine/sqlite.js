@@ -5,18 +5,26 @@ import { UnexpectedRowCount } from '../../src/Error.js';
 
 let sqlite;
 
-test.before(
-  'no filename error',
+test.serial(
+  'no engine error',
   t => {
     const error = t.throws( () => new Sqlite() );
+    t.is( error.message, 'No "engine" specified' )
+  }
+)
+
+test.serial(
+  'no filename error',
+  t => {
+    const error = t.throws( () => new Sqlite({ engine: { } }) );
     t.is( error.message, 'No "filename" specified' )
   }
 )
 
-test.before(
+test.serial(
   'acquire and release',
   async t => {
-    const sqlite = new Sqlite({ filename: ":memory:" });
+    const sqlite = new Sqlite({ engine: { filename: ":memory:" } });
     const conn = await sqlite.acquire();
     t.is(conn.open, true);
     t.is(sqlite.pool.numUsed(), 1);
@@ -25,10 +33,10 @@ test.before(
   }
 )
 
-test.before(
+test.serial(
   'connect',
   async t => {
-    sqlite = await Engines.sqlite({ filename: ':memory:' });
+    sqlite = await Engines.sqlite({ engine: { filename: ':memory:' } });
     t.is( sqlite instanceof Sqlite, true )
   }
 )
@@ -156,4 +164,3 @@ test.after(
     t.pass();
   }
 )
-

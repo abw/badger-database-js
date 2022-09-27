@@ -2,7 +2,7 @@ import test from 'ava';
 import Postgres from '../../src/Engine/Postgres.js'
 import { UnexpectedRowCount } from '../../src/Error.js';
 
-const connection = {
+const engine = {
   host:     'localhost',
   database: 'test',
   user:     'test',
@@ -13,14 +13,14 @@ test.serial(
   'no filename error',
   t => {
     const error = t.throws( () => new Postgres() );
-    t.is( error.message, 'No "connection" specified' )
+    t.is( error.message, 'No "engine" specified' )
   }
 )
 
 test.serial(
   'acquire and release',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const conn = await postgres.acquire();
     t.truthy(conn.connection);
     t.is(postgres.pool.numUsed(), 1);
@@ -34,7 +34,7 @@ test.serial(
 test.serial(
   'any',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const result = await postgres.any('SELECT 99 AS number');
     // console.log('any: ', result);
     t.is(result.number, 99);
@@ -45,7 +45,7 @@ test.serial(
 test.serial(
   'all',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const result = await postgres.all('SELECT 99 as number');
     // console.log('all: ', result);
     t.is(result[0].number, 99);
@@ -56,7 +56,7 @@ test.serial(
 test.serial(
   'drop existing table',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const drop = await postgres.run(
       `DROP TABLE IF EXISTS users`
     )
@@ -68,7 +68,7 @@ test.serial(
 test.serial(
   'create table',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const create = await postgres.run(
       `CREATE TABLE users (
         id SERIAL,
@@ -84,7 +84,7 @@ test.serial(
 test.serial(
   'insert a row',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2)',
       'Bobby Badger', 'bobby@badgerpower.com'
@@ -97,7 +97,7 @@ test.serial(
 test.serial(
   'insert another row',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2)',
       'Brian Badger', 'brian@badgerpower.com'
@@ -110,7 +110,7 @@ test.serial(
 test.serial(
   'fetch any row',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const bobby = await postgres.any(
       'SELECT * FROM users WHERE email=$1',
       'bobby@badgerpower.com'
@@ -123,7 +123,7 @@ test.serial(
 test.serial(
   'fetch all rows',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const rows = await postgres.all(
       `SELECT id, name, email FROM users`
     );
@@ -137,7 +137,7 @@ test.serial(
 test.serial(
   'fetch one row',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const row = await postgres.one(
       `SELECT id, name, email FROM users WHERE email=$1`,
       "bobby@badgerpower.com"
@@ -150,7 +150,7 @@ test.serial(
 test.serial(
   'fetch one row but none returned',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const error = await t.throwsAsync(
       () => postgres.one(
         `SELECT id, name, email FROM users WHERE email=$1`,
@@ -166,7 +166,7 @@ test.serial(
 test.serial(
   'fetch one row but two returned',
   async t => {
-    const postgres = new Postgres({ connection });
+    const postgres = new Postgres({ engine });
     const error = await t.throwsAsync(
       () => postgres.one(
         `SELECT id, name, email FROM users`

@@ -4,8 +4,8 @@ import { missing } from '../Utils.js';
 
 export class SqliteEngine extends Engine {
   configure(config) {
-    this.filename = config.filename || missing('filename');
-    this.options  = config.options  || { };
+    this.filename = config.engine.filename || missing('filename');
+    this.options  = config.engine.options  || { };
     config.debugPrefix ||= 'SqliteEngine> ';
     return config;
   }

@@ -1,6 +1,6 @@
 import { Pool } from 'tarn';
 import { addDebug } from '@abw/badger';
-import { notImplementedInBaseClass } from "./Utils.js";
+import { missing, notImplementedInBaseClass } from "./Utils.js";
 import { unexpectedRowCount } from './Error.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
@@ -18,14 +18,15 @@ const debugDefaults = {
 
 export class Engine {
   constructor(config={}) {
+    this.engine = config.engine || missing('engine');
     this.config = this.configure(config);
+    this.pool   = this.initPool(config.pool);
     addDebug(
       this,
       config.debug,
       config.debugPrefix || debugDefaults.prefix,
       config.debugColor  || debugDefaults.color
     );
-    this.pool = this.initPool(config.pool);
   }
   configure(config) {
     return config;
