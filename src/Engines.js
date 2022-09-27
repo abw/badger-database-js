@@ -19,9 +19,10 @@ registerEngine('postgres', './Engine/Postgres.js');
 // Engine constructor
 //-----------------------------------------------------------------------------
 export const engine = async config => {
-  const [driver, options] = engineConfig(config);
+  config = engineConfig(config);
+  const driver = config.driver || missing('engine.driver');
   const handler = Engines[driver] || invalid('engine.driver', driver);
-  return await handler(options);
+  return await handler(config);
 }
 
 //-----------------------------------------------------------------------------
@@ -31,14 +32,13 @@ export const engine = async config => {
 // engineConfig({ driver: xxx, ... })
 //-----------------------------------------------------------------------------
 export const engineConfig = config => {
-  let driver;
   let engine = config.engine || missing('engine');
   if (isString(engine)) {
     config.engine = engine = parseEngineString(engine);
   }
-  driver = engine.driver || missing('engine driver');
+  config.driver ||= engine.driver || missing('engine driver');
   delete engine.driver;
-  return [driver, config];
+  return config;
 }
 
 //-----------------------------------------------------------------------------

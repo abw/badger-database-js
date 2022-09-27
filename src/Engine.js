@@ -16,11 +16,19 @@ const debugDefaults = {
   color:  'red',
 }
 
+const quoteChars = {
+  mysql:   '`',
+  default: '"',
+};
+
 export class Engine {
   constructor(config={}) {
-    this.engine = config.engine || missing('engine');
-    this.config = this.configure(config);
-    this.pool   = this.initPool(config.pool);
+    this.driver    = config.driver || missing('driver');
+    this.engine    = config.engine || missing('engine');
+    this.config    = this.configure(config);
+    this.pool      = this.initPool(config.pool);
+    this.quoteChar = quoteChars[this.driver||'default'] || quoteChars.default;
+    this.escQuote  = `\\${this.quoteChar}`;
     addDebug(
       this,
       config.debug,
@@ -114,6 +122,14 @@ export class Engine {
   sanitizeResult(result) {
     return result;
   }
+  quote(name) {
+    return name
+      .split(/\./)
+      .map(
+        part => this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
+      .join('.');
+  }
+
 
   //-----------------------------------------------------------------------------
   // Cleanup

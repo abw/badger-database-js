@@ -1,14 +1,29 @@
 import test from 'ava';
 import Sqlite from '../../src/Engine/Sqlite.js'
-import Engines from '../../src/Engines.js'
+import Engines, { engine } from '../../src/Engines.js'
 import { UnexpectedRowCount } from '../../src/Error.js';
 
 let sqlite;
 
+const config = {
+  engine: {
+    driver: 'sqlite',
+    filename: ":memory:"
+  }
+};
+
+test.serial(
+  'no driver error',
+  t => {
+    const error = t.throws( () => new Sqlite() );
+    t.is( error.message, 'No "driver" specified' )
+  }
+)
+
 test.serial(
   'no engine error',
   t => {
-    const error = t.throws( () => new Sqlite() );
+    const error = t.throws( () => new Sqlite({ driver: 'sqlite' }) );
     t.is( error.message, 'No "engine" specified' )
   }
 )
@@ -16,27 +31,50 @@ test.serial(
 test.serial(
   'no filename error',
   t => {
-    const error = t.throws( () => new Sqlite({ engine: { } }) );
+    const error = t.throws( () => new Sqlite({ driver: 'sqlite', engine: { } }) );
     t.is( error.message, 'No "filename" specified' )
+  }
+)
+
+test.serial(
+  'driver in engine',
+  async t => {
+    const sqlite = await engine({ engine: { driver: 'sqlite', filename: ':memory:' }});
+    const conn = await sqlite.acquire();
+    t.is(conn.open, true);
+    await sqlite.release(conn);
+    await sqlite.destroy();
+  }
+)
+
+test.serial(
+  'driver outside engine',
+  async t => {
+    const sqlite = await engine({ driver: 'sqlite', engine: { filename: ':memory:' }});
+    const conn = await sqlite.acquire();
+    t.is(conn.open, true);
+    await sqlite.release(conn);
+    await sqlite.destroy();
   }
 )
 
 test.serial(
   'acquire and release',
   async t => {
-    const sqlite = new Sqlite({ engine: { filename: ":memory:" } });
+    const sqlite = await engine(config);
     const conn = await sqlite.acquire();
     t.is(conn.open, true);
     t.is(sqlite.pool.numUsed(), 1);
     await sqlite.release(conn);
     t.is(sqlite.pool.numUsed(), 0);
+    await sqlite.destroy();
   }
 )
 
 test.serial(
   'connect',
   async t => {
-    sqlite = await Engines.sqlite({ engine: { filename: ':memory:' } });
+    sqlite = await Engines.sqlite(config);
     t.is( sqlite instanceof Sqlite, true )
   }
 )
@@ -164,3 +202,34 @@ test.after(
     t.pass();
   }
 )
+
+//-----------------------------------------------------------------------------
+// quote()
+//-----------------------------------------------------------------------------
+test(
+  'quote word',
+  async t => {
+    const sqlite = new Sqlite(config);
+    t.is( sqlite.quote('hello'), '"hello"' )
+    await sqlite.destroy();
+  }
+)
+
+test(
+  'quote words',
+  async t => {
+    const sqlite = new Sqlite(config);
+    t.is( sqlite.quote('hello.world'), '"hello"."world"' )
+    await sqlite.destroy();
+  }
+)
+test(
+
+  'quote words with escapes',
+  async t => {
+    const sqlite = new Sqlite(config);
+    t.is( sqlite.quote('hello "world"'), '"hello \\"world\\""' )
+    await sqlite.destroy();
+  }
+)
+

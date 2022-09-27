@@ -134,8 +134,8 @@ test(
 test(
   "engineConfig({ engine: 'driverName://userName:secretPassword@hostName:1234/databaseName' })",
   t => {
-    const [driver, config] = engineConfig({ engine: 'driverName://userName:secretPassword@hostName:1234/databaseName' });
-    t.is( driver, 'driverName');
+    const config = engineConfig({ engine: 'driverName://userName:secretPassword@hostName:1234/databaseName' });
+    t.is( config.driver, 'driverName');
     t.is( config.engine.host, 'hostName');
     t.is( config.engine.port, '1234');
     t.is( config.engine.database, 'databaseName');
@@ -147,8 +147,8 @@ test(
 test(
   "engineConfig({ engine: { driver: 'sqlite', filename: 'wibble.db' } })",
   t => {
-    const [driver, config] = engineConfig({ engine: { driver: 'sqlite', filename: 'wibble.db' } });
-    t.is( driver, 'sqlite');
+    const config = engineConfig({ engine: { driver: 'sqlite', filename: 'wibble.db' } });
+    t.is( config.driver, 'sqlite');
     t.is( config.engine.filename, 'wibble.db');
   }
 );
@@ -156,8 +156,8 @@ test(
 test(
   "engineConfig({ engine: 'sqlite:memory', pool: { min: 1, max: 1 } })",
   t => {
-    const [driver, config] = engineConfig({ engine: 'sqlite:memory', pool: { min: 1, max: 1 } });
-    t.is( driver, 'sqlite');
+    const config = engineConfig({ engine: 'sqlite:memory', pool: { min: 1, max: 1 } });
+    t.is( config.driver, 'sqlite');
     t.is( config.engine.filename, ':memory:');
     t.is( config.pool.min, 1 );
     t.is( config.pool.max, 1 );
