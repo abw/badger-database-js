@@ -1,9 +1,4 @@
 import pg from 'pg';
-// console.log('pg: ', pg);
-const { Client } = pg;
-
-
-//await client.end()
 
 async function main() {
   const pool = new pg.Client({
