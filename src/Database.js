@@ -1,38 +1,50 @@
 import Config from './Config.js'
-import Connection from './Connection.js'
 import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
 import Queries from './Queries.js';
 import { fail } from '@abw/badger-utils';
+import { missing } from './Utils.js';
 
-const escapeChars = {
-  mysql:  '`',
-  mysql2: '`',
-  default: '"',
-};
 const defaults = {
   tablesClass: Tables
 };
 
 export class Database {
   constructor(params={ }) {
-    const config    = { ...defaults, ...Config, ...params };
-    this.connection = new Connection(config);
-    this.queries    = new Queries(config);
-    this.tables     = config.tablesObject || new config.tablesClass(config.tables);
-    this.model      = modelProxy(this);
-    this.escapeChar = escapeChars[config.client||'default'] || escapeChars.default;
-    this.state      = {
+    const config = { ...defaults, ...Config, ...params };
+    this.engine  = params.engine || missing('engine');
+    this.queries = new Queries(config);
+    this.tables  = config.tablesObject || new config.tablesClass(config.tables);
+    this.model   = modelProxy(this);
+    this.state   = {
       table: { },
     };
   }
-  knex() {
-    return this.connection.knex(...arguments);
+
+  //-----------------------------------------------------------------------------
+  // Engine methods
+  //-----------------------------------------------------------------------------
+  acquire() {
+    return this.engine.acquire();
   }
-  raw() {
-    return this.connection.raw(...arguments);
+  release(connection) {
+    this.engine.release(connection);
   }
+  run(...params) {
+    return this.engine.run(...params)
+  }
+  any(...params) {
+    return this.engine.any(...params)
+  }
+  all(...params) {
+    return this.engine.all(...params)
+  }
+  one(...params) {
+    return this.engine.one(...params)
+  }
+
+
   query(name) {
     return this.raw(this.queries.query(name));
   }
@@ -50,14 +62,11 @@ export class Database {
     schema.table ||= name;
     return new tclass(this, { ...schema, ...topts });
   }
-  escape(name) {
-    return name
-      .split(/\./)
-      .map( part => this.escapeChar + part + this.escapeChar)
-      .join('.');
+  quote(name) {
+    return this.engine.quote(name);
   }
   destroy() {
-    return this.connection.destroy();
+    return this.engine.destroy();
   }
 }
 
