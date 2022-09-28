@@ -75,7 +75,7 @@ export class Schema {
     this.keyIndex = splitHash(this.keys);
   }
   prepareFragments(schema) {
-    const escape    = this.database.escape.bind(this.database);
+    const quote     = this.database.quote.bind(this.database);
     const fragments = schema.fragments || { };
     const vcolumns  = Object.entries(this.virtualColumns).reduce(
       (result, [name, defn]) => {
@@ -85,9 +85,9 @@ export class Schema {
       { }
     );
     this.fragments = {
-      table:    escape(this.table),
-      columns:  this.columnNames.map(escape).join(', '),
-      tcolumns: this.columnNames.map( n => escape(this.columnIndex[n].tableColumn) ).join(', '),
+      table:    quote(this.table),
+      columns:  this.columnNames.map(quote).join(', '),
+      tcolumns: this.columnNames.map( n => quote(this.columnIndex[n].tableColumn) ).join(', '),
       ...vcolumns,
       ...fragments
     };

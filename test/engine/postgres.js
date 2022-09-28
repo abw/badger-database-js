@@ -1,6 +1,6 @@
 import test from 'ava';
 import Postgres from '../../src/Engine/Postgres.js'
-import { UnexpectedRowCount } from '../../src/Error.js';
+import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
 const engine = {
   host:     'localhost',
@@ -98,10 +98,11 @@ test.serial(
   async t => {
     const postgres = new Postgres(config);
     const insert = await postgres.run(
-      'INSERT INTO users (name, email) VALUES ($1, $2)',
+      'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id',
       'Bobby Badger', 'bobby@badgerpower.com'
     );
     t.is(insert.changes, 1);
+    t.is(insert.id, 1);
     await postgres.destroy();
   }
 )

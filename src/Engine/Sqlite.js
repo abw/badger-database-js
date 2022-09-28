@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import Engine from '../Engine.js';
-import { missing } from '../Utils.js';
+import { missing } from '../Utils/Error.js';
 
 export class SqliteEngine extends Engine {
   configure(config) {

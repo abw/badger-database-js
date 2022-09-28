@@ -1,7 +1,6 @@
 import { Pool } from 'tarn';
 import { addDebug } from '@abw/badger';
-import { missing, notImplementedInBaseClass } from "./Utils.js";
-import { unexpectedRowCount } from './Error.js';
+import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
 
 const notImplemented = notImplementedInBaseClass('Engine');
 

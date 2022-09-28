@@ -3,17 +3,18 @@ import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
 import Queries from './Queries.js';
+import { engine } from './Engines.js';
 import { fail } from '@abw/badger-utils';
-import { missing } from './Utils.js';
+import { missing } from './Utils/Error.js';
 
 const defaults = {
   tablesClass: Tables
 };
 
 export class Database {
-  constructor(params={ }) {
+  constructor(engine, params={ }) {
     const config = { ...defaults, ...Config, ...params };
-    this.engine  = params.engine || missing('engine');
+    this.engine  = engine || missing('engine');
     this.queries = new Queries(config);
     this.tables  = config.tablesObject || new config.tablesClass(config.tables);
     this.model   = modelProxy(this);
@@ -48,7 +49,7 @@ export class Database {
   query(name) {
     return this.raw(this.queries.query(name));
   }
-  table(name) {
+  async table(name) {
     return this.state.table[name]
       ||=  this.initTable(name);
   }
@@ -70,8 +71,10 @@ export class Database {
   }
 }
 
-export const database = config =>
-  new Database(config)
+export const database = async config => {
+  const e = await engine(config);
+  return new Database(e, config)
+}
 
 export default Database
 

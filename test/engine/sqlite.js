@@ -1,7 +1,7 @@
 import test from 'ava';
 import Sqlite from '../../src/Engine/Sqlite.js'
 import Engines, { engine } from '../../src/Engines.js'
-import { UnexpectedRowCount } from '../../src/Error.js';
+import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
 let sqlite;
 

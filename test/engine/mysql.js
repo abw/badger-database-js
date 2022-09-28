@@ -1,7 +1,7 @@
 import test from 'ava';
 import Mysql from '../../src/Engine/Mysql.js'
 import { engine as engineFactory } from '../../src/Engines.js';
-import { UnexpectedRowCount } from '../../src/Error.js';
+import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
 const engine = {
   host:     'localhost',
@@ -104,6 +104,7 @@ test.serial(
       'Bobby Badger', 'bobby@badgerpower.com'
     );
     t.is(insert.changes, 1);
+    t.is(insert.id, 1);
     await mysql.destroy();
   }
 )
