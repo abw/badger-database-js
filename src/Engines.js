@@ -1,7 +1,7 @@
-import { hasValue, isString } from "@abw/badger-utils";
+import { hasValue, isString, remove } from "@abw/badger-utils";
 import { invalid, missing } from "./Utils.js";
 
-export let Engines = { };
+let Engines = { };
 
 export const registerEngine = (name, module) => {
   Engines[name] = async config => {
@@ -11,9 +11,10 @@ export const registerEngine = (name, module) => {
   }
 }
 
-registerEngine('sqlite',   './Engine/Sqlite.js');
-registerEngine('mysql',    './Engine/Mysql.js');
-registerEngine('postgres', './Engine/Postgres.js');
+registerEngine('sqlite',     './Engine/Sqlite.js');
+registerEngine('mysql',      './Engine/Mysql.js');
+registerEngine('postgres',   './Engine/Postgres.js');
+registerEngine('postgresql', './Engine/Postgres.js');
 
 //-----------------------------------------------------------------------------
 // Engine constructor
@@ -31,13 +32,33 @@ export const engine = async config => {
 // engineConfig(string)
 // engineConfig({ driver: xxx, ... })
 //-----------------------------------------------------------------------------
+const engineAliases = {
+  username: 'user',
+  pass:     'password',
+  hostname: 'host',
+  file:     'filename',
+};
 export const engineConfig = config => {
   let engine = config.engine || missing('engine');
+
   if (isString(engine)) {
+    // parse connection string
     config.engine = engine = parseEngineString(engine);
   }
+
+  // extract the driver to top level config
   config.driver ||= engine.driver || missing('engine driver');
   delete engine.driver;
+
+  // fixup any aliases
+  Object.entries(engineAliases).map(
+    ([key, value]) => {
+      if (hasValue(engine[key])) {
+        engine[value] ||= remove(engine, key);
+      }
+    }
+  )
+
   return config;
 }
 
@@ -64,10 +85,12 @@ const engineStringElements = {
 export const parseEngineString = string => {
   let config = { };
   let match;
-  if (string.match(/^postgresql:/)) {
+  if (string.match(/^postgres(ql)?:/)) {
     // special case for postgres which can handle a connectionString
+    // NOTE: we accept postgresql: or postgres: as prefixes and Do The
+    // Right Thing
     config.driver = 'postgres';
-    config.connectionString = string;
+    config.connectionString = string.replace(/^postgres:/, 'postgresql:');
   }
   else if ((match = string.match(/^sqlite:\/\/(.*)/))) {
     // special case for sqlite which only has a filename (or ":memory:")

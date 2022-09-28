@@ -15,6 +15,15 @@ test(
 );
 
 test(
+  'postgres://user:password@hostname:3211/database',
+  t => {
+    const config = parseEngineString('postgres://user:password@hostname:3211/database');
+    t.is( config.driver, 'postgres');
+    t.is( config.connectionString, 'postgresql://user:password@hostname:3211/database');
+  }
+);
+
+test(
   'sqlite://filename.db',
   t => {
     const config = parseEngineString('sqlite://filename.db');
@@ -150,6 +159,28 @@ test(
     const config = engineConfig({ engine: { driver: 'sqlite', filename: 'wibble.db' } });
     t.is( config.driver, 'sqlite');
     t.is( config.engine.filename, 'wibble.db');
+  }
+);
+
+test(
+  "engineConfig({ engine: { driver: 'sqlite', file: 'wibble.db' } })",
+  t => {
+    const config = engineConfig({ engine: { driver: 'sqlite', file: 'wibble.db' } });
+    t.is( config.driver, 'sqlite');
+    t.is( config.engine.filename, 'wibble.db');
+  }
+);
+
+test(
+  "engineConfig() - parameter renaming",
+  t => {
+    const config = engineConfig({
+      engine: { driver: 'mysql', username: 'fred', pass: 'secret', hostname: 'wibble.com' }
+    });
+    t.is( config.driver, 'mysql');
+    t.is( config.engine.user, 'fred');
+    t.is( config.engine.password, 'secret');
+    t.is( config.engine.host, 'wibble.com');
   }
 );
 
