@@ -7,39 +7,41 @@
 
 Use your favourite package manager to install the module
 from `@abw/badger-database`.  You should also install
-one of the database driver modules, e.g. `pg`, `mysql`,
-`sqlite3`, etc.  See the [Knex.js installation guide](https://knexjs.org/guide/#node-js)
-for further information
+at least one of the database driver modules:
+
+* `pg` for Postgres
+* `mysql2` for Mysql
+* `better-sqlite3` for Sqlite.
 
 ### npm
 
-    npm install @abw/badger-database
+    npm install @abw/badger-database pg
 
 ### pnpm
 
-    pnpm add @abw/badger-database
+    pnpm add @abw/badger-database pg
 
 ### yarn
 
-    yarn add @abw/badger-database
+    yarn add @abw/badger-database pg
 
 ## Basic Use
 
-Import the `Database` class using ESM syntax.
+Import the `database` constructor function using ESM syntax.
 
 ```js
-import Database from '@abw/badger-database'
+import database from '@abw/badger-database'
 ```
 
-The `Database` class is the default export.  You can also
+The `database` class is the default export.  You can also
 use named imports.
 
 ```js
-import { Database, Table, Record } from '@abw/badger-database'
+import { database } from '@abw/badger-database'
 ```
 
 Or you can use `require()` if you're still using Common JS format.
 
 ```js
-const { Database, Table, Record } = require('@abw/badger-database')
+const { database } = require('@abw/badger-database')
 ```

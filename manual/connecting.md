@@ -1,11 +1,7 @@
-NOTE: This is new documentation for the Knex-free version which supercedes other pages.
-
-ALSO NOTE: I'm writing these docs while writing the code, so things may change.
-
 # Connecting
 
-The badger-database library uses an *Engine* to talk to the underlying database.  There
-are three provided: sqlite, mysql and postgres.
+The badger-database library uses an *Engine* to talk to the underlying database.
+There are three provided: sqlite, mysql and postgres.
 
 ## Connection String
 

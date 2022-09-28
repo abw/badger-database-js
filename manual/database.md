@@ -1,11 +1,9 @@
 # Database
 
-The `Database` class provides a wrapper around a
-[Knex.js](https://knexjs.org/) database connection.
+The `Database` class provides an interface to a database connection.
 
 * [Overview](#overview)
 * [Configuration](#configuration)
-  * [Knex Configuration Options](#knex-configuration-options)
   * [queries](#queries)
   * [fragments](#fragments)
   * [tables](#tables)
@@ -27,55 +25,31 @@ The `Database` class provides a wrapper around a
 
 ## Overview
 
-The `Database` class is used to create a top-level interface to your database.
-
-Create a new database object using the configuration options described below.
-
-```js
-import Database from '@abw/badger-database';
-
-const mydb = new Database({
-  // configuration options
-})
-```
-
-You can also use the `database()` function which is a wrapper around `new Database()`.
+Use the asynchronous `database()` function to create an instance of the
+`Database` class.  This provides a high-level interface to your database.
 
 ```js
-import { database } from '@abw/badger-database';
+import database from '@abw/badger-database';
 
-const mydb = database({
+const mydb = await database({
   // configuration options
 })
 ```
 
 ## Configuration
 
-### Knex Configuration Options
+### engine
 
-The configuration parameters should include the
-`client` and `connection` parameters as a minimum,
-along with any other optional configuration parameters
-accepted as
-[Knex.js configuration options](https://knexjs.org/guide/#configuration-options)
-
-For example, a connection to a `sqlite3` database might look like this:
+The `engine` parameter is used to configure the underlying engine class
+for talking to the database.
 
 ```js
-import Database from '@abw/badger-database'
-
-const database = new Database({
-  client: 'sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  useNullAsDefault: true,
-  pool: {
-    min: 2,
-    max: 10,
-  }
+const mydb = await database({
+  engine: 'postgresql://username:password@hostname/database'
 })
 ```
+
+See the [Connecting](manual/connecting.html) page for full details.
 
 ### queries
 
@@ -162,10 +136,9 @@ further information.
 
 ## Properties
 
-### connection
+### engine
 
-This is a reference to a [Connection](manual/connection.md) instance
-which is a wrapper around the underlying Knex instance.
+This is a reference to an [Engine](manual/engine.html) instance.
 
 ### model
 

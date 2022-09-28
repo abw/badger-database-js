@@ -103,24 +103,16 @@ For further information please read the [manual](https://abw.github.io/badger-da
 ## Installation
 
 Use your favourite package manager (we'll assume `npm` in these examples)
-to install `@abw/badger-database`, `knex` and at least one of the driver modules.
+to install `@abw/badger-database` and at least one of the driver modules.
 
 ```sh
-    $ npm install @abw/badger-database knex
+    $ npm install @abw/badger-database
 
     # Then add one of the following:
     $ npm install pg
-    $ npm install pg-native
-    $ npm install sqlite3
     $ npm install better-sqlite3
-    $ npm install mysql
     $ npm install mysql2
-    $ npm install oracledb
-    $ npm install tedious
 ```
-
-See the [Knex.js installation guide](https://knexjs.org/guide/#node-js)
-for further information.
 
 ## Quick Start
 
