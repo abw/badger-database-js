@@ -6,6 +6,13 @@ export class SqliteEngine extends Engine {
   configure(config) {
     this.filename = config.engine.filename || missing('filename');
     this.options  = config.engine.options  || { };
+
+    // better-sqlite3 is synchronous (because Sqlite serialises all
+    // requests anyway), so there's no need/benefit in using a pool
+    config.pool     ||= { };
+    config.pool.min ||= 1;
+    config.pool.max ||= 1;
+
     config.debugPrefix ||= 'SqliteEngine> ';
     return config;
   }

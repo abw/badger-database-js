@@ -59,6 +59,16 @@ test.serial(
 )
 
 test.serial(
+  'pool size',
+  async t => {
+    const sqlite = await engine(config);
+    t.is(sqlite.pool.min, 1);
+    t.is(sqlite.pool.max, 1);
+    await sqlite.destroy();
+  }
+)
+
+test.serial(
   'acquire and release',
   async t => {
     const sqlite = await engine(config);
