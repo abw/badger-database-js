@@ -1,33 +1,64 @@
-import { addDebug } from "@abw/badger";
-import { fail, isArray } from "@abw/badger-utils";
 import recordProxy from "./Proxy/Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
-import Schema from "./Schema.js";
-// import Queries from "./Queries.js";
+// import Schema from "./Schema.js";
+import { addDebug } from "@abw/badger";
+import { fail, isArray, noValue } from "@abw/badger-utils";
+import { prepareColumns } from "./Utils/Columns.js";
+import { InsertValidationError, thrower } from "./Utils/Error.js";
 
-// export class Table extends Queries {
+
+const throwInsertValidationError = thrower(
+  {
+    unknown:  'Cannot insert unknown "$column" column into $table table',
+    readonly: 'Cannot insert "$column" readonly column into $table table',
+    required: 'Cannot insert without required column "$column" into $table table',
+  },
+  InsertValidationError
+)
+
+
 export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
-    this.schema        = new Schema(database, schema)
+    //this.schema        = new Schema(database, schema)
+    this.table         = schema.table;
+    this.columns       = prepareColumns(schema.columns, schema);
+    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
+    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
     addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
-  knex() {
-    return this.database.knex(this.schema.table);
+  insert(data) {
+    const table = this.table;
+    // first check that all the values supplied correspond to valid columns that are not readonly
+    Object.keys(data).forEach(
+      column => {
+        const spec = this.columns[column]
+          || throwInsertValidationError('unknown', { column, table });
+        if (spec.readonly) {
+          throwInsertValidationError('readonly', { column, table });
+        }
+      }
+    )
+    // now check that all required columns have been provided
+    this.required.forEach(
+      column => {
+        if (noValue(data[column])) {
+          throwInsertValidationError('required', { column, table });
+        }
+      }
+    );
   }
-  raw() {
-    return this.database.raw(...arguments);
-  }
+
   query(name) {
     return this.raw(this.schema.query(name));
   }
-  insert(data) {
+  OLDinsert(data) {
     return isArray(data)
       ? this.insertRows(data)
       : this.insertRow(data);
