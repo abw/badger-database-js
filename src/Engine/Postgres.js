@@ -51,6 +51,9 @@ export class PostgresEngine extends Engine {
   }
   sanitizeResult(result) {
     result.changes ||= result.rowCount || 0;
+    if (result.command === 'INSERT' && result.rows?.length) {
+      result.id = result.rows[0].id;
+    }
     return result;
   }
 }

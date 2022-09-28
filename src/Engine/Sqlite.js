@@ -45,6 +45,10 @@ export class SqliteEngine extends Engine {
   async all(sql, ...params) {
     return this.execute(sql, query => query.all(...params));
   }
+  sanitizeResult(result) {
+    result.id ||= result.lastInsertRowid || null;
+    return result;
+  }
 }
 
 export default SqliteEngine

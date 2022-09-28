@@ -43,6 +43,7 @@ export class MysqlEngine extends Engine {
   }
   sanitizeResult(result) {
     result[0].changes ||= result[0].affectedRows || 0;
+    result[0].id      ||= result[0].insertId || null;
     return result;
   }
 }
