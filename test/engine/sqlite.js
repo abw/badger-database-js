@@ -126,8 +126,8 @@ test.serial(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       'Bobby Badger', 'bobby@badgerpower.com'
     );
-    // console.log('insert: ', insert);
     t.is(insert.changes, 1);
+    t.is(insert.id, 1);
   }
 )
 
@@ -138,8 +138,8 @@ test.serial(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       'Brian Badger', 'brian@badgerpower.com'
     );
-    // console.log('insert: ', insert);
     t.is(insert.changes, 1);
+    t.is(insert.id, 2);
   }
 )
 
