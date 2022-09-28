@@ -1,9 +1,11 @@
 import { fail, isArray, isObject, isString, objMap, splitList } from "@abw/badger-utils";
 
+const defaultIdColumn = 'id';
 // const bitSplitter = /(:|,\s*|\s+)/;    // too much Neddery
 const bitSplitter = /:/;
 
-export const prepareColumns = (columns, schema) => {
+export const prepareColumns = (schema) => {
+  const columns = schema.columns;
   if (isString(columns)) {
     return prepareColumnsString(columns, schema);
   }
@@ -74,3 +76,13 @@ const prepareColumnBits = (name, bits, schema) => {
   );
 }
 
+export const prepareKeys = schema => {
+  let keys = splitList(schema.keys);
+  if (schema.id) {
+    keys.unshift(schema.id);
+  }
+  else if (keys.length === 0) {
+    keys.unshift(defaultIdColumn);
+  }
+  return keys;
+}

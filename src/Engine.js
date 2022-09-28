@@ -1,6 +1,7 @@
 import { Pool } from 'tarn';
 import { addDebug } from '@abw/badger';
 import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
+import { format } from './Utils/Format.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -19,6 +20,10 @@ const quoteChars = {
   mysql:   '`',
   default: '"',
 };
+
+const queries = {
+  insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>'
+}
 
 export class Engine {
   constructor(config={}) {
@@ -86,7 +91,7 @@ export class Engine {
   }
 
   //-----------------------------------------------------------------------------
-  // Query methods
+  // Generic query methods
   //-----------------------------------------------------------------------------
   async execute(sql, action) {
     this.debug("execute() ", sql);
@@ -128,7 +133,26 @@ export class Engine {
         part => this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
       .join('.');
   }
+  formatColumns(columns) {
+    return columns.join(', ');
+  }
+  formatPlaceholders(values) {
+    return values.map(() => '?').join(', ');
+  }
+  formatReturning() {
+    return '';
+  }
 
+  //-----------------------------------------------------------------------------
+  // Specific queries
+  //-----------------------------------------------------------------------------
+  async insert(table, colnames, values, keys) {
+    const columns      = this.formatColumns(colnames);
+    const placeholders = this.formatPlaceholders(values);
+    const returning    = this.formatReturning(keys);
+    const sql          = format(queries.insert, { table, columns, placeholders, returning});
+    return this.run(sql, ...values);
+  }
 
   //-----------------------------------------------------------------------------
   // Cleanup

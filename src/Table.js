@@ -5,15 +5,15 @@ import Record from "./Record.js";
 // import Schema from "./Schema.js";
 import { addDebug } from "@abw/badger";
 import { fail, isArray, noValue } from "@abw/badger-utils";
-import { prepareColumns } from "./Utils/Columns.js";
+import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { InsertValidationError, thrower } from "./Utils/Error.js";
 
 
 const throwInsertValidationError = thrower(
   {
-    unknown:  'Cannot insert unknown "$column" column into $table table',
-    readonly: 'Cannot insert "$column" readonly column into $table table',
-    required: 'Cannot insert without required column "$column" into $table table',
+    unknown:  'Cannot insert unknown "<column>" column into <table> table',
+    readonly: 'Cannot insert "<column>" readonly column into <table> table',
+    required: 'Cannot insert into <table> table without required column "<column>"',
   },
   InsertValidationError
 )
@@ -22,19 +22,24 @@ const throwInsertValidationError = thrower(
 export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
+    this.engine        = database.engine;
     //this.schema        = new Schema(database, schema)
     this.table         = schema.table;
-    this.columns       = prepareColumns(schema.columns, schema);
+    this.columns       = prepareColumns(schema);
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
     this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );
+    this.keys          = prepareKeys(schema);
+    this.id            = this.keys[0];
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
     addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
-  insert(data) {
+  async insert(data) {
     const table = this.table;
+    let cols = [ ];
+    let vals = [ ];
     // first check that all the values supplied correspond to valid columns that are not readonly
     Object.keys(data).forEach(
       column => {
@@ -43,6 +48,8 @@ export class Table {
         if (spec.readonly) {
           throwInsertValidationError('readonly', { column, table });
         }
+        cols.push(spec.column);
+        vals.push(data[column])
       }
     )
     // now check that all required columns have been provided
@@ -53,6 +60,7 @@ export class Table {
         }
       }
     );
+    return this.engine.insert(this.table, cols, vals, this.keys);
   }
 
   query(name) {

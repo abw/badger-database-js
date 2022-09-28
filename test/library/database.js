@@ -1,18 +1,10 @@
-import Database from "../../src/Database.js";
+import { database as connect } from "../../src/Database.js";
 
 export const databaseConfig = {
-  client: 'better-sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  useNullAsDefault: true,
-  pool: {
-    min: 2,
-    max: 10,
-  }
+  engine: 'sqlite:memory',
 };
 
-export const createDatabase = (config=databaseConfig) => new Database(config);
+export const createDatabase = async (config=databaseConfig) => connect(config);
 
 export const database = createDatabase();
 

@@ -1,6 +1,10 @@
 import Config from '../../src/Config.js';
 import Database from '../../src/Database.js';
 
+export const engine = 'mysql://test:test@localhost/test';
+export const config = { engine };
+
+/*
 export const database = new Database({
   ...Config,
   tables: {
@@ -13,3 +17,4 @@ export const database = new Database({
   }
 });
 export const users = database.table('users');
+*/

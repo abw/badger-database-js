@@ -165,7 +165,6 @@ test.serial(
   }
 )
 
-
 test.serial(
   'fetch one row',
   async t => {

@@ -56,6 +56,13 @@ export class PostgresEngine extends Engine {
     }
     return result;
   }
+  formatPlaceholders(values) {
+    let n = 1;
+    return values.map(() => '$' + n++).join(', ');
+  }
+  formatReturning(keys) {
+    return ' RETURNING ' + keys.join(', ');
+  }
 }
 
 export default PostgresEngine
