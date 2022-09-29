@@ -76,6 +76,10 @@ export class Table {
     const [wcols, wvals] = this.checkColumns(where);
     return this.engine.update(this.table, dcols, dvals, wcols, wvals);
   }
+  async delete(where) {
+    const [cols, vals] = this.checkColumns(where);
+    return this.engine.delete(this.table, cols, vals);
+  }
 
   query(name) {
     return this.raw(this.schema.query(name));

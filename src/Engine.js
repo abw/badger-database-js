@@ -24,6 +24,7 @@ const quoteChars = {
 const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
   update: 'UPDATE <table> SET <set> WHERE <where>',
+  delete: 'DELETE FROM <table> WHERE <where>',
 }
 
 export class Engine {
@@ -180,6 +181,12 @@ export class Engine {
     const sql   = format(queries.update, { table, set, where });
     // console.log('update: ', sql);
     return this.run(sql, ...datavals, ...wherevals);
+  }
+  async delete(table, wherecols, wherevals) {
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
+    const sql   = format(queries.delete, { table, where });
+    // console.log('delete: ', sql);
+    return this.run(sql, ...wherevals);
   }
 
   //-----------------------------------------------------------------------------
