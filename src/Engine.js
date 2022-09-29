@@ -1,8 +1,8 @@
 import { Pool } from 'tarn';
-import { addDebug } from '@abw/badger';
 import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
 import { format } from './Utils/Format.js';
 import { splitList } from '@abw/badger-utils';
+import { addDebugMethod } from './Utils/Debug.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -10,11 +10,6 @@ const poolDefaults = {
   min: 2,
   max: 10,
   propagateCreateError: true
-}
-
-const debugDefaults = {
-  prefix: 'Engine> ',
-  color:  'red',
 }
 
 const quoteChars = {
@@ -37,12 +32,7 @@ export class Engine {
     this.pool      = this.initPool(config.pool);
     this.quoteChar = quoteChars[this.driver||'default'] || quoteChars.default;
     this.escQuote  = `\\${this.quoteChar}`;
-    addDebug(
-      this,
-      config.debug,
-      config.debugPrefix || debugDefaults.prefix,
-      config.debugColor  || debugDefaults.color
-    );
+    addDebugMethod(this, 'engine', config.engine, config);
   }
   configure(config) {
     return config;

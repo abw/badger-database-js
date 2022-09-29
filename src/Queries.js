@@ -1,5 +1,5 @@
-import { addDebug } from "@abw/badger";
 import { fail } from "@abw/badger-utils";
+import { addDebugMethod } from "./Utils/Debug.js";
 
 const defaults = {
   maxExpansion: 16,
@@ -13,7 +13,7 @@ export class Queries {
     //this.fragments = schema.fragments || { };
     //this.queries = schema.queries || { };
     //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;
-    addDebug(this, config.debug, config.debugPrefix || 'Queries', config.debugColor);
+    addDebugMethod(this, 'queries', config);
   }
   query(name) {
     // if the name is a single word then it must be a named query, otherwise

@@ -4,7 +4,7 @@ import { defaultIdColumn } from '../Constants.js';
 
 export class MysqlEngine extends Engine {
   configure(config) {
-    config.debugPrefix ||= 'MysqlEngine> ';
+    config.engine.debugPrefix ||= 'MysqlEngine> ';
     return config;
   }
 
