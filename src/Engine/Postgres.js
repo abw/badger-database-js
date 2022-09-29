@@ -60,6 +60,14 @@ export class PostgresEngine extends Engine {
     let n = 1;
     return values.map(() => '$' + n++).join(', ');
   }
+  formatColumnPlaceholder(column, n) {
+    return `${this.quote(column)}=$${n}`;
+  }
+  formatColumnPlaceholders(columns, joint=', ', n=1) {
+    return columns.map(
+      column => this.formatColumnPlaceholder(column, n++)
+    ).join(joint);
+  }
   formatReturning(keys) {
     return ' RETURNING ' + keys.join(', ');
   }

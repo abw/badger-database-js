@@ -29,30 +29,35 @@ export class Table {
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
     this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );
     this.keys          = prepareKeys(schema);
-    this.id            = this.keys[0];
+    this.id            = schema.id;
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
     addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
-  async insert(data) {
+  checkColumns(data, cols=[], vals=[], test={}) {
     const table = this.table;
-    let cols = [ ];
-    let vals = [ ];
-    // first check that all the values supplied correspond to valid columns that are not readonly
+    // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
       column => {
         const spec = this.columns[column]
           || throwInsertValidationError('unknown', { column, table });
-        if (spec.readonly) {
+        if (test.writable && spec.readonly) {
           throwInsertValidationError('readonly', { column, table });
         }
         cols.push(spec.column);
         vals.push(data[column])
       }
     )
-    // now check that all required columns have been provided
+    return [cols, vals];
+  }
+  checkWritableColumns(data, cols=[], vals=[]) {
+    // check that all the values supplied correspond to valid columns that are not readonly
+    return this.checkColumns(data, cols, vals, { writable: true })
+  }
+  checkRequiredColumns(data) {
+    const table = this.table;
     this.required.forEach(
       column => {
         if (noValue(data[column])) {
@@ -60,7 +65,16 @@ export class Table {
         }
       }
     );
+  }
+  async insert(data) {
+    const [cols, vals] = this.checkWritableColumns(data);
+    this.checkRequiredColumns(data);
     return this.engine.insert(this.table, cols, vals, this.keys);
+  }
+  async update(data, where) {
+    const [dcols, dvals] = this.checkWritableColumns(data);
+    const [wcols, wvals] = this.checkColumns(where);
+    return this.engine.update(this.table, dcols, dvals, wcols, wvals);
   }
 
   query(name) {
@@ -139,7 +153,7 @@ export class Table {
         : select
     );
   }
-  update(set, where) {
+  OLDupdate(set, where) {
     return this.rowsProxy(
       this.knex().update(set).where(where).then(
         () => this.fetchRows(where)

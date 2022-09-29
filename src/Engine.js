@@ -22,7 +22,8 @@ const quoteChars = {
 };
 
 const queries = {
-  insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>'
+  insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
+  update: 'UPDATE <table> SET <set> WHERE <where>',
 }
 
 export class Engine {
@@ -133,11 +134,30 @@ export class Engine {
         part => this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
       .join('.');
   }
-  formatColumns(columns) {
-    return columns.join(', ');
+  quoteTableColumn(table, column) {
+    // if the column already has a dot then we quote it as is,
+    // otherwise we explicitly add the table name
+    return column.match(/\./)
+      ? this.quote(column)
+      : this.quote(`${table}.${column}`);
   }
   formatPlaceholders(values) {
-    return values.map(() => '?').join(', ');
+    return values.map(
+      () => '?'
+    ).join(', ');
+  }
+  formatColumnPlaceholder(column) {
+    return `${this.quote(column)}=?`;
+  }
+  formatColumnPlaceholders(columns, joint=', ') {
+    return columns.map(
+      column => this.formatColumnPlaceholder(column)
+    ).join(joint);
+  }
+  formatColumns(columns) {
+    return columns.map(
+      column => this.quote(column)
+    ).join(', ');
   }
   formatReturning() {
     return '';
@@ -151,7 +171,15 @@ export class Engine {
     const placeholders = this.formatPlaceholders(values);
     const returning    = this.formatReturning(keys);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
+    // console.log('insert: ', sql);
     return this.run(sql, ...values);
+  }
+  async update(table, datacols, datavals, wherecols, wherevals) {
+    const set   = this.formatColumnPlaceholders(datacols);
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1);
+    const sql   = format(queries.update, { table, set, where });
+    // console.log('update: ', sql);
+    return this.run(sql, ...datavals, ...wherevals);
   }
 
   //-----------------------------------------------------------------------------

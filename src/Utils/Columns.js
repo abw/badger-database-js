@@ -5,7 +5,7 @@ const defaultIdColumn = 'id';
 const bitSplitter = /:/;
 
 export const prepareColumns = (schema) => {
-  const columns = schema.columns;
+  const columns = schema.columns || { };
   if (isString(columns)) {
     return prepareColumnsString(columns, schema);
   }
@@ -82,7 +82,8 @@ export const prepareKeys = schema => {
     keys.unshift(schema.id);
   }
   else if (keys.length === 0) {
-    keys.unshift(defaultIdColumn);
+    schema.id = defaultIdColumn;
+    keys.unshift(schema.id);
   }
   return keys;
 }
