@@ -1,5 +1,6 @@
 import pg from 'pg';
 import Engine from '../Engine.js';
+import { defaultIdColumn } from '../Constants.js';
 
 export class PostgresEngine extends Engine {
   configure(config) {
@@ -28,31 +29,37 @@ export class PostgresEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async execute(sql, params) {
+  async execute(sql, params, options) {
     this.debug("execute() ", sql);
     const client = await this.acquire();
     const result = await client.query(sql, params);
     this.release(client);
-    return this.sanitizeResult(result);
+    return this.sanitizeResult(result, options);
   }
-  async run(sql, params) {
+  async run(sql, params, options) {
     return this
-      .execute(sql, params)
+      .execute(sql, params, options)
   }
-  async any(sql, params) {
+  async any(sql, params, options) {
     return this
-      .execute(sql, params)
+      .execute(sql, params, options)
       .then( ({rows}) => rows[0] );
   }
-  async all(sql, params) {
+  async all(sql, params, options) {
     return this
-      .execute(sql, params)
+      .execute(sql, params, options)
       .then( ({rows}) => rows );
   }
-  sanitizeResult(result) {
+  sanitizeResult(result, options={}) {
+    // console.log('sanitizeResult() result: ', result);
+    // console.log('sanitizeResult() options: ', options);
     result.changes ||= result.rowCount || 0;
     if (result.command === 'INSERT' && result.rows?.length) {
-      result.id = result.rows[0].id;
+      const keys = options.keys || [defaultIdColumn];
+      keys.forEach(
+        key => result[key] ||= result.rows[0][key]
+      )
+      result.id ||= result[keys[0]];
     }
     return result;
   }

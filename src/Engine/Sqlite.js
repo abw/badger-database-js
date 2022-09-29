@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import Engine from '../Engine.js';
 import { missing } from '../Utils/Error.js';
+import { defaultIdColumn } from '../Constants.js';
 
 export class SqliteEngine extends Engine {
   configure(config) {
@@ -36,17 +37,22 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, params=[]) {
-    return this.execute(sql, query => query.run(...params));
+  async run(sql, params=[], options) {
+    return this.execute(sql, query => query.run(...params), options);
   }
-  async any(sql, params=[]) {
-    return this.execute(sql, query => query.get(...params));
+  async any(sql, params=[], options) {
+    return this.execute(sql, query => query.get(...params), options);
   }
-  async all(sql, params=[]) {
-    return this.execute(sql, query => query.all(...params));
+  async all(sql, params=[], options) {
+    return this.execute(sql, query => query.all(...params), options);
   }
-  sanitizeResult(result) {
-    result.id ||= result.lastInsertRowid || null;
+  sanitizeResult(result, options={}) {
+    // console.log('sanitizeResult() result: ', result);
+    // console.log('sanitizeResult() options: ', options);
+    result.changes ||= result.rowCount || 0;
+    const keys = options.keys || [defaultIdColumn];
+    const id = keys[0];
+    result[id] = result.id = result.lastInsertRowid;
     return result;
   }
 }

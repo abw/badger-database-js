@@ -97,13 +97,13 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Generic query methods
   //-----------------------------------------------------------------------------
-  async execute(sql, action) {
+  async execute(sql, action, options) {
     this.debug("execute() ", sql);
     const connection = await this.acquire();
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
     this.release(connection);
-    return this.sanitizeResult(result);
+    return this.sanitizeResult(result, options);
   }
   async prepare(connection, sql) {
     this.debug("prepare() ", sql);
@@ -118,8 +118,8 @@ export class Engine {
   async all() {
     notImplemented('all()');
   }
-  async one(sql, params) {
-    const rows = await this.all(sql, params);
+  async one(sql, params, options) {
+    const rows = await this.all(sql, params, options);
     if (rows.length === 1) {
       return rows[0];
     }
@@ -175,7 +175,7 @@ export class Engine {
     const returning    = this.formatReturning(keys);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
     // console.log('insert: ', sql);
-    return this.run(sql, values);
+    return this.run(sql, values, { keys });
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
     const set   = this.formatColumnPlaceholders(datacols);

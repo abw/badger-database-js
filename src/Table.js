@@ -6,18 +6,7 @@ import Record from "./Record.js";
 import { addDebug } from "@abw/badger";
 import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
-import { ColumnValidationError, thrower } from "./Utils/Error.js";
-
-
-const throwColumnValidationError = thrower(
-  {
-    unknown:  'Unknown "<column>" column in the <table> table',
-    readonly: 'The "<column>" column is readonly in the <table> table',
-    required: 'Missing required column "<column>" for the <table> table',
-  },
-  ColumnValidationError
-)
-
+import { throwColumnValidationError } from "./Utils/Error.js";
 
 export class Table {
   constructor(database, schema) {
@@ -28,7 +17,7 @@ export class Table {
     this.columns       = prepareColumns(schema);
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
     this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );
-    this.keys          = prepareKeys(schema);
+    this.keys          = prepareKeys(schema, this.columns);
     this.id            = schema.id;
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
@@ -77,6 +66,8 @@ export class Table {
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     return this.engine.insert(this.table, cols, vals, this.keys);
+    // const result = await this.engine.insert(this.table, cols, vals, this.keys);
+    // ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
   }
   async update(data, where) {
     const [dcols, dvals] = this.checkWritableColumns(data);

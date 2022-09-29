@@ -1,11 +1,11 @@
 import { fail, isArray, isObject, isString, objMap, splitList } from "@abw/badger-utils";
-
-const defaultIdColumn = 'id';
-// const bitSplitter = /(:|,\s*|\s+)/;    // too much Neddery
-const bitSplitter = /:/;
+import { bitSplitter, defaultIdColumn } from "../Constants.js";
+import { throwColumnValidationError } from "./Error.js";
 
 export const prepareColumns = (schema) => {
-  const columns = schema.columns || { };
+  const columns = schema.columns
+    || throwColumnValidationError('noColumns', { table: schema.table });
+
   if (isString(columns)) {
     return prepareColumnsString(columns, schema);
   }
@@ -16,7 +16,7 @@ export const prepareColumns = (schema) => {
     return prepareColumnsHash(columns, schema);
   }
   else {
-    fail(`Invalid "columns" specified in ${schema.table} table: ${columns}`)
+    return throwColumnValidationError('invalidColumns', { table: schema.table, columns });
   }
 }
 
@@ -76,9 +76,20 @@ const prepareColumnBits = (name, bits, schema) => {
   );
 }
 
-export const prepareKeys = schema => {
-  let keys = splitList(schema.keys);
+export const prepareKeys = (schema, columns={}) => {
+  let keys  = splitList(schema.keys);
+  const ids = Object.keys(columns).filter( key => columns[key].id );
+  if (ids.length > 1) {
+    return throwColumnValidationError('multipleIds', { table: schema.table });
+  }
+  if (keys.length === 0) {
+    keys = Object.keys(columns).filter( key => columns[key].key );
+  }
   if (schema.id) {
+    keys.unshift(schema.id);
+  }
+  else if (ids.length) {
+    schema.id = ids[0];
     keys.unshift(schema.id);
   }
   else if (keys.length === 0) {

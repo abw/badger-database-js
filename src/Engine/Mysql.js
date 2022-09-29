@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import Engine from '../Engine.js';
+import { defaultIdColumn } from '../Constants.js';
 
 export class MysqlEngine extends Engine {
   configure(config) {
@@ -26,24 +27,29 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, params) {
+  async run(sql, params, options) {
     return this
-      .execute(sql, query => query.execute(params))
+      .execute(sql, query => query.execute(params), options)
       .then( ([result]) => result );
   }
-  async any(sql, params) {
+  async any(sql, params, options) {
     return this
-      .execute(sql, query => query.execute(params))
+      .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows[0] );
   }
-  async all(sql, params) {
+  async all(sql, params, options) {
     return this
-      .execute(sql, query => query.execute(params))
+      .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows );
   }
-  sanitizeResult(result) {
+  sanitizeResult(result, options={}) {
+    // console.log('sanitizeResult() result: ', result);
+    // console.log('sanitizeResult() options: ', options);
+    const keys = options.keys || [defaultIdColumn];
+    const id = keys[0];
     result[0].changes ||= result[0].affectedRows || 0;
     result[0].id      ||= result[0].insertId || null;
+    result[0][id]     ||= result[0].insertId || null;
     return result;
   }
 }
