@@ -101,7 +101,7 @@ test.serial(
     const mysql = new Mysql(config);
     const insert = await mysql.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      'Bobby Badger', 'bobby@badgerpower.com'
+      ['Bobby Badger', 'bobby@badgerpower.com']
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 1);
@@ -115,7 +115,7 @@ test.serial(
     const mysql = new Mysql(config);
     const insert = await mysql.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      'Brian Badger', 'brian@badgerpower.com'
+      ['Brian Badger', 'brian@badgerpower.com']
     );
     t.is(insert.changes, 1);
     await mysql.destroy();
@@ -128,7 +128,7 @@ test.serial(
     const mysql = new Mysql(config);
     const bobby = await mysql.any(
       'SELECT * FROM user WHERE email=?',
-      'bobby@badgerpower.com'
+      ['bobby@badgerpower.com']
     );
     t.is(bobby.name, 'Bobby Badger');
     await mysql.destroy();
@@ -154,7 +154,7 @@ test.serial(
     const mysql = new Mysql(config);
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
-      "bobby@badgerpower.com"
+      ['bobby@badgerpower.com']
     );
     t.is( row.name, 'Bobby Badger' );
     await mysql.destroy();
@@ -168,7 +168,7 @@ test.serial(
     const error = await t.throwsAsync(
       () => mysql.one(
         `SELECT id, name, email FROM user WHERE email=?`,
-        "bobby@badgerpower.co.uk"
+        ['bobby@badgerpower.co.uk']
       )
     );
     t.is( error instanceof UnexpectedRowCount, true )
@@ -201,7 +201,7 @@ test.serial(
     const mysql = await engineFactory({ engine: { ...engine, driver: 'mysql' } });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
-      "bobby@badgerpower.com"
+      ['bobby@badgerpower.com']
     );
     t.is( row.name, 'Bobby Badger' );
     await mysql.destroy();
@@ -214,7 +214,7 @@ test.serial(
     const mysql = await engineFactory({ engine: engineString });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
-      "bobby@badgerpower.com"
+      ['bobby@badgerpower.com']
     );
     t.is( row.name, 'Bobby Badger' );
     await mysql.destroy();

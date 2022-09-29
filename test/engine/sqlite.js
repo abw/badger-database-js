@@ -124,7 +124,7 @@ test.serial(
   async t => {
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      'Bobby Badger', 'bobby@badgerpower.com'
+      ['Bobby Badger', 'bobby@badgerpower.com']
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 1);
@@ -136,7 +136,7 @@ test.serial(
   async t => {
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      'Brian Badger', 'brian@badgerpower.com'
+      ['Brian Badger', 'brian@badgerpower.com']
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 2);
@@ -148,7 +148,7 @@ test.serial(
   async t => {
     const bobby = await sqlite.any(
       'SELECT * FROM user WHERE email=?',
-      'bobby@badgerpower.com'
+      ['bobby@badgerpower.com']
     );
     t.is(bobby.name, 'Bobby Badger');
   }
@@ -170,7 +170,7 @@ test.serial(
   async t => {
     const row = await sqlite.one(
       `SELECT id, name, email FROM user WHERE email=?`,
-      "bobby@badgerpower.com"
+      ['bobby@badgerpower.com']
     );
     t.is( row.name, 'Bobby Badger' );
   }
@@ -182,7 +182,7 @@ test.serial(
     const error = await t.throwsAsync(
       () => sqlite.one(
         `SELECT id, name, email FROM user WHERE email=?`,
-        "bobby@badgerpower.co.uk"
+        ['bobby@badgerpower.co.uk']
       )
     );
     t.is( error instanceof UnexpectedRowCount, true )

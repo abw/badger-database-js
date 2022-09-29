@@ -99,7 +99,7 @@ test.serial(
     const postgres = new Postgres(config);
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id',
-      'Bobby Badger', 'bobby@badgerpower.com'
+      ['Bobby Badger', 'bobby@badgerpower.com']
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 1);
@@ -113,7 +113,7 @@ test.serial(
     const postgres = new Postgres(config);
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2)',
-      'Brian Badger', 'brian@badgerpower.com'
+      ['Brian Badger', 'brian@badgerpower.com']
     );
     t.is(insert.changes, 1);
     await postgres.destroy();
@@ -126,7 +126,7 @@ test.serial(
     const postgres = new Postgres(config);
     const bobby = await postgres.any(
       'SELECT * FROM users WHERE email=$1',
-      'bobby@badgerpower.com'
+      ['bobby@badgerpower.com']
     );
     t.is(bobby.name, 'Bobby Badger');
     await postgres.destroy();
@@ -153,7 +153,7 @@ test.serial(
     const postgres = new Postgres(config);
     const row = await postgres.one(
       `SELECT id, name, email FROM users WHERE email=$1`,
-      "bobby@badgerpower.com"
+      ['bobby@badgerpower.com']
     );
     t.is( row.name, 'Bobby Badger' );
     await postgres.destroy();
@@ -167,7 +167,7 @@ test.serial(
     const error = await t.throwsAsync(
       () => postgres.one(
         `SELECT id, name, email FROM users WHERE email=$1`,
-        "bobby@badgerpower.co.uk"
+        ['bobby@badgerpower.co.uk']
       )
     );
     t.is( error instanceof UnexpectedRowCount, true )

@@ -32,17 +32,17 @@ export class Database {
   release(connection) {
     this.engine.release(connection);
   }
-  run(...params) {
-    return this.engine.run(...params)
+  run(query, params) {
+    return this.engine.run(query, params)
   }
-  any(...params) {
-    return this.engine.any(...params)
+  any(query, params) {
+    return this.engine.any(query, params)
   }
-  all(...params) {
-    return this.engine.all(...params)
+  all(query, params) {
+    return this.engine.all(query, params)
   }
-  one(...params) {
-    return this.engine.one(...params)
+  one(query, params) {
+    return this.engine.one(query, params)
   }
 
 

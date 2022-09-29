@@ -26,17 +26,17 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, ...params) {
+  async run(sql, params) {
     return this
       .execute(sql, query => query.execute(params))
       .then( ([result]) => result );
   }
-  async any(sql, ...params) {
+  async any(sql, params) {
     return this
       .execute(sql, query => query.execute(params))
       .then( ([rows]) => rows[0] );
   }
-  async all(sql, ...params) {
+  async all(sql, params) {
     return this
       .execute(sql, query => query.execute(params))
       .then( ([rows]) => rows );

@@ -36,13 +36,13 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, ...params) {
+  async run(sql, params=[]) {
     return this.execute(sql, query => query.run(...params));
   }
-  async any(sql, ...params) {
+  async any(sql, params=[]) {
     return this.execute(sql, query => query.get(...params));
   }
-  async all(sql, ...params) {
+  async all(sql, params=[]) {
     return this.execute(sql, query => query.all(...params));
   }
   sanitizeResult(result) {

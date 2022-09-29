@@ -118,8 +118,8 @@ export class Engine {
   async all() {
     notImplemented('all()');
   }
-  async one(sql, ...params) {
-    const rows = await this.all(sql, ...params);
+  async one(sql, params) {
+    const rows = await this.all(sql, params);
     if (rows.length === 1) {
       return rows[0];
     }
@@ -175,20 +175,20 @@ export class Engine {
     const returning    = this.formatReturning(keys);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
     // console.log('insert: ', sql);
-    return this.run(sql, ...values);
+    return this.run(sql, values);
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
     const set   = this.formatColumnPlaceholders(datacols);
     const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1);
     const sql   = format(queries.update, { table, set, where });
     // console.log('update: ', sql);
-    return this.run(sql, ...datavals, ...wherevals);
+    return this.run(sql, [...datavals, ...wherevals]);
   }
   async delete(table, wherecols, wherevals) {
     const where = this.formatColumnPlaceholders(wherecols, ' AND ');
     const sql   = format(queries.delete, { table, where });
     // console.log('delete: ', sql);
-    return this.run(sql, ...wherevals);
+    return this.run(sql, wherevals);
   }
   async select(table, wherecols, wherevals, options={}) {
     const columns = options.columns
@@ -197,7 +197,7 @@ export class Engine {
     const where = this.formatColumnPlaceholders(wherecols, ' AND ');
     const sql   = format(queries.select, { table, columns, where });
     console.log('select: ', sql);
-    return this.all(sql, ...wherevals);
+    return this.all(sql, wherevals);
   }
 
   //-----------------------------------------------------------------------------

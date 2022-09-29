@@ -35,16 +35,16 @@ export class PostgresEngine extends Engine {
     this.release(client);
     return this.sanitizeResult(result);
   }
-  async run(sql, ...params) {
+  async run(sql, params) {
     return this
       .execute(sql, params)
   }
-  async any(sql, ...params) {
+  async any(sql, params) {
     return this
       .execute(sql, params)
       .then( ({rows}) => rows[0] );
   }
-  async all(sql, ...params) {
+  async all(sql, params) {
     return this
       .execute(sql, params)
       .then( ({rows}) => rows );

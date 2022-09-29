@@ -30,7 +30,7 @@ test.serial(
   async t => {
     const insert = await db.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      'Bobby Badger', 'bobby@badgerpower.com'
+      ['Bobby Badger', 'bobby@badgerpower.com']
     );
     t.is(insert.changes, 1);
   }
@@ -41,7 +41,7 @@ test.serial(
   async t => {
     const bobby = await db.any(
       'SELECT * FROM user WHERE email=?',
-      'bobby@badgerpower.com'
+      ['bobby@badgerpower.com']
     );
     t.is(bobby.name, 'Bobby Badger');
   }
