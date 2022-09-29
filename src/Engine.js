@@ -2,6 +2,7 @@ import { Pool } from 'tarn';
 import { addDebug } from '@abw/badger';
 import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
 import { format } from './Utils/Format.js';
+import { splitList } from '@abw/badger-utils';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -25,6 +26,7 @@ const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
   update: 'UPDATE <table> SET <set> WHERE <where>',
   delete: 'DELETE FROM <table> WHERE <where>',
+  select: 'SELECT <columns> FROM <table> WHERE <where>',
 }
 
 export class Engine {
@@ -156,7 +158,7 @@ export class Engine {
     ).join(joint);
   }
   formatColumns(columns) {
-    return columns.map(
+    return splitList(columns).map(
       column => this.quote(column)
     ).join(', ');
   }
@@ -187,6 +189,15 @@ export class Engine {
     const sql   = format(queries.delete, { table, where });
     // console.log('delete: ', sql);
     return this.run(sql, ...wherevals);
+  }
+  async select(table, wherecols, wherevals, options={}) {
+    const columns = options.columns
+      ? this.formatColumns(options.columns)
+      : '*';
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
+    const sql   = format(queries.select, { table, columns, where });
+    console.log('select: ', sql);
+    return this.all(sql, ...wherevals);
   }
 
   //-----------------------------------------------------------------------------

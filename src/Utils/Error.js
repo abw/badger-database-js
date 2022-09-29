@@ -1,4 +1,4 @@
-import { fail, noValue } from "@abw/badger-utils"
+import { fail } from "@abw/badger-utils"
 import { format } from "./Format.js"
 
 //-----------------------------------------------------------------------------
@@ -36,25 +36,8 @@ export function unexpectedRowCount(n) {
   throw new UnexpectedRowCount(`${n} rows were returned when one was expected`)
 }
 
+export class ColumnValidationError extends CustomError { }
 export class InsertValidationError extends CustomError { }
-
-//export function insertValidationError(msg, data) {
-//  throw new InsertValidationError(formatMessage(msg, data))
-//}
-
-
-export const XXXformatMessage = (msg, data) =>
-  msg.replace(
-    /\$(?:{(\w+)}|(\w+))/g,
-    (_, key1, key2) => {
-      const key = key1 || key2;
-      const val = data[key];
-      if (noValue(val)) {
-        fail(`Invalid variable expansion "${key1?'${'+key1+'}':'$'+key2}" in message format: ${msg}`);
-      }
-      return val;
-    }
-  );
 
 export const thrower = (formats, error=Error) =>
   (fmt, data) => {

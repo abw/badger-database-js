@@ -4,18 +4,18 @@ import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
 // import Schema from "./Schema.js";
 import { addDebug } from "@abw/badger";
-import { fail, isArray, noValue } from "@abw/badger-utils";
+import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
-import { InsertValidationError, thrower } from "./Utils/Error.js";
+import { ColumnValidationError, thrower } from "./Utils/Error.js";
 
 
-const throwInsertValidationError = thrower(
+const throwColumnValidationError = thrower(
   {
-    unknown:  'Cannot insert unknown "<column>" column into <table> table',
-    readonly: 'Cannot insert "<column>" readonly column into <table> table',
-    required: 'Cannot insert into <table> table without required column "<column>"',
+    unknown:  'Unknown "<column>" column in the <table> table',
+    readonly: 'The "<column>" column is readonly in the <table> table',
+    required: 'Missing required column "<column>" for the <table> table',
   },
-  InsertValidationError
+  ColumnValidationError
 )
 
 
@@ -36,15 +36,22 @@ export class Table {
     this.rowsProxy     = rowsProxy(this);
     addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
+  checkColumnNames(names) {
+    const table = this.table;
+    splitList(names).forEach(
+      column => this.columns[column]
+          || throwColumnValidationError('unknown', { column, table })
+    )
+  }
   checkColumns(data, cols=[], vals=[], test={}) {
     const table = this.table;
     // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
       column => {
         const spec = this.columns[column]
-          || throwInsertValidationError('unknown', { column, table });
+          || throwColumnValidationError('unknown', { column, table });
         if (test.writable && spec.readonly) {
-          throwInsertValidationError('readonly', { column, table });
+          throwColumnValidationError('readonly', { column, table });
         }
         cols.push(spec.column);
         vals.push(data[column])
@@ -61,7 +68,7 @@ export class Table {
     this.required.forEach(
       column => {
         if (noValue(data[column])) {
-          throwInsertValidationError('required', { column, table });
+          throwColumnValidationError('required', { column, table });
         }
       }
     );
@@ -79,6 +86,13 @@ export class Table {
   async delete(where) {
     const [cols, vals] = this.checkColumns(where);
     return this.engine.delete(this.table, cols, vals);
+  }
+  async select(where, options={}) {
+    if (options.columns) {
+      this.checkColumnNames(options.columns);
+    }
+    const [wcols, wvals] = this.checkColumns(where);
+    return this.engine.select(this.table, wcols, wvals, options);
   }
 
   query(name) {
