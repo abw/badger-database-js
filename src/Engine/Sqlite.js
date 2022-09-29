@@ -54,7 +54,8 @@ export class SqliteEngine extends Engine {
     result.changes ||= result.rowCount || 0;
     const keys = options.keys || [defaultIdColumn];
     const id = keys[0];
-    result[id] = result.id = result.lastInsertRowid;
+    result[id] ||= result.lastInsertRowid;
+    result.id  ||= result.lastInsertRowid;
     return result;
   }
 }

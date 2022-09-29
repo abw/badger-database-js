@@ -31,22 +31,20 @@ export class Database {
   release(connection) {
     this.engine.release(connection);
   }
-  run(query, params) {
-    return this.engine.run(query, params)
-  }
-  any(query, params) {
-    return this.engine.any(query, params)
-  }
-  all(query, params) {
-    return this.engine.all(query, params)
-  }
-  one(query, params) {
-    return this.engine.one(query, params)
-  }
-
-
   query(name) {
-    return this.raw(this.queries.query(name));
+    return this.queries.query(name);
+  }
+  run(query, params, options) {
+    return this.engine.run(this.query(query), params, options)
+  }
+  any(query, params, options) {
+    return this.engine.any(this.query(query), params, options)
+  }
+  all(query, params, options) {
+    return this.engine.all(this.query(query), params, options)
+  }
+  one(query, params, options) {
+    return this.engine.one(this.query(query), params, options)
   }
   async table(name) {
     return this.state.table[name]
