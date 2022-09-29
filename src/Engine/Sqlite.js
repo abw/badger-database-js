@@ -46,9 +46,11 @@ export class SqliteEngine extends Engine {
   async all(sql, params=[], options) {
     return this.execute(sql, query => query.all(...params), options);
   }
+
+  //-----------------------------------------------------------------------------
+  // Query formatting
+  //-----------------------------------------------------------------------------
   sanitizeResult(result, options={}) {
-    // console.log('sanitizeResult() result: ', result);
-    // console.log('sanitizeResult() options: ', options);
     result.changes ||= result.rowCount || 0;
     const keys = options.keys || [defaultIdColumn];
     const id = keys[0];

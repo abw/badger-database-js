@@ -50,6 +50,10 @@ export class PostgresEngine extends Engine {
       .execute(sql, params, options)
       .then( ({rows}) => rows );
   }
+
+  //-----------------------------------------------------------------------------
+  // Query formatting
+  //-----------------------------------------------------------------------------
   sanitizeResult(result, options={}) {
     // console.log('sanitizeResult() result: ', result);
     // console.log('sanitizeResult() options: ', options);

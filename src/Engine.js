@@ -127,6 +127,43 @@ export class Engine {
       unexpectedRowCount(rows.length);
     }
   }
+  //-----------------------------------------------------------------------------
+  // Specific queries
+  //-----------------------------------------------------------------------------
+  async insert(table, colnames, values, keys) {
+    const columns      = this.formatColumns(colnames);
+    const placeholders = this.formatPlaceholders(values);
+    const returning    = this.formatReturning(keys);
+    const sql          = format(queries.insert, { table, columns, placeholders, returning});
+    this.debug('insert: ', sql);
+    return this.run(sql, values, { keys });
+  }
+  async update(table, datacols, datavals, wherecols, wherevals) {
+    const set   = this.formatColumnPlaceholders(datacols);
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1);
+    const sql   = format(queries.update, { table, set, where });
+    this.debug('update: ', sql);
+    return this.run(sql, [...datavals, ...wherevals]);
+  }
+  async delete(table, wherecols, wherevals) {
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
+    const sql   = format(queries.delete, { table, where });
+    this.debug('delete: ', sql);
+    return this.run(sql, wherevals);
+  }
+  async select(table, wherecols, wherevals, options={}) {
+    const columns = options.columns
+      ? this.formatColumns(options.columns)
+      : '*';
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
+    const sql   = format(queries.select, { table, columns, where });
+    this.debug('select: ', sql);
+    return this.all(sql, wherevals);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Query formatting
+  //-----------------------------------------------------------------------------
   sanitizeResult(result) {
     return result;
   }
@@ -166,39 +203,6 @@ export class Engine {
     return '';
   }
 
-  //-----------------------------------------------------------------------------
-  // Specific queries
-  //-----------------------------------------------------------------------------
-  async insert(table, colnames, values, keys) {
-    const columns      = this.formatColumns(colnames);
-    const placeholders = this.formatPlaceholders(values);
-    const returning    = this.formatReturning(keys);
-    const sql          = format(queries.insert, { table, columns, placeholders, returning});
-    // console.log('insert: ', sql);
-    return this.run(sql, values, { keys });
-  }
-  async update(table, datacols, datavals, wherecols, wherevals) {
-    const set   = this.formatColumnPlaceholders(datacols);
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1);
-    const sql   = format(queries.update, { table, set, where });
-    // console.log('update: ', sql);
-    return this.run(sql, [...datavals, ...wherevals]);
-  }
-  async delete(table, wherecols, wherevals) {
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
-    const sql   = format(queries.delete, { table, where });
-    // console.log('delete: ', sql);
-    return this.run(sql, wherevals);
-  }
-  async select(table, wherecols, wherevals, options={}) {
-    const columns = options.columns
-      ? this.formatColumns(options.columns)
-      : '*';
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
-    const sql   = format(queries.select, { table, columns, where });
-    console.log('select: ', sql);
-    return this.all(sql, wherevals);
-  }
 
   //-----------------------------------------------------------------------------
   // Cleanup

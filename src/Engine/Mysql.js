@@ -42,9 +42,11 @@ export class MysqlEngine extends Engine {
       .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows );
   }
+
+  //-----------------------------------------------------------------------------
+  // Query formatting
+  //-----------------------------------------------------------------------------
   sanitizeResult(result, options={}) {
-    // console.log('sanitizeResult() result: ', result);
-    // console.log('sanitizeResult() options: ', options);
     const keys = options.keys || [defaultIdColumn];
     const id = keys[0];
     result[0].changes ||= result[0].affectedRows || 0;
