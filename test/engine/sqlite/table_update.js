@@ -45,3 +45,18 @@ test.serial(
   }
 )
 
+test(
+  'table update',
+  async t => {
+    const users = await db.table('users');
+    const result = await users.update(
+      {
+        name:  'Roberto Badger',
+      },
+      {
+        email: 'bobby@badgerpower.com'
+      }
+    );
+    t.is( result.changes, 1 );
+  }
+)

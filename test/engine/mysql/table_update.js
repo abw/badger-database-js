@@ -1,13 +1,14 @@
 import test from 'ava';
 import { database } from '../../../src/Database.js';
+import { engine } from '../../library/mysql.js';
 
 let db;
 
 test.serial(
-  'connect',
+  'database',
   async t => {
     db = await database({
-      engine: 'sqlite:memory',
+      engine: engine,
       tables: {
         users: {
           columns: 'id:readonly name:required email:required'
@@ -19,18 +20,28 @@ test.serial(
 )
 
 test.serial(
+  'drop table',
+  async t => {
+    await db.run(
+      `DROP TABLE IF EXISTS users`
+    )
+    t.pass();
+  }
+)
+
+test.serial(
   'create table',
   async t => {
     await db.run(
       `CREATE TABLE users (
-        id INTEGER PRIMARY KEY ASC,
+        id SERIAL,
         name TEXT,
         email TEXT
       )`
     )
     t.pass();
   }
-)
+);
 
 test.serial(
   'table insert',
@@ -45,3 +56,26 @@ test.serial(
   }
 )
 
+test.serial(
+  'table update',
+  async t => {
+    const users = await db.table('users');
+    const result = await users.update(
+      {
+        name:  'Roberto Badger',
+      },
+      {
+        email: 'bobby@badgerpower.com'
+      }
+    );
+    t.is( result.changes, 1 );
+  }
+)
+
+test.serial(
+  'destroy',
+  t => {
+    db.destroy();
+    t.pass();
+  }
+)
