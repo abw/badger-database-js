@@ -4,8 +4,7 @@ import Table from './Table.js';
 import Tables from './Tables.js';
 import Queries from './Queries.js';
 import { engine } from './Engines.js';
-import { fail } from '@abw/badger-utils';
-import { missing } from './Utils/Error.js';
+import { invalid, missing } from './Utils/Error.js';
 
 const defaults = {
   tablesClass: Tables
@@ -57,7 +56,7 @@ export class Database {
     return this.tables.table(name);
   }
   initTable(name) {
-    const schema = this.hasTable(name) || fail("Invalid table specified: " + name);
+    const schema = this.hasTable(name) || invalid('table', name);
     const tclass = schema.tableClass   || Table;
     const topts  = schema.tableOptions || { };
     schema.table ||= name;

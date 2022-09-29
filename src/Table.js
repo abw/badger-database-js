@@ -25,6 +25,10 @@ export class Table {
     this.rowsProxy     = rowsProxy(this);
     addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
   }
+
+  //-----------------------------------------------------------------------------
+  // Column validation
+  //-----------------------------------------------------------------------------
   checkColumnNames(names) {
     const table = this.table;
     splitList(names).forEach(
@@ -62,6 +66,10 @@ export class Table {
       }
     );
   }
+
+  //-----------------------------------------------------------------------------
+  // Basic queries
+  //-----------------------------------------------------------------------------
   async insert(data) {
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
@@ -86,6 +94,9 @@ export class Table {
     return this.engine.select(this.table, wcols, wvals, options);
   }
 
+  //-----------------------------------------------------------------------------
+  // Old Knex-based code - TODO
+  //-----------------------------------------------------------------------------
   query(name) {
     return this.raw(this.schema.query(name));
   }

@@ -22,7 +22,6 @@ export const notImplementedInBaseClass = module =>
 //-----------------------------------------------------------------------------
 // Custom error classes
 //-----------------------------------------------------------------------------
-
 export class CustomError extends Error {
   constructor(message) {
     super(message);
@@ -31,13 +30,13 @@ export class CustomError extends Error {
 }
 
 export class UnexpectedRowCount extends CustomError { }
+export class ColumnValidationError extends CustomError { }
+export class InsertValidationError extends CustomError { }
 
 export function unexpectedRowCount(n) {
   throw new UnexpectedRowCount(`${n} rows were returned when one was expected`)
 }
 
-export class ColumnValidationError extends CustomError { }
-export class InsertValidationError extends CustomError { }
 
 export const thrower = (formats, error=Error) =>
   (fmt, data) => {

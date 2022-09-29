@@ -1,5 +1,6 @@
 import { hasValue, isString, remove } from "@abw/badger-utils";
 import { invalid, missing } from "./Utils/Error.js";
+import { engineAliases, engineStringElements, engineStringRegex } from "./Constants.js";
 
 let Engines = { };
 
@@ -32,12 +33,6 @@ export const engine = async config => {
 // engineConfig(string)
 // engineConfig({ driver: xxx, ... })
 //-----------------------------------------------------------------------------
-const engineAliases = {
-  username: 'user',
-  pass:     'password',
-  hostname: 'host',
-  file:     'filename',
-};
 export const engineConfig = config => {
   let engine = config.engine || missing('engine');
 
@@ -72,16 +67,6 @@ export const engineConfig = config => {
 // parseEngineString('driver://user:password@host:port/database')
 //                    1^^^^^   2^^^ 3^^^^^^^ 4^^^ 5^^^ 6^^^^^^^
 //-----------------------------------------------------------------------------
-const engineStringRegex = /^(\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
-const engineStringElements = {
-  driver:   1,
-  user:     2,
-  password: 3,
-  host:     4,
-  port:     5,
-  database: 6,
-};
-
 export const parseEngineString = string => {
   let config = { };
   let match;
