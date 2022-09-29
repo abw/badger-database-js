@@ -1,5 +1,5 @@
 import test from 'ava';
-import { notImplemented, notImplementedInBaseClass, notImplementedInModule } from '../../src/Utils.js';
+import { notImplemented, notImplementedInBaseClass, notImplementedInModule } from '../../src/Utils/Error.js';
 
 test(
   'notImplemented()',

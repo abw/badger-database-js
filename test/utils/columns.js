@@ -5,8 +5,7 @@ test(
   'string of columns',
   t => {
     const columns = prepareColumns(
-      'id name email',
-      { table: 'users' }
+      { columns: 'id name email', table: 'users' }
     );
     t.deepEqual(
       Object.keys(columns),
@@ -25,8 +24,10 @@ test(
   'array of columns',
   t => {
     const columns = prepareColumns(
-      ['id', 'name', 'email'],
-      { table: 'users' }
+      {
+        table: 'users',
+        columns: ['id', 'name', 'email'],
+      }
     )
     t.deepEqual(
       Object.keys(columns),
@@ -46,11 +47,13 @@ test(
   t => {
     const columns = prepareColumns(
       {
-        id:     { column: 'user_id', readonly: true },
-        name:   { },
-        email:  { }
-      },
-      { table: 'users' }
+        table: 'users',
+        columns: {
+          id:     { column: 'user_id', readonly: true },
+          name:   { },
+          email:  { }
+        },
+      }
     )
     t.deepEqual(
       Object.keys(columns),
@@ -71,11 +74,13 @@ test(
   t => {
     const columns = prepareColumns(
       {
-        id:     "readonly",
-        name:   "type=text:required",
-        email:  "type=text:required"
-      },
-      { table: 'users' }
+        table: 'users',
+        columns: {
+          id:     "readonly",
+          name:   "type=text:required",
+          email:  "type=text:required"
+        },
+      }
     )
     t.deepEqual(
       Object.keys(columns),
@@ -99,8 +104,10 @@ test(
   'string of columns with modifiers',
   t => {
     const columns = prepareColumns(
-      'id:readonly name:type=text:required',
-      { table: 'users' }
+      {
+        table: 'users',
+        columns: 'id:readonly name:type=text:required',
+      }
     )
     t.deepEqual(
       Object.keys(columns),
