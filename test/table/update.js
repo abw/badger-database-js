@@ -1,57 +1,77 @@
 import test from 'ava';
-import { createUsers, usersWithCustomRecord, databaseWithCustomRecord } from '../library/users.js'
+import { database } from '../../src/Database.js';
 
-const database = databaseWithCustomRecord;
-const users = usersWithCustomRecord;
+let db;
+const dbConfig = {
+  engine: 'sqlite:memory',
+  tables: {
+    users: {
+      columns: 'id forename surname email animal',
+      table:   'user',
+      queries: {
+        create: `
+          CREATE TABLE user (
+            id        INTEGER PRIMARY KEY ASC,
+            forename  TEXT,
+            surname   TEXT,
+            email     TEXT,
+            animal    TEXT
+          )`
+      }
+    },
+  }
+}
 
 test.before(
+  'connect to database',
   async t => {
-    await createUsers(database);
-    t.pass("created users table")
+    db = await database(dbConfig);
+    t.pass()
   }
 );
 
 test.serial(
-  'update()',
+  'create users table',
   async t => {
-    const badgers = await users.update({ forename: 'Roberto' }, { email: 'bobby@badgerpower.com' });
-    t.is( badgers.length, 1 );
-    t.is( badgers[0].forename, 'Roberto' );
-    const badger = await users.fetchRow({ email: 'bobby@badgerpower.com' });
-    t.is( badger.forename, 'Roberto' );
+    const users = await db.table('users');
+    t.is(users.table, 'user');
+    const create = await users.run('create');
+    t.is(create.changes, 0);
+  }
+)
+
+
+test.serial(
+  'insert({ ...Frank Ferret... })',
+  async t => {
+    const users = await db.table('users');
+    const insert = await users.insert({
+      forename: 'Frank',
+      surname:  'Ferret',
+      email:    'frank@ferret.com'
+    });
+    t.is(insert.id, 1);
+    const rows = await users.select({ id: insert.id })
+    const ferret = rows[0];
+    t.is(ferret.forename, 'Frank');
+    t.is(ferret.surname, 'Ferret');
+    t.is(ferret.id, 1);
   }
 )
 
 test.serial(
-  'update() many',
+  'update({ ...Frankie Ferret... })',
   async t => {
-    const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' });
-    t.is(badgers.length, 2)
-    t.is( badgers[0].forename, 'Roberto' );
-    t.is( badgers[0].is_admin, 1 );
-    t.is( badgers[1].forename, 'Brian' );
-    t.is( badgers[1].is_admin, 1 );
-
-    const badgers2 = await users.fetchRows({ surname: 'Badger' });
-    t.is(badgers2.length, 2)
-    t.is( badgers2[0].forename, 'Roberto' );
-    t.is( badgers2[0].is_admin, 1 );
-    t.is( badgers2[1].forename, 'Brian' );
-    t.is( badgers2[1].is_admin, 1 );
-  }
-)
-
-test.serial(
-  'update() many records',
-  async t => {
-    const badgers = await users.update({ is_admin: 1 }, { surname: 'Badger' }).records();
-    t.is(badgers.length, 2)
-    t.is( badgers[0].forename, 'Roberto' );
-    t.is( badgers[0].is_admin, 1 );
-    t.is( badgers[0].hello(), 'Hello Roberto Badger' );
-    t.is( badgers[1].forename, 'Brian' );
-    t.is( badgers[1].is_admin, 1 );
-    t.is( badgers[1].hello(), 'Hello Brian Badger' );
+    const users = await db.table('users');
+    const update = await users.update(
+      { forename: 'Frankie' },
+      { email:    'frank@ferret.com' }
+    );
+    t.is(update.changes, 1);
+    const rows = await users.select({ email: 'frank@ferret.com' })
+    const frankie = rows[0];
+    t.is(frankie.forename, 'Frankie');
+    t.is(frankie.surname, 'Ferret');
   }
 )
 
@@ -59,5 +79,5 @@ test.serial(
 // Cleanup
 //-----------------------------------------------------------------------------
 test.after(
-  () => database.destroy()
+  () => db.destroy()
 )
