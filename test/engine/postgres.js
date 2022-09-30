@@ -70,7 +70,8 @@ test.serial(
   async t => {
     const postgres = new Postgres(config);
     const drop = await postgres.run(
-      `DROP TABLE IF EXISTS users`
+      `DROP TABLE IF EXISTS users`,
+      { sanitizeResult: true }
     )
     t.is( drop.changes, 0 );
     await postgres.destroy();
@@ -86,7 +87,8 @@ test.serial(
         id SERIAL,
         name TEXT,
         email TEXT
-      )`
+      )`,
+      { sanitizeResult: true }
     )
     t.is( create.changes, 0 );
     await postgres.destroy();
@@ -99,7 +101,8 @@ test.serial(
     const postgres = new Postgres(config);
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id',
-      ['Bobby Badger', 'bobby@badgerpower.com']
+      ['Bobby Badger', 'bobby@badgerpower.com'],
+      { sanitizeResult: true }
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 1);
@@ -113,7 +116,8 @@ test.serial(
     const postgres = new Postgres(config);
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2)',
-      ['Brian Badger', 'brian@badgerpower.com']
+      ['Brian Badger', 'brian@badgerpower.com'],
+      { sanitizeResult: true }
     );
     t.is(insert.changes, 1);
     await postgres.destroy();

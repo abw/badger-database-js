@@ -123,15 +123,16 @@ We'll see in later examples using `tables` how the badger-database library
 automatically standardises this response so that you always get back `changes`
 and `id` (or whatever your id column is called) regardless of the database
 engine.  But if you really can't wait until then, the trick is to pass a third
-argument to the `run()` method as an object containing the `insert` flag.
-Then you will always get back `changes` and `id` for all database engines.
+argument to the `run()` method as an object containing the `sanitizeResult`
+key set to a `true` value.  Then you will always get back `changes` and `id`
+for all database engines.
 
 ```js
 // insert a row
 const insert = await db.run(
   'INSERT INTO users (name, email) VALUES (?, ?)',
   ['Bobby Badger', 'bobby@badgerpower.com'],
-  { insert: true }
+  { sanitizeResult: true }
 );
 console.log("Rows changed:", insert.changes);
 console.log("Inserted ID:", insert.id);

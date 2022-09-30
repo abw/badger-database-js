@@ -28,6 +28,7 @@ export class MysqlEngine extends Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async run(sql, params, options) {
+    [params, options] = this.optionalParams(params, options);
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([result]) => result );

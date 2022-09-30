@@ -83,7 +83,7 @@ test.serial(
 test.serial(
   'insert artist with insert option',
   async t => {
-    const insert = await db.run('insertArtist', ['Genesis'], { insert: true });
+    const insert = await db.run('insertArtist', ['Genesis'], { sanitizeResult: true });
     t.is(insert.changes, 1);
     t.is(insert.id, 2);
   }

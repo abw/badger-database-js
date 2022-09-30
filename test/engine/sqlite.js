@@ -113,7 +113,8 @@ test.serial(
         id INTEGER PRIMARY KEY ASC,
         name TEXT,
         email TEXT
-      )`
+      )`,
+      { sanitizeResult: true }
     )
     t.is(create.changes, 0);
   }
@@ -124,9 +125,11 @@ test.serial(
   async t => {
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      ['Bobby Badger', 'bobby@badgerpower.com']
+      ['Bobby Badger', 'bobby@badgerpower.com'],
+      { sanitizeResult: true }
     );
     t.is(insert.changes, 1);
+    t.is(insert.id, 1);
     t.is(insert.lastInsertRowid, 1);
   }
 )
@@ -137,7 +140,7 @@ test.serial(
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       ['Brian Badger', 'brian@badgerpower.com'],
-      { insert: true }
+      { sanitizeResult: true }
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 2);

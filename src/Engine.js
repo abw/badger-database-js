@@ -1,7 +1,7 @@
 import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
 import { format } from './Utils/Format.js';
-import { splitList } from '@abw/badger-utils';
+import { isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
@@ -93,13 +93,20 @@ export class Engine {
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
     this.release(connection);
-    return options.insert
+    return options.sanitizeResult
       ? this.sanitizeResult(result, options)
       : result;
   }
   async prepare(connection, sql) {
     this.debug("prepare() ", sql);
     return connection.prepare(sql);
+  }
+  optionalParams(params, options) {
+    if (isObject(params)) {
+      options = params;
+      params = [ ];
+    }
+    return [params, options];
   }
   async run() {
     notImplemented('run()');
@@ -128,20 +135,20 @@ export class Engine {
     const returning    = this.formatReturning(keys);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
     this.debug('insert: ', sql);
-    return this.run(sql, values, { keys, insert: true });
+    return this.run(sql, values, { keys, sanitizeResult: true });
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
     const set   = this.formatColumnPlaceholders(datacols);
     const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1);
     const sql   = format(queries.update, { table, set, where });
     this.debug('update: ', sql);
-    return this.run(sql, [...datavals, ...wherevals]);
+    return this.run(sql, [...datavals, ...wherevals], { sanitizeResult: true });
   }
   async delete(table, wherecols, wherevals) {
     const where = this.formatColumnPlaceholders(wherecols, ' AND ');
     const sql   = format(queries.delete, { table, where });
     this.debug('delete: ', sql);
-    return this.run(sql, wherevals);
+    return this.run(sql, wherevals, { sanitizeResult: true });
   }
   async select(table, wherecols, wherevals, options={}) {
     const columns = options.columns

@@ -72,7 +72,8 @@ test.serial(
   async t => {
     const mysql = new Mysql(config);
     const drop = await mysql.run(
-      `DROP TABLE IF EXISTS user`
+      `DROP TABLE IF EXISTS user`,
+      { sanitizeResult: true }
     )
     t.is( drop.changes, 0 );
     await mysql.destroy();
@@ -88,7 +89,8 @@ test.serial(
         id SERIAL,
         name TEXT,
         email TEXT
-      )`
+      )`,
+      { sanitizeResult: true }
     )
     t.is( create.changes, 0 );
     await mysql.destroy();
@@ -101,7 +103,8 @@ test.serial(
     const mysql = new Mysql(config);
     const insert = await mysql.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      ['Bobby Badger', 'bobby@badgerpower.com']
+      ['Bobby Badger', 'bobby@badgerpower.com'],
+      { sanitizeResult: true }
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 1);
@@ -115,7 +118,8 @@ test.serial(
     const mysql = new Mysql(config);
     const insert = await mysql.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      ['Brian Badger', 'brian@badgerpower.com']
+      ['Brian Badger', 'brian@badgerpower.com'],
+      { sanitizeResult: true }
     );
     t.is(insert.changes, 1);
     await mysql.destroy();
