@@ -12,7 +12,7 @@ export class MockDatabase {
   raw(...args) {
     return "[RAW:" + args.join(':') + "]";
   }
-  escape(name) {
+  quote(name) {
     return name
       .split(/\./)
       .map( part => '"' + part + '"')

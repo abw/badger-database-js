@@ -127,7 +127,7 @@ test.serial(
       ['Bobby Badger', 'bobby@badgerpower.com']
     );
     t.is(insert.changes, 1);
-    t.is(insert.id, 1);
+    t.is(insert.lastInsertRowid, 1);
   }
 )
 
@@ -136,7 +136,8 @@ test.serial(
   async t => {
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
-      ['Brian Badger', 'brian@badgerpower.com']
+      ['Brian Badger', 'brian@badgerpower.com'],
+      { insert: true }
     );
     t.is(insert.changes, 1);
     t.is(insert.id, 2);

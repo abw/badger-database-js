@@ -2,11 +2,12 @@ import recordProxy from "./Proxy/Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
+import Queries from "./Queries.js";
 // import Schema from "./Schema.js";
-import { addDebug } from "@abw/badger";
 import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError } from "./Utils/Error.js";
+import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Table {
   constructor(database, schema) {
@@ -23,7 +24,18 @@ export class Table {
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
-    addDebug(this, schema.debug, schema.debugPrefix || `<${this.table}> table: `, schema.debugColor);
+    this.fragments     = this.prepareFragments(schema);
+    this.queries       = new Queries({ ...schema, debugPrefix: `Queries ${this.table}> ` });
+    addDebugMethod(this, 'table', { debugPrefix: `Table ${this.table}> ` }, schema);
+  }
+  prepareFragments(schema) {
+    const quote       = this.database.quote.bind(this.database);
+    const fragments   = schema.fragments ||= { };
+    fragments.table   = quote(this.table);
+    fragments.columns = Object.values(this.columns).map(
+      spec => quote(spec.tableColumn)
+    ).join(', ');
+    return fragments;
   }
 
   //-----------------------------------------------------------------------------
@@ -68,9 +80,30 @@ export class Table {
   }
 
   //-----------------------------------------------------------------------------
+  // Engine methods
+  //-----------------------------------------------------------------------------
+  query(name) {
+    return this.queries.query(name);
+  }
+  run(query, params, options) {
+    return this.engine.run(this.query(query), params, options)
+  }
+  any(query, params, options) {
+    return this.engine.any(this.query(query), params, options)
+  }
+  all(query, params, options) {
+    return this.engine.all(this.query(query), params, options)
+  }
+  one(query, params, options) {
+    return this.engine.one(this.query(query), params, options)
+  }
+
+
+  //-----------------------------------------------------------------------------
   // Basic queries
   //-----------------------------------------------------------------------------
   async insert(data) {
+    this.debug("insert: ", data);
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     return this.engine.insert(this.table, cols, vals, this.keys);
@@ -78,15 +111,18 @@ export class Table {
     // ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
   }
   async update(data, where) {
+    this.debug("update: ", data, where);
     const [dcols, dvals] = this.checkWritableColumns(data);
     const [wcols, wvals] = this.checkColumns(where);
     return this.engine.update(this.table, dcols, dvals, wcols, wvals);
   }
   async delete(where) {
+    this.debug("delete: ", where);
     const [cols, vals] = this.checkColumns(where);
     return this.engine.delete(this.table, cols, vals);
   }
   async select(where, options={}) {
+    this.debug("select: ", where, options);
     if (options.columns) {
       this.checkColumnNames(options.columns);
     }
@@ -97,9 +133,6 @@ export class Table {
   //-----------------------------------------------------------------------------
   // Old Knex-based code - TODO
   //-----------------------------------------------------------------------------
-  query(name) {
-    return this.raw(this.schema.query(name));
-  }
   OLDinsert(data) {
     return isArray(data)
       ? this.insertRows(data)

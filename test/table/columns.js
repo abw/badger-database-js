@@ -208,3 +208,49 @@ test(
     await db.destroy();
   }
 )
+
+test(
+  'users table with expanded columns',
+  async t => {
+    const db = await database({
+      engine: 'sqlite:memory',
+      tables: {
+        users: {
+          columns: {
+            user_id: "readonly:key",
+            another_id: {
+              readonly: true,
+              key: true
+            },
+            name: "required",
+            email: {
+              required: true
+            },
+            optional: '',
+          }
+        },
+      }
+    })
+    const users = await db.table('users');
+    t.deepEqual(
+      Object.keys(users.columns),
+      ['user_id', 'another_id', 'name', 'email', 'optional']
+    )
+    t.deepEqual(
+      users.readonly,
+      ['user_id', 'another_id']
+    )
+    t.deepEqual(
+      users.required,
+      ['name', 'email']
+    )
+    t.deepEqual(
+      users.keys,
+      ['user_id', 'another_id']
+    )
+    t.is(
+      users.id, undefined
+    )
+    await db.destroy();
+  }
+)

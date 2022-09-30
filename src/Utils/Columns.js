@@ -39,7 +39,7 @@ const prepareColumnsArray = (columns, schema) => {
       index[name] = prepareColumnBits(name, bits, schema);
     }
   )
-  return index;
+  return prepareColumnsHash(index, schema);
 }
 
 const prepareColumnsHash = (columns, schema) => {

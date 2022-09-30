@@ -17,6 +17,11 @@ export let debug = {
     prefix: 'Queries> ',
     color:  'blue',
   },
+  table: {
+    debug:  false,
+    prefix: 'Table> ',
+    color:  'yellow',
+  },
   test: {
     debug:  false,
     prefix: 'Test> ',
