@@ -59,7 +59,12 @@ Similarly, every entity type can have its own record module where you can
 add methods for performing operations on an individual entity instance.  This
 is a lightweight variant of the Active Record pattern.
 
-## Examples of Use
+## Examples
+
+In these examples we'll look at some of the basic functionality of the
+library using a database of users.
+
+### Basic Queries
 
 This first example shows how to connect to a database, create a table,
 insert a row and then fetch it out again.
@@ -79,8 +84,8 @@ async function main() {
   // create a table
   await db.run(
     `CREATE TABLE users (
-      id INTEGER PRIMARY KEY ASC,
-      name TEXT,
+      id    INTEGER PRIMARY KEY ASC,
+      name  TEXT,
       email TEXT
     )`
   );
@@ -88,14 +93,14 @@ async function main() {
   // insert a row
   const insert = await db.run(
     'INSERT INTO users (name, email) VALUES (?, ?)',
-    'Bobby Badger', 'bobby@badgerpower.com'
+    ['Bobby Badger', 'bobby@badgerpower.com']
   );
-  console.log("Inserted ID:", insert.id);
+  console.log("Inserted ID:", insert.lastInsertRowid);
 
   // fetch a row
   const bobby = await db.one(
     'SELECT * FROM users WHERE email=?',
-    'bobby@badgerpower.com'
+    ['bobby@badgerpower.com']
   );
   console.log("Fetched row:", bobby);
 }
@@ -103,38 +108,312 @@ async function main() {
 main()
 ```
 
-Building on that, this second example adds a definition for the `user`
-table so that we can benefit from the automatically generated queries
-to insert, fetch, update and delete rows.
+The `run()` method is used to execute a query where we're not expecting
+to return any rows from the database.  We do, however, get back some data
+include the number of rows changed, and in the case of `INSERT` queries, the
+generated id for the record.
+
+Different database engines return different values here.  For Sqlite it's
+`changes` for the number of rows affected and `lastInsertRowid` for the id
+of the insert row.  For Mysql it's `affectedRows` and `insertId`.  For
+Postgres it's `rowCount` and if you want to get the id then you must add
+`RETURNING id` to the end of the query.
+
+We'll see in later examples using `tables` how the badger-database library
+automatically standardises this response so that you always get back `changes`
+and `id` (or whatever your id column is called) regardless of the database
+engine.  But if you really can't wait until then, the trick is to pass a third
+argument to the `run()` method as an object containing the `insert` flag.
+Then you will always get back `changes` and `id` for all database engines.
+
+```js
+// insert a row
+const insert = await db.run(
+  'INSERT INTO users (name, email) VALUES (?, ?)',
+  ['Bobby Badger', 'bobby@badgerpower.com'],
+  { insert: true }
+);
+console.log("Rows changed:", insert.changes);
+console.log("Inserted ID:", insert.id);
+```
+
+The `one()` method is used when we're expecting to get *exactly* one row
+returned.  It will throw an exception if no rows, or more than one row
+is returned.  The `any()` method can be used if you want to get one row
+which might not exist.  The `all()` method can be used to return multiple
+rows.
+
+### Named Queries
+
+Instead of embedding SQL queries directly into our code, we can
+define them as named queries.  This allows us to hide away some of the
+details of the database implemenentation so that our application code
+can be simpler and clearer.
+
+To keep things simple, we'll demonstrate this with all the code in
+one file, which isn't really hiding anything at all.  In practice,
+you would usually move the database definition into a separate module.
 
 ```js
 import database from '@abw/badger-database'
 
+const dbConfig = {
+  engine: 'sqlite:test.db',
+  queries: {
+    createUserTable:`
+      CREATE TABLE users (
+      id INTEGER PRIMARY KEY ASC,
+      name TEXT,
+      email TEXT
+    )`,
+    insertUser:
+      'INSERT INTO users (name, email) VALUES (?, ?)',
+    selectUserByEmail:
+      'SELECT * FROM users WHERE email=?'
+  }
+};
+
 async function main() {
-  // connect to same Sqlite database from previous example
-  const db = await database({
-    engine: 'sqlite:test.db',
-    tables: {
-      users: {
-        columns: 'id name email'
-      }
-    }
-  });
+  // connect to a Sqlite database
+  const db = await database(dbConfig);
 
-  // insert a row
+  // create a table using a named query
+  await db.run('createUserTable');
+
+  // insert a row using a named query
   const insert = await db.run(
-    'INSERT INTO user (name, email) VALUES (?, ?)',
-    'Bobby Badger', 'bobby@badgerpower.com'
+    'insertUser',
+    ['Bobby Badger', 'bobby@badgerpower.com']
   );
-  console.log("Inserted ID:", insert.id);
+  console.log("Inserted ID:", insert.lastInsertRowid);
 
-  // fetch a row
+  // fetch a row using a named query
   const bobby = await db.one(
-    'SELECT * FROM user WHERE email=?',
-    'bobby@badgerpower.com'
+    'selectUserByEmail',
+    ['bobby@badgerpower.com']
   );
   console.log("Fetched row:", bobby);
 }
 
 main()
+```
+
+### Query Fragments
+
+We might want to define a number of different queries for fetching user
+rows using different search terms, for example.
+
+```js
+const dbConfig = {
+  engine: 'sqlite:test.db',
+  queries: {
+    selectUserByEmail:
+      'SELECT * FROM users WHERE email=?',
+    selectUserByName:
+      'SELECT * FROM users WHERE name=?'
+  }
+};
+```
+
+To avoid repetition, we can define named SQL `fragments` that can be embedded
+into other queries.  Named fragments can be embedded into queries inside angle
+brackets, e.g. `<fragmentName>`.
+
+```js
+const dbConfig = {
+  engine: 'sqlite:test.db',
+  fragments: {
+    selectUser:
+      'SELECT * FROM users'
+  },
+  queries: {
+    selectUserByEmail:
+      '<selectUser> WHERE email=?',
+    selectUserByName:
+      '<selectUser> WHERE name=?'
+  }
+};
+```
+
+Fragments can reference other fragments.  This can be useful when you're building
+more complex queries.
+
+```js
+const dbConfig = {
+  engine: 'sqlite:test.db',
+  fragments: {
+    selectUserCompany:
+      'SELECT users.*, companies.* FROM users',
+    joinUserCompany:
+      'JOIN companies on users.company_id=companies.id',
+    selectEmployee:
+      '<selectUserCompany> <joinUserCompany>',
+  },
+  queries: {
+    selectEmployeeByEmail:
+      '<selectEmployee> WHERE email=?',
+    selectEmployeeByName:
+      '<selectEmployee> WHERE name=?'
+  }
+};
+```
+
+You can also embed fragments into ad-hoc queries passed to the
+`run()`, `one()`, `any()` and `all()` methods.
+
+```js
+const badgers = await db.all(
+  '<selectEmployee> WHERE companies.name=?',
+  ['Badgers Inc.']
+);
+```
+
+### Table Definitions
+
+It can quickly get tedious if you've got to write lots of different
+queries for trivial operations like inserting, updating, selecting
+and deleting rows.
+
+In this example we introduce the concept of `tables`.  This allows you
+to specify the columns in each table and use higher level methods to
+automatically insert, update, select and delete rows from the table.
+
+Note that we're using the same database from the previous examples
+and assuming that the `users` table has already been created.
+
+```js
+// define the users table and the columns it contains
+const db = await database({
+  engine: 'sqlite:test.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+    }
+  }
+});
+
+// fetch the users table
+const users = await db.table('users');
+
+// insert a record
+await users.insert({
+  // INSERT INTO users...
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+
+// update a record
+await users.update(
+  { // UPDATE users SET...
+    name: 'Brian "The Brains" Badger',
+  },
+  { // WHERE...
+    email: 'brian@badgerpower.com'
+  }
+);
+
+// select a record
+const brian = await users.select({
+  // SELECT * FROM users WHERE...
+  email: 'brian@badgerpower.com'
+});
+
+// delete a record
+await users.select({
+  // DELETE FROM users WHERE...
+  email: 'brian@badgerpower.com'
+});
+```
+
+For simple cases you can define the table columns using a whitespace
+delimited string, as show in the previous example.
+
+```js
+const db = await database({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: 'id name email'
+    }
+  }
+});
+```
+
+You can add flags to the column names.  These include `required` to indicate
+that a column must be provided when a row is inserted, and `readonly` to indicate
+that a column cannot be inserted or updated.  Multiple flags can be added, each
+separated by a colon.
+
+```js
+const db = await database({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: 'id:readonly name:required email:required'
+    }
+  }
+});
+```
+
+If you try to insert a row without providing any of the `required` columns
+then an error will be throw.  The same thing will happen if you try to insert
+or update a `readonly` column.
+
+If your unique ID column isn't called `id` then you can mark the relevant column
+using the `id` tag.
+
+```js
+const db = await database({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: 'user_id:readonly:id ...'
+    }
+  }
+});
+```
+
+Defining the columns using a string is a convenient short hand for simpler
+tables.  The more explicit form is to use an object with the column names as
+keys.  The corresponding values can be strings containing any flags for the
+columns, or an empty string if there aren't any.
+
+```js
+const db = await database({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: {
+        user_id: 'readonly:id',
+        name:    'required',
+        email:   'required',
+        comment: '',
+    }
+  }
+});
+```
+
+Or you can fully expand them like so:
+
+```js
+const db = await database({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: {
+        user_id: {
+          readonly: true,
+          id:       true
+        },
+        name: {
+          required: true
+        }
+        email: {
+          required: true
+        }
+        comment: { }
+      }
+    }
+  }
+});
 ```
