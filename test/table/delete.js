@@ -6,7 +6,7 @@ const dbConfig = {
   engine: 'sqlite:memory',
   tables: {
     users: {
-      columns: 'id forename surname email animal',
+      columns: 'id forename surname email',
       table:   'user',
       queries: {
         create: `
@@ -14,8 +14,7 @@ const dbConfig = {
             id        INTEGER PRIMARY KEY ASC,
             forename  TEXT,
             surname   TEXT,
-            email     TEXT,
-            animal    TEXT
+            email     TEXT
           )`
       }
     },
