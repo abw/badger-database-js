@@ -1,5 +1,4 @@
 import test from 'ava';
-import { tryPromise } from 'tarn/dist/utils.js';
 import { database } from '../../src/Database.js';
 
 let db;
