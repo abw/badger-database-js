@@ -296,32 +296,25 @@ const db = await database({
 // fetch the users table
 const users = await db.table('users');
 
-// insert a record
+// insert a row
 await users.insert({
-  // INSERT INTO users...
   name:  'Brian Badger',
   email: 'brian@badgerpower.com'
 });
 
-// update a record
+// update a row
 await users.update(
-  { // UPDATE users SET...
-    name: 'Brian "The Brains" Badger',
-  },
-  { // WHERE...
-    email: 'brian@badgerpower.com'
-  }
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' }
 );
 
-// select a record
-const brian = await users.select({
-  // SELECT * FROM users WHERE...
+// fetch a row
+const brian = await users.fetchOne({
   email: 'brian@badgerpower.com'
 });
 
-// delete a record
-await users.select({
-  // DELETE FROM users WHERE...
+// delete a row
+await users.delete({
   email: 'brian@badgerpower.com'
 });
 ```
@@ -418,3 +411,140 @@ const db = await database({
   }
 });
 ```
+
+### Table Methods
+
+The `insert()` method will construct an `INSERT` SQL query to insert a row from
+the column data that you provide and then run it with the values provided.
+
+```js
+await users.insert({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+```
+
+The SQL query generated will look like this for Sqlite and Mysql:
+
+```sql
+INSERT INTO users (name, email)
+VALUES (?, ?)
+```
+
+Note the use of value placeholders to prevent SQL injection attacks.
+
+The format for placeholders in Postgres is slightly different but has the
+exact same effect:
+
+```sql
+INSERT INTO users (name, email)
+VALUES ($1, $1)
+```
+
+The `update()` method, as the name suggests, allows you to update rows.
+
+```js
+await users.update(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' }
+);
+```
+
+The first argument is an object containing the changes you want to make.
+The second optional argument is the `WHERE` clause identifying the rows
+you want to update.  You can omit the second argument if you want to update
+all rows.
+
+The SQL generate will look something like this:
+
+```sql
+UPDATE users
+SET    name=?
+WHERE  email=?
+```
+
+Again, the format for Postgres is slightly different, using `$1` and `$2` for
+placeholders instead of `?`, but works exactly the same.
+
+You can probably guess what the `delete()` method does.
+
+```js
+await users.delete({
+  email: 'brian@badgerpower.com'
+});
+```
+
+The key/value pairs in object passed as the only argument identify the rows
+that you want to delete.  You can omit this if you want to delete all rows
+in the table.  Naturally, you should use this method with caution.
+
+The SQL generated will look something like this:
+
+```sql
+DELETE FROM users
+WHERE email=?
+```
+
+There are three different fetch methods, `fetchAny()` will return a single
+row if it exists, `fetchAll()` will return an array of all matching rows.
+The `fetchOne()` method is like `fetchAny()` in that it returns a single
+row. However, it also asserts that exactly one row is returned.  If the
+row does not exist, or if multiple rows are returned then it will throw
+an error.
+
+```js
+// returns a single row or undefined
+const brian = await users.fetchAny({
+  email: 'brian@badgerpower.com'
+});
+```
+
+```js
+// returns a single row or throws an error
+const brian = await users.fetchOne({
+  email: 'brian@badgerpower.com'
+});
+```
+
+The generated SQL will look something like this:
+
+```sql
+SELECT * FROM users
+WHERE email=?
+```
+
+In all cases, the optional argument can be used to specify the selection
+criteria.  It can be omitted or left empty if you want to return all rows,
+although this usually only makes sense when using `fetchAll()`.
+
+```js
+// returns an array of rows
+const allUsers = await users.fetchAll();
+```
+
+```js
+// same as above
+const allUsers = await users.fetchAll({ });
+```
+
+You can pass a second argument which can contain various options to modify
+the selection.  For example, the `columns` option can be used to specify
+the columns that you want to select.  They can be specified as a string
+containing the columns names separated by whitespace:
+
+```js
+const brian = await users.fetchOne(
+  { email: 'brian@badgerpower.com' },
+  { columns: 'id name' }
+);
+```
+
+Or as an array:
+
+```js
+const brian = await users.fetchOne(
+  { email: 'brian@badgerpower.com' },
+  { columns: ['id', 'name'] }
+);
+```
+
