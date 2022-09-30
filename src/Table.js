@@ -103,12 +103,21 @@ export class Table {
   // Basic queries
   //-----------------------------------------------------------------------------
   async insert(data) {
+    if (isArray(data)) {
+      return this.insertAll(data);
+    }
     this.debug("insert: ", data);
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     return this.engine.insert(this.table, cols, vals, this.keys);
     // const result = await this.engine.insert(this.table, cols, vals, this.keys);
     // ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
+  }
+  async insertAll(data) {
+    this.debug("insertAll: ", data);
+    return data.map(
+      async row => await this.insert(row)
+    );
   }
   async update(data, where) {
     this.debug("update: ", data, where);

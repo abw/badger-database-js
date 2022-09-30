@@ -93,7 +93,7 @@ export class Engine {
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
     this.release(connection);
-    return options
+    return options.insert
       ? this.sanitizeResult(result, options)
       : result;
   }

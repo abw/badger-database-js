@@ -1,51 +1,88 @@
 import test from 'ava';
-import { createUsers, usersWithCustomRecord, databaseWithCustomRecord } from '../library/users.js'
+import { database } from '../../src/Database.js';
 
-const database = databaseWithCustomRecord;
-const users = usersWithCustomRecord;
+let db;
+const dbConfig = {
+  engine: 'sqlite:memory',
+  tables: {
+    users: {
+      columns: 'id forename surname email animal',
+      table:   'user',
+      queries: {
+        create: `
+          CREATE TABLE user (
+            id        INTEGER PRIMARY KEY ASC,
+            forename  TEXT,
+            surname   TEXT,
+            email     TEXT,
+            animal    TEXT
+          )`
+      }
+    },
+  }
+}
 
 test.before(
+  'connect to database',
   async t => {
-    await createUsers(database);
-    t.pass("created users table")
+    db = await database(dbConfig);
+    t.pass()
   }
 );
 
 test.serial(
+  'create users table',
+  async t => {
+    const users = await db.table('users');
+    t.is(users.table, 'user');
+    const create = await users.run('create');
+    t.is(create.changes, 0);
+  }
+)
+
+
+test.serial(
   'insert({ ...Frank Ferret... })',
   async t => {
-    const ferret = await users.insert({
+    const users = await db.table('users');
+    const insert = await users.insert({
       forename: 'Frank',
-      surname: 'Ferret',
-      email: 'frank@ferret.com'
+      surname:  'Ferret',
+      email:    'frank@ferret.com'
     });
+    t.is(insert.id, 1);
+    const rows = await users.select({ id: insert.id })
+    const ferret = rows[0];
     t.is(ferret.forename, 'Frank');
     t.is(ferret.surname, 'Ferret');
-    t.is(ferret.id, 4);
+    t.is(ferret.id, 1);
   }
 )
 
 test.serial(
   'insert([{ ...Roger Rabbit... }, { ...Richard Rabbit... }])',
   async t => {
-    const rabbits = await users.insert([
+    const users = await db.table('users');
+    const inserts = await users.insert([
       {
         forename: 'Roger',
-        surname: 'Rabbit',
-        email: 'roger@rabbit.com'
+        surname:  'Rabbit',
+        email:    'roger@rabbit.com'
       },
       {
         forename: 'Richard',
-        surname: 'Rabbit',
-        email: 'richard@rabbit.com'
+        surname:  'Rabbit',
+        email:    'richard@rabbit.com'
       },
     ]);
-    t.is( rabbits.length, 2 );
+    t.is( inserts.length, 2 );
+    const rabbits = await users.select({ surname: 'Rabbit' })
     t.is( rabbits[0].forename, 'Roger' );
     t.is( rabbits[1].forename, 'Richard' );
   }
 )
 
 test.after(
-  () => database.destroy()
+  'destroy',
+  () => db.destroy()
 )
