@@ -41,7 +41,7 @@ export function runTableInsertTests(engine, create) {
 
   // insert a row
   test.serial(
-    'table insert',
+    'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -49,13 +49,14 @@ export function runTableInsertTests(engine, create) {
         email: 'bobby@badgerpower.com'
       });
       t.is( result.id, 1 );
-      t.is( result.changes, 1 );
+      t.is( result.name, 'Bobby Badger' );
+      t.is( result.email, 'bobby@badgerpower.com' );
     }
   )
 
   // insert another row
   test.serial(
-    'table insert again',
+    'insert another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -63,19 +64,45 @@ export function runTableInsertTests(engine, create) {
         email: 'brian@badgerpower.com'
       });
       t.is( result.id, 2 );
-      t.is( result.changes, 1 );
+      t.is( result.name, 'Brian Badger' );
+      t.is( result.email, 'brian@badgerpower.com' );
     }
   )
 
   // make sure we can fetch two rows
   test.serial(
-    'table fetch all',
+    'fetch all',
     async t => {
       const users = await db.table('users');
       const badgers = await users.fetchAll();
       t.is( badgers.length, 2 );
       t.is( badgers[0].name, 'Bobby Badger' );
       t.is( badgers[1].name, 'Brian Badger' );
+    }
+  )
+
+  // insert multiple rows
+  test.serial(
+    'insert multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.insert([
+        {
+          name:  'Franky Ferret',
+          email: 'franky@badgerpower.com'
+        },
+        {
+          name:  'Simon Stoat',
+          email: 'simon@badgerpower.com'
+        },
+      ]);
+      t.is( result.length, 2 );
+      t.is( result[0].id, 3 );
+      t.is( result[0].name, 'Franky Ferret' );
+      t.is( result[0].email, 'franky@badgerpower.com' );
+      t.is( result[1].id, 4 );
+      t.is( result[1].name, 'Simon Stoat' );
+      t.is( result[1].email, 'simon@badgerpower.com' );
     }
   )
 

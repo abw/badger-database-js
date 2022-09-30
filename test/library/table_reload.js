@@ -1,7 +1,7 @@
 import test from 'ava';
 import { database } from '../../src/Database.js';
 
-export function runTableUpdateTests(engine, create) {
+export function runTableReloadTests(engine, create) {
   let db;
 
   test.serial(
@@ -38,36 +38,42 @@ export function runTableUpdateTests(engine, create) {
   );
 
   test.serial(
-    'table insert',
+    'table insert with reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Bobby Badger',
-        email: 'bobby@badgerpower.com'
-      });
+      const result = await users.insert(
+        {
+          name:  'Bobby Badger',
+          email: 'bobby@badgerpower.com'
+        },
+        { reload: true }
+      );
       t.is( result.id, 1 );
       t.is( result.name, 'Bobby Badger' );
       t.is( result.email, 'bobby@badgerpower.com' );
+      t.is( result.changes, undefined );
     }
   )
 
   test.serial(
-    'table update',
+    'table insert without reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.update(
+      const result = await users.insert(
         {
-          name:  'Roberto Badger',
+          name:  'Brian Badger',
+          email: 'brian@badgerpower.com'
         },
-        {
-          email: 'bobby@badgerpower.com'
-        }
+        { reload: false }
       );
+      t.is( result.id, 2 );
       t.is( result.changes, 1 );
+      t.is( result.name, undefined );
+      t.is( result.email, undefined );
     }
   )
 
-  test.serial(
+  test.after(
     'destroy',
     t => {
       db.destroy();

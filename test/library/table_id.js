@@ -41,10 +41,13 @@ export function runTableIdTests(engine, create) {
     'table insert',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Bobby Badger',
-        email: 'bobby@badgerpower.com'
-      });
+      const result = await users.insert(
+        {
+          name:  'Bobby Badger',
+          email: 'bobby@badgerpower.com'
+        },
+        { reload: false }
+      );
       t.is( result.id, 1 );
       t.is( result.user_id, 1 );
       t.is( result.changes, 1 );

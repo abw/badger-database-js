@@ -1,7 +1,10 @@
 import test from 'ava';
 import { database } from '../../src/Database.js';
 
-export function runTableUpdateTests(engine, create) {
+// NOTE: this only work with Postgres which allows us to
+// specify multiple columns in the RETURNING clause.
+
+export function runTableKeysTests(engine, create) {
   let db;
 
   test.serial(
@@ -11,7 +14,7 @@ export function runTableUpdateTests(engine, create) {
         engine,
         tables: {
           users: {
-            columns: 'id:readonly name:required email:required'
+            columns: 'key1:key key2:key name'
           }
         }
       });
@@ -38,31 +41,36 @@ export function runTableUpdateTests(engine, create) {
   );
 
   test.serial(
-    'table insert',
+    'table insert with reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Bobby Badger',
-        email: 'bobby@badgerpower.com'
-      });
-      t.is( result.id, 1 );
+      const result = await users.insert(
+        {
+          key1: 'a',
+          key2: 'b',
+          name: 'Bobby Badger'
+        },
+      );
+      t.is( result.key1, 'a' );
+      t.is( result.key2, 'b' );
       t.is( result.name, 'Bobby Badger' );
-      t.is( result.email, 'bobby@badgerpower.com' );
     }
   )
 
   test.serial(
-    'table update',
+    'table insert without reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.update(
+      const result = await users.insert(
         {
-          name:  'Roberto Badger',
+          key1: 'a',
+          key2: 'b',
+          name: 'Brian Badger'
         },
-        {
-          email: 'bobby@badgerpower.com'
-        }
+        { reload: false }
       );
+      t.is( result.key1, 'a' );
+      t.is( result.key2, 'b' );
       t.is( result.changes, 1 );
     }
   )

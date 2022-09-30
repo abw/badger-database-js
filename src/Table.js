@@ -4,7 +4,7 @@ import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
 import Queries from "./Queries.js";
 // import Schema from "./Schema.js";
-import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
+import { fail, hasValue, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
@@ -101,25 +101,37 @@ export class Table {
   //-----------------------------------------------------------------------------
   // Basic queries - insert
   //-----------------------------------------------------------------------------
-  async insert(data) {
-    return isArray(data)
-      ? this.insertAll(data)
-      : this.insertOne(data)
+  async insert(data, options) {
+    return isArray(data, options)
+      ? this.insertAll(data, options)
+      : this.insertOne(data, options)
   }
-  async insertOne(data) {
+  async insertOne(data, options={}) {
     this.debug("insertOne: ", data);
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
-    // TODO: re-fetch the row
-    return insert;
-    // const result = await this.engine.insert(this.table, cols, vals, this.keys);
-    // ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
+
+    // the reload option can be set false to prevent a reload
+    if (hasValue(options.reload) && ! options.reload) {
+      return insert;
+    }
+
+    // otherwise we reload the record using the id/keys
+    const fetch = { };
+    this.keys.map(
+      key => fetch[key] = insert[key] || data[key]
+    );
+    // console.log('post-insert fetch: ', fetch);
+
+    return this.fetchOne(fetch);
   }
-  async insertAll(data) {
+  async insertAll(data, options) {
     this.debug("insertAll: ", data);
-    return data.map(
-      async row => await this.insert(row)
+    return await Promise.all(
+      data.map(
+        async row => this.insert(row, options)
+      )
     );
   }
 
@@ -181,49 +193,6 @@ export class Table {
   //-----------------------------------------------------------------------------
   // Old Knex-based code - TODO
   //-----------------------------------------------------------------------------
-  OLDinsert(data) {
-    return isArray(data)
-      ? this.insertRows(data)
-      : this.insertRow(data);
-  }
-  insertRow(row) {
-    return this.rowProxy(
-      this.knex().insert(row).then(
-        ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
-      )
-    )
-  }
-  insertRows(rows) {
-    return this.rowsProxy(
-      this.insertRowsAsync(rows)
-    )
-    /*
-    // I *think* this should work... but it's beyond my ability/patience to
-    // figure out why it doesn't :-(
-    /*
-    return this.rowsProxy(
-      Promise.all(
-        rows.map(
-          data => this.knex().insert(data)
-            .then(
-              ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
-            )
-        )
-      )
-    )
-    */
-  }
-  async insertRowsAsync(rows) {
-    let results = [ ];
-    for (const row of rows) {
-      const result = await this.knex().insert(row)
-        .then(
-          ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
-        )
-      results.push(result)
-    }
-    return results;
-  }
   selectRow(columns) {
     return this.rowProxy(
       this.knex().select(

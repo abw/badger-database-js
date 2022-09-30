@@ -134,6 +134,8 @@ export class Engine {
     const columns      = this.formatColumns(colnames);
     const placeholders = this.formatPlaceholders(values);
     const returning    = this.formatReturning(keys);
+    // console.log('columns: ', columns);
+    // console.log('returning: ', returning);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
     this.debug('insert: ', sql);
     return this.run(sql, values, { keys, sanitizeResult: true });

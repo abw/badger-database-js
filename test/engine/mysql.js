@@ -121,7 +121,7 @@ test.serial(
       ['Brian Badger', 'brian@badgerpower.com'],
       { sanitizeResult: true }
     );
-    t.is(insert.changes, 1);
+    t.is(insert.id, 2);
     await mysql.destroy();
   }
 )

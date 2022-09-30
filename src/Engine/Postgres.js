@@ -83,7 +83,7 @@ export class PostgresEngine extends Engine {
     ).join(joint);
   }
   formatReturning(keys) {
-    return ' RETURNING ' + keys.join(', ');
+    return ' RETURNING ' + this.formatColumns(keys);
   }
 }
 

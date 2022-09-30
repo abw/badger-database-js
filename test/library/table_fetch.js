@@ -50,7 +50,8 @@ export function runTableFetchTests(engine, create) {
         email: 'bobby@badgerpower.com'
       });
       t.is( result.id, 1 );
-      t.is( result.changes, 1 );
+      t.is( result.name, 'Bobby Badger' );
+      t.is( result.email, 'bobby@badgerpower.com' );
     }
   )
   test.serial(
@@ -62,7 +63,8 @@ export function runTableFetchTests(engine, create) {
         email: 'brian@badgerpower.com'
       });
       t.is( result.id, 2 );
-      t.is( result.changes, 1 );
+      t.is( result.name, 'Brian Badger' );
+      t.is( result.email, 'brian@badgerpower.com' );
     }
   )
 

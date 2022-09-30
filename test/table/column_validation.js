@@ -92,8 +92,9 @@ test.serial(
       name: 'Bobby Badger',
       email: 'bobby@badgerpower.com'
     })
-    t.is(result.changes, 1);
     t.is(result.id, 1);
+    t.is(result.name, 'Bobby Badger');
+    t.is(result.email, 'bobby@badgerpower.com');
   }
 )
 
