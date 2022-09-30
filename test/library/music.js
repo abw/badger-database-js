@@ -1,6 +1,6 @@
+import { database } from "../../src/Database.js";
 import Record from "../../src/Record.js";
 import Table from "../../src/Table.js";
-import { createDatabase, databaseConfig } from "./database.js";
 
 export class Artists extends Table {
 }
@@ -20,23 +20,69 @@ export class Album extends Record {
 export class Track extends Record {
 }
 
+export const musicFragments = {
+  selectAlbumsWithTrackCount: `
+    SELECT    albums.title,
+              COUNT(tracks.id) as n_tracks
+    FROM      albums
+    JOIN      tracks
+    ON        tracks.album_id=albums.id
+    GROUP BY  albums.id`
+}
+
+export const musicQueries = {
+  createArtistsTable: `
+    CREATE TABLE artists (
+      id        INTEGER PRIMARY KEY ASC,
+      name      TEXT
+    )`,
+  createAlbumsTable: `
+    CREATE TABLE albums (
+      id        INTEGER PRIMARY KEY ASC,
+      year      INTEGER,
+      title     TEXT,
+      artist_id INTEGER,
+      FOREIGN KEY(artist_id) REFERENCES artists(id)
+    )`,
+  createTracksTable: `
+    CREATE TABLE tracks (
+      id        INTEGER PRIMARY KEY ASC,
+      title     TEXT,
+      album_id  INTEGER,
+      FOREIGN KEY(album_id) REFERENCES albums(id)
+    )`,
+  albumsByNumberOfTracks: `
+    <selectAlbumsWithTrackCount>
+    ORDER BY  n_tracks`,
+  albumWithMostTracks: `
+    <selectAlbumsWithTrackCount>
+    ORDER BY  n_tracks DESC
+    LIMIT     1`,
+  theBestAlbumEverRecorded: `
+    SELECT    *
+    FROM      albums
+    WHERE     title="The Dark Side of the Moon"`
+}
+
 export const albumsFragments = {
-  selectTitleAndTrackCount:
-    'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
-    'FROM albums ' +
-    'JOIN tracks ' +
-    'ON tracks.album_id=albums.id ' +
-    'GROUP BY albums.id'
+  selectTitleAndTrackCount:`
+    SELECT    albums.title,
+              COUNT(tracks.id) as n_tracks
+    FROM      albums
+    JOIN      tracks
+    ON        tracks.album_id=albums.id
+    GROUP BY  albums.id`
 }
 
 export const albumsQueries = {
-  selectByNumberOfTracks:
-    '<selectTitleAndTrackCount> ' +
-    'ORDER BY n_tracks ',
-  titleByYear:
-    'SELECT <titleYear> ' +
-    'FROM   <table> ' +
-    'ORDER BY year,id',
+  selectByNumberOfTracks:`
+    <selectTitleAndTrackCount>
+    ORDER BY  n_tracks`,
+  titleByYear:`
+    SELECT    <titleYear>
+    FROM      <table>
+    ORDER BY  year,id
+  `
 }
 
 export const musicTables = {
@@ -80,38 +126,15 @@ export const musicTables = {
   },
 };
 
-export const musicFragments = {
-  selectAlbumsWithTrackCount:
-    'SELECT albums.title, COUNT(tracks.id) as n_tracks ' +
-    'FROM albums ' +
-    'JOIN tracks ' +
-    'ON tracks.album_id=albums.id ' +
-    'GROUP BY albums.id'
-}
-
-export const musicQueries = {
-  albumsByNumberOfTracks:
-    '<selectAlbumsWithTrackCount> ' +
-    'ORDER BY n_tracks ',
-  albumWithMostTracks:
-    '<selectAlbumsWithTrackCount> ' +
-    'ORDER BY n_tracks DESC ' +
-    'LIMIT 1',
-  theBestAlbumEverRecorded:
-    'SELECT * ' +
-    'FROM albums ' +
-    'WHERE title="The Dark Side of the Moon"'
-}
-
-
-export const musicdb = createDatabase({
-  ...databaseConfig,
-  tables: musicTables,
+export const musicdb = database({
+  engine:    'sqlite:memory',
+  tables:    musicTables,
   fragments: musicFragments,
   queries: musicQueries
 });
 
-export const createMusicDb = async (database=musicdb) => {
+export const createMusicDb = async () => {
+  await musicdb;
   await database.raw("CREATE TABLE artists (id INTEGER PRIMARY KEY ASC, name TEXT)");
   await database.raw("CREATE TABLE albums (id INTEGER PRIMARY KEY ASC, year INTEGER, title TEXT, artist_id INTEGER, FOREIGN KEY(artist_id) REFERENCES artists(id))");
   await database.raw("CREATE TABLE tracks (id INTEGER PRIMARY KEY ASC, title TEXT, album_id INTEGER, FOREIGN KEY(album_id) REFERENCES albums(id))");
