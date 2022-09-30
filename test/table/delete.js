@@ -57,7 +57,7 @@ test.serial(
       },
     ]);
     t.is( inserts.length, 2 );
-    const rabbits = await users.select({ surname: 'Rabbit' })
+    const rabbits = await users.fetchAll({ surname: 'Rabbit' })
     t.is( rabbits[0].forename, 'Roger' );
     t.is( rabbits[1].forename, 'Richard' );
   }
@@ -70,7 +70,7 @@ test.serial(
     await users.delete({
       email:    'roger@rabbit.com'
     });
-    const rabbits = await users.select({ surname: 'Rabbit' })
+    const rabbits = await users.fetchAll({ surname: 'Rabbit' })
     t.is( rabbits.length, 1);
     t.is( rabbits[0].forename, 'Richard' );
   }

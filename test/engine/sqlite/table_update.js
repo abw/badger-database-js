@@ -1,62 +1,10 @@
-import test from 'ava';
-import { database } from '../../../src/Database.js';
+import { runTableUpdateTests } from '../../library/table_update.js';
 
-let db;
-
-test.serial(
-  'connect',
-  async t => {
-    db = await database({
-      engine: 'sqlite:memory',
-      tables: {
-        users: {
-          columns: 'id:readonly name:required email:required'
-        }
-      }
-    });
-    t.pass();
-  }
-)
-
-test.serial(
-  'create table',
-  async t => {
-    await db.run(
-      `CREATE TABLE users (
-        id INTEGER PRIMARY KEY ASC,
-        name TEXT,
-        email TEXT
-      )`
-    )
-    t.pass();
-  }
-)
-
-test.serial(
-  'table insert',
-  async t => {
-    const users = await db.table('users');
-    const result = await users.insert({
-      name:  'Bobby Badger',
-      email: 'bobby@badgerpower.com'
-    });
-    t.is( result.id, 1 );
-    t.is( result.changes, 1 );
-  }
-)
-
-test(
-  'table update',
-  async t => {
-    const users = await db.table('users');
-    const result = await users.update(
-      {
-        name:  'Roberto Badger',
-      },
-      {
-        email: 'bobby@badgerpower.com'
-      }
-    );
-    t.is( result.changes, 1 );
-  }
+runTableUpdateTests(
+  'sqlite:memory',
+  `CREATE TABLE users (
+    id    INTEGER PRIMARY KEY ASC,
+    name  TEXT,
+    email TEXT
+  )`
 )

@@ -1,6 +1,6 @@
-import { runTableInsertTests } from '../../library/table_insert.js';
+import { runTableFetchTests } from '../../library/table_fetch.js';
 
-runTableInsertTests(
+runTableFetchTests(
   'sqlite:memory',
   `CREATE TABLE users (
     id    INTEGER PRIMARY KEY ASC,
@@ -8,3 +8,4 @@ runTableInsertTests(
     email TEXT
   )`
 )
+

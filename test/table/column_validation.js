@@ -101,7 +101,7 @@ test.serial(
   'attempt to select a row with an unknown column',
   async t => {
     const error = await t.throwsAsync(
-      () => users.select(
+      () => users.fetchAll(
         {
           email: 'bobby@badgerpower.com',
         },
@@ -119,7 +119,7 @@ test.serial(
   'attempt to select a row with an unknown column in the where clause',
   async t => {
     const error = await t.throwsAsync(
-      () => users.select({
+      () => users.fetchOne({
         email_address: 'bobby@badgerpower.com',
       })
     );

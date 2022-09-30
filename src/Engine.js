@@ -1,8 +1,9 @@
 import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
 import { format } from './Utils/Format.js';
-import { isObject, splitList } from '@abw/badger-utils';
+import { hasValue, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
+import { allColumns, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -139,25 +140,39 @@ export class Engine {
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
     const set   = this.formatColumnPlaceholders(datacols);
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1);
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1) || whereTrue;
     const sql   = format(queries.update, { table, set, where });
     this.debug('update: ', sql);
     return this.run(sql, [...datavals, ...wherevals], { sanitizeResult: true });
   }
   async delete(table, wherecols, wherevals) {
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
     const sql   = format(queries.delete, { table, where });
     this.debug('delete: ', sql);
     return this.run(sql, wherevals, { sanitizeResult: true });
   }
-  async select(table, wherecols, wherevals, options={}) {
-    const columns = options.columns
-      ? this.formatColumns(options.columns)
-      : '*';
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ');
-    const sql   = format(queries.select, { table, columns, where });
-    this.debug('select: ', sql);
+  selectQuery(table, wherecols, options={}) {
+    const columns = this.formatColumns(options.columns);
+    const where   = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
+    return format(queries.select, { table, columns, where });
+  }
+  async selectAll(table, wherecols, wherevals, options={}) {
+    const sql = this.selectQuery(table, wherecols, options);
+    this.debug('selectAll: ', sql);
     return this.all(sql, wherevals);
+  }
+  async selectAny(table, wherecols, wherevals, options={}) {
+    const sql = this.selectQuery(table, wherecols, options);
+    this.debug('selectAny: ', sql);
+    return this.any(sql, wherevals);
+  }
+  async selectOne(table, wherecols, wherevals, options={}) {
+    const sql = this.selectQuery(table, wherecols, options);
+    this.debug('select: ', sql);
+    return this.one(sql, wherevals);
+  }
+  async select(...args) {
+    return this.selectAll(...args);
   }
 
   //-----------------------------------------------------------------------------
@@ -194,9 +209,13 @@ export class Engine {
     ).join(joint);
   }
   formatColumns(columns) {
-    return splitList(columns).map(
-      column => this.quote(column)
-    ).join(', ');
+    return hasValue(columns)
+      ? splitList(columns)
+        .map(
+          column => this.quote(column)
+        )
+        .join(', ')
+      : allColumns;
   }
   formatReturning() {
     return '';

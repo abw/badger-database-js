@@ -48,7 +48,7 @@ export class Table {
           || throwColumnValidationError('unknown', { column, table })
     )
   }
-  checkColumns(data, cols=[], vals=[], test={}) {
+  checkColumns(data={}, cols=[], vals=[], test={}) {
     const table = this.table;
     // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
@@ -98,18 +98,21 @@ export class Table {
     return this.engine.one(this.query(query), params, options)
   }
 
-
   //-----------------------------------------------------------------------------
-  // Basic queries
+  // Basic queries - insert
   //-----------------------------------------------------------------------------
   async insert(data) {
-    if (isArray(data)) {
-      return this.insertAll(data);
-    }
-    this.debug("insert: ", data);
+    return isArray(data)
+      ? this.insertAll(data)
+      : this.insertOne(data)
+  }
+  async insertOne(data) {
+    this.debug("insertOne: ", data);
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
-    return this.engine.insert(this.table, cols, vals, this.keys);
+    const insert = await this.engine.insert(this.table, cols, vals, this.keys);
+    // TODO: re-fetch the row
+    return insert;
     // const result = await this.engine.insert(this.table, cols, vals, this.keys);
     // ([id]) => this.knex().select().first().where({ [this.schema.id]: id })
   }
@@ -119,17 +122,53 @@ export class Table {
       async row => await this.insert(row)
     );
   }
+
+  //-----------------------------------------------------------------------------
+  // update
+  //-----------------------------------------------------------------------------
   async update(data, where) {
     this.debug("update: ", data, where);
     const [dcols, dvals] = this.checkWritableColumns(data);
     const [wcols, wvals] = this.checkColumns(where);
     return this.engine.update(this.table, dcols, dvals, wcols, wvals);
   }
+
+  //-----------------------------------------------------------------------------
+  // delete
+  //-----------------------------------------------------------------------------
   async delete(where) {
     this.debug("delete: ", where);
     const [cols, vals] = this.checkColumns(where);
     return this.engine.delete(this.table, cols, vals);
   }
+
+  //-----------------------------------------------------------------------------
+  // fetch
+  //-----------------------------------------------------------------------------
+  prepareFetch(where, options={}) {
+    if (options.columns) {
+      this.checkColumnNames(options.columns);
+    }
+    return this.checkColumns(where);
+  }
+  async fetchOne(where, options={}) {
+    this.debug("fetchOne: ", where, options);
+    const [wcols, wvals] = this.prepareFetch(where, options);
+    return this.engine.selectOne(this.table, wcols, wvals, options);
+  }
+  async fetchAny(where, options={}) {
+    this.debug("fetchAny: ", where, options);
+    const [wcols, wvals] = this.prepareFetch(where, options);
+    return this.engine.selectAny(this.table, wcols, wvals, options);
+  }
+  async fetchAll(where, options={}) {
+    this.debug("fetchAll: ", where, options);
+    const [wcols, wvals] = this.prepareFetch(where, options);
+    return this.engine.selectAll(this.table, wcols, wvals, options);
+  }
+
+  // select() is the old name for fetchAll() which I'm in the process of
+  // reworking.
   async select(where, options={}) {
     this.debug("select: ", where, options);
     if (options.columns) {
