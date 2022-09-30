@@ -32,7 +32,7 @@ export class Engine {
     this.pool      = this.initPool(config.pool);
     this.quoteChar = quoteChars[this.driver||'default'] || quoteChars.default;
     this.escQuote  = `\\${this.quoteChar}`;
-    addDebugMethod(this, 'engine', config.engine, config);
+    addDebugMethod(this, 'engine', config);
   }
   configure(config) {
     return config;
@@ -93,7 +93,7 @@ export class Engine {
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
     this.release(connection);
-    return options.insert
+    return options
       ? this.sanitizeResult(result, options)
       : result;
   }

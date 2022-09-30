@@ -14,7 +14,7 @@ export class SqliteEngine extends Engine {
     config.pool.min ||= 1;
     config.pool.max ||= 1;
 
-    config.engine.debugPrefix ||= 'SqliteEngine> ';
+    config.debugPrefix ||= 'SqliteEngine> ';
     return config;
   }
 
