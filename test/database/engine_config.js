@@ -1,15 +1,15 @@
 import test from 'ava';
-import { engineConfig, parseEngineString } from "../../src/Engines.js";
+import { databaseConfig, parseDatabaseString } from "../../src/Engines.js";
 
 
 //-----------------------------------------------------------------------------
-// parseEngineString()
+// parseDatabaseString()
 //-----------------------------------------------------------------------------
 test(
   'postgresql://user:password@hostname:3211/database',
   t => {
-    const config = parseEngineString('postgresql://user:password@hostname:3211/database');
-    t.is( config.driver, 'postgres');
+    const config = parseDatabaseString('postgresql://user:password@hostname:3211/database');
+    t.is( config.engine, 'postgres');
     t.is( config.connectionString, 'postgresql://user:password@hostname:3211/database');
   }
 );
@@ -17,8 +17,8 @@ test(
 test(
   'postgres://user:password@hostname:3211/database',
   t => {
-    const config = parseEngineString('postgres://user:password@hostname:3211/database');
-    t.is( config.driver, 'postgres');
+    const config = parseDatabaseString('postgres://user:password@hostname:3211/database');
+    t.is( config.engine, 'postgres');
     t.is( config.connectionString, 'postgresql://user:password@hostname:3211/database');
   }
 );
@@ -26,8 +26,8 @@ test(
 test(
   'sqlite://filename.db',
   t => {
-    const config = parseEngineString('sqlite://filename.db');
-    t.is( config.driver, 'sqlite');
+    const config = parseDatabaseString('sqlite://filename.db');
+    t.is( config.engine, 'sqlite');
     t.is( config.filename, 'filename.db');
   }
 );
@@ -35,8 +35,8 @@ test(
 test(
   'sqlite://:memory:',
   t => {
-    const config = parseEngineString('sqlite://:memory:');
-    t.is( config.driver, 'sqlite');
+    const config = parseDatabaseString('sqlite://:memory:');
+    t.is( config.engine, 'sqlite');
     t.is( config.filename, ':memory:');
   }
 );
@@ -44,8 +44,8 @@ test(
 test(
   'sqlite:memory',
   t => {
-    const config = parseEngineString('sqlite:memory');
-    t.is( config.driver, 'sqlite');
+    const config = parseDatabaseString('sqlite:memory');
+    t.is( config.engine, 'sqlite');
     t.is( config.filename, ':memory:');
   }
 );
@@ -53,8 +53,8 @@ test(
 test(
   'driverName://databaseName',
   t => {
-    const config = parseEngineString('driverName://databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.database, 'databaseName');
   }
 );
@@ -62,8 +62,8 @@ test(
 test(
   'driverName://hostName/databaseName',
   t => {
-    const config = parseEngineString('driverName://hostName/databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://hostName/databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.host, 'hostName');
     t.is( config.database, 'databaseName');
   }
@@ -72,8 +72,8 @@ test(
 test(
   'driverName://hostName:1234/databaseName',
   t => {
-    const config = parseEngineString('driverName://hostName:1234/databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://hostName:1234/databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.host, 'hostName');
     t.is( config.port, '1234');
     t.is( config.database, 'databaseName');
@@ -83,8 +83,8 @@ test(
 test(
   'driverName://userName@hostName/databaseName',
   t => {
-    const config = parseEngineString('driverName://userName@hostName/databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://userName@hostName/databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.user, 'userName');
     t.is( config.host, 'hostName');
     t.is( config.database, 'databaseName');
@@ -94,8 +94,8 @@ test(
 test(
   'driverName://userName@hostName:1234/databaseName',
   t => {
-    const config = parseEngineString('driverName://userName@hostName:1234/databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://userName@hostName:1234/databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.user, 'userName');
     t.is( config.host, 'hostName');
     t.is( config.port, '1234');
@@ -106,8 +106,8 @@ test(
 test(
   'driverName://userName:secretPassword@hostName/databaseName',
   t => {
-    const config = parseEngineString('driverName://userName:secretPassword@hostName/databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://userName:secretPassword@hostName/databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.host, 'hostName');
     t.is( config.database, 'databaseName');
     t.is( config.user, 'userName');
@@ -118,8 +118,8 @@ test(
 test(
   'driverName://userName:secretPassword@hostName:1234/databaseName',
   t => {
-    const config = parseEngineString('driverName://userName:secretPassword@hostName:1234/databaseName');
-    t.is( config.driver, 'driverName');
+    const config = parseDatabaseString('driverName://userName:secretPassword@hostName:1234/databaseName');
+    t.is( config.engine, 'driverName');
     t.is( config.host, 'hostName');
     t.is( config.port, '1234');
     t.is( config.user, 'userName');
@@ -131,83 +131,83 @@ test(
 test(
   'driverName:databaseName',
   t => {
-    const error = t.throws( () => parseEngineString('driverName:databaseName') )
-    t.is( error.message, 'Invalid "engine" specified: driverName:databaseName');
+    const error = t.throws( () => parseDatabaseString('driverName:databaseName') )
+    t.is( error.message, 'Invalid "database" specified: driverName:databaseName');
   }
 );
 
 //-----------------------------------------------------------------------------
-// engineConfig()
+// databaseConfig()
 //-----------------------------------------------------------------------------
 
 test(
-  "engineConfig({ engine: 'driverName://userName:secretPassword@hostName:1234/databaseName' })",
+  "databaseConfig({ database: 'driverName://userName:secretPassword@hostName:1234/databaseName' })",
   t => {
-    const config = engineConfig({ engine: 'driverName://userName:secretPassword@hostName:1234/databaseName' });
-    t.is( config.driver, 'driverName');
-    t.is( config.engine.host, 'hostName');
-    t.is( config.engine.port, '1234');
-    t.is( config.engine.database, 'databaseName');
-    t.is( config.engine.user, 'userName');
-    t.is( config.engine.password, 'secretPassword');
+    const config = databaseConfig({ database: 'driverName://userName:secretPassword@hostName:1234/databaseName' });
+    t.is( config.engine, 'driverName');
+    t.is( config.database.host, 'hostName');
+    t.is( config.database.port, '1234');
+    t.is( config.database.database, 'databaseName');
+    t.is( config.database.user, 'userName');
+    t.is( config.database.password, 'secretPassword');
   }
 );
 
 test(
-  "engineConfig({ engine: { driver: 'sqlite', filename: 'wibble.db' } })",
+  "databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } })",
   t => {
-    const config = engineConfig({ engine: { driver: 'sqlite', filename: 'wibble.db' } });
-    t.is( config.driver, 'sqlite');
-    t.is( config.engine.filename, 'wibble.db');
+    const config = databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } });
+    t.is( config.engine, 'sqlite');
+    t.is( config.database.filename, 'wibble.db');
   }
 );
 
 test(
-  "engineConfig({ engine: { driver: 'sqlite', file: 'wibble.db' } })",
+  "databaseConfig({ database: { engine: 'sqlite', file: 'wibble.db' } })",
   t => {
-    const config = engineConfig({ engine: { driver: 'sqlite', file: 'wibble.db' } });
-    t.is( config.driver, 'sqlite');
-    t.is( config.engine.filename, 'wibble.db');
+    const config = databaseConfig({ database: { engine: 'sqlite', file: 'wibble.db' } });
+    t.is( config.engine, 'sqlite');
+    t.is( config.database.filename, 'wibble.db');
   }
 );
 
 test(
-  "engineConfig() - parameter renaming",
+  "databaseConfig() - parameter renaming",
   t => {
-    const config = engineConfig({
-      engine: { driver: 'mysql', username: 'fred', pass: 'secret', hostname: 'wibble.com' }
+    const config = databaseConfig({
+      database: { engine: 'mysql', username: 'fred', pass: 'secret', hostname: 'wibble.com' }
     });
-    t.is( config.driver, 'mysql');
-    t.is( config.engine.user, 'fred');
-    t.is( config.engine.password, 'secret');
-    t.is( config.engine.host, 'wibble.com');
+    t.is( config.engine, 'mysql');
+    t.is( config.database.user, 'fred');
+    t.is( config.database.password, 'secret');
+    t.is( config.database.host, 'wibble.com');
   }
 );
 
 test(
-  "engineConfig({ engine: 'sqlite:memory', pool: { min: 1, max: 1 } })",
+  "databaseConfig({ database: 'sqlite:memory', pool: { min: 1, max: 1 } })",
   t => {
-    const config = engineConfig({ engine: 'sqlite:memory', pool: { min: 1, max: 1 } });
-    t.is( config.driver, 'sqlite');
-    t.is( config.engine.filename, ':memory:');
+    const config = databaseConfig({ database: 'sqlite:memory', pool: { min: 1, max: 1 } });
+    t.is( config.engine, 'sqlite');
+    t.is( config.database.filename, ':memory:');
     t.is( config.pool.min, 1 );
     t.is( config.pool.max, 1 );
   }
 );
 
 test(
-  "engineConfig({ engine: 'driverName:databaseName' })",
+  "databaseConfig({ database: 'driverName:databaseName' })",
   t => {
-    const error = t.throws( () => engineConfig({ engine: 'driverName:databaseName' }) )
-    t.is( error.message, 'Invalid "engine" specified: driverName:databaseName');
+    const error = t.throws( () => databaseConfig({ database: 'driverName:databaseName' }) )
+    t.is( error.message, 'Invalid "database" specified: driverName:databaseName');
   }
 );
 
 test(
-  "engineConfig({ })",
+  "databaseConfig({ })",
   t => {
-    const error = t.throws( () => engineConfig({ }) )
-    t.is( error.message, 'No "engine" specified');
+    const error = t.throws( () => databaseConfig({ }) )
+    t.is( error.message, 'No "database" specified');
   }
 );
 

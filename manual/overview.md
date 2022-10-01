@@ -75,11 +75,11 @@ called `main()` so that we can use the `await` keyword to wait for requests
 to complete. You can, of course, use `.then(...)` if you prefer.
 
 ```js
-import database from '@abw/badger-database'
+import connect from '@abw/badger-database'
 
 async function main() {
   // connect to a Sqlite database
-  const db = await database({ engine: 'sqlite:test.db' });
+  const db = await connect({ database: 'sqlite:test.db' });
 
   // create a table
   await db.run(
@@ -156,10 +156,10 @@ one file, which isn't really hiding anything at all.  In practice,
 you would usually move the database definition into a separate module.
 
 ```js
-import database from '@abw/badger-database'
+import connect from '@abw/badger-database'
 
 const dbConfig = {
-  engine: 'sqlite:test.db',
+  database: 'sqlite:test.db',
   queries: {
     createUserTable:`
       CREATE TABLE users (
@@ -176,7 +176,7 @@ const dbConfig = {
 
 async function main() {
   // connect to a Sqlite database
-  const db = await database(dbConfig);
+  const db = await connect(dbConfig);
 
   // create a table using a named query
   await db.run('createUserTable');
@@ -206,7 +206,7 @@ rows using different search terms, for example.
 
 ```js
 const dbConfig = {
-  engine: 'sqlite:test.db',
+  database: 'sqlite:test.db',
   queries: {
     selectUserByEmail:
       'SELECT * FROM users WHERE email=?',
@@ -222,7 +222,7 @@ brackets, e.g. `<fragmentName>`.
 
 ```js
 const dbConfig = {
-  engine: 'sqlite:test.db',
+  database: 'sqlite:test.db',
   fragments: {
     selectUser:
       'SELECT * FROM users'
@@ -241,7 +241,7 @@ more complex queries.
 
 ```js
 const dbConfig = {
-  engine: 'sqlite:test.db',
+  database: 'sqlite:test.db',
   fragments: {
     selectUserCompany:
       'SELECT users.*, companies.* FROM users',
@@ -284,8 +284,8 @@ and assuming that the `users` table has already been created.
 
 ```js
 // define the users table and the columns it contains
-const db = await database({
-  engine: 'sqlite:test.db',
+const db = await connect({
+  database: 'sqlite:test.db',
   tables: {
     users: {
       columns: 'id name email'
@@ -323,7 +323,7 @@ For simple cases you can define the table columns using a whitespace
 delimited string, as show in the previous example.
 
 ```js
-const db = await database({
+const db = await connect({
   // ...engine, etc...
   tables: {
     users: {
@@ -339,7 +339,7 @@ that a column cannot be inserted or updated.  Multiple flags can be added, each
 separated by a colon.
 
 ```js
-const db = await database({
+const db = await connect({
   // ...engine, etc...
   tables: {
     users: {
@@ -357,7 +357,7 @@ If your unique ID column isn't called `id` then you can mark the relevant column
 using the `id` tag.
 
 ```js
-const db = await database({
+const db = await connect({
   // ...engine, etc...
   tables: {
     users: {
@@ -373,7 +373,7 @@ keys.  The corresponding values can be strings containing any flags for the
 columns, or an empty string if there aren't any.
 
 ```js
-const db = await database({
+const db = await connect({
   // ...engine, etc...
   tables: {
     users: {
@@ -390,7 +390,7 @@ const db = await database({
 Or you can fully expand them like so:
 
 ```js
-const db = await database({
+const db = await connect({
   // ...engine, etc...
   tables: {
     users: {
@@ -612,7 +612,7 @@ option in the table definition.
 Here's a complete example.
 
 ```js
-import { database, Table } from '@abw/badger-database';
+import { connect, Table } from '@abw/badger-database';
 
 export class Users extends Table {
   badgers() {
@@ -622,8 +622,8 @@ export class Users extends Table {
 }
 
 async function main() {
-  const db = await database({
-    engine: 'sqlite:memory',
+  const db = await connect({
+    database: 'sqlite:memory',
     tables: {
       users: {
         // bind in the custom table class

@@ -7,7 +7,7 @@ test.serial(
   'connect',
   async t => {
     db = await connect({ database: 'sqlite:memory' });
-    t.is( db.engine.driver, 'sqlite' );
+    t.is( db.engine.engine, 'sqlite' );
   }
 )
 

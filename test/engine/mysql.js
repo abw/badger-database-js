@@ -3,32 +3,32 @@ import Mysql from '../../src/Engine/Mysql.js'
 import { engine as engineFactory } from '../../src/Engines.js';
 import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
-const engine = {
+const database = {
   host:     'localhost',
   database: 'test',
   user:     'test',
   password: 'test',
 }
 const config = {
-  driver: 'mysql',
-  engine
+  engine: 'mysql',
+  database
 }
 
-const engineString = `mysql://${engine.user}:${engine.password}@${engine.host}/${engine.database}`;
-
-test.serial(
-  'no driver error',
-  t => {
-    const error = t.throws( () => new Mysql() );
-    t.is( error.message, 'No "driver" specified' )
-  }
-)
+const engineString = `mysql://${database.user}:${database.password}@${database.host}/${database.database}`;
 
 test.serial(
   'no engine error',
   t => {
-    const error = t.throws( () => new Mysql({ driver: 'mysql' }) );
+    const error = t.throws( () => new Mysql() );
     t.is( error.message, 'No "engine" specified' )
+  }
+)
+
+test.serial(
+  'no database error',
+  t => {
+    const error = t.throws( () => new Mysql({ engine: 'mysql' }) );
+    t.is( error.message, 'No "database" specified' )
   }
 )
 
@@ -197,12 +197,12 @@ test.serial(
 )
 
 //-----------------------------------------------------------------------------
-// engine() function
+// database() function
 //-----------------------------------------------------------------------------
 test.serial(
-  'fetch one row via engine()',
+  'fetch one row via database()',
   async t => {
-    const mysql = await engineFactory({ database: { ...engine, driver: 'mysql' } });
+    const mysql = await engineFactory({ database: { ...database, engine: 'mysql' } });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']
@@ -213,7 +213,7 @@ test.serial(
 )
 
 test.serial(
-  'fetch one row via engine() with string',
+  'fetch one row via database() with string',
   async t => {
     const mysql = await engineFactory({ database: engineString });
     const row   = await mysql.one(

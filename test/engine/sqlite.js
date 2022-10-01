@@ -7,39 +7,39 @@ let sqlite;
 
 const config = {
   database: {
-    driver: 'sqlite',
-    filename: ":memory:"
+    engine:   'sqlite',
+    filename: ':memory:'
   }
 };
 
 test.serial(
-  'no driver error',
+  'no engine error',
   t => {
     const error = t.throws( () => new Sqlite() );
-    t.is( error.message, 'No "driver" specified' )
+    t.is( error.message, 'No "engine" specified' )
   }
 )
 
 test.serial(
-  'no engine error',
+  'no database error',
   t => {
-    const error = t.throws( () => new Sqlite({ driver: 'sqlite' }) );
-    t.is( error.message, 'No "engine" specified' )
+    const error = t.throws( () => new Sqlite({ engine: 'sqlite' }) );
+    t.is( error.message, 'No "database" specified' )
   }
 )
 
 test.serial(
   'no filename error',
   t => {
-    const error = t.throws( () => new Sqlite({ driver: 'sqlite', engine: { } }) );
+    const error = t.throws( () => new Sqlite({ engine: 'sqlite', database: { } }) );
     t.is( error.message, 'No "filename" specified' )
   }
 )
 
 test.serial(
-  'driver in engine',
+  'engine in database',
   async t => {
-    const sqlite = await engine({ database: { driver: 'sqlite', filename: ':memory:' }});
+    const sqlite = await engine({ database: { engine: 'sqlite', filename: ':memory:' }});
     const conn = await sqlite.acquire();
     t.is(conn.open, true);
     await sqlite.release(conn);
@@ -48,9 +48,9 @@ test.serial(
 )
 
 test.serial(
-  'driver outside engine',
+  'engine outside database',
   async t => {
-    const sqlite = await engine({ driver: 'sqlite', database: { filename: ':memory:' }});
+    const sqlite = await engine({ engine: 'sqlite', database: { filename: ':memory:' }});
     const conn = await sqlite.acquire();
     t.is(conn.open, true);
     await sqlite.release(conn);

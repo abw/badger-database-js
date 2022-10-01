@@ -27,11 +27,11 @@ const queries = {
 
 export class Engine {
   constructor(config={}) {
-    this.driver    = config.driver || missing('driver');
-    this.engine    = config.engine || missing('engine');
+    this.engine    = config.engine   || missing('engine');
+    this.database  = config.database || missing('database');
     this.config    = this.configure(config);
     this.pool      = this.initPool(config.pool);
-    this.quoteChar = quoteChars[this.driver||'default'] || quoteChars.default;
+    this.quoteChar = quoteChars[this.engine||'default'] || quoteChars.default;
     this.escQuote  = `\\${this.quoteChar}`;
     addDebugMethod(this, 'engine', config);
   }

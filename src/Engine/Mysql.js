@@ -12,8 +12,8 @@ export class MysqlEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect: ", this.engine);
-    return mysql.createConnection(this.engine);
+    this.debug("connect: ", this.database);
+    return mysql.createConnection(this.database);
   }
   async connected() {
     this.debug("connected");

@@ -2,30 +2,30 @@ import test from 'ava';
 import Postgres from '../../src/Engine/Postgres.js'
 import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
-const engine = {
+const database = {
   host:     'localhost',
   database: 'test',
   user:     'test',
   password: 'test',
 }
 const config = {
-  driver: 'postgres',
-  engine
+  engine: 'postgres',
+  database
 }
-
-test.serial(
-  'no driver error',
-  t => {
-    const error = t.throws( () => new Postgres() );
-    t.is( error.message, 'No "driver" specified' )
-  }
-)
 
 test.serial(
   'no engine error',
   t => {
-    const error = t.throws( () => new Postgres({ driver: 'postgres' }) );
+    const error = t.throws( () => new Postgres() );
     t.is( error.message, 'No "engine" specified' )
+  }
+)
+
+test.serial(
+  'no database error',
+  t => {
+    const error = t.throws( () => new Postgres({ engine: 'postgres' }) );
+    t.is( error.message, 'No "database" specified' )
   }
 )
 

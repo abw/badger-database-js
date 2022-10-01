@@ -12,8 +12,8 @@ export class PostgresEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect: ", this.engine);
-    const client = new pg.Client(this.engine);
+    this.debug("connect: ", this.database);
+    const client = new pg.Client(this.database);
     await client.connect();
     return client;
   }

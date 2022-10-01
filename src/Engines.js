@@ -1,6 +1,6 @@
 import { hasValue, isString, remove } from "@abw/badger-utils";
 import { invalid, missing } from "./Utils/Error.js";
-import { engineAliases, engineStringElements, engineStringRegex } from "./Constants.js";
+import { databaseAliases, databaseStringElements, databaseStringRegex } from "./Constants.js";
 
 let Engines = { };
 
@@ -21,35 +21,35 @@ registerEngine('postgresql', './Engine/Postgres.js');
 // Engine constructor
 //-----------------------------------------------------------------------------
 export const engine = async config => {
-  config = engineConfig(config);
-  const driver = config.driver || missing('engine.driver');
-  const handler = Engines[driver] || invalid('engine.driver', driver);
+  config = databaseConfig(config);
+  const engine = config.engine || missing('database.engine');
+  const handler = Engines[engine] || invalid('database.engine', engine);
   return await handler(config);
 }
 
 //-----------------------------------------------------------------------------
 // Engine configuration
 //-----------------------------------------------------------------------------
-// engineConfig(string)
-// engineConfig({ driver: xxx, ... })
+// databaseConfig(string)
+// databaseConfig({ database: { engine: xxx, ... } })
 //-----------------------------------------------------------------------------
-export const engineConfig = config => {
-  let engine = config.engine ||= config.database || missing('engine');
+export const databaseConfig = config => {
+  let database = config.database || missing('database');
 
-  if (isString(engine)) {
+  if (isString(database)) {
     // parse connection string
-    config.engine = engine = parseEngineString(engine);
+    config.database = database = parseDatabaseString(database);
   }
 
-  // extract the driver to top level config
-  config.driver ||= engine.driver || missing('engine driver');
-  delete engine.driver;
+  // extract the engine name to top level config
+  config.engine ||= database.engine || missing('database.engine');
+  delete database.engine;
 
   // fixup any aliases
-  Object.entries(engineAliases).map(
+  Object.entries(databaseAliases).map(
     ([key, value]) => {
-      if (hasValue(engine[key])) {
-        engine[value] ||= remove(engine, key);
+      if (hasValue(database[key])) {
+        database[value] ||= remove(database, key);
       }
     }
   )
@@ -58,38 +58,39 @@ export const engineConfig = config => {
 }
 
 //-----------------------------------------------------------------------------
-// Parse Engine String
+// Parse Database String
 //-----------------------------------------------------------------------------
-// parseEngineString('postgresql://user:password@host:port/database')
-// parseEngineString('sqlite://filename.db')
-// parseEngineString('sqlite://:memory:')
-// parseEngineString('sqlite:memory')
-// parseEngineString('driver://user:password@host:port/database')
+// parseDatabaseString('postgresql://user:password@host:port/database')
+// parseDatabaseString('sqlite://filename.db')
+// parseDatabaseString('sqlite://:memory:')
+// parseDatabaseString('sqlite:memory')
+// parseDatabaseString('driver://user:password@host:port/database')
 //                    1^^^^^   2^^^ 3^^^^^^^ 4^^^ 5^^^ 6^^^^^^^
 //-----------------------------------------------------------------------------
-export const parseEngineString = string => {
+export const parseDatabaseString = string => {
   let config = { };
   let match;
+
   if (string.match(/^postgres(ql)?:/)) {
     // special case for postgres which can handle a connectionString
     // NOTE: we accept postgresql: or postgres: as prefixes and Do The
     // Right Thing
-    config.driver = 'postgres';
+    config.engine = 'postgres';
     config.connectionString = string.replace(/^postgres:/, 'postgresql:');
   }
   else if ((match = string.match(/^sqlite:\/\/(.*)/))) {
     // special case for sqlite which only has a filename (or ":memory:")
-    config.driver   = 'sqlite';
+    config.engine   = 'sqlite';
     config.filename = match[1];
   }
   else if (string === 'sqlite:memory') {
     // special case for sqlite allowing 'sqlite:memory' as short for 'sqlite://:memory:'
-    config.driver   = 'sqlite';
+    config.engine   = 'sqlite';
     config.filename = ':memory:';
   }
-  else if ((match = string.match(engineStringRegex))) {
+  else if ((match = string.match(databaseStringRegex))) {
     // all other cases (e.g. mysql)
-    Object.entries(engineStringElements).map(
+    Object.entries(databaseStringElements).map(
       ([key, index]) => {
         const value = match[index];
         if (hasValue(value)) {
@@ -99,7 +100,7 @@ export const parseEngineString = string => {
     );
   }
   else {
-    invalid('engine', string);
+    invalid('database', string);
   }
   return config;
 }

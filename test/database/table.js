@@ -15,7 +15,7 @@ test.serial(
         }
       }
     })
-    t.is( db.engine.driver, 'sqlite' );
+    t.is( db.engine.engine, 'sqlite' );
   }
 )
 

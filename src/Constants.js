@@ -1,14 +1,14 @@
 // engine parameters
-export const engineStringRegex = /^(\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
-export const engineStringElements = {
-  driver:   1,
+export const databaseStringRegex = /^(\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
+export const databaseStringElements = {
+  engine:   1,
   user:     2,
   password: 3,
   host:     4,
   port:     5,
   database: 6,
 };
-export const engineAliases = {
+export const databaseAliases = {
   username: 'user',
   pass:     'password',
   hostname: 'host',

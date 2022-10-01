@@ -5,8 +5,8 @@ import { defaultIdColumn } from '../Constants.js';
 
 export class SqliteEngine extends Engine {
   configure(config) {
-    this.filename = config.engine.filename || missing('filename');
-    this.options  = config.engine.options  || { };
+    this.filename = config.database.filename || missing('filename');
+    this.options  = config.database.options  || { };
 
     // better-sqlite3 is synchronous (because Sqlite serialises all
     // requests anyway), so there's no need/benefit in using a pool
