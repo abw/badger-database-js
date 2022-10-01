@@ -202,7 +202,7 @@ test.serial(
 test.serial(
   'fetch one row via engine()',
   async t => {
-    const mysql = await engineFactory({ engine: { ...engine, driver: 'mysql' } });
+    const mysql = await engineFactory({ database: { ...engine, driver: 'mysql' } });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']
@@ -215,7 +215,7 @@ test.serial(
 test.serial(
   'fetch one row via engine() with string',
   async t => {
-    const mysql = await engineFactory({ engine: engineString });
+    const mysql = await engineFactory({ database: engineString });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']

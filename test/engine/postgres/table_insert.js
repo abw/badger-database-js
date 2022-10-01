@@ -1,8 +1,8 @@
 import { runTableInsertTests } from '../../library/table_insert.js';
-import { engine } from '../../library/postgres.js';
+import { database } from '../../library/postgres.js';
 
 runTableInsertTests(
-  engine,
+  database,
   `CREATE TABLE users (
     id    SERIAL,
     name  TEXT,

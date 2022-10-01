@@ -1,8 +1,8 @@
 import { runTableDeleteTests } from '../../library/table_delete.js';
-import { engine } from '../../library/postgres.js';
+import { database } from '../../library/postgres.js';
 
 runTableDeleteTests(
-  engine,
+  database,
   `CREATE TABLE users (
     id    SERIAL,
     name  TEXT,

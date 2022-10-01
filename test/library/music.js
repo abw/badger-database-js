@@ -1,4 +1,4 @@
-import { database } from "../../src/Database.js";
+import { connect } from "../../src/Database.js";
 import Record from "../../src/Record.js";
 import Table from "../../src/Table.js";
 
@@ -126,8 +126,8 @@ export const musicTables = {
   },
 };
 
-export const musicdb = database({
-  engine:    'sqlite:memory',
+export const musicdb = connect({
+  database:    'sqlite:memory',
   tables:    musicTables,
   fragments: musicFragments,
   queries: musicQueries

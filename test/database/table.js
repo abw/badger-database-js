@@ -1,5 +1,5 @@
 import test from 'ava';
-import { database } from '../../src/Database.js'
+import { connect } from '../../src/Database.js'
 
 let db;
 let users;
@@ -7,8 +7,8 @@ let users;
 test.serial(
   'database',
   async t => {
-    db = await database({
-      engine: 'sqlite:memory',
+    db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: 'id:readonly name:required email:required'

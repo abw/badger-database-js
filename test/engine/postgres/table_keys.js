@@ -1,8 +1,8 @@
 import { runTableKeysTests } from '../../library/table_keys.js';
-import { engine } from '../../library/postgres.js';
+import { database } from '../../library/postgres.js';
 
 runTableKeysTests(
-  engine,
+  database,
   `CREATE TABLE users (
     key1 TEXT,
     key2 TEXT,

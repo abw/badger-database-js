@@ -1,7 +1,7 @@
-import { database as connect } from "../../src/Database.js";
+import { connect as connect } from "../../src/Database.js";
 
 export const databaseConfig = {
-  engine: 'sqlite:memory',
+  database: 'sqlite:memory',
 };
 
 export const createDatabase = async (config=databaseConfig) => connect(config);

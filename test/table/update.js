@@ -1,9 +1,9 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
 let db;
 const dbConfig = {
-  engine: 'sqlite:memory',
+  database: 'sqlite:memory',
   tables: {
     users: {
       columns: 'id forename surname email animal',
@@ -25,7 +25,7 @@ const dbConfig = {
 test.before(
   'connect to database',
   async t => {
-    db = await database(dbConfig);
+    db = await connect(dbConfig);
     t.pass()
   }
 );

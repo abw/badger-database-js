@@ -1,5 +1,5 @@
 import test from 'ava';
-import { database, createUsers } from '../library/users.js'
+import { connect, createUsers } from '../library/users.js'
 
 const users = database.table('users');
 

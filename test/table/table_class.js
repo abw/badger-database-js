@@ -1,6 +1,6 @@
 import test from 'ava';
 import Table from '../../src/Table.js';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
 export class Users extends Table {
   badgers() {
@@ -10,7 +10,7 @@ export class Users extends Table {
 
 let db;
 const dbConfig = {
-  engine: 'sqlite:memory',
+  database: 'sqlite:memory',
   tables: {
     users: {
       columns:    'id name email animal',
@@ -31,7 +31,7 @@ const dbConfig = {
 test.before(
   'connect to database',
   async t => {
-    db = await database(dbConfig);
+    db = await connect(dbConfig);
     t.pass()
   }
 );

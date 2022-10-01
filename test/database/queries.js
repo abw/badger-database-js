@@ -1,13 +1,13 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
 let db;
 
 test.before(
   'connect to database',
   async t => {
-    db = await database({
-      engine: 'sqlite:memory',
+    db = await connect({
+      database: 'sqlite:memory',
       fragments: {
         hello: 'Hello',
         world: 'World',
@@ -40,8 +40,8 @@ test.serial(
   'rebuild database',
   async t => {
     await db.destroy();
-    db = await database({
-      engine: 'sqlite:memory',
+    db = await connect({
+      database: 'sqlite:memory',
       queries: {
         createArtistsTable: `
           CREATE TABLE artists (

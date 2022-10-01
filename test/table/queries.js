@@ -1,10 +1,10 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
 let db;
 let floydId;
 const dbConfig = {
-  engine: 'sqlite:memory',
+  database: 'sqlite:memory',
   queries: {
   },
   tables: {
@@ -38,7 +38,7 @@ const dbConfig = {
 test.before(
   'create database',
   async t => {
-    db = await database(dbConfig);
+    db = await connect(dbConfig);
     t.pass("created music database")
   }
 );

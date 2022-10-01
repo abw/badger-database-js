@@ -1,8 +1,8 @@
 import { runTableInsertTests } from '../../library/table_insert.js';
-import { engine } from '../../library/mysql.js';
+import { database } from '../../library/mysql.js';
 
 runTableInsertTests(
-  engine,
+  database,
   `CREATE TABLE users (
     id    SERIAL,
     name  TEXT,

@@ -1,12 +1,12 @@
 import test from 'ava';
-import { database } from '../../src/Database.js'
+import { connect } from '../../src/Database.js'
 
 let db;
 
 test.serial(
-  'database',
+  'connect',
   async t => {
-    db = await database({ engine: 'sqlite:memory' });
+    db = await connect({ database: 'sqlite:memory' });
     t.is( db.engine.driver, 'sqlite' );
   }
 )

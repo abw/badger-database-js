@@ -1,14 +1,14 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
-export function runTableIdTests(engine, create) {
+export function runTableIdTests(database, create) {
   let db;
 
   test.serial(
-    'database',
+    'connect',
     async t => {
-      db = await database({
-        engine,
+      db = await connect({
+        database,
         tables: {
           users: {
             columns: 'user_id:readonly:id name:required email:required'

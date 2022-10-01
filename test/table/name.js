@@ -1,13 +1,13 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
 let db;
 
 test.before(
   'create database',
   async t => {
-    db = await database({
-      engine: 'sqlite:memory',
+    db = await connect({
+      database: 'sqlite:memory',
       tables: {
         people: {
           columns: 'a b c'

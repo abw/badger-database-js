@@ -1,8 +1,8 @@
 import { runTableFetchTests } from '../../library/table_fetch.js';
-import { engine } from '../../library/mysql.js';
+import { database } from '../../library/mysql.js';
 
 runTableFetchTests(
-  engine,
+  database,
   `CREATE TABLE users (
     id SERIAL,
     name TEXT,

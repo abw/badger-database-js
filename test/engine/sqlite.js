@@ -6,7 +6,7 @@ import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 let sqlite;
 
 const config = {
-  engine: {
+  database: {
     driver: 'sqlite',
     filename: ":memory:"
   }
@@ -39,7 +39,7 @@ test.serial(
 test.serial(
   'driver in engine',
   async t => {
-    const sqlite = await engine({ engine: { driver: 'sqlite', filename: ':memory:' }});
+    const sqlite = await engine({ database: { driver: 'sqlite', filename: ':memory:' }});
     const conn = await sqlite.acquire();
     t.is(conn.open, true);
     await sqlite.release(conn);
@@ -50,7 +50,7 @@ test.serial(
 test.serial(
   'driver outside engine',
   async t => {
-    const sqlite = await engine({ driver: 'sqlite', engine: { filename: ':memory:' }});
+    const sqlite = await engine({ driver: 'sqlite', database: { filename: ':memory:' }});
     const conn = await sqlite.acquire();
     t.is(conn.open, true);
     await sqlite.release(conn);

@@ -1,5 +1,5 @@
 import test from 'ava';
-import Config from '../../src/Config.js'
+import Config from '../../../src/Config.js'
 
 test(
   'config host',

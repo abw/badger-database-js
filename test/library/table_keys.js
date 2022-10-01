@@ -1,17 +1,17 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 
 // NOTE: this only work with Postgres which allows us to
 // specify multiple columns in the RETURNING clause.
 
-export function runTableKeysTests(engine, create) {
+export function runTableKeysTests(database, create) {
   let db;
 
   test.serial(
     'database',
     async t => {
-      db = await database({
-        engine,
+      db = await connect({
+        database,
         tables: {
           users: {
             columns: 'key1:key key2:key name'

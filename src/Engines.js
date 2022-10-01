@@ -34,7 +34,7 @@ export const engine = async config => {
 // engineConfig({ driver: xxx, ... })
 //-----------------------------------------------------------------------------
 export const engineConfig = config => {
-  let engine = config.engine || missing('engine');
+  let engine = config.engine ||= config.database || missing('engine');
 
   if (isString(engine)) {
     // parse connection string

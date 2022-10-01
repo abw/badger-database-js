@@ -1,8 +1,8 @@
 import { runTableUpdateTests } from '../../library/table_update.js';
-import { engine } from '../../library/mysql.js';
+import { database } from '../../library/mysql.js';
 
 runTableUpdateTests(
-  engine,
+  database,
   `CREATE TABLE users (
     id    SERIAL,
     name  TEXT,

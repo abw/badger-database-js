@@ -7,4 +7,4 @@ export * from './Schema.js';
 export * from './Table.js';
 export * from './Tables.js';
 export * from './Utils/Error.js';
-export { database as default } from './Database.js'
+export { connect as default } from './Database.js'

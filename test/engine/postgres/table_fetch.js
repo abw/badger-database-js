@@ -1,8 +1,8 @@
 import { runTableFetchTests } from '../../library/table_fetch.js';
-import { engine } from '../../library/postgres.js';
+import { database } from '../../library/postgres.js';
 
 runTableFetchTests(
-  engine,
+  database,
   `CREATE TABLE users (
     id SERIAL,
     name TEXT,

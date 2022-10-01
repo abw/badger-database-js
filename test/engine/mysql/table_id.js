@@ -1,8 +1,8 @@
 import { runTableIdTests } from '../../library/table_id.js';
-import { engine } from '../../library/mysql.js';
+import { database } from '../../library/mysql.js';
 
 runTableIdTests(
-  engine,
+  database,
   `CREATE TABLE users (
     user_id SERIAL,
     name    TEXT,

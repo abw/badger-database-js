@@ -1,12 +1,12 @@
 import test from 'ava';
-import { database } from '../../src/Database.js';
+import { connect } from '../../src/Database.js';
 import { ColumnValidationError } from '../../src/Utils/Error.js';
 
 test(
   'users table with string of columns',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: 'id name email'
@@ -31,8 +31,8 @@ test(
 test(
   'users table with some required columns',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: 'id:readonly name:required email:required'
@@ -59,8 +59,8 @@ test(
 test(
   'users table with custom id',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           id: 'user_id',
@@ -91,8 +91,8 @@ test(
 test(
   'users table with custom id marked in columns',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: 'user_id:id:readonly name:required email:required'
@@ -122,8 +122,8 @@ test(
 test(
   'users table with multiple id columns marked',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: 'user_id:id another_id:id name:required email:required'
@@ -141,8 +141,8 @@ test(
 test(
   'users table with custom keys',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           keys: 'user_id another_id',
@@ -177,8 +177,8 @@ test(
 test(
   'users table with custom keys marked in columns',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: 'user_id:readonly:key another_id:readonly:key name:required email:required'
@@ -212,8 +212,8 @@ test(
 test(
   'users table with expanded columns',
   async t => {
-    const db = await database({
-      engine: 'sqlite:memory',
+    const db = await connect({
+      database: 'sqlite:memory',
       tables: {
         users: {
           columns: {
