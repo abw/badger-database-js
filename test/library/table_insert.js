@@ -49,8 +49,9 @@ export function runTableInsertTests(database, create) {
         email: 'bobby@badgerpower.com'
       });
       t.is( result.id, 1 );
-      t.is( result.name, 'Bobby Badger' );
-      t.is( result.email, 'bobby@badgerpower.com' );
+      t.is( result.changes, 1 );
+      t.is( result.name, undefined );
+      t.is( result.email, undefined );
     }
   )
 
@@ -59,10 +60,15 @@ export function runTableInsertTests(database, create) {
     'insert another row',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Brian Badger',
-        email: 'brian@badgerpower.com'
-      });
+      const result = await users.insert(
+        {
+          name:  'Brian Badger',
+          email: 'brian@badgerpower.com'
+        },
+        {
+          reload: true
+        }
+      );
       t.is( result.id, 2 );
       t.is( result.name, 'Brian Badger' );
       t.is( result.email, 'brian@badgerpower.com' );
@@ -74,7 +80,7 @@ export function runTableInsertTests(database, create) {
     'fetch all',
     async t => {
       const users = await db.table('users');
-      const badgers = await users.fetchAll();
+      const badgers = await users.allRows();
       t.is( badgers.length, 2 );
       t.is( badgers[0].name, 'Bobby Badger' );
       t.is( badgers[1].name, 'Brian Badger' );
@@ -88,19 +94,45 @@ export function runTableInsertTests(database, create) {
       const users = await db.table('users');
       const result = await users.insert([
         {
-          name:  'Franky Ferret',
-          email: 'franky@badgerpower.com'
+          name:  'Roger Rabbit',
+          email: 'roger@badgerpower.com'
         },
         {
-          name:  'Simon Stoat',
-          email: 'simon@badgerpower.com'
+          name:  'Willy Weasel',
+          email: 'willy@badgerpower.com'
         },
       ]);
       t.is( result.length, 2 );
       t.is( result[0].id, 3 );
+      t.is( result[0].name, undefined );
+      t.is( result[1].id, 4 );
+      t.is( result[1].name, undefined );
+    }
+  )
+
+  // insert multiple rows with reload
+  test.serial(
+    'insert multiple rows with reload',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.insert(
+        [
+          {
+            name:  'Franky Ferret',
+            email: 'franky@badgerpower.com'
+          },
+          {
+            name:  'Simon Stoat',
+            email: 'simon@badgerpower.com'
+          },
+        ],
+        { reload: true }
+      );
+      t.is( result.length, 2 );
+      t.is( result[0].id, 5 );
       t.is( result[0].name, 'Franky Ferret' );
       t.is( result[0].email, 'franky@badgerpower.com' );
-      t.is( result[1].id, 4 );
+      t.is( result[1].id, 6 );
       t.is( result[1].name, 'Simon Stoat' );
       t.is( result[1].email, 'simon@badgerpower.com' );
     }

@@ -88,10 +88,13 @@ test.serial(
 test.serial(
   'insert a row',
   async t => {
-    const result = await users.insert({
-      name: 'Bobby Badger',
-      email: 'bobby@badgerpower.com'
-    })
+    const result = await users.insert(
+      {
+        name: 'Bobby Badger',
+        email: 'bobby@badgerpower.com'
+      },
+      { reload: true }
+    )
     t.is(result.id, 1);
     t.is(result.name, 'Bobby Badger');
     t.is(result.email, 'bobby@badgerpower.com');
@@ -102,7 +105,7 @@ test.serial(
   'attempt to select a row with an unknown column',
   async t => {
     const error = await t.throwsAsync(
-      () => users.fetchAll(
+      () => users.allRows(
         {
           email: 'bobby@badgerpower.com',
         },
@@ -120,7 +123,7 @@ test.serial(
   'attempt to select a row with an unknown column in the where clause',
   async t => {
     const error = await t.throwsAsync(
-      () => users.fetchOne({
+      () => users.oneRow({
         email_address: 'bobby@badgerpower.com',
       })
     );

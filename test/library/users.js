@@ -82,7 +82,7 @@ export const usersWithCustomRecord = databaseWithCustomRecord.table('users');
 
 export class Users extends Table {
   badgers() {
-    return this.fetchRows({ surname: "Badger" });
+    return this.allRows({ surname: "Badger" });
   }
 }
 

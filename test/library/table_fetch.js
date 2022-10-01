@@ -45,10 +45,13 @@ export function runTableFetchTests(database, create) {
     'table insert',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Bobby Badger',
-        email: 'bobby@badgerpower.com'
-      });
+      const result = await users.insert(
+        {
+          name:  'Bobby Badger',
+          email: 'bobby@badgerpower.com'
+        },
+        { reload: true }
+      );
       t.is( result.id, 1 );
       t.is( result.name, 'Bobby Badger' );
       t.is( result.email, 'bobby@badgerpower.com' );
@@ -58,10 +61,13 @@ export function runTableFetchTests(database, create) {
     'table insert another row',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Brian Badger',
-        email: 'brian@badgerpower.com'
-      });
+      const result = await users.insert(
+        {
+          name:  'Brian Badger',
+          email: 'brian@badgerpower.com'
+        },
+        { reload: true }
+      );
       t.is( result.id, 2 );
       t.is( result.name, 'Brian Badger' );
       t.is( result.email, 'brian@badgerpower.com' );
@@ -73,7 +79,7 @@ export function runTableFetchTests(database, create) {
     'table fetch one',
     async t => {
       const users = await db.table('users');
-      const bobby = await users.fetchOne({
+      const bobby = await users.oneRow({
         email: 'bobby@badgerpower.com'
       });
       t.is( bobby.name, 'Bobby Badger' );
@@ -83,7 +89,7 @@ export function runTableFetchTests(database, create) {
     'table fetch any',
     async t => {
       const users = await db.table('users');
-      const bobby = await users.fetchAny({
+      const bobby = await users.anyRow({
         email: 'bobby@badgerpower.com'
       });
       t.is( bobby.name, 'Bobby Badger' );
@@ -93,7 +99,7 @@ export function runTableFetchTests(database, create) {
     'table fetch all',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.fetchAll({
+      const rows  = await users.allRows({
         email: 'bobby@badgerpower.com'
       });
       t.is( rows.length, 1 );
@@ -104,7 +110,7 @@ export function runTableFetchTests(database, create) {
     'table fetch all with no spec',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.fetchAll();
+      const rows  = await users.allRows();
       t.is( rows.length, 2 );
       t.is( rows[0].name, 'Bobby Badger' );
       t.is( rows[1].name, 'Brian Badger' );
@@ -114,7 +120,7 @@ export function runTableFetchTests(database, create) {
     'table fetch all with empty spec',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.fetchAll({ });
+      const rows  = await users.allRows({ });
       t.is( rows.length, 2 );
       t.is( rows[0].name, 'Bobby Badger' );
       t.is( rows[1].name, 'Brian Badger' );
@@ -124,7 +130,7 @@ export function runTableFetchTests(database, create) {
     'table fetch with columns',
     async t => {
       const users = await db.table('users');
-      const bobby = await users.fetchOne(
+      const bobby = await users.oneRow(
         {
           email: 'bobby@badgerpower.com'
         },

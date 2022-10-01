@@ -4,7 +4,7 @@ import { connect } from '../../src/Database.js';
 
 export class Users extends Table {
   badgers() {
-    return this.fetchAll({ animal: 'Badger' });
+    return this.allRows({ animal: 'Badger' });
   }
 }
 

@@ -50,7 +50,7 @@ test.serial(
       email:    'frank@ferret.com'
     });
     t.is(insert.id, 1);
-    const ferret = await users.fetchOne({ id: insert.id })
+    const ferret = await users.oneRow({ id: insert.id })
     t.is(ferret.forename, 'Frank');
     t.is(ferret.surname, 'Ferret');
     t.is(ferret.id, 1);
@@ -74,7 +74,7 @@ test.serial(
       },
     ]);
     t.is( inserts.length, 2 );
-    const rabbits = await users.fetchAll({ surname: 'Rabbit' })
+    const rabbits = await users.allRows({ surname: 'Rabbit' })
     t.is( rabbits[0].forename, 'Roger' );
     t.is( rabbits[1].forename, 'Richard' );
   }

@@ -4,7 +4,7 @@ import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
 import Queries from "./Queries.js";
 // import Schema from "./Schema.js";
-import { fail, hasValue, isArray, noValue, splitList } from "@abw/badger-utils";
+import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
@@ -112,19 +112,19 @@ export class Table {
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
 
-    // the reload option can be set false to prevent a reload
-    if (hasValue(options.reload) && ! options.reload) {
+    if (options.reload) {
+      // the reload option can be set reload the record using the id/keys
+      const fetch = { };
+      this.keys.map(
+        key => fetch[key] = insert[key] || data[key]
+      );
+      // console.log('post-insert fetch: ', fetch);
+
+      return this.oneRow(fetch);
+    }
+    else {
       return insert;
     }
-
-    // otherwise we reload the record using the id/keys
-    const fetch = { };
-    this.keys.map(
-      key => fetch[key] = insert[key] || data[key]
-    );
-    // console.log('post-insert fetch: ', fetch);
-
-    return this.fetchOne(fetch);
   }
   async insertAll(data, options) {
     this.debug("insertAll: ", data);
@@ -163,17 +163,17 @@ export class Table {
     }
     return this.checkColumns(where);
   }
-  async fetchOne(where, options={}) {
+  async oneRow(where, options={}) {
     this.debug("fetchOne: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectOne(this.table, wcols, wvals, options);
   }
-  async fetchAny(where, options={}) {
+  async anyRow(where, options={}) {
     this.debug("fetchAny: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectAny(this.table, wcols, wvals, options);
   }
-  async fetchAll(where, options={}) {
+  async allRows(where, options={}) {
     this.debug("fetchAll: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectAll(this.table, wcols, wvals, options);

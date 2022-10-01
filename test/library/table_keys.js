@@ -50,6 +50,7 @@ export function runTableKeysTests(database, create) {
           key2: 'b',
           name: 'Bobby Badger'
         },
+        { reload: true }
       );
       t.is( result.key1, 'a' );
       t.is( result.key2, 'b' );
@@ -66,8 +67,7 @@ export function runTableKeysTests(database, create) {
           key1: 'a',
           key2: 'b',
           name: 'Brian Badger'
-        },
-        { reload: false }
+        }
       );
       t.is( result.key1, 'a' );
       t.is( result.key2, 'b' );

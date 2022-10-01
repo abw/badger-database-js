@@ -40,10 +40,13 @@ export function runTableDeleteTests(database, create) {
     'table insert',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert({
-        name:  'Bobby Badger',
-        email: 'bobby@badgerpower.com'
-      });
+      const result = await users.insert(
+        {
+          name:  'Bobby Badger',
+          email: 'bobby@badgerpower.com'
+        },
+        { reload: true }
+      );
       t.is( result.id, 1 );
       t.is( result.name, 'Bobby Badger' );
       t.is( result.email, 'bobby@badgerpower.com' );
@@ -54,7 +57,7 @@ export function runTableDeleteTests(database, create) {
     'fetch all',
     async t => {
       const users = await db.table('users');
-      const rows = await users.fetchAll();
+      const rows = await users.allRows();
       t.is( rows.length, 1 );
     }
   )
@@ -74,7 +77,7 @@ export function runTableDeleteTests(database, create) {
     'fetch none',
     async t => {
       const users = await db.table('users');
-      const rows = await users.fetchAll();
+      const rows = await users.allRows();
       t.is( rows.length, 0 );
     }
   )
