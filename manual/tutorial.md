@@ -650,6 +650,81 @@ const allUsers = await users.fetchAll();
 const allUsers = await users.fetchAll({ });
 ```
 
+### oneRecord()
+
+This method is a wrapper around `oneRow()` which returns the row as
+a record object.
+
+More on records below.
+
+### anyRecord()
+
+This method is a wrapper around `anyRow()` which returns the row as
+a record object.
+
+### allRecords()
+
+This method is a wrapper around `allRows()` which returns the rows as
+an array of record objects.
+
+### run()
+
+This is a low-level method for running any arbitrary SQL query where
+you're not expecting to fetch any rows.  It's just like the `run()`
+method on the database object.  The only difference is that there are
+some table-specific fragment pre-defined: `table` contains the table
+name and `columns` contains a comma separated list of all column names.
+
+The columns have the table name prepended and are property quoted for
+the database.  For example, a `users` table having columns defined as
+`id name email` will expand the `columns` SQL fragment as
+`"users"."id", "users"."name", "users"."email"` for Sqlite and Postgres.
+For Mysql the backtick character is used instead of double quotes.
+
+```js
+users.run('DROP TABLE <table>')
+```
+
+### one()
+
+This is another low-level method for running an SQL query where you're
+expecting to get exactly one row returned.  It's just like the
+corresponding `one()` database method, with the additional table-specific
+SQL fragments available, as per `run()`.
+
+```js
+const bobby = users.one(
+  'SELECT <columns> FROM <table> WHERE name=?',
+  ['Bobby Badger']
+)
+```
+
+### any()
+
+This is yet another low-level method for running an SQL query, but where
+you're expecting to get one row returned which may or may not exist.
+It's just like the corresponding `any()` database method, with the additional
+table-specific SQL fragments available, as per `run()`.
+
+```js
+const bobby = users.any(
+  'SELECT <columns> FROM <table> WHERE name=?',
+  ['Bobby Badger']
+)
+```
+
+### all()
+
+The final low-level method for running an SQL query where you're expecting to
+get multiple rows.  It's just like the corresponding `all()` database method,
+with the additional table-specific SQL fragments available, as per `run()`.
+
+```js
+const rows = users.all(
+  'SELECT <columns> FROM <table>',
+)
+```
+
 ## Custom Table Class
 
 You can define your own custom table class for each table in the database.
