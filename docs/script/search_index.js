@@ -1,14 +1,32 @@
 window.esdocSearchIndex = [
   [
+    "@abw/badger-utils~after",
+    "class/src/Operator/After.js~After.html",
+    "<span>After</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~before",
+    "class/src/Operator/Before.js~Before.html",
+    "<span>Before</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~columnvalidationerror",
+    "class/src/Utils/Error.js~ColumnValidationError.html",
+    "<span>ColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
     "@abw/badger-utils~config",
     "variable/index.html#static-variable-Config",
     "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~connection",
-    "class/src/Connection.js~Connection.html",
-    "<span>Connection</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "@abw/badger-utils~customerror",
+    "class/src/Utils/Error.js~CustomError.html",
+    "<span>CustomError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "class"
   ],
   [
@@ -18,9 +36,57 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-utils~database",
+    "class/src/Operator/Database.js~Database.html",
+    "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~engine",
+    "class/src/Engine.js~Engine.html",
+    "<span>Engine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~engines",
+    "variable/index.html#static-variable-Engines",
+    "<span>Engines</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-utils~from",
     "class/src/Operator/From.js~From.html",
     "<span>From</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~group",
+    "class/src/Operator/Group.js~Group.html",
+    "<span>Group</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~having",
+    "class/src/Operator/Having.js~Having.html",
+    "<span>Having</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~insertvalidationerror",
+    "class/src/Utils/Error.js~InsertValidationError.html",
+    "<span>InsertValidationError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~join",
+    "class/src/Operator/Join.js~Join.html",
+    "<span>Join</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~mysqlengine",
+    "class/src/Engine/Mysql.js~MysqlEngine.html",
+    "<span>MysqlEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "class"
   ],
   [
@@ -30,9 +96,27 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-utils~order",
+    "class/src/Operator/Order.js~Order.html",
+    "<span>Order</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~postgresengine",
+    "class/src/Engine/Postgres.js~PostgresEngine.html",
+    "<span>PostgresEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
     "@abw/badger-utils~queries",
     "class/src/Queries.js~Queries.html",
     "<span>Queries</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-utils~query",
+    "class/src/Query.js~Query.html",
+    "<span>Query</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "class"
   ],
   [
@@ -54,6 +138,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-utils~sqliteengine",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html",
+    "<span>SqliteEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
     "@abw/badger-utils~table",
     "class/src/Table.js~Table.html",
     "<span>Table</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -66,21 +156,81 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-utils~unexpectedrowcount",
+    "class/src/Utils/Error.js~UnexpectedRowCount.html",
+    "<span>UnexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "class"
+  ],
+  [
     "@abw/badger-utils~where",
     "class/src/Operator/Where.js~Where.html",
     "<span>Where</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~connection",
-    "function/index.html#static-function-connection",
-    "<span>connection</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "@abw/badger-utils~adddebugmethod",
+    "function/index.html#static-function-addDebugMethod",
+    "<span>addDebugMethod</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~database",
-    "function/index.html#static-function-database",
-    "<span>database</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "@abw/badger-utils~allcolumns",
+    "variable/index.html#static-variable-allColumns",
+    "<span>allColumns</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~bitsplitter",
+    "variable/index.html#static-variable-bitSplitter",
+    "<span>bitSplitter</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~connect",
+    "function/index.html#static-function-connect",
+    "<span>connect</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~databasealiases",
+    "variable/index.html#static-variable-databaseAliases",
+    "<span>databaseAliases</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~databaseconfig",
+    "function/index.html#static-function-databaseConfig",
+    "<span>databaseConfig</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~databasestringelements",
+    "variable/index.html#static-variable-databaseStringElements",
+    "<span>databaseStringElements</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~databasestringregex",
+    "variable/index.html#static-variable-databaseStringRegex",
+    "<span>databaseStringRegex</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~debug",
+    "variable/index.html#static-variable-debug",
+    "<span>debug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~defaultidcolumn",
+    "variable/index.html#static-variable-defaultIdColumn",
+    "<span>defaultIdColumn</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~engine",
+    "function/index.html#static-function-engine",
+    "<span>engine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
   ],
   [
@@ -90,9 +240,33 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-utils~format",
+    "function/index.html#static-function-format",
+    "<span>format</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~getdebug",
+    "function/index.html#static-function-getDebug",
+    "<span>getDebug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~invalid",
+    "function/index.html#static-function-invalid",
+    "<span>invalid</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
     "@abw/badger-utils~many",
     "function/index.html#static-function-many",
     "<span>many</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~missing",
+    "function/index.html#static-function-missing",
+    "<span>missing</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
   ],
   [
@@ -102,9 +276,57 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-utils~notimplemented",
+    "function/index.html#static-function-notImplemented",
+    "<span>notImplemented</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~notimplementedinbaseclass",
+    "function/index.html#static-function-notImplementedInBaseClass",
+    "<span>notImplementedInBaseClass</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~notimplementedinmodule",
+    "function/index.html#static-function-notImplementedInModule",
+    "<span>notImplementedInModule</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
     "@abw/badger-utils~one",
     "function/index.html#static-function-one",
     "<span>one</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~operatorproxy",
+    "function/index.html#static-function-operatorProxy",
+    "<span>operatorProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~operators",
+    "variable/index.html#static-variable-operators",
+    "<span>operators</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~parsedatabasestring",
+    "function/index.html#static-function-parseDatabaseString",
+    "<span>parseDatabaseString</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~preparecolumns",
+    "function/index.html#static-function-prepareColumns",
+    "<span>prepareColumns</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~preparekeys",
+    "function/index.html#static-function-prepareKeys",
+    "<span>prepareKeys</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
   ],
   [
@@ -126,6 +348,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-utils~registerengine",
+    "function/index.html#static-function-registerEngine",
+    "<span>registerEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
     "@abw/badger-utils~rowproxy",
     "function/index.html#static-function-rowProxy",
     "<span>rowProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -144,10 +372,40 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-utils~setdebug",
+    "function/index.html#static-function-setDebug",
+    "<span>setDebug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
     "@abw/badger-utils~table",
     "function/index.html#static-function-table",
     "<span>table</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
+  ],
+  [
+    "@abw/badger-utils~throwcolumnvalidationerror",
+    "variable/index.html#static-variable-throwColumnValidationError",
+    "<span>throwColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-utils~thrower",
+    "function/index.html#static-function-thrower",
+    "<span>thrower</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~unexpectedrowcount",
+    "function/index.html#static-function-unexpectedRowCount",
+    "<span>unexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-utils~wheretrue",
+    "variable/index.html#static-variable-whereTrue",
+    "<span>whereTrue</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "variable"
   ],
   [
     "src/.external-ecmascript.js~array",
@@ -438,52 +696,10 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/connection.js",
-    "file/src/Connection.js.html",
-    "src/Connection.js",
+    "src/constants.js",
+    "file/src/Constants.js.html",
+    "src/Constants.js",
     "file"
-  ],
-  [
-    "src/connection.js~connection#acquire",
-    "class/src/Connection.js~Connection.html#instance-method-acquire",
-    "src/Connection.js~Connection#acquire",
-    "method"
-  ],
-  [
-    "src/connection.js~connection#config",
-    "class/src/Connection.js~Connection.html#instance-member-config",
-    "src/Connection.js~Connection#config",
-    "member"
-  ],
-  [
-    "src/connection.js~connection#constructor",
-    "class/src/Connection.js~Connection.html#instance-constructor-constructor",
-    "src/Connection.js~Connection#constructor",
-    "method"
-  ],
-  [
-    "src/connection.js~connection#destroy",
-    "class/src/Connection.js~Connection.html#instance-method-destroy",
-    "src/Connection.js~Connection#destroy",
-    "method"
-  ],
-  [
-    "src/connection.js~connection#knex",
-    "class/src/Connection.js~Connection.html#instance-member-knex",
-    "src/Connection.js~Connection#knex",
-    "member"
-  ],
-  [
-    "src/connection.js~connection#pool",
-    "class/src/Connection.js~Connection.html#instance-method-pool",
-    "src/Connection.js~Connection#pool",
-    "method"
-  ],
-  [
-    "src/connection.js~connection#raw",
-    "class/src/Connection.js~Connection.html#instance-method-raw",
-    "src/Connection.js~Connection#raw",
-    "method"
   ],
   [
     "src/database.js",
@@ -492,10 +708,22 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/database.js~database#connection",
-    "class/src/Database.js~Database.html#instance-member-connection",
-    "src/Database.js~Database#connection",
-    "member"
+    "src/database.js~database#acquire",
+    "class/src/Database.js~Database.html#instance-method-acquire",
+    "src/Database.js~Database#acquire",
+    "method"
+  ],
+  [
+    "src/database.js~database#all",
+    "class/src/Database.js~Database.html#instance-method-all",
+    "src/Database.js~Database#all",
+    "method"
+  ],
+  [
+    "src/database.js~database#any",
+    "class/src/Database.js~Database.html#instance-method-any",
+    "src/Database.js~Database#any",
+    "method"
   ],
   [
     "src/database.js~database#constructor",
@@ -510,15 +738,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/database.js~database#escape",
-    "class/src/Database.js~Database.html#instance-method-escape",
-    "src/Database.js~Database#escape",
-    "method"
-  ],
-  [
-    "src/database.js~database#escapechar",
-    "class/src/Database.js~Database.html#instance-member-escapeChar",
-    "src/Database.js~Database#escapeChar",
+    "src/database.js~database#engine",
+    "class/src/Database.js~Database.html#instance-member-engine",
+    "src/Database.js~Database#engine",
     "member"
   ],
   [
@@ -534,16 +756,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/database.js~database#knex",
-    "class/src/Database.js~Database.html#instance-method-knex",
-    "src/Database.js~Database#knex",
-    "method"
-  ],
-  [
     "src/database.js~database#model",
     "class/src/Database.js~Database.html#instance-member-model",
     "src/Database.js~Database#model",
     "member"
+  ],
+  [
+    "src/database.js~database#one",
+    "class/src/Database.js~Database.html#instance-method-one",
+    "src/Database.js~Database#one",
+    "method"
   ],
   [
     "src/database.js~database#queries",
@@ -558,9 +780,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/database.js~database#raw",
-    "class/src/Database.js~Database.html#instance-method-raw",
-    "src/Database.js~Database#raw",
+    "src/database.js~database#quote",
+    "class/src/Database.js~Database.html#instance-method-quote",
+    "src/Database.js~Database#quote",
+    "method"
+  ],
+  [
+    "src/database.js~database#release",
+    "class/src/Database.js~Database.html#instance-method-release",
+    "src/Database.js~Database#release",
+    "method"
+  ],
+  [
+    "src/database.js~database#run",
+    "class/src/Database.js~Database.html#instance-method-run",
+    "src/Database.js~Database#run",
     "method"
   ],
   [
@@ -582,6 +816,450 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/engine.js",
+    "file/src/Engine.js.html",
+    "src/Engine.js",
+    "file"
+  ],
+  [
+    "src/engine.js~engine#acquire",
+    "class/src/Engine.js~Engine.html#instance-method-acquire",
+    "src/Engine.js~Engine#acquire",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#all",
+    "class/src/Engine.js~Engine.html#instance-method-all",
+    "src/Engine.js~Engine#all",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#any",
+    "class/src/Engine.js~Engine.html#instance-method-any",
+    "src/Engine.js~Engine#any",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#config",
+    "class/src/Engine.js~Engine.html#instance-member-config",
+    "src/Engine.js~Engine#config",
+    "member"
+  ],
+  [
+    "src/engine.js~engine#configure",
+    "class/src/Engine.js~Engine.html#instance-method-configure",
+    "src/Engine.js~Engine#configure",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#connect",
+    "class/src/Engine.js~Engine.html#instance-method-connect",
+    "src/Engine.js~Engine#connect",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#connected",
+    "class/src/Engine.js~Engine.html#instance-method-connected",
+    "src/Engine.js~Engine#connected",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#constructor",
+    "class/src/Engine.js~Engine.html#instance-constructor-constructor",
+    "src/Engine.js~Engine#constructor",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#database",
+    "class/src/Engine.js~Engine.html#instance-member-database",
+    "src/Engine.js~Engine#database",
+    "member"
+  ],
+  [
+    "src/engine.js~engine#delete",
+    "class/src/Engine.js~Engine.html#instance-method-delete",
+    "src/Engine.js~Engine#delete",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#destroy",
+    "class/src/Engine.js~Engine.html#instance-method-destroy",
+    "src/Engine.js~Engine#destroy",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#disconnect",
+    "class/src/Engine.js~Engine.html#instance-method-disconnect",
+    "src/Engine.js~Engine#disconnect",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#engine",
+    "class/src/Engine.js~Engine.html#instance-member-engine",
+    "src/Engine.js~Engine#engine",
+    "member"
+  ],
+  [
+    "src/engine.js~engine#escquote",
+    "class/src/Engine.js~Engine.html#instance-member-escQuote",
+    "src/Engine.js~Engine#escQuote",
+    "member"
+  ],
+  [
+    "src/engine.js~engine#execute",
+    "class/src/Engine.js~Engine.html#instance-method-execute",
+    "src/Engine.js~Engine#execute",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatcolumnplaceholder",
+    "class/src/Engine.js~Engine.html#instance-method-formatColumnPlaceholder",
+    "src/Engine.js~Engine#formatColumnPlaceholder",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatcolumnplaceholders",
+    "class/src/Engine.js~Engine.html#instance-method-formatColumnPlaceholders",
+    "src/Engine.js~Engine#formatColumnPlaceholders",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatcolumns",
+    "class/src/Engine.js~Engine.html#instance-method-formatColumns",
+    "src/Engine.js~Engine#formatColumns",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatplaceholders",
+    "class/src/Engine.js~Engine.html#instance-method-formatPlaceholders",
+    "src/Engine.js~Engine#formatPlaceholders",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatreturning",
+    "class/src/Engine.js~Engine.html#instance-method-formatReturning",
+    "src/Engine.js~Engine#formatReturning",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#initpool",
+    "class/src/Engine.js~Engine.html#instance-method-initPool",
+    "src/Engine.js~Engine#initPool",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#insert",
+    "class/src/Engine.js~Engine.html#instance-method-insert",
+    "src/Engine.js~Engine#insert",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#one",
+    "class/src/Engine.js~Engine.html#instance-method-one",
+    "src/Engine.js~Engine#one",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#optionalparams",
+    "class/src/Engine.js~Engine.html#instance-method-optionalParams",
+    "src/Engine.js~Engine#optionalParams",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#pool",
+    "class/src/Engine.js~Engine.html#instance-member-pool",
+    "src/Engine.js~Engine#pool",
+    "member"
+  ],
+  [
+    "src/engine.js~engine#prepare",
+    "class/src/Engine.js~Engine.html#instance-method-prepare",
+    "src/Engine.js~Engine#prepare",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#quote",
+    "class/src/Engine.js~Engine.html#instance-method-quote",
+    "src/Engine.js~Engine#quote",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#quotechar",
+    "class/src/Engine.js~Engine.html#instance-member-quoteChar",
+    "src/Engine.js~Engine#quoteChar",
+    "member"
+  ],
+  [
+    "src/engine.js~engine#quotetablecolumn",
+    "class/src/Engine.js~Engine.html#instance-method-quoteTableColumn",
+    "src/Engine.js~Engine#quoteTableColumn",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#release",
+    "class/src/Engine.js~Engine.html#instance-method-release",
+    "src/Engine.js~Engine#release",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#run",
+    "class/src/Engine.js~Engine.html#instance-method-run",
+    "src/Engine.js~Engine#run",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#sanitizeresult",
+    "class/src/Engine.js~Engine.html#instance-method-sanitizeResult",
+    "src/Engine.js~Engine#sanitizeResult",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#select",
+    "class/src/Engine.js~Engine.html#instance-method-select",
+    "src/Engine.js~Engine#select",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#selectall",
+    "class/src/Engine.js~Engine.html#instance-method-selectAll",
+    "src/Engine.js~Engine#selectAll",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#selectany",
+    "class/src/Engine.js~Engine.html#instance-method-selectAny",
+    "src/Engine.js~Engine#selectAny",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#selectone",
+    "class/src/Engine.js~Engine.html#instance-method-selectOne",
+    "src/Engine.js~Engine#selectOne",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#selectquery",
+    "class/src/Engine.js~Engine.html#instance-method-selectQuery",
+    "src/Engine.js~Engine#selectQuery",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#update",
+    "class/src/Engine.js~Engine.html#instance-method-update",
+    "src/Engine.js~Engine#update",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js",
+    "file/src/Engine/Mysql.js.html",
+    "src/Engine/Mysql.js",
+    "file"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#all",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-all",
+    "src/Engine/Mysql.js~MysqlEngine#all",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#any",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-any",
+    "src/Engine/Mysql.js~MysqlEngine#any",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#configure",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-configure",
+    "src/Engine/Mysql.js~MysqlEngine#configure",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#connect",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-connect",
+    "src/Engine/Mysql.js~MysqlEngine#connect",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#connected",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-connected",
+    "src/Engine/Mysql.js~MysqlEngine#connected",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#disconnect",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-disconnect",
+    "src/Engine/Mysql.js~MysqlEngine#disconnect",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#run",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-run",
+    "src/Engine/Mysql.js~MysqlEngine#run",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#sanitizeresult",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-sanitizeResult",
+    "src/Engine/Mysql.js~MysqlEngine#sanitizeResult",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js",
+    "file/src/Engine/Postgres.js.html",
+    "src/Engine/Postgres.js",
+    "file"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#all",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-all",
+    "src/Engine/Postgres.js~PostgresEngine#all",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#any",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-any",
+    "src/Engine/Postgres.js~PostgresEngine#any",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#configure",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-configure",
+    "src/Engine/Postgres.js~PostgresEngine#configure",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#connect",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-connect",
+    "src/Engine/Postgres.js~PostgresEngine#connect",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#connected",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-connected",
+    "src/Engine/Postgres.js~PostgresEngine#connected",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#disconnect",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-disconnect",
+    "src/Engine/Postgres.js~PostgresEngine#disconnect",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#execute",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-execute",
+    "src/Engine/Postgres.js~PostgresEngine#execute",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#formatcolumnplaceholder",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatColumnPlaceholder",
+    "src/Engine/Postgres.js~PostgresEngine#formatColumnPlaceholder",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#formatcolumnplaceholders",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatColumnPlaceholders",
+    "src/Engine/Postgres.js~PostgresEngine#formatColumnPlaceholders",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#formatplaceholders",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatPlaceholders",
+    "src/Engine/Postgres.js~PostgresEngine#formatPlaceholders",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#formatreturning",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatReturning",
+    "src/Engine/Postgres.js~PostgresEngine#formatReturning",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#run",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-run",
+    "src/Engine/Postgres.js~PostgresEngine#run",
+    "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine#sanitizeresult",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-sanitizeResult",
+    "src/Engine/Postgres.js~PostgresEngine#sanitizeResult",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js",
+    "file/src/Engine/Sqlite.js.html",
+    "src/Engine/Sqlite.js",
+    "file"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#all",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-all",
+    "src/Engine/Sqlite.js~SqliteEngine#all",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#any",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-any",
+    "src/Engine/Sqlite.js~SqliteEngine#any",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#configure",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-configure",
+    "src/Engine/Sqlite.js~SqliteEngine#configure",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#connect",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-connect",
+    "src/Engine/Sqlite.js~SqliteEngine#connect",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#connected",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-connected",
+    "src/Engine/Sqlite.js~SqliteEngine#connected",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#disconnect",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-disconnect",
+    "src/Engine/Sqlite.js~SqliteEngine#disconnect",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#filename",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-member-filename",
+    "src/Engine/Sqlite.js~SqliteEngine#filename",
+    "member"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#options",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-member-options",
+    "src/Engine/Sqlite.js~SqliteEngine#options",
+    "member"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#run",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-run",
+    "src/Engine/Sqlite.js~SqliteEngine#run",
+    "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine#sanitizeresult",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-sanitizeResult",
+    "src/Engine/Sqlite.js~SqliteEngine#sanitizeResult",
+    "method"
+  ],
+  [
+    "src/engines.js",
+    "file/src/Engines.js.html",
+    "src/Engines.js",
+    "file"
+  ],
+  [
     "src/operator.js",
     "file/src/Operator.js.html",
     "src/Operator.js",
@@ -600,28 +1278,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/operator.js~operator#dump",
-    "class/src/Operator.js~Operator.html#instance-method-dump",
-    "src/Operator.js~Operator#dump",
-    "method"
-  ],
-  [
-    "src/operator.js~operator#dumpchain",
-    "class/src/Operator.js~Operator.html#instance-method-dumpChain",
-    "src/Operator.js~Operator#dumpChain",
-    "method"
-  ],
-  [
     "src/operator.js~operator#factory",
     "class/src/Operator.js~Operator.html#instance-member-factory",
     "src/Operator.js~Operator#factory",
     "member"
-  ],
-  [
-    "src/operator.js~operator#from",
-    "class/src/Operator.js~Operator.html#instance-method-from",
-    "src/Operator.js~Operator#from",
-    "method"
   ],
   [
     "src/operator.js~operator#initoperator",
@@ -630,21 +1290,105 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/operator.js~operator#key",
+    "class/src/Operator.js~Operator.html#instance-member-key",
+    "src/Operator.js~Operator#key",
+    "member"
+  ],
+  [
     "src/operator.js~operator#parent",
     "class/src/Operator.js~Operator.html#instance-member-parent",
     "src/Operator.js~Operator#parent",
     "member"
   ],
   [
-    "src/operator.js~operator#select",
-    "class/src/Operator.js~Operator.html#instance-method-select",
-    "src/Operator.js~Operator#select",
+    "src/operator.js~operator#resolve",
+    "class/src/Operator.js~Operator.html#instance-method-resolve",
+    "src/Operator.js~Operator#resolve",
     "method"
   ],
   [
-    "src/operator.js~operator#where",
-    "class/src/Operator.js~Operator.html#instance-method-where",
-    "src/Operator.js~Operator#where",
+    "src/operator.js~operator#resolvechain",
+    "class/src/Operator.js~Operator.html#instance-method-resolveChain",
+    "src/Operator.js~Operator#resolveChain",
+    "method"
+  ],
+  [
+    "src/operator.js~operator#sql",
+    "class/src/Operator.js~Operator.html#instance-method-sql",
+    "src/Operator.js~Operator#sql",
+    "method"
+  ],
+  [
+    "src/operator.js~operator#sqlfragments",
+    "class/src/Operator.js~Operator.html#instance-method-sqlFragments",
+    "src/Operator.js~Operator#sqlFragments",
+    "method"
+  ],
+  [
+    "src/operator/after.js",
+    "file/src/Operator/After.js.html",
+    "src/Operator/After.js",
+    "file"
+  ],
+  [
+    "src/operator/after.js~after#initoperator",
+    "class/src/Operator/After.js~After.html#instance-method-initOperator",
+    "src/Operator/After.js~After#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/after.js~after#key",
+    "class/src/Operator/After.js~After.html#instance-member-key",
+    "src/Operator/After.js~After#key",
+    "member"
+  ],
+  [
+    "src/operator/before.js",
+    "file/src/Operator/Before.js.html",
+    "src/Operator/Before.js",
+    "file"
+  ],
+  [
+    "src/operator/before.js~before#initoperator",
+    "class/src/Operator/Before.js~Before.html#instance-method-initOperator",
+    "src/Operator/Before.js~Before#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/before.js~before#key",
+    "class/src/Operator/Before.js~Before.html#instance-member-key",
+    "src/Operator/Before.js~Before#key",
+    "member"
+  ],
+  [
+    "src/operator/database.js",
+    "file/src/Operator/Database.js.html",
+    "src/Operator/Database.js",
+    "file"
+  ],
+  [
+    "src/operator/database.js~database#database",
+    "class/src/Operator/Database.js~Database.html#instance-member-database",
+    "src/Operator/Database.js~Database#database",
+    "member"
+  ],
+  [
+    "src/operator/database.js~database#dump",
+    "class/src/Operator/Database.js~Database.html#instance-method-dump",
+    "src/Operator/Database.js~Database#dump",
+    "method"
+  ],
+  [
+    "src/operator/database.js~database#initoperator",
+    "class/src/Operator/Database.js~Database.html#instance-method-initOperator",
+    "src/Operator/Database.js~Database#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/database.js~database#resolve",
+    "class/src/Operator/Database.js~Database.html#instance-method-resolve",
+    "src/Operator/Database.js~Database#resolve",
     "method"
   ],
   [
@@ -654,27 +1398,87 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/operator/from.js~from#dump",
-    "class/src/Operator/From.js~From.html#instance-method-dump",
-    "src/Operator/From.js~From#dump",
-    "method"
-  ],
-  [
     "src/operator/from.js~from#initoperator",
     "class/src/Operator/From.js~From.html#instance-method-initOperator",
     "src/Operator/From.js~From#initOperator",
     "method"
   ],
   [
-    "src/operator/from.js~from#keyword",
-    "class/src/Operator/From.js~From.html#instance-member-keyword",
-    "src/Operator/From.js~From#keyword",
+    "src/operator/from.js~from#key",
+    "class/src/Operator/From.js~From.html#instance-member-key",
+    "src/Operator/From.js~From#key",
     "member"
   ],
   [
-    "src/operator/from.js~from#table",
-    "class/src/Operator/From.js~From.html#instance-member-table",
-    "src/Operator/From.js~From#table",
+    "src/operator/group.js",
+    "file/src/Operator/Group.js.html",
+    "src/Operator/Group.js",
+    "file"
+  ],
+  [
+    "src/operator/group.js~group#initoperator",
+    "class/src/Operator/Group.js~Group.html#instance-method-initOperator",
+    "src/Operator/Group.js~Group#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/group.js~group#key",
+    "class/src/Operator/Group.js~Group.html#instance-member-key",
+    "src/Operator/Group.js~Group#key",
+    "member"
+  ],
+  [
+    "src/operator/having.js",
+    "file/src/Operator/Having.js.html",
+    "src/Operator/Having.js",
+    "file"
+  ],
+  [
+    "src/operator/having.js~having#initoperator",
+    "class/src/Operator/Having.js~Having.html#instance-method-initOperator",
+    "src/Operator/Having.js~Having#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/having.js~having#key",
+    "class/src/Operator/Having.js~Having.html#instance-member-key",
+    "src/Operator/Having.js~Having#key",
+    "member"
+  ],
+  [
+    "src/operator/join.js",
+    "file/src/Operator/Join.js.html",
+    "src/Operator/Join.js",
+    "file"
+  ],
+  [
+    "src/operator/join.js~join#initoperator",
+    "class/src/Operator/Join.js~Join.html#instance-method-initOperator",
+    "src/Operator/Join.js~Join#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/join.js~join#key",
+    "class/src/Operator/Join.js~Join.html#instance-member-key",
+    "src/Operator/Join.js~Join#key",
+    "member"
+  ],
+  [
+    "src/operator/order.js",
+    "file/src/Operator/Order.js.html",
+    "src/Operator/Order.js",
+    "file"
+  ],
+  [
+    "src/operator/order.js~order#initoperator",
+    "class/src/Operator/Order.js~Order.html#instance-method-initOperator",
+    "src/Operator/Order.js~Order#initOperator",
+    "method"
+  ],
+  [
+    "src/operator/order.js~order#key",
+    "class/src/Operator/Order.js~Order.html#instance-member-key",
+    "src/Operator/Order.js~Order#key",
     "member"
   ],
   [
@@ -684,33 +1488,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/operator/select.js~select#columns",
-    "class/src/Operator/Select.js~Select.html#instance-member-columns",
-    "src/Operator/Select.js~Select#columns",
-    "member"
-  ],
-  [
-    "src/operator/select.js~select#command",
-    "class/src/Operator/Select.js~Select.html#instance-member-command",
-    "src/Operator/Select.js~Select#command",
-    "member"
-  ],
-  [
-    "src/operator/select.js~select#dump",
-    "class/src/Operator/Select.js~Select.html#instance-method-dump",
-    "src/Operator/Select.js~Select#dump",
-    "method"
-  ],
-  [
     "src/operator/select.js~select#initoperator",
     "class/src/Operator/Select.js~Select.html#instance-method-initOperator",
     "src/Operator/Select.js~Select#initOperator",
     "method"
   ],
   [
-    "src/operator/select.js~select#keyword",
-    "class/src/Operator/Select.js~Select.html#instance-member-keyword",
-    "src/Operator/Select.js~Select#keyword",
+    "src/operator/select.js~select#key",
+    "class/src/Operator/Select.js~Select.html#instance-member-key",
+    "src/Operator/Select.js~Select#key",
     "member"
   ],
   [
@@ -720,27 +1506,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/operator/where.js~where#condition",
-    "class/src/Operator/Where.js~Where.html#instance-member-condition",
-    "src/Operator/Where.js~Where#condition",
-    "member"
-  ],
-  [
-    "src/operator/where.js~where#dump",
-    "class/src/Operator/Where.js~Where.html#instance-method-dump",
-    "src/Operator/Where.js~Where#dump",
-    "method"
-  ],
-  [
     "src/operator/where.js~where#initoperator",
     "class/src/Operator/Where.js~Where.html#instance-method-initOperator",
     "src/Operator/Where.js~Where#initOperator",
     "method"
   ],
   [
-    "src/operator/where.js~where#keyword",
-    "class/src/Operator/Where.js~Where.html#instance-member-keyword",
-    "src/Operator/Where.js~Where#keyword",
+    "src/operator/where.js~where#key",
+    "class/src/Operator/Where.js~Where.html#instance-member-key",
+    "src/Operator/Where.js~Where#key",
     "member"
   ],
   [
@@ -753,6 +1527,12 @@ window.esdocSearchIndex = [
     "src/proxy/model.js",
     "file/src/Proxy/Model.js.html",
     "src/Proxy/Model.js",
+    "file"
+  ],
+  [
+    "src/proxy/operator.js",
+    "file/src/Proxy/Operator.js.html",
+    "src/Proxy/Operator.js",
     "file"
   ],
   [
@@ -795,6 +1575,36 @@ window.esdocSearchIndex = [
     "src/queries.js~queries#query",
     "class/src/Queries.js~Queries.html#instance-method-query",
     "src/Queries.js~Queries#query",
+    "method"
+  ],
+  [
+    "src/query.js",
+    "file/src/Query.js.html",
+    "src/Query.js",
+    "file"
+  ],
+  [
+    "src/query.js~query#all",
+    "class/src/Query.js~Query.html#instance-method-all",
+    "src/Query.js~Query#all",
+    "method"
+  ],
+  [
+    "src/query.js~query#any",
+    "class/src/Query.js~Query.html#instance-method-any",
+    "src/Query.js~Query#any",
+    "method"
+  ],
+  [
+    "src/query.js~query#execute",
+    "class/src/Query.js~Query.html#instance-method-execute",
+    "src/Query.js~Query#execute",
+    "method"
+  ],
+  [
+    "src/query.js~query#one",
+    "class/src/Query.js~Query.html#instance-method-one",
+    "src/Query.js~Query#one",
     "method"
   ],
   [
@@ -1032,6 +1842,54 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/table.js~table#oldupdate",
+    "class/src/Table.js~Table.html#instance-method-OLDupdate",
+    "src/Table.js~Table#OLDupdate",
+    "method"
+  ],
+  [
+    "src/table.js~table#all",
+    "class/src/Table.js~Table.html#instance-method-all",
+    "src/Table.js~Table#all",
+    "method"
+  ],
+  [
+    "src/table.js~table#any",
+    "class/src/Table.js~Table.html#instance-method-any",
+    "src/Table.js~Table#any",
+    "method"
+  ],
+  [
+    "src/table.js~table#checkcolumnnames",
+    "class/src/Table.js~Table.html#instance-method-checkColumnNames",
+    "src/Table.js~Table#checkColumnNames",
+    "method"
+  ],
+  [
+    "src/table.js~table#checkcolumns",
+    "class/src/Table.js~Table.html#instance-method-checkColumns",
+    "src/Table.js~Table#checkColumns",
+    "method"
+  ],
+  [
+    "src/table.js~table#checkrequiredcolumns",
+    "class/src/Table.js~Table.html#instance-method-checkRequiredColumns",
+    "src/Table.js~Table#checkRequiredColumns",
+    "method"
+  ],
+  [
+    "src/table.js~table#checkwritablecolumns",
+    "class/src/Table.js~Table.html#instance-method-checkWritableColumns",
+    "src/Table.js~Table#checkWritableColumns",
+    "method"
+  ],
+  [
+    "src/table.js~table#columns",
+    "class/src/Table.js~Table.html#instance-member-columns",
+    "src/Table.js~Table#columns",
+    "member"
+  ],
+  [
     "src/table.js~table#constructor",
     "class/src/Table.js~Table.html#instance-constructor-constructor",
     "src/Table.js~Table#constructor",
@@ -1042,6 +1900,36 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-member-database",
     "src/Table.js~Table#database",
     "member"
+  ],
+  [
+    "src/table.js~table#delete",
+    "class/src/Table.js~Table.html#instance-method-delete",
+    "src/Table.js~Table#delete",
+    "method"
+  ],
+  [
+    "src/table.js~table#engine",
+    "class/src/Table.js~Table.html#instance-member-engine",
+    "src/Table.js~Table#engine",
+    "member"
+  ],
+  [
+    "src/table.js~table#fetchall",
+    "class/src/Table.js~Table.html#instance-method-fetchAll",
+    "src/Table.js~Table#fetchAll",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchany",
+    "class/src/Table.js~Table.html#instance-method-fetchAny",
+    "src/Table.js~Table#fetchAny",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchone",
+    "class/src/Table.js~Table.html#instance-method-fetchOne",
+    "src/Table.js~Table#fetchOne",
+    "method"
   ],
   [
     "src/table.js~table#fetchrow",
@@ -1056,34 +1944,64 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#fragments",
+    "class/src/Table.js~Table.html#instance-member-fragments",
+    "src/Table.js~Table#fragments",
+    "member"
+  ],
+  [
+    "src/table.js~table#id",
+    "class/src/Table.js~Table.html#instance-member-id",
+    "src/Table.js~Table#id",
+    "member"
+  ],
+  [
     "src/table.js~table#insert",
     "class/src/Table.js~Table.html#instance-method-insert",
     "src/Table.js~Table#insert",
     "method"
   ],
   [
-    "src/table.js~table#insertrow",
-    "class/src/Table.js~Table.html#instance-method-insertRow",
-    "src/Table.js~Table#insertRow",
+    "src/table.js~table#insertall",
+    "class/src/Table.js~Table.html#instance-method-insertAll",
+    "src/Table.js~Table#insertAll",
     "method"
   ],
   [
-    "src/table.js~table#insertrows",
-    "class/src/Table.js~Table.html#instance-method-insertRows",
-    "src/Table.js~Table#insertRows",
+    "src/table.js~table#insertone",
+    "class/src/Table.js~Table.html#instance-method-insertOne",
+    "src/Table.js~Table#insertOne",
     "method"
   ],
   [
-    "src/table.js~table#insertrowsasync",
-    "class/src/Table.js~Table.html#instance-method-insertRowsAsync",
-    "src/Table.js~Table#insertRowsAsync",
+    "src/table.js~table#keys",
+    "class/src/Table.js~Table.html#instance-member-keys",
+    "src/Table.js~Table#keys",
+    "member"
+  ],
+  [
+    "src/table.js~table#one",
+    "class/src/Table.js~Table.html#instance-method-one",
+    "src/Table.js~Table#one",
     "method"
   ],
   [
-    "src/table.js~table#knex",
-    "class/src/Table.js~Table.html#instance-method-knex",
-    "src/Table.js~Table#knex",
+    "src/table.js~table#preparefetch",
+    "class/src/Table.js~Table.html#instance-method-prepareFetch",
+    "src/Table.js~Table#prepareFetch",
     "method"
+  ],
+  [
+    "src/table.js~table#preparefragments",
+    "class/src/Table.js~Table.html#instance-method-prepareFragments",
+    "src/Table.js~Table#prepareFragments",
+    "method"
+  ],
+  [
+    "src/table.js~table#queries",
+    "class/src/Table.js~Table.html#instance-member-queries",
+    "src/Table.js~Table#queries",
+    "member"
   ],
   [
     "src/table.js~table#query",
@@ -1092,10 +2010,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#raw",
-    "class/src/Table.js~Table.html#instance-method-raw",
-    "src/Table.js~Table#raw",
-    "method"
+    "src/table.js~table#readonly",
+    "class/src/Table.js~Table.html#instance-member-readonly",
+    "src/Table.js~Table#readonly",
+    "member"
   ],
   [
     "src/table.js~table#record",
@@ -1122,6 +2040,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#required",
+    "class/src/Table.js~Table.html#instance-member-required",
+    "src/Table.js~Table#required",
+    "member"
+  ],
+  [
     "src/table.js~table#rowproxy",
     "class/src/Table.js~Table.html#instance-member-rowProxy",
     "src/Table.js~Table#rowProxy",
@@ -1134,10 +2058,16 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/table.js~table#schema",
-    "class/src/Table.js~Table.html#instance-member-schema",
-    "src/Table.js~Table#schema",
-    "member"
+    "src/table.js~table#run",
+    "class/src/Table.js~Table.html#instance-method-run",
+    "src/Table.js~Table#run",
+    "method"
+  ],
+  [
+    "src/table.js~table#select",
+    "class/src/Table.js~Table.html#instance-method-select",
+    "src/Table.js~Table#select",
+    "method"
   ],
   [
     "src/table.js~table#selectrow",
@@ -1150,6 +2080,12 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-selectRows",
     "src/Table.js~Table#selectRows",
     "method"
+  ],
+  [
+    "src/table.js~table#table",
+    "class/src/Table.js~Table.html#instance-member-table",
+    "src/Table.js~Table#table",
+    "member"
   ],
   [
     "src/table.js~table#tablefragments",
@@ -1188,9 +2124,39 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/utils.js",
-    "file/src/Utils.js.html",
-    "src/Utils.js",
+    "src/utils/columns.js",
+    "file/src/Utils/Columns.js.html",
+    "src/Utils/Columns.js",
+    "file"
+  ],
+  [
+    "src/utils/debug.js",
+    "file/src/Utils/Debug.js.html",
+    "src/Utils/Debug.js",
+    "file"
+  ],
+  [
+    "src/utils/error.js",
+    "file/src/Utils/Error.js.html",
+    "src/Utils/Error.js",
+    "file"
+  ],
+  [
+    "src/utils/error.js~customerror#constructor",
+    "class/src/Utils/Error.js~CustomError.html#instance-constructor-constructor",
+    "src/Utils/Error.js~CustomError#constructor",
+    "method"
+  ],
+  [
+    "src/utils/error.js~customerror#name",
+    "class/src/Utils/Error.js~CustomError.html#instance-member-name",
+    "src/Utils/Error.js~CustomError#name",
+    "member"
+  ],
+  [
+    "src/utils/format.js",
+    "file/src/Utils/Format.js.html",
+    "src/Utils/Format.js",
     "file"
   ]
 ]

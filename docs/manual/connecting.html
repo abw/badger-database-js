@@ -1,0 +1,374 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | Badger Database</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-database-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/installation.html"><a href="manual/installation.html" data-ice="link">Installation</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#npm" data-ice="link">npm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#pnpm" data-ice="link">pnpm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#yarn" data-ice="link">yarn</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/connecting.html"><a href="manual/connecting.html" data-ice="link">Connecting</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-string" data-ice="link">Connection String</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameters" data-ice="link">Connection Parameters</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameter-aliases" data-ice="link">Connection Parameter Aliases</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#pool-options" data-ice="link">Pool Options</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tutorial.html"><a href="manual/tutorial.html" data-ice="link">Tutorial</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#basic-queries" data-ice="link">Basic Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#named-queries" data-ice="link">Named Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#query-fragments" data-ice="link">Query Fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#table-definitions" data-ice="link">Table Definitions</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#table-methods" data-ice="link">Table Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#custom-table-class" data-ice="link">Custom Table Class</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/database.html"><a href="manual/database.html" data-ice="link">Database</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#engine" data-ice="link">engine</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tables" data-ice="link">tables</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tablesclass" data-ice="link">tablesClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tablesobject" data-ice="link">tablesObject</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#properties" data-ice="link">Properties</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#engine" data-ice="link">engine</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#model" data-ice="link">model</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#knex--" data-ice="link">knex()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#raw-sql-" data-ice="link">raw(sql)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#query-name-" data-ice="link">query(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#hastable-name-" data-ice="link">hasTable(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#table-name-" data-ice="link">table(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#escape-name-" data-ice="link">escape(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#destroy--" data-ice="link">destroy()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#database--" data-ice="link">database()</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table.html"><a href="manual/table.html" data-ice="link">Table</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#columns" data-ice="link">columns</a></li>
+<li data-ice="manualNav" class="indent-h4" data-link="manual/table.html"><a href="manual/table.html#column-metadata" data-ice="link">column metadata</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#tableclass" data-ice="link">tableClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#recordclass" data-ice="link">recordClass</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#knex--" data-ice="link">knex()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#raw--" data-ice="link">raw()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#query-name-" data-ice="link">query(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insert-data-" data-ice="link">insert(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrow-data-" data-ice="link">insertRow(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrows-data-" data-ice="link">insertRows(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrow-columns-" data-ice="link">selectRow(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrows-columns-" data-ice="link">selectRows(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrow-where-" data-ice="link">fetchRow(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrows-where-" data-ice="link">fetchRows(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#update-set-where-" data-ice="link">update(set,where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#record-query-" data-ice="link">record(query)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#records-query-" data-ice="link">records(query)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#table-database-schema-" data-ice="link">table(database,schema)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/record.html"><a href="manual/record.html" data-ice="link">Record</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record.html"><a href="manual/record.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record.html"><a href="manual/record.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/record.html"><a href="manual/record.html#update-set-" data-ice="link">update(set)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record.html"><a href="manual/record.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/record.html"><a href="manual/record.html#record-table-data-options-" data-ice="link">record(table,data,options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/model.html"><a href="manual/model.html" data-ice="link">Model</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/model.html"><a href="manual/model.html#overview" data-ice="link">Overview</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/queries.html"><a href="manual/queries.html" data-ice="link">Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#query-name-" data-ice="link">query(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#expandfragments-query-" data-ice="link">expandFragments(query)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#queries-schema-" data-ice="link">queries(schema)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/connection.html"><a href="manual/connection.html" data-ice="link">Connection</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#properties" data-ice="link">Properties</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#config" data-ice="link">config</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#knex" data-ice="link">knex</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#raw-sql-" data-ice="link">raw(sql)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#pool--" data-ice="link">pool()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#acquire--" data-ice="link">acquire()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#destroy--" data-ice="link">destroy()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#connection--" data-ice="link">connection()</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/schema.html"><a href="manual/schema.html" data-ice="link">Schema</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columns" data-ice="link">columns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#relations" data-ice="link">relations</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#tableclass" data-ice="link">tableClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#recordclass" data-ice="link">recordClass</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#properties" data-ice="link">Properties</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#database" data-ice="link">database</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#keyindex" data-ice="link">keyIndex</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnindex" data-ice="link">columnIndex</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnnames" data-ice="link">columnNames</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#allcolumns" data-ice="link">allColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#relations" data-ice="link">relations</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparecolumns-schema-" data-ice="link">prepareColumns(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparecolumnsets-schema-" data-ice="link">prepareColumnSets(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparekeys-schema-" data-ice="link">prepareKeys(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparefragments-schema-" data-ice="link">prepareFragments(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#column-name-" data-ice="link">column(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnset-name-" data-ice="link">columnSet(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#defaultcolumns--" data-ice="link">defaultColumns()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columns-names-" data-ice="link">columns(names)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#resolvecolumns-names-" data-ice="link">resolveColumns(names)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#identity-data-" data-ice="link">identity(data)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#schema-database-tableschema-" data-ice="link">schema(database,tableSchema)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#tables" data-ice="link">tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#table-name-" data-ice="link">table(name)</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="connecting">Connecting</h1><p>The <code>connect()</code> function is used to connect to a database.  It is the default
+export from the <code>@abw/badger-database</code> module.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'</code></code></pre>
+<p>You can also use named imports.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect } from '@abw/badger-database'</code></code></pre>
+<p>Or you can use <code>require()</code> if you're still using Common JS format.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { connect } = require('@abw/badger-database')</code></code></pre>
+<h2 id="connection-string">Connection String</h2><p>The simplest way to connect to a database is using a connection string for the
+<code>database</code> parameter. This is a concept that should be familiar to Postgres users.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'postgresql://user:password@hostname:5432/database'
+})</code></code></pre>
+<p>Internally we use the slightly shorter name of <code>postgres</code> (no <code>ql</code> at the end)
+for the Postgres engine name.  To avoid any chance of confusion, we also support
+this in the connection string and automatically "correct" it for you.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  // 'postgres://...' works the same as 'postgresql://...'
+  database: 'postgres://user:password@hostname:5432/database'
+})</code></code></pre>
+<p>You can use the same connection string format for Mysql databases:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'mysql://user:password@hostname:3306/database'
+})</code></code></pre>
+<p>And also for Sqlite databases, although here the only parameter supported
+is the database filename.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'sqlite://database'
+})</code></code></pre>
+<p>For an in-memory Sqlite database, use <code>:memory:</code> as the database name:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'sqlite://:memory:'
+})</code></code></pre>
+<p>Or if you find that a bit clunky, you can use the shortened version:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'sqlite:memory'
+})</code></code></pre>
+<p>Most of the elements are optional for Postgres and Mysql databases.
+Here are the minimal versions which assume the default host (<code>localhost</code>),
+port (<code>3306</code> for Mysql and <code>5432</code> for Postgres) and no username or password.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'postgresql://database'
+})</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: 'mysql://database'
+})</code></code></pre>
+<h2 id="connection-parameters">Connection Parameters</h2><p>The connection strings shown in the previous sections are short-hand versions
+for the more verbose form.  If your connection parameters are stored in a file,
+loaded via an API call, or fetched in some other way then it may be more
+convenient to use this form.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  // "postgres://badger:s3cr3t@dbhost.com:5433/animals" is short for:
+  database: {
+    engine:   'postgres',   // or 'postgresql'
+    user:     'badger',
+    password: 's3cr3t',
+    host:     'dbhost.com',
+    port:     '5433',
+    database: 'animals',
+  }
+})</code></code></pre>
+<p>The same configuration options apply to Mysql.  For Sqlite the only supported
+option is <code>filename</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: {
+    engine:   'sqlite',
+    filename: 'animals.db',
+  }
+})</code></code></pre>
+<p>You can also use <code>:memory:</code> as the <code>filename</code> for an in-memory database.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: {
+    engine:   'sqlite',
+    filename: ':memory:',
+  }
+})</code></code></pre>
+<h2 id="connection-parameter-aliases">Connection Parameter Aliases</h2><p>Whenever I'm writing the code to connect to a database there's a good chance I'll
+get one of the parameter name wrong.  Is it <code>user</code> or <code>username</code>? <code>pass</code> or <code>password</code>?
+<code>host</code> or <code>hostname</code>? <code>file</code> or <code>filename</code>?</p>
+<p>Of course you could google it, but there's no need. You can specify any of the "incorrect"
+parameters and we'll automatically fix them for you.</p>
+<p>For example, if you specify <code>file</code> instead of <code>filename</code> for a Sqlite database, we'll
+silently correct it.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: {
+    engine: 'sqlite',
+    file:   'animals.db',   // converted to 'filename'
+  }
+})</code></code></pre>
+<p>This also just works:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: {
+    engine:   'postgres',
+    database: 'animals',
+    user:     'badger',
+    pass:     's3cr3t',     // converted to 'password'
+    host:     'dbhost.com',
+    port:     '5433',
+  }
+})</code></code></pre>
+<p>And this works too:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: {
+    engine:   'postgres',
+    database: 'animals',
+    username: 'badger',     // converted to 'user'
+    password: 's3cr3t',
+    hostname: 'dbhost.com', // converted to 'host'
+    port:     '5433',
+  }
+})</code></code></pre>
+<h2 id="pool-options">Pool Options</h2><p>The Postgres and Mysql database engines use a connection pool for efficiency.
+By default, the minimum number of connections is 2 and the maximum is 10.  You
+can change these values using the <code>pool</code> option.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const mydb = await connect({
+  database: { ... },
+  pool: {
+    min: 5,
+    max: 20
+  }
+})</code></code></pre>
+<p>The Sqlite engine uses <a href="https://github.com/WiseLibs/better-sqlite3">better-sqlite3</a>
+which uses synchronous functions.  This is because Sqlite serialises all queries
+and there is nothing to gain (and the potential for problems) by using a connection
+pool and/or asynchronous function (for further information about this from the author
+of better-sqlite3, see <a href="https://github.com/WiseLibs/better-sqlite3/issues/32">here</a>).</p>
+<p>As such, the pool is effectively disabled for Sqlite by setting the <code>min</code> and <code>max</code>
+values to 1.</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>

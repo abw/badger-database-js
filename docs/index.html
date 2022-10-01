@@ -27,49 +27,132 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Schema.js~Schema.html">Schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connection">connection</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-database">database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseAliases">databaseAliases</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseStringElements">databaseStringElements</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseStringRegex">databaseStringRegex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-whereTrue">whereTrue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Engines">Engines</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-operators">operators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#engine">Engine</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Mysql.js~MysqlEngine.html">MysqlEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Postgres.js~PostgresEngine.html">PostgresEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Sqlite.js~SqliteEngine.html">SqliteEngine</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/After.js~After.html">After</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Before.js~Before.html">Before</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Database.js~Database.html">Database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Group.js~Group.html">Group</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Having.js~Having.html">Having</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Join.js~Join.html">Join</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Order.js~Order.html">Order</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-operatorProxy">operatorProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~InsertValidationError.html">InsertValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-invalid">invalid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-missing">missing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplemented">notImplemented</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInBaseClass">notImplementedInBaseClass</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInModule">notImplementedInModule</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="badger-database">Badger Database</h1><p>This is a simple but powerful database management tool that
-is built around <a href="https://knexjs.org/">Knex.js</a>.  It is
-designed for building database abstraction layers that allow
-your application code to access a database while keeping the
-nitty-gritty detail mostly hidden from view.</p>
-<p>It embraces the power of both Knex and raw SQL, but provides
-some of the basic functionality of ORMs to help automate many
-of the tedious and repetitive tasks associated with using a
-relational database.  It uses a variation of the Active Record
-pattern - the variation being that the record objects are used
-only to represent rows in a database with separate table classes
-being employed to represent tables for a better separation of
-concerns.</p>
-<p>It is a work in progress loosely based on the Perl
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="badger-database">Badger Database</h1><p>This is a simple but powerful database management tool that allows you to
+build database abstraction layers for your projects. It has support for
+accessing Postgres, MySQL and Sqlite databases.</p>
+<p>The aim is to provide a <em>Separation of Concerns</em> between your application
+code and your database code so that you can write application code at a
+higher level of abstraction, with the details of the database hidden away
+in the lower levels.</p>
+<h2 id="philosophy">Philosophy</h2><p>It is based on the philosphy that ORMs and SQL query builders are considered
+<em>Mostly Harmful</em>.  SQL is an industry standard and has been for nearly 40
+years.  Although there are some minor differences between dialects, it is
+the most portable and widely understood way to communicate with a database.
+Any developer who has experience with using relational databases should know
+at least the basics of SQL, regardless of the programming language or database
+toolkits they are most familiar with.</p>
+<p>Unlike most ORMs and SQL query builders which try to insulate developers from
+SQL, this library embraces it and encourages you to use it in the way it was
+intended to be used.  One of the keys benefits is transparency.  Your SQL
+queries should not be hidden behind an abstraction that can obscure the
+intention or subtly transform the meaning.  This avoids a whole class of
+"translation errors" that can result in the generated queries returning
+the wrong results, being inefficient, or hard to reason about.</p>
+<p>That said, there are a number of useful benefits that ORMs and SQL query
+builders provide which this library has adopted.</p>
+<ul>
+<li><p>Abstraction of the underlying database engine.  Although it's probably not
+that common for a project to migrate from one database engine to another
+(and if that does happens you'll have plenty of other things to worry about),
+it is quite common for developers to work on a number of projects over a
+period of time that use different databases.  Having a library that
+smooths over the differences between them can make it easier to switch from
+one project to another.</p>
+</li>
+<li><p>Automatic generation of "trivial" queries to insert, select, update and delete
+records (aka "CRUD" - create, read, update, delete).  As well as removing the
+need to write lots of "boilerplate" queries to get your project up and running,
+this is also useful when you modify tables at a later date to add or remove
+columns.  Those basic operations should automatically adapt to the new
+schema without requiring you to rewrite lots of queries.</p>
+</li>
+<li><p>The ability to compose complex queries in parts, allowing SQL fragments
+to be reused in different queries that are similar, but not identical.
+Doing this programmatically can not only save time, but also avoid potential
+errors, either when writing them initially, or when updating them at a later
+date to accommodate changes in the database schema.</p>
+</li>
+<li><p>Entity models to help organise table and record-based code.  Each database
+table can have its own table module defined where you can add custom methods
+for inserting, selecting or performing other operations on rows in the table.
+Similarly, every entity type can have its own record module where you can
+add methods for performing operations on an individual entity instance.  This
+is a lightweight variant of the Active Record pattern.</p>
+</li>
+</ul>
+<h2 id="caveat">Caveat</h2><p>This is currently a work in progress loosely based on the Perl
 <a href="https://github.com/abw/Badger-Database">Badger::Database</a> library.
 It is being written to help migrate a number of old Perl projects
 to Javascript.</p>
@@ -79,106 +162,36 @@ too much time supporting it, updating it, or adding features that
 aren't immediately useful to me.</p>
 <p>That said, it's a simple project totalling less than a thousand lines
 of code.  An experienced Javascript programmer with knowledge of
-Knex.js should be able to grok the code in an hour or so.  If you're
+SQL should be able to grok the code in an hour or so.  If you're
 happy to use the source, Luke, then it may be the droids you're looking
 for.  But if you're looking for a fully-featured, production-ready
 solution then it might not be for you - there are <em>plenty</em> of other
 Javascript ORMs that might be a better place to start.</p>
-<p>For further information please read the <a href="https://abw.github.io/badger-database-js/docs/manual/index.html">manual</a>.</p>
+<p>For further information please read the
+<a href="https://abw.github.io/badger-database-js/docs/manual/index.html">manual</a>.</p>
 <h2 id="installation">Installation</h2><p>Use your favourite package manager (we'll assume <code>npm</code> in these examples)
-to install <code>@abw/badger-database</code>, <code>knex</code> and at least one of the driver modules.</p>
-<pre><code class="lang-sh"><code class="source-code prettyprint">    $ npm install @abw/badger-database knex
+to install <code>@abw/badger-database</code> and at least one of the driver modules.</p>
+<pre><code class="lang-sh"><code class="source-code prettyprint">    $ npm install @abw/badger-database
 
     # Then add one of the following:
     $ npm install pg
-    $ npm install pg-native
-    $ npm install sqlite3
     $ npm install better-sqlite3
-    $ npm install mysql
-    $ npm install mysql2
-    $ npm install oracledb
-    $ npm install tedious</code></code></pre>
-<p>See the <a href="https://knexjs.org/guide/#node-js">Knex.js installation guide</a>
-for further information.</p>
-<h2 id="quick-start">Quick Start</h2><p>Import the <code>Database</code> module from <code>@abw/badger-database</code>
-and create a database.  This example shows a <code>sqlite3</code>
+    $ npm install mysql2</code></code></pre>
+<h2 id="quick-start">Quick Start</h2><p>Import the <code>connect</code> function from <code>@abw/badger-database</code>
+and create a database connection.  This example shows a <code>sqlite3</code>
 in-memory database which is ideal for testing.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const database = new Database({
-  // Knex configuration options
-  client: 'sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  pool: {
-    min: 2,
-    max: 10,
-  },
-  useNullAsDefault: true,
-
-  // a simple users tables
-  tables: {
-    users: {
-      columns: 'id name email',
-    }
-  }
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = connect({
+  database: 'sqlite:memory',
 })</code></code></pre>
-<p>Use the <a href="https://abw.github.io/badger-database-js/docs/manual/database.html#raw-sql-">raw()</a> method to
-run raw SQL queries.  For example, to create the <code>users</code> table:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">await database.raw(
-  'CREATE TABLE users ( ' +
-  '  id INTEGER PRIMARY KEY ASC, ' +
-  '  name TEXT, ' +
-  '  email TEXT ' +
-  ')'
+<p>Use the <a href="https://abw.github.io/badger-database-js/docs/manual/database.html#run-sql-params-">run()</a>
+method to run SQL queries.  For example, to create a <code>users</code> table:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await database.run(`
+  CREATE TABLE users (
+    id INTEGER PRIMARY KEY ASC,
+    name TEXT,
+    email TEXT
+  )`
 )</code></code></pre>
-<p>Use the
-<a href="https://abw.github.io/badger-database-js/docs/manual/database.html#table-name-">table()</a> method to fetch a
-<a href="https://abw.github.io/badger-database-js/docs/manual/table.html">Table</a>
-object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const users = database.table('users');</code></code></pre>
-<p>Use the
-<a href="https://abw.github.io/badger-database-js/docs/manual/table.html#insertrow-data-">insertRow()</a>
-method to insert a row.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.insertRow({
-  name: 'Bobby Badger',
-  email: 'bobby@badgerpower.com',
-})</code></code></pre>
-<p>Use the
-<a href="https://abw.github.io/badger-database-js/docs/manual/table.html#fetchrow-where-">fetchRow()</a>
-method to fetch a single row.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await table.fetchRow({
-  email: 'bobby@badgerpower.com',
-});</code></code></pre>
-<p>Append the
-<a href="https://abw.github.io/badger-database-js/docs/manual/table.html#record-query-">record()</a>
-method to convert the returned row to a
-<a href="https://abw.github.io/badger-database-js/docs/manual/record.html">Record</a> object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await table.fetchRow({
-  email: 'bobby@badgerpower.com',
-}).record();</code></code></pre>
-<p>You can then call the <a href="https://abw.github.io/badger-database-js/docs/manual/record.html#update-set-">update()</a> method on the record.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const roberto = await badger.update({
-  name: 'Roberto Badger'
-});</code></code></pre>
-<p>To construct more complex queries you can call the
-<a href="https://abw.github.io/badger-database-js/docs/manual/table.html#knex--">knex()</a> method to fetch a Knex
-object.  This will have the table name pre-defined. You can then chain
-as many Knex methods as you like to construct a query.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const badger =
-  await users
-    .knex()
-    .select('id, name')
-    .where({ email: "bobby@badgerpower.com" })
-    .first();</code></code></pre>
-<p>You can also call the <a href="https://abw.github.io/badger-database-js/docs/manual/database.html#knex--">knex()</a> method on the
-database.  In this case you need to specify the table that you're working
-on.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row =
-  await database
-    .knex('user')
-    .select('name')
-    .where({ email: 'bobby@badgerpower.com' })
-    .first()</code></code></pre>
 <h1 id="author">Author</h1><p>Andy Wardley <a href="mailto:abw@wardley.org">abw@wardley.org</a></p>
 </div>
 </div>

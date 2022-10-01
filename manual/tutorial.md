@@ -1,70 +1,9 @@
-# Overview
-
-This is a simple but powerful database management tool that
-is designed for building database abstraction layers for your
-projects. It has support for accessing Postgres, MySQL and Sqlite
-databases.
-
-The aim is to provide a *Separation of Concerns* between your application
-code and your database code so that you can write application code at a
-higher level of abstraction, with the details of the database hidden away
-in the lower levels.
-
-## Philosophy
-
-It is based on the philosphy that ORMs and SQL query builders are considered
-*Mostly Harmful*.  SQL is an industry standard and has been for nearly 40
-years.  Although there are some minor differences between dialects, it is
-the most portable and widely understood way to communicate with a database.
-Any developer who has experience with using relational databases should know
-at least the basics of SQL, regardless of the programming language or database
-toolkits they are most familiar with.
-
-Unlike most ORMs and SQL query builders which try to insulate developers from
-SQL, this library embraces it and encourages you to use it in the way it was
-intended to be used.  One of the keys benefits is transparency.  Your SQL
-queries should not be hidden being an abstraction that can obscure the
-intention or subtly transform the meaning.  This avoids a whole class of
-"translation errors" that can result in the generated queries returning
-the wrong results, being inefficient, or hard to reason about.
-
-That said, there are a number of useful benefits that ORMs and SQL query
-builders provide which this library has adopted.
-
-* Abstraction of the underlying database engine.  Although it's probably not
-that common for a project to migrate from one database engine to another
-(and if that does happens you'll have plenty of other things to worry about),
-it is quite common for developers to work on a number of projects over a
-period of time that use different databases.  Having a library that
-smooths over the differences between them can make it easier to switch from
-one project to another.
-
-* Automatic generation of "trivial" queries to insert, select, update and delete
-records (aka "CRUD" - create, read, update, delete).  As well as removing the
-need to write lots of "boilerplate" queries to get your project up and running,
-this is also useful when you modify tables at a later date to add or remove
-columns.  Those basic operations should automatically adapt to the new
-schema without requiring you to rewrite lots of queries.
-
-* The ability to compose complex queries in parts, allowing SQL fragments
-to be reused in different queries that are similar, but not identical.
-Doing this programmatically can not only save time, but also avoid potential
-errors, either when writing them initially, or when updating them at a later
-date to accommodate changes in the database schema.
-
-* Entity models to help organise table and record-based code.  Each database
-table can have its own table module defined where you can add custom methods
-for inserting, selecting or performing other operations on rows in the table.
-Similarly, every entity type can have its own record module where you can
-add methods for performing operations on an individual entity instance.  This
-is a lightweight variant of the Active Record pattern.
-
-## Examples
+# Tutorial
 
 In these examples we'll look at some of the basic functionality of the
 library using a database of users.
 
-### Basic Queries
+## Basic Queries
 
 This first example shows how to connect to a database, create a table,
 insert a row and then fetch it out again.
@@ -108,10 +47,10 @@ async function main() {
 main()
 ```
 
-The `run()` method is used to execute a query where we're not expecting
-to return any rows from the database.  We do, however, get back some data
-include the number of rows changed, and in the case of `INSERT` queries, the
-generated id for the record.
+The `run()` method is used to execute a query where you're not expecting
+to return any rows from the database.  However, the method does return some
+data include the number of rows changed, and in the case of `INSERT` queries,
+the generated id for the record.
 
 Different database engines return different values here.  For Sqlite it's
 `changes` for the number of rows affected and `lastInsertRowid` for the id
@@ -138,22 +77,64 @@ console.log("Rows changed:", insert.changes);
 console.log("Inserted ID:", insert.id);
 ```
 
-The `one()` method is used when we're expecting to get *exactly* one row
-returned.  It will throw an exception if no rows, or more than one row
-is returned.  The `any()` method can be used if you want to get one row
-which might not exist.  The `all()` method can be used to return multiple
-rows.
+The `one()` method should be used when you're expecting to fetch *exactly*
+one row from the database.  The first argument is an SQL query string.  If
+you  have any parameters to include in the query then they should be embedded
+in the SQL using placeholders (`?` for Mysql and Sqlite, `$1`, `$2`, `$3`, etc.,
+for Postgres).  Then pass the parameter values in an array as the second
+argument.
 
-### Named Queries
+```js
+const bobby = await db.one(
+  'SELECT * FROM users WHERE email=?',
+  ['bobby@badgerpower.com']
+);
+console.log("Fetched row:", bobby);
+```
 
-Instead of embedding SQL queries directly into our code, we can
-define them as named queries.  This allows us to hide away some of the
-details of the database implemenentation so that our application code
+The `one()` method will throw an exception if no rows, or more than one row is
+returned.
+
+The `any()` method can be used if you want to get one row which may or may not exist.
+
+```js
+const bobby = await db.any(
+  'SELECT * FROM users WHERE email=?',
+  ['bobby@badgerpower.com']
+);
+if (bobby) {
+  console.log("Fetched row:", bobby);
+}
+else {
+  console.log("Bobby Badger has gone missing!");
+}
+```
+
+The `all()` method can be used to return multiple rows.
+
+```js
+const bobbies = await db.all(
+  'SELECT * FROM users WHERE name=?',
+  ['Bobby Badger']
+);
+if (bobbies.length) {
+  console.log("Fetched %s users called 'Bobby Badger':", bobbies.length);
+}
+else {
+  console.log("There aren't any users called 'Bobby Badger'");
+}
+```
+
+## Named Queries
+
+Instead of embedding SQL queries directly into your code, you can
+define them as named queries.  This allows you to hide away some of the
+details of the database implemenentation so that your application code
 can be simpler and clearer.
 
-To keep things simple, we'll demonstrate this with all the code in
-one file, which isn't really hiding anything at all.  In practice,
-you would usually move the database definition into a separate module.
+To keep things simple, this example has all the code in one file,
+which isn't really hiding anything at all.  In practice, you would usually
+move the database definition into a separate module.
 
 ```js
 import connect from '@abw/badger-database'
@@ -161,12 +142,12 @@ import connect from '@abw/badger-database'
 const dbConfig = {
   database: 'sqlite:test.db',
   queries: {
-    createUserTable:`
+    createUsersTable:`
       CREATE TABLE users (
-      id INTEGER PRIMARY KEY ASC,
-      name TEXT,
-      email TEXT
-    )`,
+        id INTEGER PRIMARY KEY ASC,
+        name TEXT,
+        email TEXT
+      )`,
     insertUser:
       'INSERT INTO users (name, email) VALUES (?, ?)',
     selectUserByEmail:
@@ -175,11 +156,11 @@ const dbConfig = {
 };
 
 async function main() {
-  // connect to a Sqlite database
+  // connect to the database
   const db = await connect(dbConfig);
 
-  // create a table using a named query
-  await db.run('createUserTable');
+  // create the users table using a named query
+  await db.run('createUsersTable');
 
   // insert a row using a named query
   const insert = await db.run(
@@ -199,10 +180,11 @@ async function main() {
 main()
 ```
 
-### Query Fragments
+## Query Fragments
 
-We might want to define a number of different queries for fetching user
-rows using different search terms, for example.
+You might want to define a number of different queries for fetching user
+rows using different search terms.  For example, to select a user by
+`email` or `name`.
 
 ```js
 const dbConfig = {
@@ -216,7 +198,7 @@ const dbConfig = {
 };
 ```
 
-To avoid repetition, we can define named SQL `fragments` that can be embedded
+To avoid repetition, you can define named SQL `fragments` that can be embedded
 into other queries.  Named fragments can be embedded into queries inside angle
 brackets, e.g. `<fragmentName>`.
 
@@ -229,15 +211,15 @@ const dbConfig = {
   },
   queries: {
     selectUserByEmail:
-      '<selectUser> WHERE email=?',
+      '&lt;selectUser&gt; WHERE email=?',
     selectUserByName:
-      '<selectUser> WHERE name=?'
+      '&lt;selectUser&gt; WHERE name=?'
   }
 };
 ```
 
 Fragments can reference other fragments.  This can be useful when you're building
-more complex queries.
+more complex queries, as shown in this somewhat contrived example:
 
 ```js
 const dbConfig = {
@@ -248,28 +230,30 @@ const dbConfig = {
     joinUserCompany:
       'JOIN companies on users.company_id=companies.id',
     selectEmployee:
-      '<selectUserCompany> <joinUserCompany>',
+      '&lt;selectUserCompany&gt; &lt;joinUserCompany&gt;',
   },
   queries: {
     selectEmployeeByEmail:
-      '<selectEmployee> WHERE email=?',
+      '&lt;selectEmployee&gt; WHERE email=?',
     selectEmployeeByName:
-      '<selectEmployee> WHERE name=?'
+      '&lt;selectEmployee&gt; WHERE name=?'
   }
 };
 ```
 
 You can also embed fragments into ad-hoc queries passed to the
-`run()`, `one()`, `any()` and `all()` methods.
+`run()`, `one()`, `any()` and `all()` methods.  For example,
+given the above configuration you could write a custom query that
+includes the `selectEmployee` fragment like so:
 
 ```js
 const badgers = await db.all(
-  '<selectEmployee> WHERE companies.name=?',
+  '&lt;selectEmployee&gt; WHERE companies.name=?',
   ['Badgers Inc.']
 );
 ```
 
-### Table Definitions
+## Table Definitions
 
 It can quickly get tedious if you've got to write lots of different
 queries for trivial operations like inserting, updating, selecting
@@ -309,7 +293,7 @@ await users.update(
 );
 
 // fetch a row
-const brian = await users.fetchOne({
+const brian = await users.fetchOne({  // TODO: one() or oneRow()???
   email: 'brian@badgerpower.com'
 });
 
@@ -319,8 +303,8 @@ await users.delete({
 });
 ```
 
-For simple cases you can define the table columns using a whitespace
-delimited string, as show in the previous example.
+For simple cases you can define the table columns using a whitespace, e.g.
+`id name email`.
 
 ```js
 const db = await connect({
@@ -350,8 +334,27 @@ const db = await connect({
 ```
 
 If you try to insert a row without providing any of the `required` columns
-then an error will be throw.  The same thing will happen if you try to insert
-or update a `readonly` column.
+then an error will be throw.
+
+```js
+// Throws a ColumnValidationError: 'Missing required column "email" for the users table'
+await users.insert({
+  name:  'Brian Badger',
+});
+```
+
+The same thing will happen if you try to insert or update a `readonly` column.
+(NOTE: you don't have to define your id column as being readonly if you want to
+be able to insert rows with specific ids).
+
+```js
+// Throws a ColumnValidationError: 'The "id" column is readonly in the users table'
+await users.insert({
+  id:    999,
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com',
+});
+```
 
 If your unique ID column isn't called `id` then you can mark the relevant column
 using the `id` tag.
@@ -361,7 +364,7 @@ const db = await connect({
   // ...engine, etc...
   tables: {
     users: {
-      columns: 'user_id:readonly:id ...'
+      columns: 'user_id:readonly:id name:required email:required'
     }
   }
 });
@@ -412,10 +415,10 @@ const db = await connect({
 });
 ```
 
-### Table Methods
+## Table Methods
 
-The `insert()` method will construct an `INSERT` SQL query to insert a row from
-the column data that you provide and then run it with the values provided.
+The `insert()` method will construct and run an `INSERT` SQL query to insert a
+row from the column data that you provide.
 
 ```js
 await users.insert({
@@ -455,6 +458,8 @@ await users.insert([
   }
 ]);
 ```
+
+** NOTE ** I'm going to change this so that you have to explicitly request a reload.
 
 After inserting a row the table `insert()` method will immediately reload it from the
 database.  This ensures that the data returned includes all columns, including the id
@@ -509,7 +514,7 @@ The second optional argument is the `WHERE` clause identifying the rows
 you want to update.  You can omit the second argument if you want to update
 all rows.
 
-The SQL generate will look something like this:
+The SQL generated for the method call shown above will look something like this:
 
 ```sql
 UPDATE users
@@ -528,9 +533,9 @@ await users.delete({
 });
 ```
 
-The key/value pairs in object passed as the only argument identify the rows
-that you want to delete.  You can omit this if you want to delete all rows
-in the table.  Naturally, you should use this method with caution.
+The object passed as the only argument identifies the rows that you want to delete.
+You can omit this if you want to delete all rows in the table.
+Naturally, you should use this method with caution.
 
 The SQL generated will look something like this:
 
@@ -538,6 +543,9 @@ The SQL generated will look something like this:
 DELETE FROM users
 WHERE email=?
 ```
+
+** NOTE ** I'm considering renaming these to `one()`, `any()` and `all()`
+or perhaps `oneRow()`, `anyRow()` and `allRows()`.
 
 There are three different fetch methods, `fetchAny()` will return a single
 row if it exists, `fetchAll()` will return an array of all matching rows.
@@ -602,7 +610,7 @@ const brian = await users.fetchOne(
 );
 ```
 
-### Custom Table Class
+## Custom Table Class
 
 You can define your own custom table class for each table in the database.
 This allows you to add your own methods for performing queries on the table.
@@ -628,8 +636,9 @@ async function main() {
       users: {
         // bind in the custom table class
         tableClass: Users,
-        // column definitions and queries
+        // column definitions
         columns: 'id name email animal',
+        // query definitions
         queries: {
           create: `
             CREATE TABLE users (

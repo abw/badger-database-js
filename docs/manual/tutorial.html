@@ -1,0 +1,761 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | Badger Database</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-database-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/installation.html"><a href="manual/installation.html" data-ice="link">Installation</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#npm" data-ice="link">npm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#pnpm" data-ice="link">pnpm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#yarn" data-ice="link">yarn</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/connecting.html"><a href="manual/connecting.html" data-ice="link">Connecting</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-string" data-ice="link">Connection String</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameters" data-ice="link">Connection Parameters</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameter-aliases" data-ice="link">Connection Parameter Aliases</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#pool-options" data-ice="link">Pool Options</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tutorial.html"><a href="manual/tutorial.html" data-ice="link">Tutorial</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#basic-queries" data-ice="link">Basic Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#named-queries" data-ice="link">Named Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#query-fragments" data-ice="link">Query Fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#table-definitions" data-ice="link">Table Definitions</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#table-methods" data-ice="link">Table Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tutorial.html"><a href="manual/tutorial.html#custom-table-class" data-ice="link">Custom Table Class</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/database.html"><a href="manual/database.html" data-ice="link">Database</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#engine" data-ice="link">engine</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tables" data-ice="link">tables</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tablesclass" data-ice="link">tablesClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#tablesobject" data-ice="link">tablesObject</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#properties" data-ice="link">Properties</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#engine" data-ice="link">engine</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#model" data-ice="link">model</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#knex--" data-ice="link">knex()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#raw-sql-" data-ice="link">raw(sql)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#query-name-" data-ice="link">query(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#hastable-name-" data-ice="link">hasTable(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#table-name-" data-ice="link">table(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#escape-name-" data-ice="link">escape(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#destroy--" data-ice="link">destroy()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/database.html"><a href="manual/database.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/database.html"><a href="manual/database.html#database--" data-ice="link">database()</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table.html"><a href="manual/table.html" data-ice="link">Table</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#columns" data-ice="link">columns</a></li>
+<li data-ice="manualNav" class="indent-h4" data-link="manual/table.html"><a href="manual/table.html#column-metadata" data-ice="link">column metadata</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#tableclass" data-ice="link">tableClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#recordclass" data-ice="link">recordClass</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#knex--" data-ice="link">knex()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#raw--" data-ice="link">raw()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#query-name-" data-ice="link">query(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insert-data-" data-ice="link">insert(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrow-data-" data-ice="link">insertRow(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#insertrows-data-" data-ice="link">insertRows(data)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrow-columns-" data-ice="link">selectRow(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#selectrows-columns-" data-ice="link">selectRows(columns)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrow-where-" data-ice="link">fetchRow(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#fetchrows-where-" data-ice="link">fetchRows(where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#update-set-where-" data-ice="link">update(set,where)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#record-query-" data-ice="link">record(query)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#records-query-" data-ice="link">records(query)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table.html"><a href="manual/table.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table.html"><a href="manual/table.html#table-database-schema-" data-ice="link">table(database,schema)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/record.html"><a href="manual/record.html" data-ice="link">Record</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record.html"><a href="manual/record.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record.html"><a href="manual/record.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/record.html"><a href="manual/record.html#update-set-" data-ice="link">update(set)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record.html"><a href="manual/record.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/record.html"><a href="manual/record.html#record-table-data-options-" data-ice="link">record(table,data,options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/model.html"><a href="manual/model.html" data-ice="link">Model</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/model.html"><a href="manual/model.html#overview" data-ice="link">Overview</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/queries.html"><a href="manual/queries.html" data-ice="link">Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#query-name-" data-ice="link">query(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#expandfragments-query-" data-ice="link">expandFragments(query)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/queries.html"><a href="manual/queries.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/queries.html"><a href="manual/queries.html#queries-schema-" data-ice="link">queries(schema)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/connection.html"><a href="manual/connection.html" data-ice="link">Connection</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#properties" data-ice="link">Properties</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#config" data-ice="link">config</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#knex" data-ice="link">knex</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#raw-sql-" data-ice="link">raw(sql)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#pool--" data-ice="link">pool()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#acquire--" data-ice="link">acquire()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#destroy--" data-ice="link">destroy()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connection.html"><a href="manual/connection.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/connection.html"><a href="manual/connection.html#connection--" data-ice="link">connection()</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/schema.html"><a href="manual/schema.html" data-ice="link">Schema</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columns" data-ice="link">columns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#relations" data-ice="link">relations</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#queries" data-ice="link">queries</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#tableclass" data-ice="link">tableClass</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#recordclass" data-ice="link">recordClass</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#properties" data-ice="link">Properties</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#database" data-ice="link">database</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#table" data-ice="link">table</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#undefined" data-ice="link">id</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#keys" data-ice="link">keys</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#keyindex" data-ice="link">keyIndex</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnindex" data-ice="link">columnIndex</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnnames" data-ice="link">columnNames</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#virtualcolumns" data-ice="link">virtualColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#allcolumns" data-ice="link">allColumns</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnsets" data-ice="link">columnSets</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#relations" data-ice="link">relations</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#fragments" data-ice="link">fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparecolumns-schema-" data-ice="link">prepareColumns(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparecolumnsets-schema-" data-ice="link">prepareColumnSets(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparekeys-schema-" data-ice="link">prepareKeys(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#preparefragments-schema-" data-ice="link">prepareFragments(schema)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#column-name-" data-ice="link">column(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columnset-name-" data-ice="link">columnSet(name)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#defaultcolumns--" data-ice="link">defaultColumns()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#columns-names-" data-ice="link">columns(names)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#resolvecolumns-names-" data-ice="link">resolveColumns(names)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#identity-data-" data-ice="link">identity(data)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/schema.html"><a href="manual/schema.html#functions" data-ice="link">Functions</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/schema.html"><a href="manual/schema.html#schema-database-tableschema-" data-ice="link">schema(database,tableSchema)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#overview" data-ice="link">Overview</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#configuration" data-ice="link">Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#tables" data-ice="link">tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#methods" data-ice="link">Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/tables.html"><a href="manual/tables.html#table-name-" data-ice="link">table(name)</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="tutorial">Tutorial</h1><p>In these examples we'll look at some of the basic functionality of the
+library using a database of users.</p>
+<h2 id="basic-queries">Basic Queries</h2><p>This first example shows how to connect to a database, create a table,
+insert a row and then fetch it out again.</p>
+<p>Note that most of the database functions are asynchronous and return
+promises.  In these examples we've wrapped the code in an <code>async</code> function
+called <code>main()</code> so that we can use the <code>await</code> keyword to wait for requests
+to complete. You can, of course, use <code>.then(...)</code> if you prefer.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
+
+async function main() {
+  // connect to a Sqlite database
+  const db = await connect({ database: 'sqlite:test.db' });
+
+  // create a table
+  await db.run(
+    `CREATE TABLE users (
+      id    INTEGER PRIMARY KEY ASC,
+      name  TEXT,
+      email TEXT
+    )`
+  );
+
+  // insert a row
+  const insert = await db.run(
+    'INSERT INTO users (name, email) VALUES (?, ?)',
+    ['Bobby Badger', 'bobby@badgerpower.com']
+  );
+  console.log("Inserted ID:", insert.lastInsertRowid);
+
+  // fetch a row
+  const bobby = await db.one(
+    'SELECT * FROM users WHERE email=?',
+    ['bobby@badgerpower.com']
+  );
+  console.log("Fetched row:", bobby);
+}
+
+main()</code></code></pre>
+<p>The <code>run()</code> method is used to execute a query where you're not expecting
+to return any rows from the database.  However, the method does return some
+data include the number of rows changed, and in the case of <code>INSERT</code> queries,
+the generated id for the record.</p>
+<p>Different database engines return different values here.  For Sqlite it's
+<code>changes</code> for the number of rows affected and <code>lastInsertRowid</code> for the id
+of the insert row.  For Mysql it's <code>affectedRows</code> and <code>insertId</code>.  For
+Postgres it's <code>rowCount</code> and if you want to get the id then you must add
+<code>RETURNING id</code> to the end of the query.</p>
+<p>We'll see in later examples using <code>tables</code> how the badger-database library
+automatically standardises this response so that you always get back <code>changes</code>
+and <code>id</code> (or whatever your id column is called) regardless of the database
+engine.  But if you really can't wait until then, the trick is to pass a third
+argument to the <code>run()</code> method as an object containing the <code>sanitizeResult</code>
+key set to a <code>true</code> value.  Then you will always get back <code>changes</code> and <code>id</code>
+for all database engines.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// insert a row
+const insert = await db.run(
+  'INSERT INTO users (name, email) VALUES (?, ?)',
+  ['Bobby Badger', 'bobby@badgerpower.com'],
+  { sanitizeResult: true }
+);
+console.log("Rows changed:", insert.changes);
+console.log("Inserted ID:", insert.id);</code></code></pre>
+<p>The <code>one()</code> method should be used when you're expecting to fetch <em>exactly</em>
+one row from the database.  The first argument is an SQL query string.  If
+you  have any parameters to include in the query then they should be embedded
+in the SQL using placeholders (<code>?</code> for Mysql and Sqlite, <code>$1</code>, <code>$2</code>, <code>$3</code>, etc.,
+for Postgres).  Then pass the parameter values in an array as the second
+argument.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await db.one(
+  'SELECT * FROM users WHERE email=?',
+  ['bobby@badgerpower.com']
+);
+console.log("Fetched row:", bobby);</code></code></pre>
+<p>The <code>one()</code> method will throw an exception if no rows, or more than one row is
+returned.</p>
+<p>The <code>any()</code> method can be used if you want to get one row which may or may not exist.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await db.any(
+  'SELECT * FROM users WHERE email=?',
+  ['bobby@badgerpower.com']
+);
+if (bobby) {
+  console.log("Fetched row:", bobby);
+}
+else {
+  console.log("Bobby Badger has gone missing!");
+}</code></code></pre>
+<p>The <code>all()</code> method can be used to return multiple rows.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobbies = await db.all(
+  'SELECT * FROM users WHERE name=?',
+  ['Bobby Badger']
+);
+if (bobbies.length) {
+  console.log("Fetched %s users called 'Bobby Badger':", bobbies.length);
+}
+else {
+  console.log("There aren't any users called 'Bobby Badger'");
+}</code></code></pre>
+<h2 id="named-queries">Named Queries</h2><p>Instead of embedding SQL queries directly into your code, you can
+define them as named queries.  This allows you to hide away some of the
+details of the database implemenentation so that your application code
+can be simpler and clearer.</p>
+<p>To keep things simple, this example has all the code in one file,
+which isn't really hiding anything at all.  In practice, you would usually
+move the database definition into a separate module.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
+
+const dbConfig = {
+  database: 'sqlite:test.db',
+  queries: {
+    createUsersTable:`
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY ASC,
+        name TEXT,
+        email TEXT
+      )`,
+    insertUser:
+      'INSERT INTO users (name, email) VALUES (?, ?)',
+    selectUserByEmail:
+      'SELECT * FROM users WHERE email=?'
+  }
+};
+
+async function main() {
+  // connect to the database
+  const db = await connect(dbConfig);
+
+  // create the users table using a named query
+  await db.run('createUsersTable');
+
+  // insert a row using a named query
+  const insert = await db.run(
+    'insertUser',
+    ['Bobby Badger', 'bobby@badgerpower.com']
+  );
+  console.log("Inserted ID:", insert.lastInsertRowid);
+
+  // fetch a row using a named query
+  const bobby = await db.one(
+    'selectUserByEmail',
+    ['bobby@badgerpower.com']
+  );
+  console.log("Fetched row:", bobby);
+}
+
+main()</code></code></pre>
+<h2 id="query-fragments">Query Fragments</h2><p>You might want to define a number of different queries for fetching user
+rows using different search terms.  For example, to select a user by
+<code>email</code> or <code>name</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
+  database: 'sqlite:test.db',
+  queries: {
+    selectUserByEmail:
+      'SELECT * FROM users WHERE email=?',
+    selectUserByName:
+      'SELECT * FROM users WHERE name=?'
+  }
+};</code></code></pre>
+<p>To avoid repetition, you can define named SQL <code>fragments</code> that can be embedded
+into other queries.  Named fragments can be embedded into queries inside angle
+brackets, e.g. <code>&lt;fragmentName&gt;</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
+  database: 'sqlite:test.db',
+  fragments: {
+    selectUser:
+      'SELECT * FROM users'
+  },
+  queries: {
+    selectUserByEmail:
+      '&lt;selectUser&gt; WHERE email=?',
+    selectUserByName:
+      '&lt;selectUser&gt; WHERE name=?'
+  }
+};</code></code></pre>
+<p>Fragments can reference other fragments.  This can be useful when you're building
+more complex queries, as shown in this somewhat contrived example:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
+  database: 'sqlite:test.db',
+  fragments: {
+    selectUserCompany:
+      'SELECT users.*, companies.* FROM users',
+    joinUserCompany:
+      'JOIN companies on users.company_id=companies.id',
+    selectEmployee:
+      '&lt;selectUserCompany&gt; &lt;joinUserCompany&gt;',
+  },
+  queries: {
+    selectEmployeeByEmail:
+      '&lt;selectEmployee&gt; WHERE email=?',
+    selectEmployeeByName:
+      '&lt;selectEmployee&gt; WHERE name=?'
+  }
+};</code></code></pre>
+<p>You can also embed fragments into ad-hoc queries passed to the
+<code>run()</code>, <code>one()</code>, <code>any()</code> and <code>all()</code> methods.  For example,
+given the above configuration you could write a custom query that
+includes the <code>selectEmployee</code> fragment like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await db.all(
+  '&lt;selectEmployee&gt; WHERE companies.name=?',
+  ['Badgers Inc.']
+);</code></code></pre>
+<h2 id="table-definitions">Table Definitions</h2><p>It can quickly get tedious if you've got to write lots of different
+queries for trivial operations like inserting, updating, selecting
+and deleting rows.</p>
+<p>In this example we introduce the concept of <code>tables</code>.  This allows you
+to specify the columns in each table and use higher level methods to
+automatically insert, update, select and delete rows from the table.</p>
+<p>Note that we're using the same database from the previous examples
+and assuming that the <code>users</code> table has already been created.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// define the users table and the columns it contains
+const db = await connect({
+  database: 'sqlite:test.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+    }
+  }
+});
+
+// fetch the users table
+const users = await db.table('users');
+
+// insert a row
+await users.insert({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+
+// update a row
+await users.update(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' }
+);
+
+// fetch a row
+const brian = await users.fetchOne({  // TODO: one() or oneRow()???
+  email: 'brian@badgerpower.com'
+});
+
+// delete a row
+await users.delete({
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<p>For simple cases you can define the table columns using a whitespace
+delimited string, as show in the previous example.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: 'id name email'
+    }
+  }
+});</code></code></pre>
+<p>You can add flags to the column names.  These include <code>required</code> to indicate
+that a column must be provided when a row is inserted, and <code>readonly</code> to indicate
+that a column cannot be inserted or updated.  Multiple flags can be added, each
+separated by a colon.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: 'id:readonly name:required email:required'
+    }
+  }
+});</code></code></pre>
+<p>If you try to insert a row without providing any of the <code>required</code> columns
+then an error will be throw.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'Missing required column "email" for the users table'
+await users.insert({
+  name:  'Brian Badger',
+});</code></code></pre>
+<p>The same thing will happen if you try to insert or update a <code>readonly</code> column.
+(NOTE: you don't have to define your id column as being readonly if you want to
+be able to insert rows with specific ids).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'The "id" column is readonly in the users table'
+await users.insert({
+  id:    999,
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com',
+});</code></code></pre>
+<p>If your unique ID column isn't called <code>id</code> then you can mark the relevant column
+using the <code>id</code> tag.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: 'user_id:readonly:id ...'
+    }
+  }
+});</code></code></pre>
+<p>Defining the columns using a string is a convenient short hand for simpler
+tables.  The more explicit form is to use an object with the column names as
+keys.  The corresponding values can be strings containing any flags for the
+columns, or an empty string if there aren't any.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: {
+        user_id: 'readonly:id',
+        name:    'required',
+        email:   'required',
+        comment: '',
+    }
+  }
+});</code></code></pre>
+<p>Or you can fully expand them like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  // ...engine, etc...
+  tables: {
+    users: {
+      columns: {
+        user_id: {
+          readonly: true,
+          id:       true
+        },
+        name: {
+          required: true
+        }
+        email: {
+          required: true
+        }
+        comment: { }
+      }
+    }
+  }
+});</code></code></pre>
+<h2 id="table-methods">Table Methods</h2><p>The <code>insert()</code> method will construct and run an <code>INSERT</code> SQL query to insert a
+row from the column data that you provide.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.insert({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<p>The SQL query generated will look like this for Sqlite and Mysql:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">INSERT INTO users (name, email)
+VALUES (?, ?)</code></code></pre>
+<p>Note the use of value placeholders to prevent SQL injection attacks.</p>
+<p>The format for placeholders in Postgres is slightly different but has the
+exact same effect:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">INSERT INTO users (name, email)
+VALUES ($1, $1)</code></code></pre>
+<p>You can insert multiple rows by passing an array of objects to the method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.insert([
+  {
+    name:  'Bobby Badger',
+    email: 'bobby@badgerpower.com'
+  },
+  {
+    name:  'Brian Badger',
+    email: 'brian@badgerpower.com'
+  }
+]);</code></code></pre>
+<p>** NOTE ** I'm going to change this so that you have to explicitly request a reload.</p>
+<p>After inserting a row the table <code>insert()</code> method will immediately reload it from the
+database.  This ensures that the data returned includes all columns, including the id
+and any others that might be generated by the database (e.g. a <code>created</code> timestamp).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const franky = await users.insert({
+  name:  'Franky Ferret',
+  email: 'franky@ferrets-r-us.com'
+});
+console.log("id:", franky.id);       // e.g. 3
+console.log("name:", franky.name);   // Franky Ferret
+console.log("email:", franky.email); // franky@ferrets-r-us.com</code></code></pre>
+<p>The same thing happens if you insert multiple rows, except that the return value will
+be an array of rows.</p>
+<p>If you would rather supress this behaviour then pass a second options argument as an
+object containing the <code>reload</code> parameter set to <code>false</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const simon = await users.insert(
+  {
+    name:  'Simon Stoat',
+    email: 'simon@stoat-stuff.com'
+  },
+  { reload: false }
+);</code></code></pre>
+<p>Note that you will still get the generated <code>id</code> returned and the <code>changes</code> will
+contain the number of rows change, in this case, 1.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log("id:", simon.id);           // e.g. 4
+console.log("changes:", simon.changes); // 1
+// name, email, etc., are NOT included</code></code></pre>
+<p>The <code>update()</code> method, as the name suggests, allows you to update rows.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' }
+);</code></code></pre>
+<p>The first argument is an object containing the changes you want to make.
+The second optional argument is the <code>WHERE</code> clause identifying the rows
+you want to update.  You can omit the second argument if you want to update
+all rows.</p>
+<p>The SQL generated for the method call shown above will look something like this:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">UPDATE users
+SET    name=?
+WHERE  email=?</code></code></pre>
+<p>Again, the format for Postgres is slightly different, using <code>$1</code> and <code>$2</code> for
+placeholders instead of <code>?</code>, but works exactly the same.</p>
+<p>You can probably guess what the <code>delete()</code> method does.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.delete({
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<p>The key/value pairs in object passed as the only argument identify the rows
+that you want to delete.  You can omit this if you want to delete all rows
+in the table.  Naturally, you should use this method with caution.</p>
+<p>The SQL generated will look something like this:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">DELETE FROM users
+WHERE email=?</code></code></pre>
+<p>** NOTE ** I'm considering renaming these to <code>one()</code>, <code>any()</code> and <code>all()</code>
+or perhaps <code>oneRow()</code>, <code>anyRow()</code> and <code>allRows()</code>.</p>
+<p>There are three different fetch methods, <code>fetchAny()</code> will return a single
+row if it exists, <code>fetchAll()</code> will return an array of all matching rows.
+The <code>fetchOne()</code> method is like <code>fetchAny()</code> in that it returns a single
+row. However, it also asserts that exactly one row is returned.  If the
+row does not exist, or if multiple rows are returned then it will throw
+an error.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or undefined
+const brian = await users.fetchAny({
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or throws an error
+const brian = await users.fetchOne({
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<p>The generated SQL will look something like this:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT * FROM users
+WHERE email=?</code></code></pre>
+<p>In all cases, the optional argument can be used to specify the selection
+criteria.  It can be omitted or left empty if you want to return all rows,
+although this usually only makes sense when using <code>fetchAll()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// returns an array of rows
+const allUsers = await users.fetchAll();</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as above
+const allUsers = await users.fetchAll({ });</code></code></pre>
+<p>You can pass a second argument which can contain various options to modify
+the selection.  For example, the <code>columns</code> option can be used to specify
+the columns that you want to select.  They can be specified as a string
+containing the columns names separated by whitespace:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOne(
+  { email: 'brian@badgerpower.com' },
+  { columns: 'id name' }
+);</code></code></pre>
+<p>Or as an array:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOne(
+  { email: 'brian@badgerpower.com' },
+  { columns: ['id', 'name'] }
+);</code></code></pre>
+<h2 id="custom-table-class">Custom Table Class</h2><p>You can define your own custom table class for each table in the database.
+This allows you to add your own methods for performing queries on the table.
+You should extend the <code>Table</code> base class and then define it as the <code>tableClass</code>
+option in the table definition.</p>
+<p>Here's a complete example.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect, Table } from '@abw/badger-database';
+
+export class Users extends Table {
+  badgers() {
+    // custom method to fetch all badgers
+    return this.fetchAll({ animal: 'Badger' });
+  }
+}
+
+async function main() {
+  const db = await connect({
+    database: 'sqlite:memory',
+    tables: {
+      users: {
+        // bind in the custom table class
+        tableClass: Users,
+        // column definitions
+        columns: 'id name email animal',
+        // query definitions
+        queries: {
+          create: `
+            CREATE TABLE users (
+              id     INTEGER PRIMARY KEY ASC,
+              name   TEXT,
+              email  TEXT,
+              animal TEXT
+            )`
+        }
+      },
+    }
+  });
+
+  // fetch users table object
+  const users = await db.table('users');
+
+  // run the 'create' query to create the database table
+  await users.run('create');
+
+  // insert some rows
+  await users.insert([
+    {
+      name:   'Bobby Badger',
+      email:  'bobby@badgerpower.com',
+      animal: 'Badger'
+    },
+    {
+      name:   'Brian Badger',
+      email:  'brian@badgerpower.com',
+      animal: 'Badger'
+    },
+    {
+      name:   'Frankie Ferret',
+      email:  'frank@ferret.com',
+      animal: 'Ferret'
+    }
+  ]);
+
+  // now call the custom badgers() method to fetch all badgers
+  const badgers = await users.badgers();
+
+  console.log(badgers.length);    // 2
+  console.log(badgers[0].name);   // Bobby Badger
+  console.log(badgers[1].name);   // Brian Badger
+}
+
+main()</code></code></pre>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>

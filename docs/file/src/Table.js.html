@@ -27,108 +27,274 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Connection.js~Connection.html">Connection</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Schema.js~Schema.html">Schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connection">connection</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-database">database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseAliases">databaseAliases</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseStringElements">databaseStringElements</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseStringRegex">databaseStringRegex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-whereTrue">whereTrue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Engines">Engines</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-operators">operators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#engine">Engine</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Mysql.js~MysqlEngine.html">MysqlEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Postgres.js~PostgresEngine.html">PostgresEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Sqlite.js~SqliteEngine.html">SqliteEngine</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/After.js~After.html">After</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Before.js~Before.html">Before</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Database.js~Database.html">Database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Group.js~Group.html">Group</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Having.js~Having.html">Having</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Join.js~Join.html">Join</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Order.js~Order.html">Order</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-operatorProxy">operatorProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~InsertValidationError.html">InsertValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-invalid">invalid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-missing">missing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplemented">notImplemented</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInBaseClass">notImplementedInBaseClass</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInModule">notImplementedInModule</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Table.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { addDebug } from "@abw/badger";
-import { fail, isArray } from "@abw/badger-utils";
-import recordProxy from "./Proxy/Record.js";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import recordProxy from "./Proxy/Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import Record from "./Record.js";
-import Schema from "./Schema.js";
-// import Queries from "./Queries.js";
+import Queries from "./Queries.js";
+// import Schema from "./Schema.js";
+import { fail, hasValue, isArray, noValue, splitList } from "@abw/badger-utils";
+import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
+import { throwColumnValidationError } from "./Utils/Error.js";
+import { addDebugMethod } from "./Utils/Debug.js";
 
-// export class Table extends Queries {
 export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
-    this.schema        = new Schema(database, schema)
+    this.engine        = database.engine;
+    //this.schema        = new Schema(database, schema)
+    this.table         = schema.table;
+    this.columns       = prepareColumns(schema);
+    this.readonly      = Object.keys(this.columns).filter( key =&gt; this.columns[key].readonly );
+    this.required      = Object.keys(this.columns).filter( key =&gt; this.columns[key].required );
+    this.keys          = prepareKeys(schema, this.columns);
+    this.id            = schema.id;
     this.recordClass   = schema.recordClass || Record;
     this.recordOptions = schema.recordOptions;
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
-    addDebug(this, schema.debug, schema.debugPrefix || `&lt;${this.table}&gt; table: `, schema.debugColor);
+    this.fragments     = this.prepareFragments(schema);
+    this.queries       = new Queries({ ...schema, debugPrefix: `Queries ${this.table}&gt; ` });
+    addDebugMethod(this, 'table', { debugPrefix: `Table ${this.table}&gt; ` }, schema);
   }
-  knex() {
-    return this.database.knex(this.schema.table);
+  prepareFragments(schema) {
+    const quote       = this.database.quote.bind(this.database);
+    const fragments   = schema.fragments ||= { };
+    fragments.table   = quote(this.table);
+    fragments.columns = Object.values(this.columns).map(
+      spec =&gt; quote(spec.tableColumn)
+    ).join(', ');
+    return fragments;
   }
-  raw() {
-    return this.database.raw(...arguments);
+
+  //-----------------------------------------------------------------------------
+  // Column validation
+  //-----------------------------------------------------------------------------
+  checkColumnNames(names) {
+    const table = this.table;
+    splitList(names).forEach(
+      column =&gt; this.columns[column]
+          || throwColumnValidationError('unknown', { column, table })
+    )
   }
+  checkColumns(data={}, cols=[], vals=[], test={}) {
+    const table = this.table;
+    // check that all the values supplied correspond to valid columns
+    Object.keys(data).forEach(
+      column =&gt; {
+        const spec = this.columns[column]
+          || throwColumnValidationError('unknown', { column, table });
+        if (test.writable &amp;&amp; spec.readonly) {
+          throwColumnValidationError('readonly', { column, table });
+        }
+        cols.push(spec.column);
+        vals.push(data[column])
+      }
+    )
+    return [cols, vals];
+  }
+  checkWritableColumns(data, cols=[], vals=[]) {
+    // check that all the values supplied correspond to valid columns that are not readonly
+    return this.checkColumns(data, cols, vals, { writable: true })
+  }
+  checkRequiredColumns(data) {
+    const table = this.table;
+    this.required.forEach(
+      column =&gt; {
+        if (noValue(data[column])) {
+          throwColumnValidationError('required', { column, table });
+        }
+      }
+    );
+  }
+
+  //-----------------------------------------------------------------------------
+  // Engine methods
+  //-----------------------------------------------------------------------------
   query(name) {
-    return this.raw(this.schema.query(name));
+    return this.queries.query(name);
   }
-  insert(data) {
-    return isArray(data)
-      ? this.insertRows(data)
-      : this.insertRow(data);
+  run(query, params, options) {
+    return this.engine.run(this.query(query), params, options)
   }
-  insertRow(row) {
-    return this.rowProxy(
-      this.knex().insert(row).then(
-        ([id]) =&gt; this.knex().select().first().where({ [this.schema.id]: id })
-      )
-    )
+  any(query, params, options) {
+    return this.engine.any(this.query(query), params, options)
   }
-  insertRows(rows) {
-    return this.rowsProxy(
-      this.insertRowsAsync(rows)
-    )
-    /*
-    // I *think* this should work... but it's beyond my ability/patience to
-    // figure out why it doesn't :-(
-    /*
-    return this.rowsProxy(
-      Promise.all(
-        rows.map(
-          data =&gt; this.knex().insert(data)
-            .then(
-              ([id]) =&gt; this.knex().select().first().where({ [this.schema.id]: id })
-            )
-        )
-      )
-    )
-    */
+  all(query, params, options) {
+    return this.engine.all(this.query(query), params, options)
   }
-  async insertRowsAsync(rows) {
-    let results = [ ];
-    for (const row of rows) {
-      const result = await this.knex().insert(row)
-        .then(
-          ([id]) =&gt; this.knex().select().first().where({ [this.schema.id]: id })
-        )
-      results.push(result)
+  one(query, params, options) {
+    return this.engine.one(this.query(query), params, options)
+  }
+
+  //-----------------------------------------------------------------------------
+  // Basic queries - insert
+  //-----------------------------------------------------------------------------
+  async insert(data, options) {
+    return isArray(data, options)
+      ? this.insertAll(data, options)
+      : this.insertOne(data, options)
+  }
+  async insertOne(data, options={}) {
+    this.debug("insertOne: ", data);
+    const [cols, vals] = this.checkWritableColumns(data);
+    this.checkRequiredColumns(data);
+    const insert = await this.engine.insert(this.table, cols, vals, this.keys);
+
+    // the reload option can be set false to prevent a reload
+    if (hasValue(options.reload) &amp;&amp; ! options.reload) {
+      return insert;
     }
-    return results;
+
+    // otherwise we reload the record using the id/keys
+    const fetch = { };
+    this.keys.map(
+      key =&gt; fetch[key] = insert[key] || data[key]
+    );
+    // console.log('post-insert fetch: ', fetch);
+
+    return this.fetchOne(fetch);
   }
+  async insertAll(data, options) {
+    this.debug("insertAll: ", data);
+    return await Promise.all(
+      data.map(
+        async row =&gt; this.insert(row, options)
+      )
+    );
+  }
+
+  //-----------------------------------------------------------------------------
+  // update
+  //-----------------------------------------------------------------------------
+  async update(data, where) {
+    this.debug("update: ", data, where);
+    const [dcols, dvals] = this.checkWritableColumns(data);
+    const [wcols, wvals] = this.checkColumns(where);
+    return this.engine.update(this.table, dcols, dvals, wcols, wvals);
+  }
+
+  //-----------------------------------------------------------------------------
+  // delete
+  //-----------------------------------------------------------------------------
+  async delete(where) {
+    this.debug("delete: ", where);
+    const [cols, vals] = this.checkColumns(where);
+    return this.engine.delete(this.table, cols, vals);
+  }
+
+  //-----------------------------------------------------------------------------
+  // fetch
+  //-----------------------------------------------------------------------------
+  prepareFetch(where, options={}) {
+    if (options.columns) {
+      this.checkColumnNames(options.columns);
+    }
+    return this.checkColumns(where);
+  }
+  async fetchOne(where, options={}) {
+    this.debug("fetchOne: ", where, options);
+    const [wcols, wvals] = this.prepareFetch(where, options);
+    return this.engine.selectOne(this.table, wcols, wvals, options);
+  }
+  async fetchAny(where, options={}) {
+    this.debug("fetchAny: ", where, options);
+    const [wcols, wvals] = this.prepareFetch(where, options);
+    return this.engine.selectAny(this.table, wcols, wvals, options);
+  }
+  async fetchAll(where, options={}) {
+    this.debug("fetchAll: ", where, options);
+    const [wcols, wvals] = this.prepareFetch(where, options);
+    return this.engine.selectAll(this.table, wcols, wvals, options);
+  }
+
+  // select() is the old name for fetchAll() which I'm in the process of
+  // reworking.
+  async select(where, options={}) {
+    this.debug("select: ", where, options);
+    if (options.columns) {
+      this.checkColumnNames(options.columns);
+    }
+    const [wcols, wvals] = this.checkColumns(where);
+    return this.engine.select(this.table, wcols, wvals, options);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Old Knex-based code - TODO
+  //-----------------------------------------------------------------------------
   selectRow(columns) {
     return this.rowProxy(
       this.knex().select(
@@ -159,7 +325,7 @@ export class Table {
         : select
     );
   }
-  update(set, where) {
+  OLDupdate(set, where) {
     return this.rowsProxy(
       this.knex().update(set).where(where).then(
         () =&gt; this.fetchRows(where)

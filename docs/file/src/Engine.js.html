@@ -1,0 +1,356 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/Engine.js | Badger Database</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-database-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Schema.js~Schema.html">Schema</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseAliases">databaseAliases</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseStringElements">databaseStringElements</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-databaseStringRegex">databaseStringRegex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-whereTrue">whereTrue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Engines">Engines</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-operators">operators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#engine">Engine</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Mysql.js~MysqlEngine.html">MysqlEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Postgres.js~PostgresEngine.html">PostgresEngine</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine/Sqlite.js~SqliteEngine.html">SqliteEngine</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#operator">Operator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/After.js~After.html">After</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Before.js~Before.html">Before</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Database.js~Database.html">Database</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/From.js~From.html">From</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Group.js~Group.html">Group</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Having.js~Having.html">Having</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Join.js~Join.html">Join</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Order.js~Order.html">Order</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Select.js~Select.html">Select</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator/Where.js~Where.html">Where</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-operatorProxy">operatorProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowProxy">rowProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rowsProxy">rowsProxy</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~InsertValidationError.html">InsertValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-invalid">invalid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-missing">missing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplemented">notImplemented</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInBaseClass">notImplementedInBaseClass</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInModule">notImplementedInModule</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/Engine.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Pool } from 'tarn';
+import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
+import { format } from './Utils/Format.js';
+import { hasValue, isObject, splitList } from '@abw/badger-utils';
+import { addDebugMethod } from './Utils/Debug.js';
+import { allColumns, whereTrue } from './Constants.js';
+
+const notImplemented = notImplementedInBaseClass('Engine');
+
+const poolDefaults = {
+  min: 2,
+  max: 10,
+  propagateCreateError: true
+}
+
+const quoteChars = {
+  mysql:   '`',
+  default: '"',
+};
+
+const queries = {
+  insert: 'INSERT INTO &lt;table&gt; (&lt;columns&gt;) VALUES (&lt;placeholders&gt;) &lt;returning&gt;',
+  update: 'UPDATE &lt;table&gt; SET &lt;set&gt; WHERE &lt;where&gt;',
+  delete: 'DELETE FROM &lt;table&gt; WHERE &lt;where&gt;',
+  select: 'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE &lt;where&gt;',
+}
+
+export class Engine {
+  constructor(config={}) {
+    this.engine    = config.engine   || missing('engine');
+    this.database  = config.database || missing('database');
+    this.config    = this.configure(config);
+    this.pool      = this.initPool(config.pool);
+    this.quoteChar = quoteChars[this.engine||'default'] || quoteChars.default;
+    this.escQuote  = `\\${this.quoteChar}`;
+    addDebugMethod(this, 'engine', config);
+  }
+  configure(config) {
+    return config;
+  }
+
+  //-----------------------------------------------------------------------------
+  // Pool configuration
+  //-----------------------------------------------------------------------------
+  initPool(options={}) {
+    return new Pool({
+      create: () =&gt; {
+        this.debug("create");
+        return this.connect();
+      },
+      validate: connection =&gt; {
+        return this.connected(connection);
+      },
+      destroy: connection =&gt; {
+        this.debug("destroy");
+        return this.disconnect(connection);
+      },
+      ...poolDefaults,
+      ...options
+    });
+  }
+
+  //-----------------------------------------------------------------------------
+  // Pool connections methods - must be implemented by subclasses
+  //-----------------------------------------------------------------------------
+  async connect() {
+    notImplemented("connect()")
+  }
+  async connected() {
+    notImplemented("connected()")
+  }
+  async disconnect() {
+    notImplemented("disconnect()")
+  }
+
+  //-----------------------------------------------------------------------------
+  // Methods to acquire and release connections from the pool
+  //-----------------------------------------------------------------------------
+  async acquire() {
+    this.debug("acquire()");
+    return this.pool.acquire().promise;
+  }
+  async release(connection) {
+    this.debug("release() ", connection);
+    await this.pool.release(connection);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Generic query methods
+  //-----------------------------------------------------------------------------
+  async execute(sql, action, options={}) {
+    this.debug("execute() ", sql);
+    const connection = await this.acquire();
+    const query      = await this.prepare(connection, sql);
+    const result     = await action(query);
+    this.release(connection);
+    return options.sanitizeResult
+      ? this.sanitizeResult(result, options)
+      : result;
+  }
+  async prepare(connection, sql) {
+    this.debug("prepare() ", sql);
+    return connection.prepare(sql);
+  }
+  optionalParams(params, options) {
+    if (isObject(params)) {
+      options = params;
+      params = [ ];
+    }
+    return [params, options];
+  }
+  async run() {
+    notImplemented('run()');
+  }
+  async any() {
+    notImplemented('any()');
+  }
+  async all() {
+    notImplemented('all()');
+  }
+  async one(sql, params, options) {
+    const rows = await this.all(sql, params, options);
+    if (rows.length === 1) {
+      return rows[0];
+    }
+    else {
+      unexpectedRowCount(rows.length);
+    }
+  }
+  //-----------------------------------------------------------------------------
+  // Specific queries
+  //-----------------------------------------------------------------------------
+  async insert(table, colnames, values, keys) {
+    const columns      = this.formatColumns(colnames);
+    const placeholders = this.formatPlaceholders(values);
+    const returning    = this.formatReturning(keys);
+    // console.log('columns: ', columns);
+    // console.log('returning: ', returning);
+    const sql          = format(queries.insert, { table, columns, placeholders, returning});
+    this.debug('insert: ', sql);
+    return this.run(sql, values, { keys, sanitizeResult: true });
+  }
+  async update(table, datacols, datavals, wherecols, wherevals) {
+    const set   = this.formatColumnPlaceholders(datacols);
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1) || whereTrue;
+    const sql   = format(queries.update, { table, set, where });
+    this.debug('update: ', sql);
+    return this.run(sql, [...datavals, ...wherevals], { sanitizeResult: true });
+  }
+  async delete(table, wherecols, wherevals) {
+    const where = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
+    const sql   = format(queries.delete, { table, where });
+    this.debug('delete: ', sql);
+    return this.run(sql, wherevals, { sanitizeResult: true });
+  }
+  selectQuery(table, wherecols, options={}) {
+    const columns = this.formatColumns(options.columns);
+    const where   = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
+    return format(queries.select, { table, columns, where });
+  }
+  async selectAll(table, wherecols, wherevals, options={}) {
+    const sql = this.selectQuery(table, wherecols, options);
+    this.debug('selectAll: ', sql);
+    return this.all(sql, wherevals);
+  }
+  async selectAny(table, wherecols, wherevals, options={}) {
+    const sql = this.selectQuery(table, wherecols, options);
+    this.debug('selectAny: ', sql);
+    return this.any(sql, wherevals);
+  }
+  async selectOne(table, wherecols, wherevals, options={}) {
+    const sql = this.selectQuery(table, wherecols, options);
+    this.debug('select: ', sql);
+    return this.one(sql, wherevals);
+  }
+  async select(...args) {
+    return this.selectAll(...args);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Query formatting
+  //-----------------------------------------------------------------------------
+  sanitizeResult(result) {
+    return result;
+  }
+  quote(name) {
+    return name
+      .split(/\./)
+      .map(
+        part =&gt; this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
+      .join('.');
+  }
+  quoteTableColumn(table, column) {
+    // if the column already has a dot then we quote it as is,
+    // otherwise we explicitly add the table name
+    return column.match(/\./)
+      ? this.quote(column)
+      : this.quote(`${table}.${column}`);
+  }
+  formatPlaceholders(values) {
+    return values.map(
+      () =&gt; '?'
+    ).join(', ');
+  }
+  formatColumnPlaceholder(column) {
+    return `${this.quote(column)}=?`;
+  }
+  formatColumnPlaceholders(columns, joint=', ') {
+    return columns.map(
+      column =&gt; this.formatColumnPlaceholder(column)
+    ).join(joint);
+  }
+  formatColumns(columns) {
+    return hasValue(columns)
+      ? splitList(columns)
+        .map(
+          column =&gt; this.quote(column)
+        )
+        .join(', ')
+      : allColumns;
+  }
+  formatReturning() {
+    return '';
+  }
+
+
+  //-----------------------------------------------------------------------------
+  // Cleanup
+  //-----------------------------------------------------------------------------
+  async destroy() {
+    this.debug("destroy() ");
+    await this.pool.destroy();
+  }
+}
+
+export default Engine
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>

@@ -4,9 +4,14 @@
 
 This is the manual for the `badger-database` Javascript module.
 
-* [Getting Started](manual/getting_started.html)
-* [Overview](manual/overview.html)
+* [Installation](manual/installation.html)
 * [Connecting](manual/connecting.html)
+* [Tutorial](manual/tutorial.html)
+
+## NOTE:
+
+I'm in the process of rewriting the library to remove Knex.  These
+pages haven't been updated yet and so will be out of date.
 
 * [Database](manual/database.html)
 * [Table](manual/table.html)
@@ -14,17 +19,6 @@ This is the manual for the `badger-database` Javascript module.
 * [Model](manual/model.html)
 * [Queries](manual/queries.html)
 
-
-
-## NOTE: Rewrite in progress
-
-This is the OLD manual for the `badger-database` Javascript module.
-
-* [Database](manual/database.html)
-* [Table](manual/table.html)
-* [Record](manual/record.html)
-* [Model](manual/model.html)
-* [Queries](manual/queries.html)
 
 These manual pages describe some of the internal implementation.
 You probably don't need to worry about them too much unless you're
