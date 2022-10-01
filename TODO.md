@@ -1,5 +1,8 @@
 * Connection string options: `sqlite:memory?debug&debugPrefix=SQL> &blahblah`
 
+* table should have one(), any() and all() methods for running queries (with
+expanded fragments)
+
 * fetch() vs select() - fetch({ where... }) should return all columns by
 default, select() should start a select query
 
