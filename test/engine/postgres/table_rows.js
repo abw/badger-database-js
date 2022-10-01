@@ -1,7 +1,7 @@
-import { runTableFetchTests } from '../../library/table_fetch.js';
+import { runTableRowsTests } from '../../library/table_rows.js';
 import { database } from '../../library/postgres.js';
 
-runTableFetchTests(
+runTableRowsTests(
   database,
   `CREATE TABLE users (
     id SERIAL,

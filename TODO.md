@@ -17,3 +17,5 @@ default, select() should start a select query
 
 * oneRow/anyRow/allRows, etc., should have order_by?
 
+* Should table record() return a record proxy? Or should the record put the
+data in this?  Or should it keep it in this.row as it does currently?

@@ -1,15 +1,14 @@
-import { addDebug } from "@abw/badger";
-import { fail } from "@abw/badger-utils";
 import relations from "./Relation/index.js";
+import { fail } from "@abw/badger-utils";
+import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Record {
-  constructor(table, data, options={}) {
+  constructor(table, row, options={}) {
     this.table     = table;
-    this.schema    = table.schema;
     this.database  = table.database;
-    this.data      = data;
+    this.row       = row;
     this.relations = { };
-    addDebug(this, options.debug, options.debugPrefix || `<${this.schema.table}> record: `, options.debugColor);
+    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, options);
   }
   update(set) {
     const where = this.schema.identity(this.data);
@@ -33,8 +32,5 @@ export class Record {
     return rfunc(this, relation);
   }
 }
-
-export const record = (table, data, options) =>
-  new Record(table, data, options)
 
 export default Record;

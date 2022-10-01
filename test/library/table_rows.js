@@ -1,7 +1,7 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
 
-export function runTableFetchTests(database, create) {
+export function runTableRowsTests(database, create) {
   let db;
 
   // connect to the database
@@ -42,7 +42,7 @@ export function runTableFetchTests(database, create) {
 
   // insert a couple of rows
   test.serial(
-    'table insert',
+    'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -58,7 +58,7 @@ export function runTableFetchTests(database, create) {
     }
   )
   test.serial(
-    'table insert another row',
+    'insert another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -76,7 +76,7 @@ export function runTableFetchTests(database, create) {
 
   // fetch rows
   test.serial(
-    'table fetch one',
+    'oneRow()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRow({
@@ -86,7 +86,7 @@ export function runTableFetchTests(database, create) {
     }
   )
   test.serial(
-    'table fetch any',
+    'anyRow()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.anyRow({
@@ -96,7 +96,7 @@ export function runTableFetchTests(database, create) {
     }
   )
   test.serial(
-    'table fetch all',
+    'allRows()',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({
@@ -107,7 +107,7 @@ export function runTableFetchTests(database, create) {
     }
   )
   test.serial(
-    'table fetch all with no spec',
+    'allRows() with no spec',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows();
@@ -117,7 +117,7 @@ export function runTableFetchTests(database, create) {
     }
   )
   test.serial(
-    'table fetch all with empty spec',
+    'allRows() with empty spec',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({ });
@@ -127,7 +127,7 @@ export function runTableFetchTests(database, create) {
     }
   )
   test.serial(
-    'table fetch with columns',
+    'oneRow() with columns',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRow(

@@ -4,7 +4,7 @@ import { defaultIdColumn } from '../Constants.js';
 
 export class PostgresEngine extends Engine {
   configure(config) {
-    config.debugPrefix ||= 'MysqlEngine> ';
+    config.debugPrefix ||= 'PostgresEngine> ';
     return config;
   }
 

@@ -22,6 +22,11 @@ export let debug = {
     prefix: 'Table> ',
     color:  'yellow',
   },
+  record: {
+    debug:  false,
+    prefix: 'Record> ',
+    color:  'green',
+  },
   test: {
     debug:  false,
     prefix: 'Test> ',

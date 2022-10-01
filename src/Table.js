@@ -1,8 +1,7 @@
-import recordProxy from "./Proxy/Record.js";
+import Queries from "./Queries.js";
+import Record from "./Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
-import Record from "./Record.js";
-import Queries from "./Queries.js";
 // import Schema from "./Schema.js";
 import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
@@ -164,19 +163,49 @@ export class Table {
     return this.checkColumns(where);
   }
   async oneRow(where, options={}) {
-    this.debug("fetchOne: ", where, options);
+    this.debug("oneRow: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectOne(this.table, wcols, wvals, options);
   }
   async anyRow(where, options={}) {
-    this.debug("fetchAny: ", where, options);
+    this.debug("anyRow: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectAny(this.table, wcols, wvals, options);
   }
   async allRows(where, options={}) {
-    this.debug("fetchAll: ", where, options);
+    this.debug("allRows: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectAll(this.table, wcols, wvals, options);
+  }
+
+  //-----------------------------------------------------------------------------
+  // oneRecord(), anyRecord() and allRecords()
+  //-----------------------------------------------------------------------------
+  record(row) {
+    this.debug("record()", row);
+    return new this.recordClass(this, row, this.recordOptions);
+  }
+  records(rows) {
+    return rows.map(
+      row => this.record(row)
+    );
+  }
+  async oneRecord(where, options={}) {
+    this.debug("oneRecord: ", where, options);
+    const row = await this.oneRow(where, options);
+    return this.record(row);
+  }
+  async anyRecord(where, options={}) {
+    this.debug("anyRecord: ", where, options);
+    const row = await this.anyRow(where, options);
+    return row
+      ? this.record(row)
+      : row;
+  }
+  async allRecords(where, options={}) {
+    this.debug("allRecords: ", where, options);
+    const rows = await this.allRows(where, options);
+    return this.records(rows);
   }
 
   // select() is the old name for fetchAll() which I'm in the process of
@@ -190,63 +219,9 @@ export class Table {
     return this.engine.select(this.table, wcols, wvals, options);
   }
 
-  //-----------------------------------------------------------------------------
-  // Old Knex-based code - TODO
-  //-----------------------------------------------------------------------------
-  selectRow(columns) {
-    return this.rowProxy(
-      this.knex().select(
-        this.schema.columns(columns)
-      )
-    ).first();
-  }
-  selectRows(columns) {
-    return this.rowsProxy(
-      this.knex().select(
-        this.schema.columns(columns)
-      )
-    );
-  }
-  fetchRow(where) {
-    const select = this.knex().select().first();
-    return this.rowProxy(
-      where
-        ? select.where(where)
-        : select
-    );
-  }
-  fetchRows(where) {
-    const select = this.knex().select();
-    return this.rowsProxy(
-      where
-        ? select.where(where)
-        : select
-    );
-  }
-  OLDupdate(set, where) {
-    return this.rowsProxy(
-      this.knex().update(set).where(where).then(
-        () => this.fetchRows(where)
-      )
-    )
-  }
-  record(query) {
-    return query.then(
-      row => recordProxy(new this.recordClass(this, row, this.recordOptions))
-    );
-  }
-  records(query) {
-    // console.log('table.records()');
-    return query.then(
-      rows => rows.map( row => recordProxy(new this.recordClass(this, row, this.recordOptions)) )
-    );
-  }
   tableFragments() {
     return this.tableFragments
   }
 }
-
-export const table = (database, schema) =>
-  new Table(database, schema)
 
 export default Table;

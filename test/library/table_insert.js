@@ -77,7 +77,7 @@ export function runTableInsertTests(database, create) {
 
   // make sure we can fetch two rows
   test.serial(
-    'fetch all',
+    'allRows()',
     async t => {
       const users = await db.table('users');
       const badgers = await users.allRows();
