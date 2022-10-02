@@ -2,6 +2,7 @@ import Queries from "./Queries.js";
 import Record from "./Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
+import recordProxy from "./Proxy/Record.js";
 // import Schema from "./Schema.js";
 import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
@@ -183,7 +184,7 @@ export class Table {
   //-----------------------------------------------------------------------------
   record(row) {
     this.debug("record()", row);
-    return new this.recordClass(this, row, this.recordOptions);
+    return recordProxy(
   }
   records(rows) {
     return rows.map(

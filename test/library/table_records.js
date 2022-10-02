@@ -83,6 +83,9 @@ export function runTableRecordsTests(database, create) {
       const bobby = await users.oneRecord({
         email: 'bobby@badgerpower.com'
       });
+      // console.log('oneRecord() returned: ', bobby);
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
       t.is( bobby.row.name, 'Bobby Badger' );
       t.is( bobby.row.email, 'bobby@badgerpower.com' );
       t.is( bobby instanceof Record, true );
@@ -96,6 +99,8 @@ export function runTableRecordsTests(database, create) {
       const bobby = await users.anyRecord({
         email: 'bobby@badgerpower.com'
       });
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
       t.is( bobby.row.name, 'Bobby Badger' );
       t.is( bobby.row.email, 'bobby@badgerpower.com' );
       t.is( bobby instanceof Record, true );
@@ -110,6 +115,8 @@ export function runTableRecordsTests(database, create) {
         email: 'bobby@badgerpower.com'
       });
       t.is( recs.length, 1 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
       t.is( recs[0].row.name, 'Bobby Badger' );
       t.is( recs[0].row.email, 'bobby@badgerpower.com' );
       t.is( recs[0] instanceof Record, true );
@@ -121,9 +128,13 @@ export function runTableRecordsTests(database, create) {
       const users = await db.table('users');
       const recs  = await users.allRecords();
       t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
       t.is( recs[0].row.name, 'Bobby Badger' );
       t.is( recs[0].row.email, 'bobby@badgerpower.com' );
       t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1].email, 'brian@badgerpower.com' );
       t.is( recs[1].row.name, 'Brian Badger' );
       t.is( recs[1].row.email, 'brian@badgerpower.com' );
       t.is( recs[1] instanceof Record, true );
@@ -135,9 +146,13 @@ export function runTableRecordsTests(database, create) {
       const users = await db.table('users');
       const recs  = await users.allRecords({ });
       t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
       t.is( recs[0].row.name, 'Bobby Badger' );
       t.is( recs[0].row.email, 'bobby@badgerpower.com' );
       t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1].email, 'brian@badgerpower.com' );
       t.is( recs[1].row.name, 'Brian Badger' );
       t.is( recs[1].row.email, 'brian@badgerpower.com' );
       t.is( recs[1] instanceof Record, true );
@@ -155,13 +170,15 @@ export function runTableRecordsTests(database, create) {
           columns: 'id name'
         }
       );
+      t.is( bobby.id, 1 );
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, undefined );
       t.is( bobby.row.id, 1 );
       t.is( bobby.row.name, 'Bobby Badger' );
       t.is( bobby.row.email, undefined );
       t.is( bobby instanceof Record, true );
     }
   )
-
   // cleanup
   test.serial(
     'destroy',
