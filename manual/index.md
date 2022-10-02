@@ -4,9 +4,12 @@
 
 This is the manual for the `badger-database` Javascript module.
 
-* [Installation](manual/installation.html)
-* [Connecting](manual/connecting.html)
-* [Tutorial](manual/tutorial.html)
+* [Installation](manual/installation.html) - installing the library
+* [Connecting](manual/connecting.html) - connecting to a database
+* [Basic Queries](manual/basic_queries.html) - performing basic SQL queries
+* [Named Queries](manual/named_queries.html) - defining named SQL queries for abstraction and reusability
+* [Query Fragments](manual/query_fragments.html) - defining named SQL fragments for embedding into queries
+* [Tables](manual/tables.html)
 
 ## NOTE:
 

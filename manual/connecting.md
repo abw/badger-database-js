@@ -136,9 +136,9 @@ const mydb = await connect({
 
 ## Connection Parameter Aliases
 
-Whenever I'm writing the code to connect to a database there's a good chance I'll
-get one of the parameter name wrong.  Is it `user` or `username`? `pass` or `password`?
-`host` or `hostname`? `file` or `filename`?
+I don't know about you, but whenever I'm writing the code to connect to a database there's
+a good chance I'll get one of the parameter names wrong.  Is it `user` or `username`?
+`pass` or `password`? `host` or `hostname`? `file` or `filename`?
 
 Of course you could google it, but there's no need. You can specify any of the "incorrect"
 parameters and we'll automatically fix them for you.

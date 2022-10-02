@@ -43,9 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
@@ -100,13 +98,13 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Table.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import recordProxy from "./Proxy/Record.js";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Queries from "./Queries.js";
+import Record from "./Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
-import Record from "./Record.js";
-import Queries from "./Queries.js";
+import recordProxy from "./Proxy/Record.js";
 // import Schema from "./Schema.js";
-import { fail, hasValue, isArray, noValue, splitList } from "@abw/badger-utils";
+import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
@@ -214,27 +212,27 @@ export class Table {
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
 
-    // the reload option can be set false to prevent a reload
-    if (hasValue(options.reload) &amp;&amp; ! options.reload) {
+    if (options.reload) {
+      // the reload option can be set reload the record using the id/keys
+      const fetch = { };
+      this.keys.map(
+        key =&gt; fetch[key] = insert[key] || data[key]
+      );
+      // console.log('post-insert fetch: ', fetch);
+
+      return this.oneRow(fetch);
+    }
+    else {
       return insert;
     }
-
-    // otherwise we reload the record using the id/keys
-    const fetch = { };
-    this.keys.map(
-      key =&gt; fetch[key] = insert[key] || data[key]
-    );
-    // console.log('post-insert fetch: ', fetch);
-
-    return this.fetchOne(fetch);
   }
   async insertAll(data, options) {
     this.debug("insertAll: ", data);
-    return await Promise.all(
-      data.map(
-        async row =&gt; this.insert(row, options)
-      )
-    );
+    let rows = [ ];
+    for (const row of data) {
+      rows.push(await this.insert(row, options));
+    }
+    return rows;
   }
 
   //-----------------------------------------------------------------------------
@@ -257,7 +255,7 @@ export class Table {
   }
 
   //-----------------------------------------------------------------------------
-  // fetch
+  // oneRow(), anyRow() and allRows()
   //-----------------------------------------------------------------------------
   prepareFetch(where, options={}) {
     if (options.columns) {
@@ -265,20 +263,53 @@ export class Table {
     }
     return this.checkColumns(where);
   }
-  async fetchOne(where, options={}) {
-    this.debug("fetchOne: ", where, options);
+  async oneRow(where, options={}) {
+    this.debug("oneRow: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectOne(this.table, wcols, wvals, options);
   }
-  async fetchAny(where, options={}) {
-    this.debug("fetchAny: ", where, options);
+  async anyRow(where, options={}) {
+    this.debug("anyRow: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectAny(this.table, wcols, wvals, options);
   }
-  async fetchAll(where, options={}) {
-    this.debug("fetchAll: ", where, options);
+  async allRows(where, options={}) {
+    this.debug("allRows: ", where, options);
     const [wcols, wvals] = this.prepareFetch(where, options);
     return this.engine.selectAll(this.table, wcols, wvals, options);
+  }
+
+  //-----------------------------------------------------------------------------
+  // oneRecord(), anyRecord() and allRecords()
+  //-----------------------------------------------------------------------------
+  record(row) {
+    this.debug("record()", row);
+    return recordProxy(
+      new this.recordClass(this, row, this.recordOptions)
+    );
+  }
+  records(rows) {
+    return rows.map(
+      row =&gt; this.record(row)
+    );
+  }
+  async oneRecord(where, options={}) {
+    this.debug("oneRecord: ", where, options);
+    const row = await this.oneRow(where, options);
+    return this.record(row);
+    // return Promise.resolve(this.record(row));
+  }
+  async anyRecord(where, options={}) {
+    this.debug("anyRecord: ", where, options);
+    const row = await this.anyRow(where, options);
+    return row
+      ? this.record(row)
+      : row;
+  }
+  async allRecords(where, options={}) {
+    this.debug("allRecords: ", where, options);
+    const rows = await this.allRows(where, options);
+    return this.records(rows);
   }
 
   // select() is the old name for fetchAll() which I'm in the process of
@@ -292,64 +323,19 @@ export class Table {
     return this.engine.select(this.table, wcols, wvals, options);
   }
 
-  //-----------------------------------------------------------------------------
-  // Old Knex-based code - TODO
-  //-----------------------------------------------------------------------------
-  selectRow(columns) {
-    return this.rowProxy(
-      this.knex().select(
-        this.schema.columns(columns)
-      )
-    ).first();
-  }
-  selectRows(columns) {
-    return this.rowsProxy(
-      this.knex().select(
-        this.schema.columns(columns)
-      )
-    );
-  }
-  fetchRow(where) {
-    const select = this.knex().select().first();
-    return this.rowProxy(
-      where
-        ? select.where(where)
-        : select
-    );
-  }
-  fetchRows(where) {
-    const select = this.knex().select();
-    return this.rowsProxy(
-      where
-        ? select.where(where)
-        : select
-    );
-  }
-  OLDupdate(set, where) {
-    return this.rowsProxy(
-      this.knex().update(set).where(where).then(
-        () =&gt; this.fetchRows(where)
-      )
-    )
-  }
-  record(query) {
-    return query.then(
-      row =&gt; recordProxy(new this.recordClass(this, row, this.recordOptions))
-    );
-  }
-  records(query) {
-    // console.log('table.records()');
-    return query.then(
-      rows =&gt; rows.map( row =&gt; recordProxy(new this.recordClass(this, row, this.recordOptions)) )
-    );
-  }
   tableFragments() {
     return this.tableFragments
   }
+  identity(data) {
+    return this.keys.reduce(
+      (result, key) =&gt; {
+        result[key] = data[key]
+        return result
+      },
+      {}
+    );
+  }
 }
-
-export const table = (database, schema) =&gt;
-  new Table(database, schema)
 
 export default Table;
 </code></pre>

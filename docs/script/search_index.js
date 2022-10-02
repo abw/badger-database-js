@@ -336,12 +336,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger-utils~record",
-    "function/index.html#static-function-record",
-    "<span>record</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "function"
-  ],
-  [
     "@abw/badger-utils~recordproxy",
     "function/index.html#static-function-recordProxy",
     "<span>recordProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
@@ -375,12 +369,6 @@ window.esdocSearchIndex = [
     "@abw/badger-utils~setdebug",
     "function/index.html#static-function-setDebug",
     "<span>setDebug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-utils~table",
-    "function/index.html#static-function-table",
-    "<span>table</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
     "function"
   ],
   [
@@ -1650,9 +1638,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/record.js~record#schema",
-    "class/src/Record.js~Record.html#instance-member-schema",
-    "src/Record.js~Record#schema",
+    "src/record.js~record#row",
+    "class/src/Record.js~Record.html#instance-member-row",
+    "src/Record.js~Record#row",
     "member"
   ],
   [
@@ -1842,21 +1830,39 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/table.js~table#oldupdate",
-    "class/src/Table.js~Table.html#instance-method-OLDupdate",
-    "src/Table.js~Table#OLDupdate",
-    "method"
-  ],
-  [
     "src/table.js~table#all",
     "class/src/Table.js~Table.html#instance-method-all",
     "src/Table.js~Table#all",
     "method"
   ],
   [
+    "src/table.js~table#allrecords",
+    "class/src/Table.js~Table.html#instance-method-allRecords",
+    "src/Table.js~Table#allRecords",
+    "method"
+  ],
+  [
+    "src/table.js~table#allrows",
+    "class/src/Table.js~Table.html#instance-method-allRows",
+    "src/Table.js~Table#allRows",
+    "method"
+  ],
+  [
     "src/table.js~table#any",
     "class/src/Table.js~Table.html#instance-method-any",
     "src/Table.js~Table#any",
+    "method"
+  ],
+  [
+    "src/table.js~table#anyrecord",
+    "class/src/Table.js~Table.html#instance-method-anyRecord",
+    "src/Table.js~Table#anyRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#anyrow",
+    "class/src/Table.js~Table.html#instance-method-anyRow",
+    "src/Table.js~Table#anyRow",
     "method"
   ],
   [
@@ -1914,36 +1920,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/table.js~table#fetchall",
-    "class/src/Table.js~Table.html#instance-method-fetchAll",
-    "src/Table.js~Table#fetchAll",
-    "method"
-  ],
-  [
-    "src/table.js~table#fetchany",
-    "class/src/Table.js~Table.html#instance-method-fetchAny",
-    "src/Table.js~Table#fetchAny",
-    "method"
-  ],
-  [
-    "src/table.js~table#fetchone",
-    "class/src/Table.js~Table.html#instance-method-fetchOne",
-    "src/Table.js~Table#fetchOne",
-    "method"
-  ],
-  [
-    "src/table.js~table#fetchrow",
-    "class/src/Table.js~Table.html#instance-method-fetchRow",
-    "src/Table.js~Table#fetchRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#fetchrows",
-    "class/src/Table.js~Table.html#instance-method-fetchRows",
-    "src/Table.js~Table#fetchRows",
-    "method"
-  ],
-  [
     "src/table.js~table#fragments",
     "class/src/Table.js~Table.html#instance-member-fragments",
     "src/Table.js~Table#fragments",
@@ -1954,6 +1930,12 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-member-id",
     "src/Table.js~Table#id",
     "member"
+  ],
+  [
+    "src/table.js~table#identity",
+    "class/src/Table.js~Table.html#instance-method-identity",
+    "src/Table.js~Table#identity",
+    "method"
   ],
   [
     "src/table.js~table#insert",
@@ -1983,6 +1965,18 @@ window.esdocSearchIndex = [
     "src/table.js~table#one",
     "class/src/Table.js~Table.html#instance-method-one",
     "src/Table.js~Table#one",
+    "method"
+  ],
+  [
+    "src/table.js~table#onerecord",
+    "class/src/Table.js~Table.html#instance-method-oneRecord",
+    "src/Table.js~Table#oneRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#onerow",
+    "class/src/Table.js~Table.html#instance-method-oneRow",
+    "src/Table.js~Table#oneRow",
     "method"
   ],
   [
@@ -2067,18 +2061,6 @@ window.esdocSearchIndex = [
     "src/table.js~table#select",
     "class/src/Table.js~Table.html#instance-method-select",
     "src/Table.js~Table#select",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectrow",
-    "class/src/Table.js~Table.html#instance-method-selectRow",
-    "src/Table.js~Table#selectRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectrows",
-    "class/src/Table.js~Table.html#instance-method-selectRows",
-    "src/Table.js~Table#selectRows",
     "method"
   ],
   [

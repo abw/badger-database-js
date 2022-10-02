@@ -10,13 +10,28 @@ at least one of the database driver modules:
 
 ### npm
 
+    // postgres
     npm install @abw/badger-database pg
+    // mysql
+    npm install @abw/badger-database mysql2
+    // sqlite
+    npm install @abw/badger-database better-sqlite3
 
 ### pnpm
 
+    // postgres
     pnpm add @abw/badger-database pg
+    // mysql
+    pnpm add @abw/badger-database mysql2
+    // sqlite
+    pnpm add @abw/badger-database better-sqlite
 
 ### yarn
 
+    // postgres
     yarn add @abw/badger-database pg
+    // mysql
+    yarn add @abw/badger-database mysql
+    // sqlite
+    yarn add @abw/badger-database better-sqlite
 

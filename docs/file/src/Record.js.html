@@ -43,9 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-record">record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-schema">schema</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-table">table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
@@ -100,18 +98,17 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Record.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { addDebug } from "@abw/badger";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import relations from "./Relation/index.js";
 import { fail } from "@abw/badger-utils";
-import relations from "./Relation/index.js";
+import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Record {
-  constructor(table, data, options={}) {
+  constructor(table, row, options={}) {
     this.table     = table;
-    this.schema    = table.schema;
     this.database  = table.database;
-    this.data      = data;
+    this.row       = row;
     this.relations = { };
-    addDebug(this, options.debug, options.debugPrefix || `&lt;${this.schema.table}&gt; record: `, options.debugColor);
+    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}&gt; ` }, options);
   }
   update(set) {
     const where = this.schema.identity(this.data);
@@ -135,9 +132,6 @@ export class Record {
     return rfunc(this, relation);
   }
 }
-
-export const record = (table, data, options) =&gt;
-  new Record(table, data, options)
 
 export default Record;
 </code></pre>
