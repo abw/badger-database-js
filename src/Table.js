@@ -128,11 +128,11 @@ export class Table {
   }
   async insertAll(data, options) {
     this.debug("insertAll: ", data);
-    return await Promise.all(
-      data.map(
-        async row => this.insert(row, options)
-      )
-    );
+    let rows = [ ];
+    for (const row of data) {
+      rows.push(await this.insert(row, options));
+    }
+    return rows;
   }
 
   //-----------------------------------------------------------------------------
@@ -185,6 +185,8 @@ export class Table {
   record(row) {
     this.debug("record()", row);
     return recordProxy(
+      new this.recordClass(this, row, this.recordOptions)
+    );
   }
   records(rows) {
     return rows.map(
@@ -195,6 +197,7 @@ export class Table {
     this.debug("oneRecord: ", where, options);
     const row = await this.oneRow(where, options);
     return this.record(row);
+    // return Promise.resolve(this.record(row));
   }
   async anyRecord(where, options={}) {
     this.debug("anyRecord: ", where, options);
@@ -222,6 +225,15 @@ export class Table {
 
   tableFragments() {
     return this.tableFragments
+  }
+  identity(data) {
+    return this.keys.reduce(
+      (result, key) => {
+        result[key] = data[key]
+        return result
+      },
+      {}
+    );
   }
 }
 
