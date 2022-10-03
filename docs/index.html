@@ -100,8 +100,8 @@
 </nav>
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="badger-database">Badger Database</h1><p>This is a simple but powerful database management tool that allows you to
-build database abstraction layers for your projects. It has support for
-accessing Postgres, MySQL and Sqlite databases.</p>
+build database abstraction layers for your Javascript projects. It has
+support for accessing Postgres, MySQL and Sqlite databases.</p>
 <p>The aim is to provide a <em>Separation of Concerns</em> between your application
 code and your database code so that you can write application code at a
 higher level of abstraction, with the details of the database hidden away
@@ -109,10 +109,10 @@ in the lower levels.</p>
 <h2 id="philosophy">Philosophy</h2><p>It is based on the philosphy that ORMs and SQL query builders are considered
 <em>Mostly Harmful</em>.  SQL is an industry standard and has been for nearly 40
 years.  Although there are some minor differences between dialects, it is
-the most portable and widely understood way to communicate with a database.
-Any developer who has experience with using relational databases should know
-at least the basics of SQL, regardless of the programming language or database
-toolkits they are most familiar with.</p>
+the most portable and widely understood way to communicate with a relational
+database.  Any developer who has experience with using relational databases
+should know at least the basics of SQL, regardless of the programming language
+or database toolkits they are most familiar with.</p>
 <p>Unlike most ORMs and SQL query builders which try to insulate developers from
 SQL, this library embraces it and encourages you to use it in the way it was
 intended to be used.  One of the keys benefits is transparency.  Your SQL
@@ -183,7 +183,7 @@ in-memory database which is ideal for testing.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const database = connect({
   database: 'sqlite:memory',
 })</code></code></pre>
-<p>Use the <a href="https://abw.github.io/badger-database-js/docs/manual/database.html#run-sql-params-">run()</a>
+<p>Use the <a href="https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#run--">run()</a>
 method to run SQL queries.  For example, to create a <code>users</code> table:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await database.run(`
   CREATE TABLE users (
@@ -192,6 +192,103 @@ method to run SQL queries.  For example, to create a <code>users</code> table:</
     email TEXT
   )`
 )</code></code></pre>
+<p>Or to insert a row of data:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const insert = await database.run(
+  'INSERT INTO users (name, email) VALUES (?, ?)',
+  ['Bobby Badger', 'bobby@badgerpower.com']
+);
+console.log("Inserted ID:", insert.lastInsertRowid);</code></code></pre>
+<p>Use the <a href="https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#one--">one()</a>
+method to fetch a row of data:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const select = await database.one(
+  'SELECT name, email FROM users WHERE email=?',
+  ['bobby@badgerpower.com']
+);
+console.log("User Name:", select.name);</code></code></pre>
+<p>Define named queries and query fragments up front so that you don't have
+to embed SQL in your application code:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = connect({
+  database: 'sqlite:memory',
+  fragments: {
+    selectUser: `
+      SELECT name, email
+      FROM users
+    `
+  },
+  queries: {
+    createUsers: `
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY ASC,
+        name TEXT,
+        email TEXT
+      )`,
+    insertUser: `
+      INSERT INTO users (name, email)
+      VALUES (?, ?)
+    `,
+    selectUserByEmail: `
+      
+      WHERE email=?
+    `,
+    selectUserByName: `
+      
+      WHERE name=?
+    `,
+  }
+})
+await database.run('createUsers');
+await database.run(
+  'insertUser',
+  ['Bobby Badger', 'bobby@badgerpower.com']
+);
+const select = await database.one(
+  'selectUserByEmail',
+  ['bobby@badgerpower.com']
+);
+const select2 = await database.one(
+  'selectUserByName',
+  ['Bobby Badger']
+);</code></code></pre>
+<p>Define tables to benefit from table-scoped queries and automatically generated
+queries:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const database = connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: {
+      columns: 'id:readonly name:required email:required'
+      queries: {
+        create: `
+          CREATE TABLE users (
+            id INTEGER PRIMARY KEY ASC,
+            name TEXT,
+            email TEXT
+          )`,
+      }
+    }
+  }
+})
+await users = database.table('users');
+await users.run('create');
+await users.insert({
+  name: 'Bobby Badger',
+  email: 'bobby@badgerpower.com',
+});
+const select = await users.oneRow({
+  email: 'bobby@badgerpower.com'
+});</code></code></pre>
+<p>Use records to perform further operations on rows.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const record = await users.oneRecord({
+  email: 'bobby@badgerpower.com'
+});
+await record.update({
+  name: 'Robert Badger'
+});
+await record.delete();</code></code></pre>
+<p>You can also define relations to connect records to related records,
+and define your own custom table and record modules to
+perform custom processing and implement your business logic.</p>
+<p>Read the <a href="https://abw.github.io/badger-database-js/docs/manual/">fine manual</a> for
+further information.</p>
 <h1 id="author">Author</h1><p>Andy Wardley <a href="mailto:abw@wardley.org">abw@wardley.org</a></p>
 </div>
 </div>

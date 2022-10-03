@@ -16,3 +16,7 @@
 * relations
 
 * query builder (operations)
+
+* document query() method to view generated SQL
+
+* document debugging options

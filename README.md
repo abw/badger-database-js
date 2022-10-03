@@ -1,8 +1,8 @@
 # Badger Database
 
 This is a simple but powerful database management tool that allows you to
-build database abstraction layers for your projects. It has support for
-accessing Postgres, MySQL and Sqlite databases.
+build database abstraction layers for your Javascript projects. It has
+support for accessing Postgres, MySQL and Sqlite databases.
 
 The aim is to provide a *Separation of Concerns* between your application
 code and your database code so that you can write application code at a
@@ -14,10 +14,10 @@ in the lower levels.
 It is based on the philosphy that ORMs and SQL query builders are considered
 *Mostly Harmful*.  SQL is an industry standard and has been for nearly 40
 years.  Although there are some minor differences between dialects, it is
-the most portable and widely understood way to communicate with a database.
-Any developer who has experience with using relational databases should know
-at least the basics of SQL, regardless of the programming language or database
-toolkits they are most familiar with.
+the most portable and widely understood way to communicate with a relational
+database.  Any developer who has experience with using relational databases
+should know at least the basics of SQL, regardless of the programming language
+or database toolkits they are most familiar with.
 
 Unlike most ORMs and SQL query builders which try to insulate developers from
 SQL, this library embraces it and encourages you to use it in the way it was
@@ -107,7 +107,7 @@ const database = connect({
 })
 ```
 
-Use the [run()](https://abw.github.io/badger-database-js/docs/manual/database.html#run-sql-params-)
+Use the [run()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#run--)
 method to run SQL queries.  For example, to create a `users` table:
 
 ```js
@@ -119,6 +119,125 @@ await database.run(`
   )`
 )
 ```
+
+Or to insert a row of data:
+
+```js
+const insert = await database.run(
+  'INSERT INTO users (name, email) VALUES (?, ?)',
+  ['Bobby Badger', 'bobby@badgerpower.com']
+);
+console.log("Inserted ID:", insert.lastInsertRowid);
+```
+
+Use the [one()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#one--)
+method to fetch a row of data:
+
+```js
+const select = await database.one(
+  'SELECT name, email FROM users WHERE email=?',
+  ['bobby@badgerpower.com']
+);
+console.log("User Name:", select.name);
+```
+
+Define named queries and query fragments up front so that you don't have
+to embed SQL in your application code:
+
+```js
+const database = connect({
+  database: 'sqlite:memory',
+  fragments: {
+    selectUser: `
+      SELECT name, email
+      FROM users
+    `
+  },
+  queries: {
+    createUsers: `
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY ASC,
+        name TEXT,
+        email TEXT
+      )`,
+    insertUser: `
+      INSERT INTO users (name, email)
+      VALUES (?, ?)
+    `,
+    selectUserByEmail: `
+      <selectUser>
+      WHERE email=?
+    `,
+    selectUserByName: `
+      <selectUser>
+      WHERE name=?
+    `,
+  }
+})
+await database.run('createUsers');
+await database.run(
+  'insertUser',
+  ['Bobby Badger', 'bobby@badgerpower.com']
+);
+const select = await database.one(
+  'selectUserByEmail',
+  ['bobby@badgerpower.com']
+);
+const select2 = await database.one(
+  'selectUserByName',
+  ['Bobby Badger']
+);
+```
+
+Define tables to benefit from table-scoped queries and automatically generated
+queries:
+
+```js
+const database = connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: {
+      columns: 'id:readonly name:required email:required'
+      queries: {
+        create: `
+          CREATE TABLE users (
+            id INTEGER PRIMARY KEY ASC,
+            name TEXT,
+            email TEXT
+          )`,
+      }
+    }
+  }
+})
+await users = database.table('users');
+await users.run('create');
+await users.insert({
+  name: 'Bobby Badger',
+  email: 'bobby@badgerpower.com',
+});
+const select = await users.oneRow({
+  email: 'bobby@badgerpower.com'
+});
+```
+
+Use records to perform further operations on rows.
+
+```js
+const record = await users.oneRecord({
+  email: 'bobby@badgerpower.com'
+});
+await record.update({
+  name: 'Robert Badger'
+});
+await record.delete();
+```
+
+You can also define relations to connect records to related records,
+and define your own custom table and record modules to
+perform custom processing and implement your business logic.
+
+Read the [fine manual](https://abw.github.io/badger-database-js/docs/manual/) for
+further information.
 
 # Author
 
