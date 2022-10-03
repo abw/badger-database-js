@@ -1,20 +1,42 @@
 import relations from "./Relation/index.js";
 import { fail } from "@abw/badger-utils";
 import { addDebugMethod } from "./Utils/Debug.js";
+import { throwDeletedRecordError } from "./Utils/Error.js";
 
 export class Record {
-  constructor(table, row, options={}) {
+  constructor(table, row, config={}) {
     this.table     = table;
     this.database  = table.database;
     this.row       = row;
     this.relations = { };
-    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, options);
+    this.config    = config;
+    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, config);
   }
   async update(set) {
+    this.assertNotDeleted('update');
     const where = this.table.identity(this.row);
     const update = await this.table.updateOne(set, where, { reload: true });
     Object.assign(this.row, update);
     return this;
+  }
+  async delete() {
+    this.assertNotDeleted('delete');
+    const where = this.table.identity(this.row);
+    await this.table.delete(where);
+    this.deleted = true;
+    return this;
+  }
+  assertNotDeleted(action) {
+    if (this.deleted) {
+      throwDeletedRecordError(
+        'action',
+        {
+          action,
+          table: this.table.table,
+          id:    this.table.keys.map( key => this.row[key] ).join('/')
+        }
+      )
+    }
   }
   relation(name) {
     this.debug('relation(%s)', name);
@@ -23,7 +45,7 @@ export class Record {
   }
   initRelation(name) {
     this.debug('initRelation(%s)', name);
-    const relation = this.schema.relations[name] || fail("Invalid relation specified: ", name);
+    const relation = this.table.relations[name] || fail("Invalid relation specified: ", name);
     const rfunc    = relations[relation.type] || fail("Invalid relation type: ", relation.type);
     relation.name ||= name;
     return rfunc(this, relation);

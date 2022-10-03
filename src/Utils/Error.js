@@ -32,6 +32,7 @@ export class CustomError extends Error {
 export class UnexpectedRowCount extends CustomError { }
 export class ColumnValidationError extends CustomError { }
 export class InsertValidationError extends CustomError { }
+export class DeletedRecordError extends CustomError { }
 
 export function unexpectedRowCount(n, action='returned') {
   throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)
@@ -57,4 +58,11 @@ export const throwColumnValidationError = thrower(
     invalidColumns: 'Invalid "columns" specified for the <table> table: <columns>',
   },
   ColumnValidationError
+)
+
+export const throwDeletedRecordError = thrower(
+  {
+    action: 'Cannot <action> deleted <table> record #<id>',
+  },
+  DeletedRecordError
 )

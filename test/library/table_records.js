@@ -3,6 +3,7 @@ import Record from '../../src/Record.js';
 import { connect } from '../../src/Database.js';
 import { databaseConfig } from './database.js';
 import { createUsersTableQuery } from './users_table.js';
+import { DeletedRecordError } from '../../src/Utils/Error.js';
 
 export function runTableRecordsTests(engine) {
   const database = databaseConfig(engine);
@@ -215,6 +216,47 @@ export function runTableRecordsTests(engine) {
       });
       await bobby.update({ name: 'Roberto Badger' });
       t.is( bobby.name, 'Roberto Badger' );
+    }
+  )
+
+  // record delete
+  test.serial(
+    'record delete',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.oneRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      await bobby.delete();
+      t.true( bobby.deleted );
+      const reload = await users.anyRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      t.is( reload, undefined );
+    }
+  )
+
+  test.serial(
+    'cannot update deleted record',
+    async t => {
+      const users = await db.table('users');
+      const brian = await users.oneRecord({
+        email: 'brian@badgerpower.com'
+      });
+      await brian.delete();
+      t.true( brian.deleted );
+
+      const error = await t.throwsAsync(
+        () => brian.update({ name: 'Brian the Badger' })
+      );
+      t.true( error instanceof DeletedRecordError );
+      t.is( error.message, `Cannot update deleted users record #${brian.id}` );
+
+      const delerror = await t.throwsAsync(
+        () => brian.delete()
+      );
+      t.true( delerror instanceof DeletedRecordError );
+      t.is( delerror.message, `Cannot delete deleted users record #${brian.id}` );
     }
   )
 
