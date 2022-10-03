@@ -59,6 +59,8 @@ export function runTableRowsTests(engine) {
       t.is( result.id, 1 );
       t.is( result.name, 'Bobby Badger' );
       t.is( result.email, 'bobby@badgerpower.com' );
+      // friends should NOT be returned as it's not listed in table columns
+      t.is( result.friends, undefined );
     }
   )
   test.serial(
@@ -87,6 +89,8 @@ export function runTableRowsTests(engine) {
         email: 'bobby@badgerpower.com'
       });
       t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.friends, undefined );
     }
   )
   test.serial(
@@ -97,6 +101,8 @@ export function runTableRowsTests(engine) {
         email: 'bobby@badgerpower.com'
       });
       t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.friends, undefined );
     }
   )
   test.serial(
@@ -108,6 +114,8 @@ export function runTableRowsTests(engine) {
       });
       t.is( rows.length, 1 );
       t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[0].email, 'bobby@badgerpower.com' );
+      t.is( rows[0].friends, undefined );
     }
   )
   test.serial(
@@ -117,7 +125,9 @@ export function runTableRowsTests(engine) {
       const rows  = await users.allRows();
       t.is( rows.length, 2 );
       t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[0].friends, undefined );
       t.is( rows[1].name, 'Brian Badger' );
+      t.is( rows[1].friends, undefined );
     }
   )
   test.serial(
@@ -127,7 +137,9 @@ export function runTableRowsTests(engine) {
       const rows  = await users.allRows({ });
       t.is( rows.length, 2 );
       t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[0].friends, undefined );
       t.is( rows[1].name, 'Brian Badger' );
+      t.is( rows[0].friends, undefined );
     }
   )
   test.serial(
@@ -145,6 +157,7 @@ export function runTableRowsTests(engine) {
       t.is( bobby.id, 1 );
       t.is( bobby.name, 'Bobby Badger' );
       t.is( bobby.email, undefined );
+      t.is( bobby.friends, undefined );
     }
   )
 

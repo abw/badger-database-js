@@ -10,7 +10,7 @@ export const createUsersTableQuery = engine => {
       id      ${serial},
       name    TEXT,
       email   TEXT,
-      friends INTEGER
+      friends INTEGER DEFAULT 0
     )`
 }
 
