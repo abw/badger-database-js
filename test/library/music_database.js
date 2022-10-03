@@ -76,7 +76,7 @@ export async function connectMusicDatabase(engine) {
     theBestAlbumEverRecorded: `
       SELECT    *
       FROM      albums
-      WHERE     title="The Dark Side of the Moon"`
+      WHERE     title='The Dark Side of the Moon'`
   };
 
   const albumsFragments = {
@@ -303,6 +303,14 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( parseInt(albumList[2].n_tracks), 7 );
       t.is( albumList[3].title, 'The Dark Side of the Moon' );
       t.is( parseInt(albumList[3].n_tracks), 9 );
+    }
+  )
+
+  test.serial(
+    'theBestAlbumEverRecorded',
+    async t => {
+      const album = await musicdb.one('theBestAlbumEverRecorded');
+      t.is( album.title, 'The Dark Side of the Moon' );
     }
   )
 
