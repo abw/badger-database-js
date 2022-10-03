@@ -42,6 +42,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~deletedrecorderror",
+    "class/src/Utils/Error.js~DeletedRecordError.html",
+    "<span>DeletedRecordError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
     "@abw/badger-database~engine",
     "class/src/Engine.js~Engine.html",
     "<span>Engine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -375,6 +381,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~throwcolumnvalidationerror",
     "variable/index.html#static-variable-throwColumnValidationError",
     "<span>throwColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~throwdeletedrecorderror",
+    "variable/index.html#static-variable-throwDeletedRecordError",
+    "<span>throwDeletedRecordError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -1608,6 +1620,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/record.js~record#assertnotdeleted",
+    "class/src/Record.js~Record.html#instance-method-assertNotDeleted",
+    "src/Record.js~Record#assertNotDeleted",
+    "method"
+  ],
+  [
+    "src/record.js~record#config",
+    "class/src/Record.js~Record.html#instance-member-config",
+    "src/Record.js~Record#config",
+    "member"
+  ],
+  [
     "src/record.js~record#constructor",
     "class/src/Record.js~Record.html#instance-constructor-constructor",
     "src/Record.js~Record#constructor",
@@ -1617,6 +1641,18 @@ window.esdocSearchIndex = [
     "src/record.js~record#database",
     "class/src/Record.js~Record.html#instance-member-database",
     "src/Record.js~Record#database",
+    "member"
+  ],
+  [
+    "src/record.js~record#delete",
+    "class/src/Record.js~Record.html#instance-method-delete",
+    "src/Record.js~Record#delete",
+    "method"
+  ],
+  [
+    "src/record.js~record#deleted",
+    "class/src/Record.js~Record.html#instance-member-deleted",
+    "src/Record.js~Record#deleted",
     "member"
   ],
   [
@@ -2040,9 +2076,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/table.js~table#recordoptions",
-    "class/src/Table.js~Table.html#instance-member-recordOptions",
-    "src/Table.js~Table#recordOptions",
+    "src/table.js~table#recordconfig",
+    "class/src/Table.js~Table.html#instance-member-recordConfig",
+    "src/Table.js~Table#recordConfig",
     "member"
   ],
   [

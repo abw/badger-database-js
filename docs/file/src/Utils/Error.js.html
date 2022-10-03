@@ -76,6 +76,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~DeletedRecordError.html">DeletedRecordError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~InsertValidationError.html">InsertValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
@@ -93,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwDeletedRecordError">throwDeletedRecordError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -132,6 +134,7 @@ export class CustomError extends Error {
 export class UnexpectedRowCount extends CustomError { }
 export class ColumnValidationError extends CustomError { }
 export class InsertValidationError extends CustomError { }
+export class DeletedRecordError extends CustomError { }
 
 export function unexpectedRowCount(n, action='returned') {
   throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)
@@ -157,6 +160,13 @@ export const throwColumnValidationError = thrower(
     invalidColumns: 'Invalid "columns" specified for the &lt;table&gt; table: &lt;columns&gt;',
   },
   ColumnValidationError
+)
+
+export const throwDeletedRecordError = thrower(
+  {
+    action: 'Cannot &lt;action&gt; deleted &lt;table&gt; record #&lt;id&gt;',
+  },
+  DeletedRecordError
 )
 </code></pre>
 

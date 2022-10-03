@@ -833,7 +833,7 @@
     "__docId__": 62,
     "kind": "file",
     "name": "src/Database.js",
-    "content": "import Config from './Config.js'\nimport modelProxy from './Proxy/Model.js';\nimport Table from './Table.js';\nimport Tables from './Tables.js';\nimport Queries from './Queries.js';\nimport { engine } from './Engines.js';\nimport { invalid, missing } from './Utils/Error.js';\n\nconst defaults = {\n  tablesClass: Tables\n};\n\nexport class Database {\n  constructor(engine, params={ }) {\n    const config = { ...defaults, ...Config, ...params };\n    this.engine  = engine || missing('engine');\n    this.queries = new Queries(config);\n    this.tables  = config.tablesObject || new config.tablesClass(config.tables);\n    this.model   = modelProxy(this);\n    this.state   = {\n      table: { },\n    };\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  acquire() {\n    return this.engine.acquire();\n  }\n  release(connection) {\n    this.engine.release(connection);\n  }\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    return this.engine.one(this.query(query), params, options)\n  }\n  async table(name) {\n    return this.state.table[name]\n      ||=  this.initTable(name);\n  }\n  hasTable(name) {\n    return this.tables.table(name);\n  }\n  initTable(name) {\n    const schema = this.hasTable(name) || invalid('table', name);\n    const tclass = schema.tableClass   || Table;\n    const topts  = schema.tableOptions || { };\n    schema.table ||= name;\n    return new tclass(this, { ...schema, ...topts });\n  }\n  quote(name) {\n    return this.engine.quote(name);\n  }\n  disconnect() {\n    return this.engine.destroy();\n  }\n  destroy() {\n    console.log('destroy() is deprecated, use disconnect() instead');\n    return this.disconnect();\n  }\n}\n\nexport const connect = async config => {\n  const e = await engine(config);\n  return new Database(e, config)\n}\n\n// export const database = connect;\n\nexport default Database\n\n",
+    "content": "import Config from './Config.js'\nimport modelProxy from './Proxy/Model.js';\nimport Table from './Table.js';\nimport Tables from './Tables.js';\nimport Queries from './Queries.js';\nimport { engine } from './Engines.js';\nimport { invalid, missing } from './Utils/Error.js';\n\nconst defaults = {\n  tablesClass: Tables\n};\n\nexport class Database {\n  constructor(engine, params={ }) {\n    const config = { ...defaults, ...Config, ...params };\n    this.engine  = engine || missing('engine');\n    this.queries = new Queries(config);\n    this.tables  = config.tablesObject || new config.tablesClass(config.tables);\n    this.model   = modelProxy(this);\n    this.state   = {\n      table: { },\n    };\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  acquire() {\n    return this.engine.acquire();\n  }\n  release(connection) {\n    this.engine.release(connection);\n  }\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    return this.engine.one(this.query(query), params, options)\n  }\n  async table(name) {\n    return this.state.table[name]\n      ||=  this.initTable(name);\n  }\n  hasTable(name) {\n    return this.tables.table(name);\n  }\n  initTable(name) {\n    const schema = this.hasTable(name) || invalid('table', name);\n    const tclass = schema.tableClass   || Table;\n    const topts  = schema.tableOptions || { };\n    schema.table ||= name;\n    return new tclass(this, { ...schema, ...topts });\n  }\n  quote(name) {\n    return this.engine.quote(name);\n  }\n  disconnect() {\n    return this.engine.destroy();\n  }\n  destroy() {\n    console.log('destroy() is deprecated, use disconnect() instead');\n    return this.disconnect();\n  }\n}\n\nexport const connect = async config => {\n  const e = await engine(config);\n  return new Database(e, config)\n}\n\nexport default Database\n\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Database.js",
     "access": "public",
@@ -5228,7 +5228,7 @@
     "__docId__": 255,
     "kind": "file",
     "name": "src/Record.js",
-    "content": "import relations from \"./Relation/index.js\";\nimport { fail } from \"@abw/badger-utils\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nexport class Record {\n  constructor(table, row, options={}) {\n    this.table     = table;\n    this.database  = table.database;\n    this.row       = row;\n    this.relations = { };\n    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, options);\n  }\n  async update(set) {\n    const where = this.table.identity(this.row);\n    const update = await this.table.updateOne(set, where, { reload: true });\n    Object.assign(this.row, update);\n    return this;\n  }\n  relation(name) {\n    this.debug('relation(%s)', name);\n    return this.relations[name]\n      ||=  this.initRelation(name);\n  }\n  initRelation(name) {\n    this.debug('initRelation(%s)', name);\n    const relation = this.schema.relations[name] || fail(\"Invalid relation specified: \", name);\n    const rfunc    = relations[relation.type] || fail(\"Invalid relation type: \", relation.type);\n    relation.name ||= name;\n    return rfunc(this, relation);\n  }\n}\n\nexport default Record;\n",
+    "content": "import relations from \"./Relation/index.js\";\nimport { fail } from \"@abw/badger-utils\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\nimport { throwDeletedRecordError } from \"./Utils/Error.js\";\n\nexport class Record {\n  constructor(table, row, config={}) {\n    this.table     = table;\n    this.database  = table.database;\n    this.row       = row;\n    this.relations = { };\n    this.config    = config;\n    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, config);\n  }\n  async update(set) {\n    this.assertNotDeleted('update');\n    const where = this.table.identity(this.row);\n    const update = await this.table.updateOne(set, where, { reload: true });\n    Object.assign(this.row, update);\n    return this;\n  }\n  async delete() {\n    this.assertNotDeleted('delete');\n    const where = this.table.identity(this.row);\n    await this.table.delete(where);\n    this.deleted = true;\n    return this;\n  }\n  assertNotDeleted(action) {\n    if (this.deleted) {\n      throwDeletedRecordError(\n        'action',\n        {\n          action,\n          table: this.table.table,\n          id:    this.table.keys.map( key => this.row[key] ).join('/')\n        }\n      )\n    }\n  }\n  relation(name) {\n    this.debug('relation(%s)', name);\n    return this.relations[name]\n      ||=  this.initRelation(name);\n  }\n  initRelation(name) {\n    this.debug('initRelation(%s)', name);\n    const relation = this.table.relations[name] || fail(\"Invalid relation specified: \", name);\n    const rfunc    = relations[relation.type] || fail(\"Invalid relation type: \", relation.type);\n    relation.name ||= name;\n    return rfunc(this, relation);\n  }\n}\n\nexport default Record;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Record.js",
     "access": "public",
@@ -5247,7 +5247,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{Record}",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 6,
     "undocument": true,
     "interface": false
   },
@@ -5262,7 +5262,7 @@
     "longname": "src/Record.js~Record#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 6,
+    "lineNumber": 7,
     "undocument": true
   },
   {
@@ -5274,7 +5274,7 @@
     "longname": "src/Record.js~Record#table",
     "access": "public",
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 8,
     "undocument": true,
     "type": {
       "types": [
@@ -5291,7 +5291,7 @@
     "longname": "src/Record.js~Record#database",
     "access": "public",
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 9,
     "undocument": true,
     "type": {
       "types": [
@@ -5308,7 +5308,7 @@
     "longname": "src/Record.js~Record#row",
     "access": "public",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 10,
     "undocument": true,
     "type": {
       "types": [
@@ -5325,7 +5325,7 @@
     "longname": "src/Record.js~Record#relations",
     "access": "public",
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 11,
     "undocument": true,
     "type": {
       "types": [
@@ -5335,6 +5335,23 @@
   },
   {
     "__docId__": 262,
+    "kind": "member",
+    "name": "config",
+    "memberof": "src/Record.js~Record",
+    "static": false,
+    "longname": "src/Record.js~Record#config",
+    "access": "public",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 263,
     "kind": "method",
     "name": "update",
     "memberof": "src/Record.js~Record",
@@ -5344,7 +5361,7 @@
     "longname": "src/Record.js~Record#update",
     "access": "public",
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 15,
     "undocument": true,
     "params": [
       {
@@ -5361,7 +5378,67 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 264,
+    "kind": "method",
+    "name": "delete",
+    "memberof": "src/Record.js~Record",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Record.js~Record#delete",
+    "access": "public",
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 265,
+    "kind": "member",
+    "name": "deleted",
+    "memberof": "src/Record.js~Record",
+    "static": false,
+    "longname": "src/Record.js~Record#deleted",
+    "access": "public",
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 266,
+    "kind": "method",
+    "name": "assertNotDeleted",
+    "memberof": "src/Record.js~Record",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Record.js~Record#assertNotDeleted",
+    "access": "public",
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "params": [
+      {
+        "name": "action",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 267,
     "kind": "method",
     "name": "relation",
     "memberof": "src/Record.js~Record",
@@ -5371,7 +5448,7 @@
     "longname": "src/Record.js~Record#relation",
     "access": "public",
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 41,
     "undocument": true,
     "params": [
       {
@@ -5388,7 +5465,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 268,
     "kind": "method",
     "name": "initRelation",
     "memberof": "src/Record.js~Record",
@@ -5398,7 +5475,7 @@
     "longname": "src/Record.js~Record#initRelation",
     "access": "public",
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 46,
     "undocument": true,
     "params": [
       {
@@ -5415,7 +5492,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 269,
     "kind": "file",
     "name": "src/Relation/many.js",
     "content": "export const many = (record, spec={}) => {\n  const lkey  = spec.localKey  || spec.local_key;\n  const rkey  = spec.remoteKey || spec.remote_key;\n  const where = { [rkey]: record.data[lkey] };\n  if (spec.debug) {\n    console.log('many() relation: ', spec);\n    console.log('many() relation table: ', spec.table);\n    console.log('many() relation where: ', where);\n  }\n  return record.database.table(spec.table).fetchRows(where).records();\n}\n\nexport default many",
@@ -5426,7 +5503,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 266,
+    "__docId__": 270,
     "kind": "function",
     "name": "many",
     "memberof": "src/Relation/many.js",
@@ -5465,7 +5542,7 @@
     }
   },
   {
-    "__docId__": 267,
+    "__docId__": 271,
     "kind": "file",
     "name": "src/Relation/one.js",
     "content": "export const one = (record, spec={}) => {\n  const lkey  = spec.localKey  || spec.local_key;\n  const rkey  = spec.remoteKey || spec.remote_key;\n  const where = { [rkey]: record.data[lkey] };\n  if (spec.debug) {\n    console.log('one() relation: ', spec);\n    console.log('one() relation table: ', spec.table);\n    console.log('one() relation where: ', where);\n  }\n  return record.database.table(spec.table).fetchRow(where).record();\n}\n\nexport default one",
@@ -5476,7 +5553,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 268,
+    "__docId__": 272,
     "kind": "function",
     "name": "one",
     "memberof": "src/Relation/one.js",
@@ -5515,7 +5592,7 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 273,
     "kind": "file",
     "name": "src/Schema.js",
     "content": "import Queries from \"./Queries.js\";\nimport { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from \"@abw/badger-utils\";\nimport { addDebug } from \"@abw/badger\";\n\nconst DEFAULT_ID = 'id';\nconst COLUMN_SET_PREFIX = /^(@|\\.\\.\\.)/;\n\nexport class Schema {\n  constructor(database, schema) {\n    this.database       = database || fail(\"No database specified\");\n    this.table          = schema.table || fail(\"No table name specified\");\n    this.relations      = schema.relations || { };\n    this.prepareColumns(schema);\n    this.prepareKeys(schema);\n    this.prepareColumnSets(schema);\n    this.prepareFragments(schema);\n    this.queries = new Queries({\n      queries:   schema.queries,\n      fragments: this.fragments\n    });\n    // TODO: column sets for select, update, etc.\n\n    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);\n    this.debug('columnIndex: ', this.columnIndex);\n    this.debug('fragments: ', this.fragments);\n  }\n  prepareColumns(schema) {\n    const table      = schema.table;\n    const columns    = schema.columns;\n    const index      = splitHash(columns, () => ({ }))\n    this.columnIndex = objMap(\n      index,\n      (value, key) => {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = key);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = table + '.' + column;\n        return value;\n      }\n    )\n    this.columnNames    = Object.keys(this.columnIndex);\n    this.virtualColumns = schema.virtualColumns || { };\n    this.allColumns     = {\n      // ...splitHash(this.columnNames),\n      // ...splitHash(Object.keys(this.virtualColumns))\n      ...this.columnIndex,\n      ...this.virtualColumns\n    };\n  }\n  prepareColumnSets(schema) {\n    const index = splitHash(schema.columnSets, () => ({ }))\n    this.columnSets = objMap(\n      index,\n      (spec) => {\n        const basis   = (isString(spec) || isArray(spec)) ? splitList(spec) : this.columnNames;\n        const include = splitList(spec.include);\n        const exclude = splitHash(spec.exclude);\n        const result = [...basis, ...include]\n          .filter( column => ! exclude[column] );\n        return result;\n      }\n    )\n  }\n  prepareKeys(schema) {\n    this.keys = splitList(schema.keys);\n    if (schema.id) {\n      this.id = schema.id;\n      this.keys.unshift(this.id);\n    }\n    else if (this.keys.length === 0) {\n      this.id = DEFAULT_ID;\n      this.keys.unshift(this.id);\n    }\n    this.keyIndex = splitHash(this.keys);\n  }\n  prepareFragments(schema) {\n    const quote     = this.database.quote.bind(this.database);\n    const fragments = schema.fragments || { };\n    const vcolumns  = Object.entries(this.virtualColumns).reduce(\n      (result, [name, defn]) => {\n        result[name] = `${defn} as ${name}`;\n        return result;\n      },\n      { }\n    );\n    this.fragments = {\n      table:    quote(this.table),\n      columns:  this.columnNames.map(quote).join(', '),\n      tcolumns: this.columnNames.map( n => quote(this.columnIndex[n].tableColumn) ).join(', '),\n      ...vcolumns,\n      ...fragments\n    };\n  }\n  query(name) {\n    return this.queries.query(name);\n  }\n\n  // TODO: refactor remaining methods\n  column(name) {\n    return this.columnIndex[name]\n      ? this.columnIndex[name].tableColumn\n      : this.virtualColumns[name]\n        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)\n        : fail('Invalid column specified: ', name);\n  }\n  columnSet(name) {\n    return this.columnSets[name]\n      || fail('Invalid columnSet specified: ', name);\n  }\n  defaultColumns() {\n    return this.columnSets.default\n      || this.columns;\n  }\n  columns(names) {\n    return hasValue(names)\n      ? this.resolveColumns(names)\n      : this.defaultColumns().map( name => this.column(name) );\n  }\n  resolveColumns(names) {\n    const list = splitList(names);\n    let cols = [ ];\n    list.forEach(\n      name => {\n        this.debug(\"resolveColumns(%s) / %s\", names, name);\n        if (isString(name)) {\n          if (name.match(COLUMN_SET_PREFIX)) {\n            this.debug(\"%s is a columnSet %s\", name, name.replace(COLUMN_SET_PREFIX, ''));\n            cols.push(\n              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))\n                .map( name => this.column(name) )\n            );\n          }\n          else {\n            this.debug(\"%s is a column\", name);\n            cols.push(this.column(name));\n          }\n        }\n        else {\n          fail(\"resolveColumns() can only currently resolve strings\");\n        }\n      }\n    )\n    this.debug(\"resolveColumns(%s) => \", names, cols)\n    return cols;\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n}\n\nexport const schema = (database, schema) =>\n  new Schema(database, schema);\n\nexport default Schema\n",
@@ -5526,7 +5603,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 270,
+    "__docId__": 274,
     "kind": "variable",
     "name": "DEFAULT_ID",
     "memberof": "src/Schema.js",
@@ -5547,7 +5624,7 @@
     "ignore": true
   },
   {
-    "__docId__": 271,
+    "__docId__": 275,
     "kind": "variable",
     "name": "COLUMN_SET_PREFIX",
     "memberof": "src/Schema.js",
@@ -5568,7 +5645,7 @@
     "ignore": true
   },
   {
-    "__docId__": 272,
+    "__docId__": 276,
     "kind": "class",
     "name": "Schema",
     "memberof": "src/Schema.js",
@@ -5584,7 +5661,7 @@
     "interface": false
   },
   {
-    "__docId__": 273,
+    "__docId__": 277,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Schema.js~Schema",
@@ -5598,7 +5675,7 @@
     "undocument": true
   },
   {
-    "__docId__": 274,
+    "__docId__": 278,
     "kind": "member",
     "name": "database",
     "memberof": "src/Schema.js~Schema",
@@ -5615,7 +5692,7 @@
     }
   },
   {
-    "__docId__": 275,
+    "__docId__": 279,
     "kind": "member",
     "name": "table",
     "memberof": "src/Schema.js~Schema",
@@ -5632,7 +5709,7 @@
     }
   },
   {
-    "__docId__": 276,
+    "__docId__": 280,
     "kind": "member",
     "name": "relations",
     "memberof": "src/Schema.js~Schema",
@@ -5649,7 +5726,7 @@
     }
   },
   {
-    "__docId__": 277,
+    "__docId__": 281,
     "kind": "member",
     "name": "queries",
     "memberof": "src/Schema.js~Schema",
@@ -5666,7 +5743,7 @@
     }
   },
   {
-    "__docId__": 278,
+    "__docId__": 282,
     "kind": "method",
     "name": "prepareColumns",
     "memberof": "src/Schema.js~Schema",
@@ -5689,7 +5766,7 @@
     "return": null
   },
   {
-    "__docId__": 279,
+    "__docId__": 283,
     "kind": "member",
     "name": "columnIndex",
     "memberof": "src/Schema.js~Schema",
@@ -5706,7 +5783,7 @@
     }
   },
   {
-    "__docId__": 280,
+    "__docId__": 284,
     "kind": "member",
     "name": "columnNames",
     "memberof": "src/Schema.js~Schema",
@@ -5723,7 +5800,7 @@
     }
   },
   {
-    "__docId__": 281,
+    "__docId__": 285,
     "kind": "member",
     "name": "virtualColumns",
     "memberof": "src/Schema.js~Schema",
@@ -5740,7 +5817,7 @@
     }
   },
   {
-    "__docId__": 282,
+    "__docId__": 286,
     "kind": "member",
     "name": "allColumns",
     "memberof": "src/Schema.js~Schema",
@@ -5757,7 +5834,7 @@
     }
   },
   {
-    "__docId__": 283,
+    "__docId__": 287,
     "kind": "method",
     "name": "prepareColumnSets",
     "memberof": "src/Schema.js~Schema",
@@ -5780,7 +5857,7 @@
     "return": null
   },
   {
-    "__docId__": 284,
+    "__docId__": 288,
     "kind": "member",
     "name": "columnSets",
     "memberof": "src/Schema.js~Schema",
@@ -5797,7 +5874,7 @@
     }
   },
   {
-    "__docId__": 285,
+    "__docId__": 289,
     "kind": "method",
     "name": "prepareKeys",
     "memberof": "src/Schema.js~Schema",
@@ -5820,7 +5897,7 @@
     "return": null
   },
   {
-    "__docId__": 286,
+    "__docId__": 290,
     "kind": "member",
     "name": "keys",
     "memberof": "src/Schema.js~Schema",
@@ -5837,7 +5914,7 @@
     }
   },
   {
-    "__docId__": 287,
+    "__docId__": 291,
     "kind": "member",
     "name": "id",
     "memberof": "src/Schema.js~Schema",
@@ -5854,7 +5931,7 @@
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 293,
     "kind": "member",
     "name": "keyIndex",
     "memberof": "src/Schema.js~Schema",
@@ -5871,7 +5948,7 @@
     }
   },
   {
-    "__docId__": 290,
+    "__docId__": 294,
     "kind": "method",
     "name": "prepareFragments",
     "memberof": "src/Schema.js~Schema",
@@ -5894,7 +5971,7 @@
     "return": null
   },
   {
-    "__docId__": 291,
+    "__docId__": 295,
     "kind": "member",
     "name": "fragments",
     "memberof": "src/Schema.js~Schema",
@@ -5911,7 +5988,7 @@
     }
   },
   {
-    "__docId__": 292,
+    "__docId__": 296,
     "kind": "method",
     "name": "query",
     "memberof": "src/Schema.js~Schema",
@@ -5938,7 +6015,7 @@
     }
   },
   {
-    "__docId__": 293,
+    "__docId__": 297,
     "kind": "method",
     "name": "column",
     "memberof": "src/Schema.js~Schema",
@@ -5965,7 +6042,7 @@
     }
   },
   {
-    "__docId__": 294,
+    "__docId__": 298,
     "kind": "method",
     "name": "columnSet",
     "memberof": "src/Schema.js~Schema",
@@ -5992,7 +6069,7 @@
     }
   },
   {
-    "__docId__": 295,
+    "__docId__": 299,
     "kind": "method",
     "name": "defaultColumns",
     "memberof": "src/Schema.js~Schema",
@@ -6012,7 +6089,7 @@
     }
   },
   {
-    "__docId__": 296,
+    "__docId__": 300,
     "kind": "method",
     "name": "columns",
     "memberof": "src/Schema.js~Schema",
@@ -6039,7 +6116,7 @@
     }
   },
   {
-    "__docId__": 297,
+    "__docId__": 301,
     "kind": "method",
     "name": "resolveColumns",
     "memberof": "src/Schema.js~Schema",
@@ -6066,7 +6143,7 @@
     }
   },
   {
-    "__docId__": 298,
+    "__docId__": 302,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Schema.js~Schema",
@@ -6093,7 +6170,7 @@
     }
   },
   {
-    "__docId__": 299,
+    "__docId__": 303,
     "kind": "function",
     "name": "schema",
     "memberof": "src/Schema.js",
@@ -6125,10 +6202,10 @@
     "return": null
   },
   {
-    "__docId__": 300,
+    "__docId__": 304,
     "kind": "file",
     "name": "src/Table.js",
-    "content": "import Queries from \"./Queries.js\";\nimport Record from \"./Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport recordProxy from \"./Proxy/Record.js\";\n// import Schema from \"./Schema.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.engine        = database.engine;\n    //this.schema        = new Schema(database, schema)\n    this.table         = schema.table;\n    this.columns       = prepareColumns(schema);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(schema, this.columns);\n    this.id            = schema.id;\n    this.recordClass   = schema.recordClass || Record;\n    this.recordOptions = schema.recordOptions;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    this.fragments     = this.prepareFragments(schema);\n    this.queries       = new Queries({ ...schema, debugPrefix: `Queries ${this.table}> ` });\n    addDebugMethod(this, 'table', { debugPrefix: `Table ${this.table}> ` }, schema);\n  }\n  prepareFragments(schema) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = schema.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n  checkColumns(data={}, cols=[], vals=[], test={}) {\n    const table = this.table;\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column]\n          || throwColumnValidationError('unknown', { column, table });\n        if (test.writable && spec.readonly) {\n          throwColumnValidationError('readonly', { column, table });\n        }\n        cols.push(spec.column);\n        vals.push(data[column])\n      }\n    )\n    return [cols, vals];\n  }\n  checkWritableColumns(data, cols=[], vals=[]) {\n    // check that all the values supplied correspond to valid columns that are not readonly\n    return this.checkColumns(data, cols, vals, { writable: true })\n  }\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    return this.engine.one(this.query(query), params, options)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAll(data, options)\n      : this.insertOne(data, options)\n  }\n  async insertOne(data, options={}) {\n    this.debug(\"insertOne: \", data);\n    const [cols, vals] = this.checkWritableColumns(data);\n    this.checkRequiredColumns(data);\n    const insert = await this.engine.insert(this.table, cols, vals, this.keys);\n    return options.reload\n      ? this.insertReload(data, insert)\n      : insert;\n  }\n  async insertAll(data, options) {\n    this.debug(\"insertAll: \", data);\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOne(row, options));\n    }\n    return rows;\n  }\n\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  prepareUpdate(set, where) {\n    const [dcols, dvals] = this.checkWritableColumns(set);\n    const [wcols, wvals] = this.checkColumns(where);\n    return [dcols, dvals, wcols, wvals];\n  }\n  async update(...args) {\n    return this.updateAll(...args);\n  }\n  async updateOne(set, where, options={}) {\n    this.debug(\"updateOne: \", set, where);\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where)\n      : update;\n  }\n  async updateAny(set, where, options={}) {\n    this.debug(\"updateAny: \", set, where);\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where)\n        : undefined\n      : update;\n  }\n  async updateAll(set, where, options={}) {\n    this.debug(\"updateAll: \", set, where);\n    const args   = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    // return update;\n    //let rows = [ ];\n    //for (const row of data) {\n    //  rows.push(await this.insertOne(row, options));\n    //}\n    //return rows;\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where) {\n    this.debug(\"delete: \", where);\n    const [cols, vals] = this.checkColumns(where);\n    return this.engine.delete(this.table, cols, vals);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRow(), anyRow() and allRows()\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, params) {\n    params.columns ||= Object.keys(this.columns);\n    this.checkColumnNames(params.columns);\n    return this.checkColumns(where);\n  }\n  async oneRow(where, options={}) {\n    this.debug(\"oneRow: \", where, options);\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    return this.engine.selectOne(this.table, wcols, wvals, params);\n  }\n  async anyRow(where, options={}) {\n    this.debug(\"anyRow: \", where, options);\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    return this.engine.selectAny(this.table, wcols, wvals, params);\n  }\n  async allRows(where, options={}) {\n    this.debug(\"allRows: \", where, options);\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    return this.engine.selectAll(this.table, wcols, wvals, params);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRecord(), anyRecord() and allRecords()\n  //-----------------------------------------------------------------------------\n  async oneRecord(where, options={}) {\n    this.debug(\"oneRecord: \", where, options);\n    const row = await this.oneRow(where, options);\n    return this.record(row);\n  }\n  async anyRecord(where, options={}) {\n    this.debug(\"anyRecord: \", where, options);\n    const row = await this.anyRow(where, options);\n    return row\n      ? this.record(row)\n      : row;\n  }\n  async allRecords(where, options={}) {\n    this.debug(\"allRecords: \", where, options);\n    const rows = await this.allRows(where, options);\n    return this.records(rows);\n  }\n\n  // select() is the old name for fetchAll() which I'm in the process of\n  // reworking.\n  async select(where, options={}) {\n    this.debug(\"select: \", where, options);\n    if (options.columns) {\n      this.checkColumnNames(options.columns);\n    }\n    const [wcols, wvals] = this.checkColumns(where);\n    return this.engine.select(this.table, wcols, wvals, options);\n  }\n\n  tableFragments() {\n    return this.tableFragments\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n  async insertReload(input, output) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return this.oneRow(fetch);\n  }\n  async updateReload(set, where) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch);\n  }\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordOptions)\n    );\n  }\n  record(row) {\n    this.debug(\"record()\", row);\n    return Promise.resolve(\n      this.newRecord(row, this.recordOptions)\n    );\n  }\n  records(rows) {\n    this.debug(\"records()\", rows);\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n}\n\nexport default Table;\n",
+    "content": "import Queries from \"./Queries.js\";\nimport Record from \"./Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport recordProxy from \"./Proxy/Record.js\";\n// import Schema from \"./Schema.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.engine        = database.engine;\n    //this.schema        = new Schema(database, schema)\n    this.table         = schema.table;\n    this.columns       = prepareColumns(schema);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(schema, this.columns);\n    this.id            = schema.id;\n    this.recordClass   = schema.recordClass || Record;\n    this.recordConfig  = schema.recordConfig;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    this.fragments     = this.prepareFragments(schema);\n    this.queries       = new Queries({ ...schema, debugPrefix: `Queries ${this.table}> ` });\n    addDebugMethod(this, 'table', { debugPrefix: `Table ${this.table}> ` }, schema);\n  }\n  prepareFragments(schema) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = schema.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n  checkColumns(data={}, cols=[], vals=[], test={}) {\n    const table = this.table;\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column]\n          || throwColumnValidationError('unknown', { column, table });\n        if (test.writable && spec.readonly) {\n          throwColumnValidationError('readonly', { column, table });\n        }\n        cols.push(spec.column);\n        vals.push(data[column])\n      }\n    )\n    return [cols, vals];\n  }\n  checkWritableColumns(data, cols=[], vals=[]) {\n    // check that all the values supplied correspond to valid columns that are not readonly\n    return this.checkColumns(data, cols, vals, { writable: true })\n  }\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    return this.engine.one(this.query(query), params, options)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAll(data, options)\n      : this.insertOne(data, options)\n  }\n  async insertOne(data, options={}) {\n    this.debug(\"insertOne: \", data);\n    const [cols, vals] = this.checkWritableColumns(data);\n    this.checkRequiredColumns(data);\n    const insert = await this.engine.insert(this.table, cols, vals, this.keys);\n    return options.reload\n      ? this.insertReload(data, insert)\n      : insert;\n  }\n  async insertAll(data, options) {\n    this.debug(\"insertAll: \", data);\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOne(row, options));\n    }\n    return rows;\n  }\n\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  prepareUpdate(set, where) {\n    const [dcols, dvals] = this.checkWritableColumns(set);\n    const [wcols, wvals] = this.checkColumns(where);\n    return [dcols, dvals, wcols, wvals];\n  }\n  async update(...args) {\n    return this.updateAll(...args);\n  }\n  async updateOne(set, where, options={}) {\n    this.debug(\"updateOne: \", set, where);\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where)\n      : update;\n  }\n  async updateAny(set, where, options={}) {\n    this.debug(\"updateAny: \", set, where);\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where)\n        : undefined\n      : update;\n  }\n  async updateAll(set, where, options={}) {\n    this.debug(\"updateAll: \", set, where);\n    const args   = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    // return update;\n    //let rows = [ ];\n    //for (const row of data) {\n    //  rows.push(await this.insertOne(row, options));\n    //}\n    //return rows;\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where) {\n    this.debug(\"delete: \", where);\n    const [cols, vals] = this.checkColumns(where);\n    return this.engine.delete(this.table, cols, vals);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRow(), anyRow() and allRows()\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, params) {\n    params.columns ||= Object.keys(this.columns);\n    this.checkColumnNames(params.columns);\n    return this.checkColumns(where);\n  }\n  async oneRow(where, options={}) {\n    this.debug(\"oneRow: \", where, options);\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    return this.engine.selectOne(this.table, wcols, wvals, params);\n  }\n  async anyRow(where, options={}) {\n    this.debug(\"anyRow: \", where, options);\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    return this.engine.selectAny(this.table, wcols, wvals, params);\n  }\n  async allRows(where, options={}) {\n    this.debug(\"allRows: \", where, options);\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    return this.engine.selectAll(this.table, wcols, wvals, params);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRecord(), anyRecord() and allRecords()\n  //-----------------------------------------------------------------------------\n  async oneRecord(where, options={}) {\n    this.debug(\"oneRecord: \", where, options);\n    const row = await this.oneRow(where, options);\n    return this.record(row);\n  }\n  async anyRecord(where, options={}) {\n    this.debug(\"anyRecord: \", where, options);\n    const row = await this.anyRow(where, options);\n    return row\n      ? this.record(row)\n      : row;\n  }\n  async allRecords(where, options={}) {\n    this.debug(\"allRecords: \", where, options);\n    const rows = await this.allRows(where, options);\n    return this.records(rows);\n  }\n\n  // select() is the old name for fetchAll() which I'm in the process of\n  // reworking.\n  async select(where, options={}) {\n    this.debug(\"select: \", where, options);\n    if (options.columns) {\n      this.checkColumnNames(options.columns);\n    }\n    const [wcols, wvals] = this.checkColumns(where);\n    return this.engine.select(this.table, wcols, wvals, options);\n  }\n\n  tableFragments() {\n    return this.tableFragments\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n  async insertReload(input, output) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return this.oneRow(fetch);\n  }\n  async updateReload(set, where) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch);\n  }\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordConfig)\n    );\n  }\n  record(row) {\n    this.debug(\"record()\", row);\n    return Promise.resolve(\n      this.newRecord(row)\n    );\n  }\n  records(rows) {\n    this.debug(\"records()\", rows);\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n}\n\nexport default Table;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Table.js",
     "access": "public",
@@ -6136,7 +6213,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 301,
+    "__docId__": 305,
     "kind": "class",
     "name": "Table",
     "memberof": "src/Table.js",
@@ -6152,7 +6229,7 @@
     "interface": false
   },
   {
-    "__docId__": 302,
+    "__docId__": 306,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Table.js~Table",
@@ -6166,7 +6243,7 @@
     "undocument": true
   },
   {
-    "__docId__": 303,
+    "__docId__": 307,
     "kind": "member",
     "name": "database",
     "memberof": "src/Table.js~Table",
@@ -6183,7 +6260,7 @@
     }
   },
   {
-    "__docId__": 304,
+    "__docId__": 308,
     "kind": "member",
     "name": "engine",
     "memberof": "src/Table.js~Table",
@@ -6200,7 +6277,7 @@
     }
   },
   {
-    "__docId__": 305,
+    "__docId__": 309,
     "kind": "member",
     "name": "table",
     "memberof": "src/Table.js~Table",
@@ -6217,7 +6294,7 @@
     }
   },
   {
-    "__docId__": 306,
+    "__docId__": 310,
     "kind": "member",
     "name": "columns",
     "memberof": "src/Table.js~Table",
@@ -6234,7 +6311,7 @@
     }
   },
   {
-    "__docId__": 307,
+    "__docId__": 311,
     "kind": "member",
     "name": "readonly",
     "memberof": "src/Table.js~Table",
@@ -6251,7 +6328,7 @@
     }
   },
   {
-    "__docId__": 308,
+    "__docId__": 312,
     "kind": "member",
     "name": "required",
     "memberof": "src/Table.js~Table",
@@ -6268,7 +6345,7 @@
     }
   },
   {
-    "__docId__": 309,
+    "__docId__": 313,
     "kind": "member",
     "name": "keys",
     "memberof": "src/Table.js~Table",
@@ -6285,7 +6362,7 @@
     }
   },
   {
-    "__docId__": 310,
+    "__docId__": 314,
     "kind": "member",
     "name": "id",
     "memberof": "src/Table.js~Table",
@@ -6302,7 +6379,7 @@
     }
   },
   {
-    "__docId__": 311,
+    "__docId__": 315,
     "kind": "member",
     "name": "recordClass",
     "memberof": "src/Table.js~Table",
@@ -6319,12 +6396,12 @@
     }
   },
   {
-    "__docId__": 312,
+    "__docId__": 316,
     "kind": "member",
-    "name": "recordOptions",
+    "name": "recordConfig",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#recordOptions",
+    "longname": "src/Table.js~Table#recordConfig",
     "access": "public",
     "description": null,
     "lineNumber": 24,
@@ -6336,7 +6413,7 @@
     }
   },
   {
-    "__docId__": 313,
+    "__docId__": 317,
     "kind": "member",
     "name": "rowProxy",
     "memberof": "src/Table.js~Table",
@@ -6353,7 +6430,7 @@
     }
   },
   {
-    "__docId__": 314,
+    "__docId__": 318,
     "kind": "member",
     "name": "rowsProxy",
     "memberof": "src/Table.js~Table",
@@ -6370,7 +6447,7 @@
     }
   },
   {
-    "__docId__": 315,
+    "__docId__": 319,
     "kind": "member",
     "name": "fragments",
     "memberof": "src/Table.js~Table",
@@ -6387,7 +6464,7 @@
     }
   },
   {
-    "__docId__": 316,
+    "__docId__": 320,
     "kind": "member",
     "name": "queries",
     "memberof": "src/Table.js~Table",
@@ -6404,7 +6481,7 @@
     }
   },
   {
-    "__docId__": 317,
+    "__docId__": 321,
     "kind": "method",
     "name": "prepareFragments",
     "memberof": "src/Table.js~Table",
@@ -6431,7 +6508,7 @@
     }
   },
   {
-    "__docId__": 318,
+    "__docId__": 322,
     "kind": "method",
     "name": "checkColumnNames",
     "memberof": "src/Table.js~Table",
@@ -6454,7 +6531,7 @@
     "return": null
   },
   {
-    "__docId__": 319,
+    "__docId__": 323,
     "kind": "method",
     "name": "checkColumns",
     "memberof": "src/Table.js~Table",
@@ -6511,7 +6588,7 @@
     }
   },
   {
-    "__docId__": 320,
+    "__docId__": 324,
     "kind": "method",
     "name": "checkWritableColumns",
     "memberof": "src/Table.js~Table",
@@ -6556,7 +6633,7 @@
     }
   },
   {
-    "__docId__": 321,
+    "__docId__": 325,
     "kind": "method",
     "name": "checkRequiredColumns",
     "memberof": "src/Table.js~Table",
@@ -6579,7 +6656,7 @@
     "return": null
   },
   {
-    "__docId__": 322,
+    "__docId__": 326,
     "kind": "method",
     "name": "query",
     "memberof": "src/Table.js~Table",
@@ -6606,7 +6683,7 @@
     }
   },
   {
-    "__docId__": 323,
+    "__docId__": 327,
     "kind": "method",
     "name": "run",
     "memberof": "src/Table.js~Table",
@@ -6645,7 +6722,7 @@
     }
   },
   {
-    "__docId__": 324,
+    "__docId__": 328,
     "kind": "method",
     "name": "any",
     "memberof": "src/Table.js~Table",
@@ -6684,7 +6761,7 @@
     }
   },
   {
-    "__docId__": 325,
+    "__docId__": 329,
     "kind": "method",
     "name": "all",
     "memberof": "src/Table.js~Table",
@@ -6723,7 +6800,7 @@
     }
   },
   {
-    "__docId__": 326,
+    "__docId__": 330,
     "kind": "method",
     "name": "one",
     "memberof": "src/Table.js~Table",
@@ -6762,7 +6839,7 @@
     }
   },
   {
-    "__docId__": 327,
+    "__docId__": 331,
     "kind": "method",
     "name": "insert",
     "memberof": "src/Table.js~Table",
@@ -6795,7 +6872,7 @@
     }
   },
   {
-    "__docId__": 328,
+    "__docId__": 332,
     "kind": "method",
     "name": "insertOne",
     "memberof": "src/Table.js~Table",
@@ -6831,7 +6908,7 @@
     }
   },
   {
-    "__docId__": 329,
+    "__docId__": 333,
     "kind": "method",
     "name": "insertAll",
     "memberof": "src/Table.js~Table",
@@ -6864,7 +6941,7 @@
     }
   },
   {
-    "__docId__": 330,
+    "__docId__": 334,
     "kind": "method",
     "name": "prepareUpdate",
     "memberof": "src/Table.js~Table",
@@ -6897,7 +6974,7 @@
     }
   },
   {
-    "__docId__": 331,
+    "__docId__": 335,
     "kind": "method",
     "name": "update",
     "memberof": "src/Table.js~Table",
@@ -6925,7 +7002,7 @@
     }
   },
   {
-    "__docId__": 332,
+    "__docId__": 336,
     "kind": "method",
     "name": "updateOne",
     "memberof": "src/Table.js~Table",
@@ -6967,7 +7044,7 @@
     }
   },
   {
-    "__docId__": 333,
+    "__docId__": 337,
     "kind": "method",
     "name": "updateAny",
     "memberof": "src/Table.js~Table",
@@ -7009,7 +7086,7 @@
     }
   },
   {
-    "__docId__": 334,
+    "__docId__": 338,
     "kind": "method",
     "name": "updateAll",
     "memberof": "src/Table.js~Table",
@@ -7051,7 +7128,7 @@
     }
   },
   {
-    "__docId__": 335,
+    "__docId__": 339,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Table.js~Table",
@@ -7078,7 +7155,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 340,
     "kind": "method",
     "name": "prepareFetch",
     "memberof": "src/Table.js~Table",
@@ -7111,7 +7188,7 @@
     }
   },
   {
-    "__docId__": 337,
+    "__docId__": 341,
     "kind": "method",
     "name": "oneRow",
     "memberof": "src/Table.js~Table",
@@ -7147,7 +7224,7 @@
     }
   },
   {
-    "__docId__": 338,
+    "__docId__": 342,
     "kind": "method",
     "name": "anyRow",
     "memberof": "src/Table.js~Table",
@@ -7183,7 +7260,7 @@
     }
   },
   {
-    "__docId__": 339,
+    "__docId__": 343,
     "kind": "method",
     "name": "allRows",
     "memberof": "src/Table.js~Table",
@@ -7219,7 +7296,7 @@
     }
   },
   {
-    "__docId__": 340,
+    "__docId__": 344,
     "kind": "method",
     "name": "oneRecord",
     "memberof": "src/Table.js~Table",
@@ -7255,7 +7332,7 @@
     }
   },
   {
-    "__docId__": 341,
+    "__docId__": 345,
     "kind": "method",
     "name": "anyRecord",
     "memberof": "src/Table.js~Table",
@@ -7291,7 +7368,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 346,
     "kind": "method",
     "name": "allRecords",
     "memberof": "src/Table.js~Table",
@@ -7327,7 +7404,7 @@
     }
   },
   {
-    "__docId__": 343,
+    "__docId__": 347,
     "kind": "method",
     "name": "select",
     "memberof": "src/Table.js~Table",
@@ -7363,7 +7440,7 @@
     }
   },
   {
-    "__docId__": 344,
+    "__docId__": 348,
     "kind": "method",
     "name": "tableFragments",
     "memberof": "src/Table.js~Table",
@@ -7383,7 +7460,7 @@
     }
   },
   {
-    "__docId__": 345,
+    "__docId__": 349,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Table.js~Table",
@@ -7410,7 +7487,7 @@
     }
   },
   {
-    "__docId__": 346,
+    "__docId__": 350,
     "kind": "method",
     "name": "insertReload",
     "memberof": "src/Table.js~Table",
@@ -7443,7 +7520,7 @@
     }
   },
   {
-    "__docId__": 347,
+    "__docId__": 351,
     "kind": "method",
     "name": "updateReload",
     "memberof": "src/Table.js~Table",
@@ -7476,7 +7553,7 @@
     }
   },
   {
-    "__docId__": 348,
+    "__docId__": 352,
     "kind": "method",
     "name": "newRecord",
     "memberof": "src/Table.js~Table",
@@ -7503,7 +7580,7 @@
     }
   },
   {
-    "__docId__": 349,
+    "__docId__": 353,
     "kind": "method",
     "name": "record",
     "memberof": "src/Table.js~Table",
@@ -7530,7 +7607,7 @@
     }
   },
   {
-    "__docId__": 350,
+    "__docId__": 354,
     "kind": "method",
     "name": "records",
     "memberof": "src/Table.js~Table",
@@ -7557,7 +7634,7 @@
     }
   },
   {
-    "__docId__": 351,
+    "__docId__": 355,
     "kind": "file",
     "name": "src/Tables.js",
     "content": "export class Tables {\n  constructor(tables={}) {\n    this.tables = tables;\n  }\n  table(name) {\n    return this.tables[name];\n  }\n}\n\nexport default Tables;",
@@ -7568,7 +7645,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 352,
+    "__docId__": 356,
     "kind": "class",
     "name": "Tables",
     "memberof": "src/Tables.js",
@@ -7584,7 +7661,7 @@
     "interface": false
   },
   {
-    "__docId__": 353,
+    "__docId__": 357,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Tables.js~Tables",
@@ -7598,7 +7675,7 @@
     "undocument": true
   },
   {
-    "__docId__": 354,
+    "__docId__": 358,
     "kind": "member",
     "name": "tables",
     "memberof": "src/Tables.js~Tables",
@@ -7615,7 +7692,7 @@
     }
   },
   {
-    "__docId__": 355,
+    "__docId__": 359,
     "kind": "method",
     "name": "table",
     "memberof": "src/Tables.js~Tables",
@@ -7642,7 +7719,7 @@
     }
   },
   {
-    "__docId__": 356,
+    "__docId__": 360,
     "kind": "file",
     "name": "src/Utils/Columns.js",
     "content": "import { fail, isArray, isObject, isString, objMap, splitList } from \"@abw/badger-utils\";\nimport { bitSplitter, defaultIdColumn } from \"../Constants.js\";\nimport { throwColumnValidationError } from \"./Error.js\";\n\nexport const prepareColumns = (schema) => {\n  const columns = schema.columns\n    || throwColumnValidationError('noColumns', { table: schema.table });\n\n  if (isString(columns)) {\n    return prepareColumnsString(columns, schema);\n  }\n  else if (isArray(columns)) {\n    return prepareColumnsArray(columns, schema);\n  }\n  else if (isObject(columns)) {\n    return prepareColumnsHash(columns, schema);\n  }\n  else {\n    return throwColumnValidationError('invalidColumns', { table: schema.table, columns });\n  }\n}\n\nconst prepareColumnsString = (columns, schema) => {\n  // columns can be a string of whitespace delimited values, which\n  // is equivalent to passing an array of strings\n  return prepareColumnsArray(splitList(columns), schema);\n}\n\nconst prepareColumnsArray = (columns, schema) => {\n  // columns can be an array of strings, each of which should be a\n  // name, optionally followed by a series of flags or key=value\n  // items, separated by colons, e.g. 'name:required', 'name:type=text',\n  // 'name:required:type=text'\n  let index = { };\n  columns.forEach(\n    item => {\n      const bits  = item.split(bitSplitter);\n      const name  = bits.shift();\n      index[name] = prepareColumnBits(name, bits, schema);\n    }\n  )\n  return prepareColumnsHash(index, schema);\n}\n\nconst prepareColumnsHash = (columns, schema) => {\n  return objMap(\n    columns,\n    (value, name) => {\n      if (isString(value)) {\n        return prepareColumnBits(name, value.split(bitSplitter), schema)\n      }\n      else if (isObject(value)) {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = name);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = schema.table + '.' + column;\n        return value;\n      }\n      else {\n        fail(`Invalid \"${name}\" columns specified in ${schema.table} table: ${value}`)\n      }\n    }\n  )\n}\n\nconst prepareColumnBits = (name, bits, schema) => {\n  return bits.reduce(\n    (result, bit) => {\n      const kv = bit.split('=', 2);\n      const key = kv.shift();\n      result[key] = kv.length ? kv[0] : true;\n      return result\n    },\n    { column: name, tableColumn: schema.table + '.' + name }\n  );\n}\n\nexport const prepareKeys = (schema, columns={}) => {\n  let keys  = splitList(schema.keys);\n  const ids = Object.keys(columns).filter( key => columns[key].id );\n  if (ids.length > 1) {\n    return throwColumnValidationError('multipleIds', { table: schema.table });\n  }\n  if (keys.length === 0) {\n    keys = Object.keys(columns).filter( key => columns[key].key );\n  }\n  if (schema.id) {\n    keys.unshift(schema.id);\n  }\n  else if (ids.length) {\n    schema.id = ids[0];\n    keys.unshift(schema.id);\n  }\n  else if (keys.length === 0) {\n    schema.id = defaultIdColumn;\n    keys.unshift(schema.id);\n  }\n  return keys;\n}\n",
@@ -7653,7 +7730,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 357,
+    "__docId__": 361,
     "kind": "function",
     "name": "prepareColumns",
     "memberof": "src/Utils/Columns.js",
@@ -7683,7 +7760,7 @@
     }
   },
   {
-    "__docId__": 358,
+    "__docId__": 362,
     "kind": "function",
     "name": "prepareColumnsString",
     "memberof": "src/Utils/Columns.js",
@@ -7720,7 +7797,7 @@
     "ignore": true
   },
   {
-    "__docId__": 359,
+    "__docId__": 363,
     "kind": "function",
     "name": "prepareColumnsArray",
     "memberof": "src/Utils/Columns.js",
@@ -7757,7 +7834,7 @@
     "ignore": true
   },
   {
-    "__docId__": 360,
+    "__docId__": 364,
     "kind": "function",
     "name": "prepareColumnsHash",
     "memberof": "src/Utils/Columns.js",
@@ -7794,7 +7871,7 @@
     "ignore": true
   },
   {
-    "__docId__": 361,
+    "__docId__": 365,
     "kind": "function",
     "name": "prepareColumnBits",
     "memberof": "src/Utils/Columns.js",
@@ -7837,7 +7914,7 @@
     "ignore": true
   },
   {
-    "__docId__": 362,
+    "__docId__": 366,
     "kind": "function",
     "name": "prepareKeys",
     "memberof": "src/Utils/Columns.js",
@@ -7876,7 +7953,7 @@
     }
   },
   {
-    "__docId__": 363,
+    "__docId__": 367,
     "kind": "file",
     "name": "src/Utils/Debug.js",
     "content": "import { addDebug } from \"@abw/badger\";\nimport { fail, isBoolean, isObject } from \"@abw/badger-utils\";\n\nexport let debug = {\n  database: {\n    debug:  false,\n    prefix: 'Database> ',\n    color:  'green',\n  },\n  engine: {\n    debug:  false,\n    prefix: 'Engine> ',\n    color:  'red',\n  },\n  queries: {\n    debug:  false,\n    prefix: 'Queries> ',\n    color:  'blue',\n  },\n  table: {\n    debug:  false,\n    prefix: 'Table> ',\n    color:  'yellow',\n  },\n  record: {\n    debug:  false,\n    prefix: 'Record> ',\n    color:  'green',\n  },\n  test: {\n    debug:  false,\n    prefix: 'Test> ',\n    color:  'green'\n  },\n}\n\nconst invalidDebugItem = item =>\n  fail(`Invalid debug item \"${item}\" specified`)\n\nexport const setDebug = options => {\n  Object.entries(options).map(\n    ([key, value]) => {\n      const set = debug[key] || invalidDebugItem(key);\n      if (isBoolean(value)) {\n        set.debug = value;\n      }\n      else if (isObject(value)) {\n        Object.assign(set, value);\n      }\n    }\n  )\n}\n\nexport const getDebug = (name, ...configs) => {\n  const defaults = debug[name] || invalidDebugItem(name);\n  return Object.assign(\n    {},\n    defaults,\n    ...configs\n  );\n}\n\nexport const addDebugMethod = (object, name, ...configs) => {\n  const options = getDebug(name, ...configs);\n  addDebug(\n    object,\n    options.debug,\n    options.debugPrefix || options.prefix,\n    options.debugColor  || options.color\n  );\n}",
@@ -7887,7 +7964,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 364,
+    "__docId__": 368,
     "kind": "variable",
     "name": "debug",
     "memberof": "src/Utils/Debug.js",
@@ -7907,7 +7984,7 @@
     }
   },
   {
-    "__docId__": 365,
+    "__docId__": 369,
     "kind": "function",
     "name": "invalidDebugItem",
     "memberof": "src/Utils/Debug.js",
@@ -7934,7 +8011,7 @@
     "ignore": true
   },
   {
-    "__docId__": 366,
+    "__docId__": 370,
     "kind": "function",
     "name": "setDebug",
     "memberof": "src/Utils/Debug.js",
@@ -7960,7 +8037,7 @@
     "return": null
   },
   {
-    "__docId__": 367,
+    "__docId__": 371,
     "kind": "function",
     "name": "getDebug",
     "memberof": "src/Utils/Debug.js",
@@ -7997,7 +8074,7 @@
     }
   },
   {
-    "__docId__": 368,
+    "__docId__": 372,
     "kind": "function",
     "name": "addDebugMethod",
     "memberof": "src/Utils/Debug.js",
@@ -8036,10 +8113,10 @@
     "return": null
   },
   {
-    "__docId__": 369,
+    "__docId__": 373,
     "kind": "file",
     "name": "src/Utils/Error.js",
-    "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\nexport class UnexpectedRowCount extends CustomError { }\nexport class ColumnValidationError extends CustomError { }\nexport class InsertValidationError extends CustomError { }\n\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n",
+    "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\nexport class UnexpectedRowCount extends CustomError { }\nexport class ColumnValidationError extends CustomError { }\nexport class InsertValidationError extends CustomError { }\nexport class DeletedRecordError extends CustomError { }\n\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n\nexport const throwDeletedRecordError = thrower(\n  {\n    action: 'Cannot <action> deleted <table> record #<id>',\n  },\n  DeletedRecordError\n)\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Utils/Error.js",
     "access": "public",
@@ -8047,7 +8124,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 370,
+    "__docId__": 374,
     "kind": "function",
     "name": "missing",
     "memberof": "src/Utils/Error.js",
@@ -8073,7 +8150,7 @@
     "return": null
   },
   {
-    "__docId__": 371,
+    "__docId__": 375,
     "kind": "function",
     "name": "invalid",
     "memberof": "src/Utils/Error.js",
@@ -8105,7 +8182,7 @@
     "return": null
   },
   {
-    "__docId__": 372,
+    "__docId__": 376,
     "kind": "function",
     "name": "notImplemented",
     "memberof": "src/Utils/Error.js",
@@ -8137,7 +8214,7 @@
     "return": null
   },
   {
-    "__docId__": 373,
+    "__docId__": 377,
     "kind": "function",
     "name": "notImplementedInModule",
     "memberof": "src/Utils/Error.js",
@@ -8163,7 +8240,7 @@
     "return": null
   },
   {
-    "__docId__": 374,
+    "__docId__": 378,
     "kind": "function",
     "name": "notImplementedInBaseClass",
     "memberof": "src/Utils/Error.js",
@@ -8189,7 +8266,7 @@
     "return": null
   },
   {
-    "__docId__": 375,
+    "__docId__": 379,
     "kind": "class",
     "name": "CustomError",
     "memberof": "src/Utils/Error.js",
@@ -8208,7 +8285,7 @@
     ]
   },
   {
-    "__docId__": 376,
+    "__docId__": 380,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -8222,7 +8299,7 @@
     "undocument": true
   },
   {
-    "__docId__": 377,
+    "__docId__": 381,
     "kind": "member",
     "name": "name",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -8239,7 +8316,7 @@
     }
   },
   {
-    "__docId__": 378,
+    "__docId__": 382,
     "kind": "class",
     "name": "UnexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -8258,7 +8335,7 @@
     ]
   },
   {
-    "__docId__": 379,
+    "__docId__": 383,
     "kind": "class",
     "name": "ColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8277,7 +8354,7 @@
     ]
   },
   {
-    "__docId__": 380,
+    "__docId__": 384,
     "kind": "class",
     "name": "InsertValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8296,7 +8373,26 @@
     ]
   },
   {
-    "__docId__": 381,
+    "__docId__": 385,
+    "kind": "class",
+    "name": "DeletedRecordError",
+    "memberof": "src/Utils/Error.js",
+    "static": true,
+    "longname": "src/Utils/Error.js~DeletedRecordError",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{DeletedRecordError}",
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "CustomError"
+    ]
+  },
+  {
+    "__docId__": 386,
     "kind": "function",
     "name": "unexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -8309,7 +8405,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{unexpectedRowCount}",
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "undocument": true,
     "params": [
       {
@@ -8331,7 +8427,7 @@
     "return": null
   },
   {
-    "__docId__": 382,
+    "__docId__": 387,
     "kind": "function",
     "name": "thrower",
     "memberof": "src/Utils/Error.js",
@@ -8344,7 +8440,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{thrower}",
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 42,
     "undocument": true,
     "params": [
       {
@@ -8366,7 +8462,7 @@
     "return": null
   },
   {
-    "__docId__": 383,
+    "__docId__": 388,
     "kind": "variable",
     "name": "throwColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8377,7 +8473,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{throwColumnValidationError}",
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 51,
     "undocument": true,
     "type": {
       "types": [
@@ -8386,7 +8482,27 @@
     }
   },
   {
-    "__docId__": 384,
+    "__docId__": 389,
+    "kind": "variable",
+    "name": "throwDeletedRecordError",
+    "memberof": "src/Utils/Error.js",
+    "static": true,
+    "longname": "src/Utils/Error.js~throwDeletedRecordError",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{throwDeletedRecordError}",
+    "description": null,
+    "lineNumber": 63,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 390,
     "kind": "file",
     "name": "src/Utils/Format.js",
     "content": "import { fail, noValue } from \"@abw/badger-utils\";\n\nexport const format = (msg, data) =>\n  msg.replace(\n    /<(\\w+)>/g,\n    (_, key) => {\n      const val = data[key];\n      if (noValue(val)) {\n        fail(`Invalid variable expansion <${key}> in message format: ${msg}`);\n      }\n      return val;\n    }\n  );\n",
@@ -8397,7 +8513,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 385,
+    "__docId__": 391,
     "kind": "function",
     "name": "format",
     "memberof": "src/Utils/Format.js",
@@ -8438,7 +8554,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"knex\": \"^2.2.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.0\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-database-js/package.json",
     "name": "package.json",
     "static": true,
@@ -8504,7 +8620,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/table_columns.md",
     "name": "./manual/table_columns.md",
-    "content": "# Table Columns\n\nFor simple cases you can define table columns using a whitespace delimited string,\ne.g. `id name email`.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    users: {\n      columns: 'id name email'\n    }\n  }\n});\nconst users = await db.table('users');\n```\n\nYou don't have to include all of the columns in the database table if you don't\nwant to for some reason.  If there are columns that you don't want or need to\naccess from your application code then you can omit them.  Just be warned that\nyou won't be able to access any columns that aren't defined here.\n\nYou can add flags to the column names.  These include `id` to denote the unique\nidentifier (this is optional if the column is already called `id` as we assume\nthat's the default name for the id column), `required` to indicate\nthat a column must be provided when a row is inserted, and `readonly` to indicate\nthat a column cannot be inserted or updated.  Multiple flags can be added, each\nseparated by a colon.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    users: {\n      columns: 'id:readonly name:required email:required'\n    }\n  }\n});\n```\n\nIf you try to insert a row without providing any of the `required` columns\nthen an error will be throw.\n\n```js\n// Throws a ColumnValidationError: 'Missing required column \"email\" for the users table'\nawait users.insert({\n  name: 'Brian Badger',\n});\n```\n\nThe same thing will happen if you try to insert or update a `readonly` column.\n\n```js\n// Throws a ColumnValidationError: 'The \"id\" column is readonly in the users table'\nawait users.insert({\n  id:    999,\n  name:  'Brian Badger',\n  email: 'brian@badgerpower.com',\n});\n```\n\nThere may be times when you want to insert rows with pre-defined ids.  That's fine -\nyou don't have to define your id column as being readonly in this case.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    users: {\n      columns: 'id name:required email:required'\n    }\n  }\n});\nconst users = await db.table('users');\n\n// This is fine - id isn't readonly\nawait users.insert({\n  id:    999,\n  name:  'Brian Badger',\n  email: 'brian@badgerpower.com',\n});\n```\n\nIf your unique ID column isn't called `id` then you can mark the relevant column\nusing the `id` tag.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    users: {\n      columns: 'user_id:readonly:id name:required email:required'\n    }\n  }\n});\n```\n\nIn the rare cases where you don't have a unique id column and instead you have multiple\nkeys that are used to uniquely identify a row then you can mark them with the `key` tag.\nFor example, you might have an `employee` table which has rows that are uniquely identified\nby the `company_id` and `user_id` columns.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    employees: {\n      columns: 'company_id:key user_id:key job_title'\n    }\n  }\n});\n```\n\nNote that some databases (e.g. Sqlite) will automatically create an `id` for each\nrow regardless.  There certainly are valid cases where you might chose to NOT have\na unique id column in a database but they are generally few and far between.\nSee [this Stack Overflow post](https://stackoverflow.com/questions/1207983/in-general-should-every-table-in-a-database-have-an-identity-field-to-use-as-a) for\nfurther enlightenment.\n\nDefining the columns using a string is a convenient short hand for simpler\ntables.  The more explicit form is to use an object with the column names as\nkeys.  The corresponding values can be strings containing any flags for the\ncolumns, or an empty string if there aren't any.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    users: {\n      columns: {\n        user_id: 'readonly:id',\n        name:    'required',\n        email:   'required',\n        comment: '',\n    }\n  }\n});\n```\n\nOr you can fully expand them like so:\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tables: {\n    users: {\n      columns: {\n        user_id: {\n          readonly: true,\n          id:       true\n        },\n        name: {\n          required: true\n        }\n        email: {\n          required: true\n        }\n        comment: { }\n      }\n    }\n  }\n});\n```\n",
+    "content": "# Table Columns\n\nFor simple cases you can define table columns using a whitespace delimited string,\ne.g. `id name email`.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    users: {\n      columns: 'id name email'\n    }\n  }\n});\nconst users = await db.table('users');\n```\n\nYou don't have to include all of the columns in the database table if you don't\nwant to for some reason.  If there are columns that you don't want or need to\naccess from your application code then you can omit them.  Just be warned that\nyou won't be able to access any columns that aren't defined here.\n\nYou can add flags to the column names.  These include `id` to denote the unique\nidentifier (this is optional if the column is already called `id` as we assume\nthat's the default name for the id column), `required` to indicate\nthat a column must be provided when a row is inserted, and `readonly` to indicate\nthat a column cannot be inserted or updated.  Multiple flags can be added, each\nseparated by a colon.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    users: {\n      columns: 'id:readonly name:required email:required'\n    }\n  }\n});\n```\n\nIf you try to insert a row without providing any of the `required` columns\nthen an error will be throw.\n\n```js\n// Throws a ColumnValidationError: 'Missing required column \"email\" for the users table'\nawait users.insert({\n  name: 'Brian Badger',\n});\n```\n\nThe same thing will happen if you try to insert or update a `readonly` column.\n\n```js\n// Throws a ColumnValidationError: 'The \"id\" column is readonly in the users table'\nawait users.insert({\n  id:    999,\n  name:  'Brian Badger',\n  email: 'brian@badgerpower.com',\n});\n```\n\nThere may be times when you want to insert rows with pre-defined ids.  That's fine -\nyou don't have to define your id column as being readonly in this case.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    users: {\n      columns: 'id name:required email:required'\n    }\n  }\n});\nconst users = await db.table('users');\n\n// This is fine - id isn't readonly\nawait users.insert({\n  id:    999,\n  name:  'Brian Badger',\n  email: 'brian@badgerpower.com',\n});\n```\n\nIf your unique ID column isn't called `id` then you can mark the relevant column\nusing the `id` tag.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    users: {\n      columns: 'user_id:readonly:id name:required email:required'\n    }\n  }\n});\n```\n\nIn the rare cases where you don't have a unique id column and instead you have multiple\nkeys that are used to uniquely identify a row then you can mark them with the `key` tag.\nFor example, you might have an `employee` table which has rows that are uniquely identified\nby the `company_id` and `user_id` columns.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    employees: {\n      columns: 'company_id:key user_id:key job_title'\n    }\n  }\n});\n```\n\nNote that some databases (e.g. Sqlite) will automatically create an `id` for each\nrow regardless.  There certainly are valid cases where you might chose to NOT have\na unique id column in a database but they are generally few and far between.\nSee [this Stack Overflow post](https://stackoverflow.com/questions/1207983/in-general-should-every-table-in-a-database-have-an-identity-field-to-use-as-a) for\nfurther enlightenment.\n\nDefining the columns using a string is a convenient short hand for simpler\ntables.  The more explicit form is to use an object with the column names as\nkeys.  The corresponding values can be strings containing any flags for the\ncolumns, or an empty string if there aren't any.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    users: {\n      columns: {\n        user_id: 'readonly:id',\n        name:    'required',\n        email:   'required',\n        comment: '',\n    }\n  }\n});\n```\n\nOr you can fully expand them like so:\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tables: {\n    users: {\n      columns: {\n        user_id: {\n          readonly: true,\n          id:       true\n        },\n        name: {\n          required: true\n        }\n        email: {\n          required: true\n        }\n        comment: { }\n      }\n    }\n  }\n});\n```\n",
     "static": true,
     "access": "public"
   },
@@ -8528,7 +8644,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/records.md",
     "name": "./manual/records.md",
-    "content": "# Records\n\nThe [oneRecord()](manual/table_methods.html#onerecord--) and\n[anyRecord()](manual/table_methods.html#anyrecord--) table methods\ncan be used to return a record object instead of a plain Javascript\ndata object containing the row data.  The\n[allRecords()](manual/table_methods.html#allrecords--) method returns\nan array of record objects.\n\nThe record object implements a lightweight version of the Active Record\npattern.\n\n```js\nconst record = await users.oneRecord(\n  { email: 'bobby@badgerpower.com' }\n);\n```\n\nThe row data loaded is stored in the `row` property.  You can access individual\nitems or the row data as a whole.\n\n```js\nconsole.log(record.row.id);      // e.g. 1\nconsole.log(record.row.name);    // Bobby Badger\nconsole.log(record.row.email);   // bobby@badgerpower.com\nconsole.log(record.row);         // { id: 1, name: 'Bobby Badger', etc. }\n```\n\nTechnically speaking, the methods actually return a Proxy object wrapper\naround a record object (or an array of Proxy objects in the case of\n`allRecords()`).  The purpose of the Proxy object, among other things,\nis to give you access to row data items without needing to specify the\n`.row`.\n\n```js\nconsole.log(record.id);          // e.g. 1\nconsole.log(record.name);        // Bobby Badger\nconsole.log(record.email);       // bobby@badgerpower.com\n```\n\nThe Proxy object also gives you easy access to [relations](manual/relations.html)\nthat are defined for the table.  For example, if the `users` table defines `friends`\nas a relation then you can access them as `.friends`;\n\n```js\nconst friends = await record.friends;\n```\n\nNote that any other properties or methods defined for the record will take\npriority.  For example, `record.update` will resolve to the record\n[update()](manual/record_methods.html#update--) method so if you have a\ncolumn called `update` then you must access it as `record.row.update`.\n\nIn the next few sections we'll look at the [record methods](manual/record_methods.html)\nthat are provided, and how to define your own custom [record class](manual/record_class.html)\nwhere you can put additional functionality relating to a record.",
+    "content": "# Records\n\nThe [oneRecord()](manual/table_methods.html#onerecord--) and\n[anyRecord()](manual/table_methods.html#anyrecord--) table methods\ncan be used to return a record object instead of a plain Javascript\ndata object containing the row data.  The\n[allRecords()](manual/table_methods.html#allrecords--) method returns\nan array of record objects.\n\nThe record object implements a lightweight version of the Active Record\npattern.\n\n```js\nconst record = await users.oneRecord(\n  { email: 'bobby@badgerpower.com' }\n);\n```\n\nThe row data loaded is stored in the `row` property.  You can access individual\nitems or the row data as a whole.\n\n```js\nconsole.log(record.row.id);      // e.g. 1\nconsole.log(record.row.name);    // Bobby Badger\nconsole.log(record.row.email);   // bobby@badgerpower.com\nconsole.log(record.row);         // { id: 1, name: 'Bobby Badger', etc. }\n```\n\nTechnically speaking, the methods actually return a Proxy object wrapper\naround a record object (or an array of Proxy objects in the case of\n`allRecords()`).  The purpose of the Proxy object, among other things,\nis to give you access to row data items without needing to specify the\n`.row`.\n\n```js\nconsole.log(record.id);          // e.g. 1\nconsole.log(record.name);        // Bobby Badger\nconsole.log(record.email);       // bobby@badgerpower.com\n```\n\nThe Proxy object also gives you easy access to [relations](manual/relations.html)\nthat are defined for the table.  For example, if the `users` table defines `orders`\nas a relation then you can access them as `.orders`;\n\n```js\nconst orders = await record.orders;\n```\n\nNote that any other properties or methods defined for the record will take\npriority.  For example, `record.update` will resolve to the record\n[update()](manual/record_methods.html#update--) method so if you have a\ncolumn called `update` then you must access it as `record.row.update`.\n\nIn the next few sections we'll look at the [record methods](manual/record_methods.html)\nthat are provided, and how to define your own custom [record class](manual/record_class.html)\nwhere you can put additional functionality relating to a record.",
     "static": true,
     "access": "public"
   },
@@ -8536,7 +8652,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/record_methods.md",
     "name": "./manual/record_methods.md",
-    "content": "# Record Methods\n\nA record object is a wrapper around a row of data from a table.\n\nAs per the previous examples, we'll assume the table definition looks\nsomething like this:\n\n```js\n// define the users table and the columns it contains\nconst db = await connect({\n  database: 'sqlite:test.db',\n  tables: {\n    users: {\n      columns: 'id name:required email:required'\n    }\n  }\n});\n\n// fetch the users table\nconst users = await db.table('users');\n\n// fetch a record from the users table\nconst record = await users.oneRecord({\n  email: 'bobby@badgerpower.com'\n})\n```\n\n## update()\n\nThe `update()` method allows you to update any columns in the row that the record\nrepresents.\n\n```js\nawait record.update({\n  name:  'Robert Badger, Esq.',\n  email: 'robert@badgerpower.com'\n})\n```\n\nThe data will be updated in both the database table row and the record object.\nAny other changes in the database row (e.g. a `modified` column that is set to\nthe current timestamp when a record is modified) will also be reflected in the\nrecord.\n\n```js\nconsole.log(record.name);       // Robert Badger, Esq.\n```\n\n## relation()\n\nThis method allows you to access relations for a table.  Read more on that in\nthe [records](manual/records.html) manual page.\n\n\n",
+    "content": "# Record Methods\n\nA record object is a wrapper around a row of data from a table.\n\nAs per the previous examples, we'll assume the table definition looks\nsomething like this:\n\n```js\n// define the users table and the columns it contains\nconst db = await connect({\n  database: 'sqlite:test.db',\n  tables: {\n    users: {\n      columns: 'id name:required email:required'\n    }\n  }\n});\n\n// fetch the users table\nconst users = await db.table('users');\n\n// fetch a record from the users table\nconst record = await users.oneRecord({\n  email: 'bobby@badgerpower.com'\n})\n```\n\n## update()\n\nThe `update()` method allows you to update any columns in the row that the record\nrepresents.\n\n```js\nawait record.update({\n  name:  'Robert Badger, Esq.',\n  email: 'robert@badgerpower.com'\n})\n```\n\nThe data will be updated in both the database table row and the record object.\nAny other changes in the database row (e.g. a `modified` column that is set to\nthe current timestamp when a record is modified) will also be reflected in the\nrecord.\n\n```js\nconsole.log(record.name);       // Robert Badger, Esq.\n```\n\n## delete()\n\nThe `delete()` method allows you to delete the row in the table represented by\nthe record.\n\n```js\nawait record.delete();\nconsole.log(record.deleted)     // true\n```\n\nAfter deleting the record the `record.deleted` flag will be set `true`.  Any\nattempt to update the record (or delete it again) will throw a `DeletedRecordError`\nwith a message of the form `Cannot update deleted users record #123`.\n\n## relation()\n\nThis method allows you to access relations for a table.  Read more on that in\nthe [relations](manual/relations.html) manual page.\n\nFor example, if your `users` table has a `orders` relation defined then you can\naccess the related record(s) like so:\n\n```js\nconst orders = await record.relation('orders');\n```\n\nThe Proxy wrapper also allows you to access it more succinctly as:\n\n```js\nconst orders = await record.orders;\n```\n\n\n\n\n",
     "static": true,
     "access": "public"
   },
@@ -8544,7 +8660,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/record_class.md",
     "name": "./manual/record_class.md",
-    "content": "# Record Class\n\nTODO",
+    "content": "# Record Class\n\nYou can define your own custom record class for each table in the database.\nThis allows you to add your own methods for performing queries on the record\ndata or other business logic.\n\nYou should extend the `Record` base class and then define it as the `recordClass`\noption in the table definition.\n\nHere's a complete example.\n\n```js\nimport { connect, Record } from '@abw/badger-database';\n\nexport class User extends Record {\n  hello() {\n    return 'Hello ' + this.row.name;\n  }\n}\n\nasync function main() {\n  const db = await connect({\n    database: 'sqlite:memory',\n    tables: {\n      users: {\n        // bind in the custom record class\n        recordClass: User,\n        // column definitions\n        columns: 'id name email animal',\n        // query definitions\n        queries: {\n          create: `\n            CREATE TABLE users (\n              id     INTEGER PRIMARY KEY ASC,\n              name   TEXT,\n              email  TEXT,\n              animal TEXT\n            )`\n        }\n      },\n    }\n  });\n\n  // fetch users table object\n  const users = await db.table('users');\n\n  // run the 'create' query to create the database table\n  await users.run('create');\n\n  // insert a row\n  await users.insert({\n    name:   'Bobby Badger',\n    email:  'bobby@badgerpower.com',\n    animal: 'Badger'\n  });\n\n  // fetch a record\n  const user = await users.oneRecord({\n    email: 'bobby@badgerpower.com'\n  })\n\n  // now call the custom hello() method on the record\n  console.log(user.hello());    // Hello Brian Badger\n}\n\nmain()\n```\n\n## Record Configuration Options\n\nIf you want to pass additional configuration options to the record\nobject then you can define them as the `recordConfig` configuration\noption in the corresponding table configuration.\n\n```js\nconst db = await connect({\n  // ...database, etc.\n  tables: {\n    users: {\n      recordClass: User,\n      recordConfig: {\n        hello: 'Hiya'\n      }\n    },\n  }\n});\n```\n\nThe `recordConfig` parameters will then be available in the record\nobject as `this.config`.  For example, we can rewrite the `hello()`\nmethod to use the configuration value for `hello`:\n\n```js\nexport class User extends Record {\n  hello() {\n    return `${this.config.hello || 'Hello'} ${this.row.name}`;\n  }\n}\n```\n\nNow when the `hello()` method is called on a user record object\na different greeting will be returned:\n\n```js\nconsole.log(user.hello());    // Hiya Brian Badger\n```\n\nIf you want to perform any initialisation of the record then you can override\nthe constructor function.  It is passed three arguments: a reference to the\n`table` object, the `row` of data, and any configuration options.  Make sure\nyou call the `super()` constructor before you do anything else.\n\n```js\nexport class User extends Record {\n  constructor(table, row, config={}) {\n    super(table, row, config);\n    this.greeting = config.hello || 'Hello';\n  }\n  hello() {\n    return `${this.greeting} ${this.row.name}`;\n  }\n}\n```",
     "static": true,
     "access": "public"
   },
@@ -8552,7 +8668,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/extending.md",
     "name": "./manual/extending.md",
-    "content": "# Extending Badger Database\n\n## Custom Tables Class\n\nYou can provide your own implementation of the `Tables` class which\nreturns the configuration options for a table.  For example, you might\nwant to define your tables in JSON or YAML files that are loaded on\ndemand.\n\nThe `table(name)` method is called to fetch the configuration options\nfor a table.  Any pre-defined tables will be stored in `this.tables`.\nYou can return the data from there or implement some other way to\nfetch the configuration options for the table.\n\n```js\nimport { connect, Tables } from '@abw/badger-database'\n\nclass YourTables extends Tables {\n  table(name) {\n    // any pre-defined tables data will be stored in this.tables\n    // or you can fetch it some other way...\n    return this.tables[name] ||= this.yourCustomTableLoader(name);\n  }\n  yourCustomTableLoader(name) {\n    // your code here to load the table definition for the `name` table\n    // return undefined if the table doesn't exist\n    return {\n        // columns, etc.\n    }\n  }\n}\n\nasync function main() {\n  const db = await connect({\n    // ...engine, etc...\n    tablesClass: YourTables,\n    tables: {\n        // these tables will be defined in `this.tables` for YourTables\n        users: {\n            columns: 'id name email'\n        }\n    }\n  });\n  const users = await db.table('users');      // returns users defined above\n  const another = await db.table('another');  // calls yourCustomTableLoader('another')\n}\n\nmain();\n```\n\n## Custom Tables Object\n\nYou can instantiate your own `Tables` object and define it as the `tablesObject`\nconfiguration item.  If you have any pre-defined `tables` that you want it to\nmanage then you should pass them as constructor parameters.\n\n```js\nconst db = await connect({\n  // ...engine, etc...\n  tablesObject: new YourTables({\n    tables: {\n        // these tables will be defined in `this.table` for YourTables\n        users: {\n            columns: 'id name email'\n        }\n    },\n    // any other configuration options for YourTable\n  })\n});\n\n",
+    "content": "# Extending Badger Database\n\n## Custom Tables Class\n\nYou can provide your own implementation of the `Tables` class which\nreturns the configuration options for a table.  For example, you might\nwant to define your tables in JSON or YAML files that are loaded on\ndemand.\n\nThe `table(name)` method is called to fetch the configuration options\nfor a table.  Any pre-defined tables will be stored in `this.tables`.\nYou can return the data from there or implement some other way to\nfetch the configuration options for the table.\n\n```js\nimport { connect, Tables } from '@abw/badger-database'\n\nclass YourTables extends Tables {\n  table(name) {\n    // any pre-defined tables data will be stored in this.tables\n    // or you can fetch it some other way...\n    return this.tables[name] ||= this.yourCustomTableLoader(name);\n  }\n  yourCustomTableLoader(name) {\n    // your code here to load the table definition for the `name` table\n    // return undefined if the table doesn't exist\n    return {\n        // columns, etc.\n    }\n  }\n}\n\nasync function main() {\n  const db = await connect({\n    // ...database, etc...\n    tablesClass: YourTables,\n    tables: {\n        // these tables will be defined in `this.tables` for YourTables\n        users: {\n            columns: 'id name email'\n        }\n    }\n  });\n  const users = await db.table('users');      // returns users defined above\n  const another = await db.table('another');  // calls yourCustomTableLoader('another')\n}\n\nmain();\n```\n\n## Custom Tables Object\n\nYou can instantiate your own `Tables` object and define it as the `tablesObject`\nconfiguration item.  If you have any pre-defined `tables` that you want it to\nmanage then you should pass them as constructor parameters.\n\n```js\nconst db = await connect({\n  // ...database, etc...\n  tablesObject: new YourTables({\n    tables: {\n        // these tables will be defined in `this.table` for YourTables\n        users: {\n            columns: 'id name email'\n        }\n    },\n    // any other configuration options for YourTable\n  })\n});\n\n",
     "static": true,
     "access": "public"
   }

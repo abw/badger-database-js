@@ -76,6 +76,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~DeletedRecordError.html">DeletedRecordError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~InsertValidationError.html">InsertValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
@@ -93,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwDeletedRecordError">throwDeletedRecordError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -101,20 +103,42 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import relations from "./Relation/index.js";
 import { fail } from "@abw/badger-utils";
 import { addDebugMethod } from "./Utils/Debug.js";
+import { throwDeletedRecordError } from "./Utils/Error.js";
 
 export class Record {
-  constructor(table, row, options={}) {
+  constructor(table, row, config={}) {
     this.table     = table;
     this.database  = table.database;
     this.row       = row;
     this.relations = { };
-    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}&gt; ` }, options);
+    this.config    = config;
+    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}&gt; ` }, config);
   }
   async update(set) {
+    this.assertNotDeleted('update');
     const where = this.table.identity(this.row);
     const update = await this.table.updateOne(set, where, { reload: true });
     Object.assign(this.row, update);
     return this;
+  }
+  async delete() {
+    this.assertNotDeleted('delete');
+    const where = this.table.identity(this.row);
+    await this.table.delete(where);
+    this.deleted = true;
+    return this;
+  }
+  assertNotDeleted(action) {
+    if (this.deleted) {
+      throwDeletedRecordError(
+        'action',
+        {
+          action,
+          table: this.table.table,
+          id:    this.table.keys.map( key =&gt; this.row[key] ).join('/')
+        }
+      )
+    }
   }
   relation(name) {
     this.debug('relation(%s)', name);
@@ -123,7 +147,7 @@ export class Record {
   }
   initRelation(name) {
     this.debug('initRelation(%s)', name);
-    const relation = this.schema.relations[name] || fail("Invalid relation specified: ", name);
+    const relation = this.table.relations[name] || fail("Invalid relation specified: ", name);
     const rfunc    = relations[relation.type] || fail("Invalid relation type: ", relation.type);
     relation.name ||= name;
     return rfunc(this, relation);

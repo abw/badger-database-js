@@ -119,6 +119,7 @@
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/record_methods.html"><a href="manual/record_methods.html" data-ice="link">Record Methods</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#update--" data-ice="link">update()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#delete--" data-ice="link">delete()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#relation--" data-ice="link">relation()</a></li>
 </ul>
   </div>
@@ -126,6 +127,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/record_class.html"><a href="manual/record_class.html" data-ice="link">Record Class</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_class.html"><a href="manual/record_class.html#record-configuration-options" data-ice="link">Record Configuration Options</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -166,7 +168,7 @@ class YourTables extends Tables {
 
 async function main() {
   const db = await connect({
-    // ...engine, etc...
+    // ...database, etc...
     tablesClass: YourTables,
     tables: {
         // these tables will be defined in `this.tables` for YourTables
@@ -184,7 +186,7 @@ main();</code></code></pre>
 configuration item.  If you have any pre-defined <code>tables</code> that you want it to
 manage then you should pass them as constructor parameters.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tablesObject: new YourTables({
     tables: {
         // these tables will be defined in `this.table` for YourTables

@@ -119,6 +119,7 @@
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/record_methods.html"><a href="manual/record_methods.html" data-ice="link">Record Methods</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#update--" data-ice="link">update()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#delete--" data-ice="link">delete()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#relation--" data-ice="link">relation()</a></li>
 </ul>
   </div>
@@ -126,6 +127,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/record_class.html"><a href="manual/record_class.html" data-ice="link">Record Class</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_class.html"><a href="manual/record_class.html#record-configuration-options" data-ice="link">Record Configuration Options</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -170,8 +172,20 @@ Any other changes in the database row (e.g. a <code>modified</code> column that 
 the current timestamp when a record is modified) will also be reflected in the
 record.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">console.log(record.name);       // Robert Badger, Esq.</code></code></pre>
+<h2 id="delete--">delete()</h2><p>The <code>delete()</code> method allows you to delete the row in the table represented by
+the record.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await record.delete();
+console.log(record.deleted)     // true</code></code></pre>
+<p>After deleting the record the <code>record.deleted</code> flag will be set <code>true</code>.  Any
+attempt to update the record (or delete it again) will throw a <code>DeletedRecordError</code>
+with a message of the form <code>Cannot update deleted users record #123</code>.</p>
 <h2 id="relation--">relation()</h2><p>This method allows you to access relations for a table.  Read more on that in
-the <a href="manual/records.html">records</a> manual page.</p>
+the <a href="manual/relations.html">relations</a> manual page.</p>
+<p>For example, if your <code>users</code> table has a <code>orders</code> relation defined then you can
+access the related record(s) like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const orders = await record.relation('orders');</code></code></pre>
+<p>The Proxy wrapper also allows you to access it more succinctly as:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const orders = await record.orders;</code></code></pre>
 </div>
 </div>
 
