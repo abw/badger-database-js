@@ -160,7 +160,7 @@ to Javascript.</p>
 I wrote it to help me get my own job done.  I don't plan to spend
 too much time supporting it, updating it, or adding features that
 aren't immediately useful to me.</p>
-<p>That said, it's a simple project totalling less than a thousand lines
+<p>That said, it's a simple project totalling around 1,500 lines
 of code.  An experienced Javascript programmer with knowledge of
 SQL should be able to grok the code in an hour or so.  If you're
 happy to use the source, Luke, then it may be the droids you're looking
@@ -205,8 +205,8 @@ method to fetch a row of data:</p>
   ['bobby@badgerpower.com']
 );
 console.log("User Name:", select.name);</code></code></pre>
-<p>Define named queries and query fragments up front so that you don't have
-to embed SQL in your application code:</p>
+<p>Define named queries and reusable query fragments up front so that you
+don't have to embed SQL in your application code:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const database = connect({
   database: 'sqlite:memory',
   fragments: {
@@ -227,11 +227,11 @@ to embed SQL in your application code:</p>
       VALUES (?, ?)
     `,
     selectUserByEmail: `
-      
+      &lt;selectUser&gt;
       WHERE email=?
     `,
     selectUserByName: `
-      
+      &lt;selectUser&gt;
       WHERE name=?
     `,
   }

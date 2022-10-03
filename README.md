@@ -70,7 +70,7 @@ I wrote it to help me get my own job done.  I don't plan to spend
 too much time supporting it, updating it, or adding features that
 aren't immediately useful to me.
 
-That said, it's a simple project totalling less than a thousand lines
+That said, it's a simple project totalling around 1,500 lines
 of code.  An experienced Javascript programmer with knowledge of
 SQL should be able to grok the code in an hour or so.  If you're
 happy to use the source, Luke, then it may be the droids you're looking
@@ -141,8 +141,8 @@ const select = await database.one(
 console.log("User Name:", select.name);
 ```
 
-Define named queries and query fragments up front so that you don't have
-to embed SQL in your application code:
+Define named queries and reusable query fragments up front so that you
+don't have to embed SQL in your application code:
 
 ```js
 const database = connect({
@@ -165,11 +165,11 @@ const database = connect({
       VALUES (?, ?)
     `,
     selectUserByEmail: `
-      <selectUser>
+      &lt;selectUser&gt;
       WHERE email=?
     `,
     selectUserByName: `
-      <selectUser>
+      &lt;selectUser&gt;
       WHERE name=?
     `,
   }
@@ -179,7 +179,7 @@ await database.run(
   'insertUser',
   ['Bobby Badger', 'bobby@badgerpower.com']
 );
-const select = await database.one(
+const select1 = await database.one(
   'selectUserByEmail',
   ['bobby@badgerpower.com']
 );
