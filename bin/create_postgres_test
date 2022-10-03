@@ -72,7 +72,7 @@ if [ $YES != "y" ]; then
 fi
 
 echo "Dropping $DATABASE database"
-$PSQL -c "drop database $DATABASE"
+$PSQL -c "DROP DATABASE $DATABASE"
 
 #---------------------------------------------------------------------------
 # create database
