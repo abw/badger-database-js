@@ -24,7 +24,7 @@ test(
     t.is(users.columns.name.tableColumn, 'users.name');
     t.is(users.columns.email.column, 'email');
     t.is(users.columns.email.tableColumn, 'users.email');
-    await db.destroy();
+    await db.disconnect();
   }
 )
 
@@ -52,7 +52,7 @@ test(
       users.required,
       ['name', 'email']
     )
-    await db.destroy();
+    await db.disconnect();
   }
 )
 
@@ -84,7 +84,7 @@ test(
     t.is(
       users.id, 'user_id'
     )
-    await db.destroy();
+    await db.disconnect();
   }
 )
 
@@ -115,7 +115,7 @@ test(
     t.is(
       users.id, 'user_id'
     )
-    await db.destroy();
+    await db.disconnect();
   }
 )
 
@@ -170,7 +170,7 @@ test(
     t.is(
       users.id, undefined
     )
-    await db.destroy();
+    await db.disconnect();
   }
 )
 
@@ -205,7 +205,7 @@ test(
     t.is(
       users.id, undefined
     )
-    await db.destroy();
+    await db.disconnect();
   }
 )
 
@@ -251,6 +251,6 @@ test(
     t.is(
       users.id, undefined
     )
-    await db.destroy();
+    await db.disconnect();
   }
 )

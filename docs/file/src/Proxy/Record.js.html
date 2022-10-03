@@ -104,32 +104,21 @@
     {
       get(target, prop) {
         // console.log('recordProxy get(%s)', prop);
+        if (Reflect.has(target, prop)) {
+          return Reflect.get(target, prop);
+        }
         if (Reflect.has(target.row, prop)) {
           // console.log('recordProxy column: ', prop);
           return Reflect.get(target.row, prop);
         }
-        //else if (target.schema.relations?.[prop]) {
-        //  console.log('recordProxy relation: ', prop);
-        //  // console.log('recordProxy relation: ', prop);
-        //  return target.relation(prop);
-        //}
-        else if (prop === 'then') {
-          // console.log('recordProxy.then');
-          if (Reflect.has(target, 'then')) {
-            return (
-              fn =&gt; target.then(fn)
-              //fn =&gt; recordProxy(target.then(fn))
-            ).bind(target)
-          }
-          else {
-          // console.log('target: ', target);
-            return target;
-          }
-          //return (
-          //  fn =&gt; target.then(fn)
-          //  //fn =&gt; recordProxy(target.then(fn))
-          //).bind(target)
+        /*
+        if (prop === 'then' &amp;&amp; Reflect.has(target, prop)) {
+          // console.log('recordProxy then: ', prop);
+          return (
+            fn =&gt; recordProxy(target.then(fn))
+          ).bind(target)
         }
+        */
         // console.log('recordProxy default: ', prop);
         return Reflect.get(target, prop);
       }

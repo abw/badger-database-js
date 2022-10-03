@@ -80,7 +80,7 @@ export function runTableReloadTests(engine) {
   test.after(
     'destroy',
     t => {
-      db.destroy();
+      db.disconnect();
       t.pass();
     }
   )

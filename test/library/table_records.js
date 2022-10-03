@@ -222,7 +222,7 @@ export function runTableRecordsTests(engine) {
   test.serial(
     'destroy',
     t => {
-      db.destroy();
+      db.disconnect();
       t.pass();
     }
   )

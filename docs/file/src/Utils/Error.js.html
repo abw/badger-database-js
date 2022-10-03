@@ -133,8 +133,8 @@ export class UnexpectedRowCount extends CustomError { }
 export class ColumnValidationError extends CustomError { }
 export class InsertValidationError extends CustomError { }
 
-export function unexpectedRowCount(n) {
-  throw new UnexpectedRowCount(`${n} rows were returned when one was expected`)
+export function unexpectedRowCount(n, action='returned') {
+  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)
 }
 
 

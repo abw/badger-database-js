@@ -1,398 +1,398 @@
 window.esdocSearchIndex = [
   [
-    "@abw/badger-utils~after",
+    "@abw/badger-database~after",
     "class/src/Operator/After.js~After.html",
-    "<span>After</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>After</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~before",
+    "@abw/badger-database~before",
     "class/src/Operator/Before.js~Before.html",
-    "<span>Before</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Before</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~columnvalidationerror",
+    "@abw/badger-database~columnvalidationerror",
     "class/src/Utils/Error.js~ColumnValidationError.html",
-    "<span>ColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>ColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~config",
+    "@abw/badger-database~config",
     "variable/index.html#static-variable-Config",
-    "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~customerror",
+    "@abw/badger-database~customerror",
     "class/src/Utils/Error.js~CustomError.html",
-    "<span>CustomError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>CustomError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~database",
+    "@abw/badger-database~database",
     "class/src/Database.js~Database.html",
-    "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~database",
+    "@abw/badger-database~database",
     "class/src/Operator/Database.js~Database.html",
-    "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~engine",
+    "@abw/badger-database~engine",
     "class/src/Engine.js~Engine.html",
-    "<span>Engine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Engine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~engines",
+    "@abw/badger-database~engines",
     "variable/index.html#static-variable-Engines",
-    "<span>Engines</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Engines</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~from",
+    "@abw/badger-database~from",
     "class/src/Operator/From.js~From.html",
-    "<span>From</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>From</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~group",
+    "@abw/badger-database~group",
     "class/src/Operator/Group.js~Group.html",
-    "<span>Group</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Group</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~having",
+    "@abw/badger-database~having",
     "class/src/Operator/Having.js~Having.html",
-    "<span>Having</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Having</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~insertvalidationerror",
+    "@abw/badger-database~insertvalidationerror",
     "class/src/Utils/Error.js~InsertValidationError.html",
-    "<span>InsertValidationError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>InsertValidationError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~join",
+    "@abw/badger-database~join",
     "class/src/Operator/Join.js~Join.html",
-    "<span>Join</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Join</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~mysqlengine",
+    "@abw/badger-database~mysqlengine",
     "class/src/Engine/Mysql.js~MysqlEngine.html",
-    "<span>MysqlEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>MysqlEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~operator",
+    "@abw/badger-database~operator",
     "class/src/Operator.js~Operator.html",
-    "<span>Operator</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Operator</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~order",
+    "@abw/badger-database~order",
     "class/src/Operator/Order.js~Order.html",
-    "<span>Order</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Order</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~postgresengine",
+    "@abw/badger-database~postgresengine",
     "class/src/Engine/Postgres.js~PostgresEngine.html",
-    "<span>PostgresEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>PostgresEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~queries",
+    "@abw/badger-database~queries",
     "class/src/Queries.js~Queries.html",
-    "<span>Queries</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Queries</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~query",
+    "@abw/badger-database~query",
     "class/src/Query.js~Query.html",
-    "<span>Query</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Query</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~record",
+    "@abw/badger-database~record",
     "class/src/Record.js~Record.html",
-    "<span>Record</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Record</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~schema",
+    "@abw/badger-database~schema",
     "class/src/Schema.js~Schema.html",
-    "<span>Schema</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Schema</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~select",
+    "@abw/badger-database~select",
     "class/src/Operator/Select.js~Select.html",
-    "<span>Select</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Select</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~sqliteengine",
+    "@abw/badger-database~sqliteengine",
     "class/src/Engine/Sqlite.js~SqliteEngine.html",
-    "<span>SqliteEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>SqliteEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~table",
+    "@abw/badger-database~table",
     "class/src/Table.js~Table.html",
-    "<span>Table</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Table</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~tables",
+    "@abw/badger-database~tables",
     "class/src/Tables.js~Tables.html",
-    "<span>Tables</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Tables</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~unexpectedrowcount",
+    "@abw/badger-database~unexpectedrowcount",
     "class/src/Utils/Error.js~UnexpectedRowCount.html",
-    "<span>UnexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>UnexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~where",
+    "@abw/badger-database~where",
     "class/src/Operator/Where.js~Where.html",
-    "<span>Where</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>Where</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
-    "@abw/badger-utils~adddebugmethod",
+    "@abw/badger-database~adddebugmethod",
     "function/index.html#static-function-addDebugMethod",
-    "<span>addDebugMethod</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>addDebugMethod</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~allcolumns",
+    "@abw/badger-database~allcolumns",
     "variable/index.html#static-variable-allColumns",
-    "<span>allColumns</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>allColumns</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~bitsplitter",
+    "@abw/badger-database~bitsplitter",
     "variable/index.html#static-variable-bitSplitter",
-    "<span>bitSplitter</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>bitSplitter</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~connect",
+    "@abw/badger-database~connect",
     "function/index.html#static-function-connect",
-    "<span>connect</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>connect</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~databasealiases",
+    "@abw/badger-database~databasealiases",
     "variable/index.html#static-variable-databaseAliases",
-    "<span>databaseAliases</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>databaseAliases</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~databaseconfig",
+    "@abw/badger-database~databaseconfig",
     "function/index.html#static-function-databaseConfig",
-    "<span>databaseConfig</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>databaseConfig</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~databasestringelements",
+    "@abw/badger-database~databasestringelements",
     "variable/index.html#static-variable-databaseStringElements",
-    "<span>databaseStringElements</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>databaseStringElements</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~databasestringregex",
+    "@abw/badger-database~databasestringregex",
     "variable/index.html#static-variable-databaseStringRegex",
-    "<span>databaseStringRegex</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>databaseStringRegex</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~debug",
+    "@abw/badger-database~debug",
     "variable/index.html#static-variable-debug",
-    "<span>debug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>debug</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~defaultidcolumn",
+    "@abw/badger-database~defaultidcolumn",
     "variable/index.html#static-variable-defaultIdColumn",
-    "<span>defaultIdColumn</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>defaultIdColumn</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~engine",
+    "@abw/badger-database~engine",
     "function/index.html#static-function-engine",
-    "<span>engine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>engine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~factory",
+    "@abw/badger-database~factory",
     "function/index.html#static-function-factory",
-    "<span>factory</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>factory</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~format",
+    "@abw/badger-database~format",
     "function/index.html#static-function-format",
-    "<span>format</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>format</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~getdebug",
+    "@abw/badger-database~getdebug",
     "function/index.html#static-function-getDebug",
-    "<span>getDebug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>getDebug</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~invalid",
+    "@abw/badger-database~invalid",
     "function/index.html#static-function-invalid",
-    "<span>invalid</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>invalid</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~many",
+    "@abw/badger-database~many",
     "function/index.html#static-function-many",
-    "<span>many</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>many</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~missing",
+    "@abw/badger-database~missing",
     "function/index.html#static-function-missing",
-    "<span>missing</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>missing</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~modelproxy",
+    "@abw/badger-database~modelproxy",
     "function/index.html#static-function-modelProxy",
-    "<span>modelProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>modelProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~notimplemented",
+    "@abw/badger-database~notimplemented",
     "function/index.html#static-function-notImplemented",
-    "<span>notImplemented</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>notImplemented</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~notimplementedinbaseclass",
+    "@abw/badger-database~notimplementedinbaseclass",
     "function/index.html#static-function-notImplementedInBaseClass",
-    "<span>notImplementedInBaseClass</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>notImplementedInBaseClass</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~notimplementedinmodule",
+    "@abw/badger-database~notimplementedinmodule",
     "function/index.html#static-function-notImplementedInModule",
-    "<span>notImplementedInModule</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>notImplementedInModule</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~one",
+    "@abw/badger-database~one",
     "function/index.html#static-function-one",
-    "<span>one</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>one</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~operatorproxy",
+    "@abw/badger-database~operatorproxy",
     "function/index.html#static-function-operatorProxy",
-    "<span>operatorProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>operatorProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~operators",
+    "@abw/badger-database~operators",
     "variable/index.html#static-variable-operators",
-    "<span>operators</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>operators</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~parsedatabasestring",
+    "@abw/badger-database~parsedatabasestring",
     "function/index.html#static-function-parseDatabaseString",
-    "<span>parseDatabaseString</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>parseDatabaseString</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~preparecolumns",
+    "@abw/badger-database~preparecolumns",
     "function/index.html#static-function-prepareColumns",
-    "<span>prepareColumns</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>prepareColumns</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~preparekeys",
+    "@abw/badger-database~preparekeys",
     "function/index.html#static-function-prepareKeys",
-    "<span>prepareKeys</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>prepareKeys</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~queries",
+    "@abw/badger-database~queries",
     "function/index.html#static-function-queries",
-    "<span>queries</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>queries</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~recordproxy",
+    "@abw/badger-database~recordproxy",
     "function/index.html#static-function-recordProxy",
-    "<span>recordProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>recordProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~registerengine",
+    "@abw/badger-database~registerengine",
     "function/index.html#static-function-registerEngine",
-    "<span>registerEngine</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>registerEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~rowproxy",
+    "@abw/badger-database~rowproxy",
     "function/index.html#static-function-rowProxy",
-    "<span>rowProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>rowProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~rowsproxy",
+    "@abw/badger-database~rowsproxy",
     "function/index.html#static-function-rowsProxy",
-    "<span>rowsProxy</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>rowsProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~schema",
+    "@abw/badger-database~schema",
     "function/index.html#static-function-schema",
-    "<span>schema</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>schema</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~setdebug",
+    "@abw/badger-database~setdebug",
     "function/index.html#static-function-setDebug",
-    "<span>setDebug</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>setDebug</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~throwcolumnvalidationerror",
+    "@abw/badger-database~throwcolumnvalidationerror",
     "variable/index.html#static-variable-throwColumnValidationError",
-    "<span>throwColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>throwColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
-    "@abw/badger-utils~thrower",
+    "@abw/badger-database~thrower",
     "function/index.html#static-function-thrower",
-    "<span>thrower</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>thrower</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~unexpectedrowcount",
+    "@abw/badger-database~unexpectedrowcount",
     "function/index.html#static-function-unexpectedRowCount",
-    "<span>unexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>unexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
-    "@abw/badger-utils~wheretrue",
+    "@abw/badger-database~wheretrue",
     "variable/index.html#static-variable-whereTrue",
-    "<span>whereTrue</span> <span class=\"search-result-import-path\">@abw/badger-utils</span>",
+    "<span>whereTrue</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -1608,12 +1608,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/record.js~record#data",
-    "class/src/Record.js~Record.html#instance-member-data",
-    "src/Record.js~Record#data",
-    "member"
-  ],
-  [
     "src/record.js~record#database",
     "class/src/Record.js~Record.html#instance-member-database",
     "src/Record.js~Record#database",
@@ -1962,6 +1956,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/table.js~table#newrecord",
+    "class/src/Table.js~Table.html#instance-method-newRecord",
+    "src/Table.js~Table#newRecord",
+    "method"
+  ],
+  [
     "src/table.js~table#one",
     "class/src/Table.js~Table.html#instance-method-one",
     "src/Table.js~Table#one",
@@ -1989,6 +1989,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#preparefragments",
     "class/src/Table.js~Table.html#instance-method-prepareFragments",
     "src/Table.js~Table#prepareFragments",
+    "method"
+  ],
+  [
+    "src/table.js~table#prepareupdate",
+    "class/src/Table.js~Table.html#instance-method-prepareUpdate",
+    "src/Table.js~Table#prepareUpdate",
     "method"
   ],
   [
@@ -2031,6 +2037,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#records",
     "class/src/Table.js~Table.html#instance-method-records",
     "src/Table.js~Table#records",
+    "method"
+  ],
+  [
+    "src/table.js~table#reload",
+    "class/src/Table.js~Table.html#instance-method-reload",
+    "src/Table.js~Table#reload",
     "method"
   ],
   [
@@ -2079,6 +2091,24 @@ window.esdocSearchIndex = [
     "src/table.js~table#update",
     "class/src/Table.js~Table.html#instance-method-update",
     "src/Table.js~Table#update",
+    "method"
+  ],
+  [
+    "src/table.js~table#updateall",
+    "class/src/Table.js~Table.html#instance-method-updateAll",
+    "src/Table.js~Table#updateAll",
+    "method"
+  ],
+  [
+    "src/table.js~table#updateany",
+    "class/src/Table.js~Table.html#instance-method-updateAny",
+    "src/Table.js~Table#updateAny",
+    "method"
+  ],
+  [
+    "src/table.js~table#updateone",
+    "class/src/Table.js~Table.html#instance-method-updateOne",
+    "src/Table.js~Table#updateOne",
     "method"
   ],
   [

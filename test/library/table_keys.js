@@ -86,7 +86,7 @@ export function runTableKeysTests(engine) {
   test.serial(
     'destroy',
     t => {
-      db.destroy();
+      db.disconnect();
       t.pass();
     }
   )

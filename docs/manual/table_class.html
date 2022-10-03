@@ -7,7 +7,7 @@
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 <link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
-<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
@@ -113,107 +113,77 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger-database">badger-database</h1><img width="300" src="./images/badger2.svg">
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-class">Table Class</h1><p>You can define your own custom table class for each table in the database.
+This allows you to add your own methods for performing queries on the table.
+You should extend the <code>Table</code> base class and then define it as the <code>tableClass</code>
+option in the table definition.</p>
+<p>Here's a complete example.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect, Table } from '@abw/badger-database';
 
-<p>This is the manual for the <code>badger-database</code> Javascript module.</p>
-<ul>
-<li><a href="manual/installation.html">Installation</a> - installing the library</li>
-<li><a href="manual/connecting.html">Connecting</a> - connecting to a database</li>
-<li><a href="manual/basic_queries.html">Basic Queries</a> - performing basic SQL queries</li>
-<li><a href="manual/named_queries.html">Named Queries</a> - defining named SQL queries for abstraction and reusability</li>
-<li><a href="manual/query_fragments.html">Query Fragments</a> - defining named SQL fragments for embedding into queries</li>
-<li><a href="manual/tables.html">Tables</a> - using tables to automatically generate basic queries</li>
-<li><a href="manual/table_columns.html">Table Columns</a> - defining table columns</li>
-<li><a href="manual/table_methods.html">Table Methods</a> - calling table methods</li>
-<li><a href="manual/table_class.html">Table Class</a> - defining custom table classes</li>
-<li><a href="manual/records.html">Records</a> - using records</li>
-</ul>
-<h2 id="note-">NOTE:</h2><p>I'm in the process of rewriting the library to remove Knex.  These
-pages haven't been updated yet and so will be out of date.</p>
-<ul>
-<li><a href="manual/database.html">Database</a></li>
-<li><a href="manual/table.html">Table</a></li>
-<li><a href="manual/record.html">Record</a></li>
-<li><a href="manual/model.html">Model</a></li>
-<li><a href="manual/queries.html">Queries</a></li>
-</ul>
-<p>These manual pages describe some of the internal implementation.
-You probably don't need to worry about them too much unless you're
-looking under the hood.</p>
-<ul>
-<li><a href="manual/connection.html">Connection</a></li>
-<li><a href="manual/schema.html">Schema</a></li>
-<li><a href="manual/tables.html">Tables</a></li>
-</ul>
-<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
-</div>
+export class Users extends Table {
+  badgers() {
+    // custom method to fetch all badgers
+    return this.allRows({ animal: 'Badger' });
+  }
+}
 
-  
+async function main() {
+  const db = await connect({
+    database: 'sqlite:memory',
+    tables: {
+      users: {
+        // bind in the custom table class
+        tableClass: Users,
+        // column definitions
+        columns: 'id name email animal',
+        // query definitions
+        queries: {
+          create: `
+            CREATE TABLE users (
+              id     INTEGER PRIMARY KEY ASC,
+              name   TEXT,
+              email  TEXT,
+              animal TEXT
+            )`
+        }
+      },
+    }
+  });
 
-  <div class="manual-cards">
-    
-  <div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/installation.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/connecting.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/basic_queries.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/named_queries.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/query_fragments.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/tables.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/table_columns.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/table_methods.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/table_class.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/records.html"></a>
-      </div>
-    </div>
-</div>
+  // fetch users table object
+  const users = await db.table('users');
+
+  // run the 'create' query to create the database table
+  await users.run('create');
+
+  // insert some rows
+  await users.insert([
+    {
+      name:   'Bobby Badger',
+      email:  'bobby@badgerpower.com',
+      animal: 'Badger'
+    },
+    {
+      name:   'Brian Badger',
+      email:  'brian@badgerpower.com',
+      animal: 'Badger'
+    },
+    {
+      name:   'Frankie Ferret',
+      email:  'frank@ferret.com',
+      animal: 'Ferret'
+    }
+  ]);
+
+  // now call the custom badgers() method to fetch all badgers
+  const badgers = await users.badgers();
+
+  console.log(badgers.length);    // 2
+  console.log(badgers[0].name);   // Bobby Badger
+  console.log(badgers[1].name);   // Brian Badger
+}
+
+main()</code></code></pre>
 </div>
 </div>
 

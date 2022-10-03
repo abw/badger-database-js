@@ -63,8 +63,12 @@ export class Database {
   quote(name) {
     return this.engine.quote(name);
   }
-  destroy() {
+  disconnect() {
     return this.engine.destroy();
+  }
+  destroy() {
+    console.log('destroy() is deprecated, use disconnect() instead');
+    return this.disconnect();
   }
 }
 

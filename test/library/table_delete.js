@@ -89,7 +89,7 @@ export function runTableDeleteTests(engine) {
   test.after(
     'destroy',
     t => {
-      db.destroy();
+      db.disconnect();
       t.pass();
     }
   )

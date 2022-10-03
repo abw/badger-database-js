@@ -50,7 +50,7 @@ test.serial(
 test.after(
   'destroy',
   async t => {
-    db.destroy();
+    db.disconnect();
     t.pass();
   }
 )

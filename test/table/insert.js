@@ -82,5 +82,5 @@ test.serial(
 
 test.after(
   'destroy',
-  () => db.destroy()
+  () => db.disconnect()
 )

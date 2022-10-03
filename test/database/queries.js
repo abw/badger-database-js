@@ -39,7 +39,7 @@ test.serial(
 test.serial(
   'rebuild database',
   async t => {
-    await db.destroy();
+    await db.disconnect();
     db = await connect({
       database: 'sqlite:memory',
       queries: {

@@ -6,11 +6,6 @@ library using a database of users.
 This first example shows how to connect to a database, create a table,
 insert a row and then fetch it out again.
 
-Note that most of the database functions are asynchronous and return
-promises.  In these examples we've wrapped the code in an `async` function
-called `main()` so that we can use the `await` keyword to wait for requests
-to complete. You can, of course, use `.then(...)` if you prefer.
-
 ```js
 import connect from '@abw/badger-database'
 
@@ -40,9 +35,49 @@ async function main() {
     ['bobby@badgerpower.com']
   );
   console.log("Fetched row:", bobby);
+
+  // cleanup
+  db.destroy();
 }
 
 main()
+```
+
+Note that most of the database functions are asynchronous and return
+promises.  In these examples we've wrapped the code in an `async` function
+called `main()` so that we can use the `await` keyword to wait for requests
+to complete. You can, of course, use `.then(...)` if you prefer.
+
+```js
+import connect from '@abw/badger-database'
+
+connect({ database: 'sqlite:memory' }).then(
+  db => {
+    db.run(
+      `CREATE TABLE users (
+        id    INTEGER PRIMARY KEY ASC,
+        name  TEXT,
+        email TEXT
+      )`
+    ).then(
+      () => db.run(
+        'INSERT INTO users (name, email) VALUES (?, ?)',
+        ['Bobby Badger', 'bobby@badgerpower.com']
+      )
+    ).then(
+      insert => console.log("Inserted ID:", insert.lastInsertRowid)
+    ).then(
+      () => db.one(
+        'SELECT * FROM users WHERE email=?',
+        ['bobby@badgerpower.com']
+      )
+    ).then(
+      bobby => console.log("Fetched row:", bobby)
+    ).then(
+      () => db.destroy()
+    )
+  }
+);
 ```
 
 ## run()
