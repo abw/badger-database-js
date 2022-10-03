@@ -726,6 +726,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/database.js~database#disconnect",
+    "class/src/Database.js~Database.html#instance-method-disconnect",
+    "src/Database.js~Database#disconnect",
+    "method"
+  ],
+  [
     "src/database.js~database#engine",
     "class/src/Database.js~Database.html#instance-member-engine",
     "src/Database.js~Database#engine",
@@ -1950,6 +1956,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#insertreload",
+    "class/src/Table.js~Table.html#instance-method-insertReload",
+    "src/Table.js~Table#insertReload",
+    "method"
+  ],
+  [
     "src/table.js~table#keys",
     "class/src/Table.js~Table.html#instance-member-keys",
     "src/Table.js~Table#keys",
@@ -2040,12 +2052,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#reload",
-    "class/src/Table.js~Table.html#instance-method-reload",
-    "src/Table.js~Table#reload",
-    "method"
-  ],
-  [
     "src/table.js~table#required",
     "class/src/Table.js~Table.html#instance-member-required",
     "src/Table.js~Table#required",
@@ -2109,6 +2115,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#updateone",
     "class/src/Table.js~Table.html#instance-method-updateOne",
     "src/Table.js~Table#updateOne",
+    "method"
+  ],
+  [
+    "src/table.js~table#updatereload",
+    "class/src/Table.js~Table.html#instance-method-updateReload",
+    "src/Table.js~Table#updateReload",
     "method"
   ],
   [

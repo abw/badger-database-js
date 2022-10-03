@@ -43,6 +43,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameters" data-ice="link">Connection Parameters</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameter-aliases" data-ice="link">Connection Parameter Aliases</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#pool-options" data-ice="link">Pool Options</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#disconnecting" data-ice="link">Disconnecting</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -85,6 +86,9 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_methods.html"><a href="manual/table_methods.html" data-ice="link">Table Methods</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert--" data-ice="link">insert()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update--" data-ice="link">update()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall--" data-ice="link">updateAll()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone--" data-ice="link">updateOne()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany--" data-ice="link">updateAny()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete--" data-ice="link">delete()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerow--" data-ice="link">oneRow()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrow--" data-ice="link">anyRow()</a></li>
@@ -117,10 +121,6 @@
 library using a database of users.</p>
 <p>This first example shows how to connect to a database, create a table,
 insert a row and then fetch it out again.</p>
-<p>Note that most of the database functions are asynchronous and return
-promises.  In these examples we've wrapped the code in an <code>async</code> function
-called <code>main()</code> so that we can use the <code>await</code> keyword to wait for requests
-to complete. You can, of course, use <code>.then(...)</code> if you prefer.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
 
 async function main() {
@@ -149,9 +149,45 @@ async function main() {
     ['bobby@badgerpower.com']
   );
   console.log("Fetched row:", bobby);
+
+  // cleanup
+  db.destroy();
 }
 
 main()</code></code></pre>
+<p>Note that most of the database functions are asynchronous and return
+promises.  In these examples we've wrapped the code in an <code>async</code> function
+called <code>main()</code> so that we can use the <code>await</code> keyword to wait for requests
+to complete. You can, of course, use <code>.then(...)</code> if you prefer.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
+
+connect({ database: 'sqlite:memory' }).then(
+  db =&gt; {
+    db.run(
+      `CREATE TABLE users (
+        id    INTEGER PRIMARY KEY ASC,
+        name  TEXT,
+        email TEXT
+      )`
+    ).then(
+      () =&gt; db.run(
+        'INSERT INTO users (name, email) VALUES (?, ?)',
+        ['Bobby Badger', 'bobby@badgerpower.com']
+      )
+    ).then(
+      insert =&gt; console.log("Inserted ID:", insert.lastInsertRowid)
+    ).then(
+      () =&gt; db.one(
+        'SELECT * FROM users WHERE email=?',
+        ['bobby@badgerpower.com']
+      )
+    ).then(
+      bobby =&gt; console.log("Fetched row:", bobby)
+    ).then(
+      () =&gt; db.destroy()
+    )
+  }
+);</code></code></pre>
 <h2 id="run--">run()</h2><p>The <code>run()</code> method is used to execute a query where you're not expecting
 to return any rows from the database.  However, the method does return some
 data include the number of rows changed, and in the case of <code>INSERT</code> queries,
@@ -187,8 +223,9 @@ argument.</p>
   ['bobby@badgerpower.com']
 );
 console.log("Fetched row:", bobby);</code></code></pre>
-<p>The <code>one()</code> method will throw an exception if no rows, or more than one row is
-returned.</p>
+<p>The <code>one()</code> method will throw an <code>UnexpectedRowCount</code> exception if no rows, or
+more than one row is returned with a message of the form
+<code>N rows were returned when one was expected</code>.</p>
 <h2 id="any--">any()</h2><p>The <code>any()</code> method can be used if you want to get one row which may or may not exist.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await db.any(
   'SELECT * FROM users WHERE email=?',

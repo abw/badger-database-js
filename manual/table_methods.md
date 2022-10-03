@@ -134,6 +134,99 @@ WHERE  email=?
 Again, the format for Postgres is slightly different, using `$1` and `$2` for
 placeholders instead of `?`, but works exactly the same.
 
+## updateAll()
+
+The `update()` method is actually a wrapper around `updateAll()`.  If you want
+additional checks to be performed to ensure that you're only updating one row,
+or if you want to automatically reload a row after an update then you can use
+the `updateOne()` or `updateAny()` methods.
+
+## updateOne()
+
+This is a variant of the `update()` / `updateAll()` method that has an additional
+assertion check that exactly one row is updated.  If zero or more rows are
+updated then an `UnexpectedRowCount` error will be thrown with a message of
+the form `N rows were updated when one was expected`.
+
+This method also supports the `reload` option.  When set, the method will
+automatically reload the row from the database after performing the update.
+This can be useful if you've got a column which is automatically set when the
+record is updated, e.g. a `modified` column, which you want to inspect.
+
+```js
+const row = await users.updateOne(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' },
+  { reload: true }
+);
+console.log('updated record:', row);
+```
+
+One thing to note: this uses the modification and selection criteria specified
+to reload the data.  If, for example, you change the email address of a row
+then it will correctly reload the record using the new email address.
+
+```js
+const row = await users.updateOne(
+  { email: 'brian-badger@badgerpower.com' },
+  { email: 'brian@badgerpower.com' },
+  { reload: true }
+);
+console.log('new email address:', row.email); // brian-badger@badgerpower.com
+```
+
+However, there are edge cases where it's not possible to reload the same row that
+was modified, based on the criteria provided.  Consider this somewhat contrived
+example: if the users table has a `friends` column and there is exactly one record
+where the `friends` count is set to `0`.  You feel sorry for the poor user and
+decide to modify their `friends` count to be `1`.  You'll be their friend, right?
+
+```js
+await users.updateOne(
+  { friends: 1 },
+  { friends: 0 },
+  { reload: true }
+);
+```
+
+While there may have been exactly one user with `friends` set to `0` *before*
+the update, once the update has been applied there may be multiple rows which have
+the `friends` count set to `1`.  The reload will fail with an `UnexpectedRowCount`
+error.  In these cases you should always provide some other unique attribute to ensure
+that the correct row can be identified and reloaded:
+
+```js
+await users.updateOne(
+  { friends: 1 },
+  { email: 'bobby@badger.com' },
+  { reload: true }
+);
+```
+
+## updateAny()
+
+This is a variant of the `update()` / `updateAll()` method that has an additional
+assertion check that no more than one row is updated.  If more than one rows are
+updated then an `UnexpectedRowCount` error will be thrown with a message of
+the form `N rows were updated when one was expected`.
+
+This also supports the `reload` option.  If a row is updated then the complete
+row data will be returned.  Otherwise it will return `undefined`.
+
+```js
+const row = await users.updateAny(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' },
+  { reload: true }
+);
+if (row) {
+  console.log("updated row:", row);
+}
+else {
+  console.log("could not update row - Brian not found!")
+}
+```
+
 ## delete()
 
 You can probably guess what the `delete()` method does.

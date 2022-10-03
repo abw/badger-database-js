@@ -129,8 +129,9 @@ const bobby = await db.one(
 console.log("Fetched row:", bobby);
 ```
 
-The `one()` method will throw an exception if no rows, or more than one row is
-returned.
+The `one()` method will throw an `UnexpectedRowCount` exception if no rows, or
+more than one row is returned with a message of the form
+`N rows were returned when one was expected`.
 
 ## any()
 
