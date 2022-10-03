@@ -286,26 +286,28 @@ export class Table {
   //-----------------------------------------------------------------------------
   // oneRow(), anyRow() and allRows()
   //-----------------------------------------------------------------------------
-  prepareFetch(where, options={}) {
-    if (options.columns) {
-      this.checkColumnNames(options.columns);
-    }
+  prepareFetch(where, params) {
+    params.columns ||= Object.keys(this.columns);
+    this.checkColumnNames(params.columns);
     return this.checkColumns(where);
   }
   async oneRow(where, options={}) {
     this.debug("oneRow: ", where, options);
-    const [wcols, wvals] = this.prepareFetch(where, options);
-    return this.engine.selectOne(this.table, wcols, wvals, options);
+    const params = { ...options };
+    const [wcols, wvals] = this.prepareFetch(where, params);
+    return this.engine.selectOne(this.table, wcols, wvals, params);
   }
   async anyRow(where, options={}) {
     this.debug("anyRow: ", where, options);
-    const [wcols, wvals] = this.prepareFetch(where, options);
-    return this.engine.selectAny(this.table, wcols, wvals, options);
+    const params = { ...options };
+    const [wcols, wvals] = this.prepareFetch(where, params);
+    return this.engine.selectAny(this.table, wcols, wvals, params);
   }
   async allRows(where, options={}) {
     this.debug("allRows: ", where, options);
-    const [wcols, wvals] = this.prepareFetch(where, options);
-    return this.engine.selectAll(this.table, wcols, wvals, options);
+    const params = { ...options };
+    const [wcols, wvals] = this.prepareFetch(where, params);
+    return this.engine.selectAll(this.table, wcols, wvals, params);
   }
 
   //-----------------------------------------------------------------------------

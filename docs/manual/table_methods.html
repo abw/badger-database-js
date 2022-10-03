@@ -274,16 +274,18 @@ else {
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.delete({
   email: 'brian@badgerpower.com'
 });</code></code></pre>
-<p>The object passed as the only argument identifies the rows that you want to delete.
-You can omit this if you want to delete all rows in the table.
-Naturally, you should use this method with caution.</p>
+<p>The object passed as the only argument identifies the rows that you want to delete.</p>
 <p>The SQL generated will look something like this:</p>
 <pre><code class="lang-sql"><code class="source-code prettyprint">DELETE FROM users
 WHERE email=?</code></code></pre>
+<p>You can omit the selection criteria if you want to delete all rows in the table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.delete()</code></code></pre>
+<p>Naturally, you should use this method with caution.</p>
 <h2 id="onerow--">oneRow()</h2><p>There are three different methods for fetching rows from the table using
 selection criteria.  The <code>oneRow()</code> method will return a single row.
-If the row isn't found or multiple rows match the criteria then an error
-will be thrown.</p>
+If the row isn't found or multiple rows match the criteria then an
+<code>UnexpectedRowCount</code> error will be thrown with a message of
+the form <code>N rows were returned when one was expected</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or throws an error
 const brian = await users.oneRow({
   email: 'brian@badgerpower.com'
@@ -304,7 +306,7 @@ containing the columns names separated by whitespace:</p>
 );</code></code></pre>
 <p>The generated SQL for this method (and also <code>anyRow()</code> and <code>allRows()</code>)
 will look something like this:</p>
-<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT * FROM users
+<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "users"."id", "users"."name" FROM users
 WHERE email=?</code></code></pre>
 <h2 id="anyrow--">anyRow()</h2><p>The <code>anyRow()</code> method will return a single row if it exists or <code>undefined</code> if it doesn't.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or undefined

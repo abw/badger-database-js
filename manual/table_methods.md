@@ -238,8 +238,6 @@ await users.delete({
 ```
 
 The object passed as the only argument identifies the rows that you want to delete.
-You can omit this if you want to delete all rows in the table.
-Naturally, you should use this method with caution.
 
 The SQL generated will look something like this:
 
@@ -248,12 +246,21 @@ DELETE FROM users
 WHERE email=?
 ```
 
+You can omit the selection criteria if you want to delete all rows in the table.
+
+```js
+await users.delete()
+```
+
+Naturally, you should use this method with caution.
+
 ## oneRow()
 
 There are three different methods for fetching rows from the table using
 selection criteria.  The `oneRow()` method will return a single row.
-If the row isn't found or multiple rows match the criteria then an error
-will be thrown.
+If the row isn't found or multiple rows match the criteria then an
+`UnexpectedRowCount` error will be thrown with a message of
+the form `N rows were returned when one was expected`.
 
 ```js
 // returns a single row or throws an error
@@ -288,7 +295,7 @@ The generated SQL for this method (and also `anyRow()` and `allRows()`)
 will look something like this:
 
 ```sql
-SELECT * FROM users
+SELECT "users"."id", "users"."name" FROM users
 WHERE email=?
 ```
 
