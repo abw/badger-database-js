@@ -1,7 +1,11 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
+import { databaseConfig } from './database.js';
+import { createUsersTableQuery } from './users_table.js';
 
-export function runTableInsertTests(database, create) {
+export function runTableInsertTests(engine) {
+  const database = databaseConfig(engine);
+  const create = createUsersTableQuery(engine);
   let db;
 
   // connect

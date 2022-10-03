@@ -1,7 +1,11 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
+import { databaseConfig } from './database.js';
+import { createUsersIdTableQuery } from './users_table.js';
 
-export function runTableIdTests(database, create) {
+export function runTableIdTests(engine) {
+  const database = databaseConfig(engine);
+  const create = createUsersIdTableQuery(engine);
   let db;
 
   test.serial(

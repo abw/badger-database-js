@@ -1,7 +1,12 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
+import { databaseConfig } from './database.js';
+import { createUsersTableQuery } from './users_table.js';
 
-export function runTableQueriesTests(database, create, placeholder='?') {
+export function runTableQueriesTests(engine) {
+  const database = databaseConfig(engine);
+  const create = createUsersTableQuery(engine);
+  const placeholder = engine === 'postgres' ? '$1' : '?';
   let db;
 
   // connect

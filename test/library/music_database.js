@@ -2,6 +2,7 @@ import test from 'ava';
 import Record from "../../src/Record.js";
 import Table from "../../src/Table.js";
 import { connect } from "../../src/Database.js";
+import { databaseConfig } from './database.js';
 
 export class Artists extends Table {
 }
@@ -21,11 +22,12 @@ export class Album extends Record {
 export class Track extends Record {
 }
 
-export async function connectMusicDatabase(database, options={}) {
-  const sqlite  = options.sqlite  || false;
-  const mysql   = options.mysql   || false;
-  const serial  = options.serial  || sqlite ? 'INTEGER PRIMARY KEY ASC' : 'SERIAL';
-  const reftype = options.reftype || mysql ? 'BIGINT UNSIGNED NOT NULL' : 'INTEGER';
+export async function connectMusicDatabase(engine) {
+  const database = databaseConfig(engine);
+  const sqlite  = engine === 'sqlite';
+  const mysql   = engine === 'mysql';
+  const serial  = sqlite ? 'INTEGER PRIMARY KEY ASC' : 'SERIAL';
+  const reftype = mysql ? 'BIGINT UNSIGNED NOT NULL' : 'INTEGER';
 
   const fragments = {
     selectAlbumsWithTrackCount: `

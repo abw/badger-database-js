@@ -1,7 +1,11 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
+import { databaseConfig } from './database.js';
+import { createUsersTableQuery } from './users_table.js';
 
-export function runTableDeleteTests(database, create) {
+export function runTableDeleteTests(engine) {
+  const database = databaseConfig(engine);
+  const create = createUsersTableQuery(engine);
   let db;
 
   test.serial(
