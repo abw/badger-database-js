@@ -182,22 +182,29 @@ export class Table {
   //-----------------------------------------------------------------------------
   // oneRecord(), anyRecord() and allRecords()
   //-----------------------------------------------------------------------------
-  record(row) {
-    this.debug("record()", row);
+  newRecord(row) {
     return recordProxy(
       new this.recordClass(this, row, this.recordOptions)
     );
   }
+  record(row) {
+    this.debug("record()", row);
+    return Promise.resolve(
+      this.newRecord(row, this.recordOptions)
+    );
+  }
   records(rows) {
-    return rows.map(
-      row => this.record(row)
+    this.debug("records()", rows);
+    return Promise.resolve(
+      rows.map(
+        row => this.newRecord(row)
+      )
     );
   }
   async oneRecord(where, options={}) {
     this.debug("oneRecord: ", where, options);
     const row = await this.oneRow(where, options);
     return this.record(row);
-    // return Promise.resolve(this.record(row));
   }
   async anyRecord(where, options={}) {
     this.debug("anyRecord: ", where, options);

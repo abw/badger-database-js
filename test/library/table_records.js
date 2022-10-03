@@ -183,6 +183,28 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
+
+  test.serial(
+    'oneRecord() with then',
+    async t => {
+      await db.table('users')
+        .then(
+          users => users.oneRecord({ email: 'bobby@badgerpower.com' })
+        )
+        .then(
+          bobby => {
+            t.is( bobby.id, 1 );
+            t.is( bobby.name, 'Bobby Badger' );
+            t.is( bobby.email, 'bobby@badgerpower.com' );
+            t.is( bobby.row.id, 1 );
+            t.is( bobby.row.name, 'Bobby Badger' );
+            t.is( bobby.row.email, 'bobby@badgerpower.com' );
+            t.is( bobby instanceof Record, true );
+          }
+        )
+    }
+  )
+
   // cleanup
   test.serial(
     'destroy',
