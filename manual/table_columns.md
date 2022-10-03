@@ -5,7 +5,7 @@ e.g. `id name email`.
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     users: {
       columns: 'id name email'
@@ -29,7 +29,7 @@ separated by a colon.
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     users: {
       columns: 'id:readonly name:required email:required'
@@ -64,7 +64,7 @@ you don't have to define your id column as being readonly in this case.
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     users: {
       columns: 'id name:required email:required'
@@ -86,7 +86,7 @@ using the `id` tag.
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     users: {
       columns: 'user_id:readonly:id name:required email:required'
@@ -102,7 +102,7 @@ by the `company_id` and `user_id` columns.
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     employees: {
       columns: 'company_id:key user_id:key job_title'
@@ -124,7 +124,7 @@ columns, or an empty string if there aren't any.
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     users: {
       columns: {
@@ -141,7 +141,7 @@ Or you can fully expand them like so:
 
 ```js
 const db = await connect({
-  // ...engine, etc...
+  // ...database, etc...
   tables: {
     users: {
       columns: {

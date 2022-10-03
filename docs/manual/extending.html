@@ -139,130 +139,63 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-columns">Table Columns</h1><p>For simple cases you can define table columns using a whitespace delimited string,
-e.g. <code>id name email</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    users: {
-      columns: 'id name email'
-    }
-  }
-});
-const users = await db.table('users');</code></code></pre>
-<p>You don't have to include all of the columns in the database table if you don't
-want to for some reason.  If there are columns that you don't want or need to
-access from your application code then you can omit them.  Just be warned that
-you won't be able to access any columns that aren't defined here.</p>
-<p>You can add flags to the column names.  These include <code>id</code> to denote the unique
-identifier (this is optional if the column is already called <code>id</code> as we assume
-that's the default name for the id column), <code>required</code> to indicate
-that a column must be provided when a row is inserted, and <code>readonly</code> to indicate
-that a column cannot be inserted or updated.  Multiple flags can be added, each
-separated by a colon.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    users: {
-      columns: 'id:readonly name:required email:required'
-    }
-  }
-});</code></code></pre>
-<p>If you try to insert a row without providing any of the <code>required</code> columns
-then an error will be throw.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'Missing required column "email" for the users table'
-await users.insert({
-  name: 'Brian Badger',
-});</code></code></pre>
-<p>The same thing will happen if you try to insert or update a <code>readonly</code> column.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'The "id" column is readonly in the users table'
-await users.insert({
-  id:    999,
-  name:  'Brian Badger',
-  email: 'brian@badgerpower.com',
-});</code></code></pre>
-<p>There may be times when you want to insert rows with pre-defined ids.  That's fine -
-you don't have to define your id column as being readonly in this case.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    users: {
-      columns: 'id name:required email:required'
-    }
-  }
-});
-const users = await db.table('users');
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="extending-badger-database">Extending Badger Database</h1><h2 id="custom-tables-class">Custom Tables Class</h2><p>You can provide your own implementation of the <code>Tables</code> class which
+returns the configuration options for a table.  For example, you might
+want to define your tables in JSON or YAML files that are loaded on
+demand.</p>
+<p>The <code>table(name)</code> method is called to fetch the configuration options
+for a table.  Any pre-defined tables will be stored in <code>this.tables</code>.
+You can return the data from there or implement some other way to
+fetch the configuration options for the table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect, Tables } from '@abw/badger-database'
 
-// This is fine - id isn't readonly
-await users.insert({
-  id:    999,
-  name:  'Brian Badger',
-  email: 'brian@badgerpower.com',
-});</code></code></pre>
-<p>If your unique ID column isn't called <code>id</code> then you can mark the relevant column
-using the <code>id</code> tag.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    users: {
-      columns: 'user_id:readonly:id name:required email:required'
+class YourTables extends Tables {
+  table(name) {
+    // any pre-defined tables data will be stored in this.tables
+    // or you can fetch it some other way...
+    return this.tables[name] ||= this.yourCustomTableLoader(name);
+  }
+  yourCustomTableLoader(name) {
+    // your code here to load the table definition for the `name` table
+    // return undefined if the table doesn't exist
+    return {
+        // columns, etc.
     }
   }
-});</code></code></pre>
-<p>In the rare cases where you don't have a unique id column and instead you have multiple
-keys that are used to uniquely identify a row then you can mark them with the <code>key</code> tag.
-For example, you might have an <code>employee</code> table which has rows that are uniquely identified
-by the <code>company_id</code> and <code>user_id</code> columns.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    employees: {
-      columns: 'company_id:key user_id:key job_title'
-    }
-  }
-});</code></code></pre>
-<p>Note that some databases (e.g. Sqlite) will automatically create an <code>id</code> for each
-row regardless.  There certainly are valid cases where you might chose to NOT have
-a unique id column in a database but they are generally few and far between.
-See <a href="https://stackoverflow.com/questions/1207983/in-general-should-every-table-in-a-database-have-an-identity-field-to-use-as-a">this Stack Overflow post</a> for
-further enlightenment.</p>
-<p>Defining the columns using a string is a convenient short hand for simpler
-tables.  The more explicit form is to use an object with the column names as
-keys.  The corresponding values can be strings containing any flags for the
-columns, or an empty string if there aren't any.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    users: {
-      columns: {
-        user_id: 'readonly:id',
-        name:    'required',
-        email:   'required',
-        comment: '',
-    }
-  }
-});</code></code></pre>
-<p>Or you can fully expand them like so:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...engine, etc...
-  tables: {
-    users: {
-      columns: {
-        user_id: {
-          readonly: true,
-          id:       true
-        },
-        name: {
-          required: true
+}
+
+async function main() {
+  const db = await connect({
+    // ...engine, etc...
+    tablesClass: YourTables,
+    tables: {
+        // these tables will be defined in `this.tables` for YourTables
+        users: {
+            columns: 'id name email'
         }
-        email: {
-          required: true
-        }
-        comment: { }
-      }
     }
-  }
-});</code></code></pre>
+  });
+  const users = await db.table('users');      // returns users defined above
+  const another = await db.table('another');  // calls yourCustomTableLoader('another')
+}
+
+main();</code></code></pre>
+<h2 id="custom-tables-object">Custom Tables Object</h2><p>You can instantiate your own <code>Tables</code> object and define it as the <code>tablesObject</code>
+configuration item.  If you have any pre-defined <code>tables</code> that you want it to
+manage then you should pass them as constructor parameters.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  // ...engine, etc...
+  tablesObject: new YourTables({
+    tables: {
+        // these tables will be defined in `this.table` for YourTables
+        users: {
+            columns: 'id name email'
+        }
+    },
+    // any other configuration options for YourTable
+  })
+});
+</code></code></pre>
 </div>
 </div>
 

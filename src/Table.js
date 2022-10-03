@@ -21,7 +21,7 @@ export class Table {
     this.keys          = prepareKeys(schema, this.columns);
     this.id            = schema.id;
     this.recordClass   = schema.recordClass || Record;
-    this.recordOptions = schema.recordOptions;
+    this.recordConfig  = schema.recordConfig;
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
     this.fragments     = this.prepareFragments(schema);
@@ -278,13 +278,13 @@ export class Table {
   }
   newRecord(row) {
     return recordProxy(
-      new this.recordClass(this, row, this.recordOptions)
+      new this.recordClass(this, row, this.recordConfig)
     );
   }
   record(row) {
     this.debug("record()", row);
     return Promise.resolve(
-      this.newRecord(row, this.recordOptions)
+      this.newRecord(row)
     );
   }
   records(rows) {

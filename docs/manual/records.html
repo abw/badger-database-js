@@ -114,10 +114,67 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/records.html"><a href="manual/records.html" data-ice="link">Records</a></li>
 </ul>
   </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/record_methods.html"><a href="manual/record_methods.html" data-ice="link">Record Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#update--" data-ice="link">update()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#relation--" data-ice="link">relation()</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/record_class.html"><a href="manual/record_class.html" data-ice="link">Record Class</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/extending.html"><a href="manual/extending.html" data-ice="link">Extending Badger Database</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-class" data-ice="link">Custom Tables Class</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
+</ul>
+  </div>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="records">Records</h1><p>TODO</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="records">Records</h1><p>The <a href="manual/table_methods.html#onerecord--">oneRecord()</a> and
+<a href="manual/table_methods.html#anyrecord--">anyRecord()</a> table methods
+can be used to return a record object instead of a plain Javascript
+data object containing the row data.  The
+<a href="manual/table_methods.html#allrecords--">allRecords()</a> method returns
+an array of record objects.</p>
+<p>The record object implements a lightweight version of the Active Record
+pattern.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const record = await users.oneRecord(
+  { email: 'bobby@badgerpower.com' }
+);</code></code></pre>
+<p>The row data loaded is stored in the <code>row</code> property.  You can access individual
+items or the row data as a whole.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log(record.row.id);      // e.g. 1
+console.log(record.row.name);    // Bobby Badger
+console.log(record.row.email);   // bobby@badgerpower.com
+console.log(record.row);         // { id: 1, name: 'Bobby Badger', etc. }</code></code></pre>
+<p>Technically speaking, the methods actually return a Proxy object wrapper
+around a record object (or an array of Proxy objects in the case of
+<code>allRecords()</code>).  The purpose of the Proxy object, among other things,
+is to give you access to row data items without needing to specify the
+<code>.row</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log(record.id);          // e.g. 1
+console.log(record.name);        // Bobby Badger
+console.log(record.email);       // bobby@badgerpower.com</code></code></pre>
+<p>The Proxy object also gives you easy access to <a href="manual/relations.html">relations</a>
+that are defined for the table.  For example, if the <code>users</code> table defines <code>friends</code>
+as a relation then you can access them as <code>.friends</code>;</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const friends = await record.friends;</code></code></pre>
+<p>Note that any other properties or methods defined for the record will take
+priority.  For example, <code>record.update</code> will resolve to the record
+<a href="manual/record_methods.html#update--">update()</a> method so if you have a
+column called <code>update</code> then you must access it as <code>record.row.update</code>.</p>
+<p>In the next few sections we'll look at the <a href="manual/record_methods.html">record methods</a>
+that are provided, and how to define your own custom <a href="manual/record_class.html">record class</a>
+where you can put additional functionality relating to a record.</p>
 </div>
 </div>
 
