@@ -41,7 +41,7 @@ export function runTableDeleteTests(engine) {
   );
 
   test.serial(
-    'table insert',
+    'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -58,22 +58,74 @@ export function runTableDeleteTests(engine) {
   )
 
   test.serial(
-    'fetch all',
+    'insert another row',
     async t => {
       const users = await db.table('users');
-      const rows = await users.allRows();
-      t.is( rows.length, 1 );
+      const result = await users.insert(
+        {
+          name:  'Brian Badger',
+          email: 'brian@badgerpower.com'
+        },
+        { reload: true }
+      );
+      t.is( result.id, 2 );
+      t.is( result.name, 'Brian Badger' );
+      t.is( result.email, 'brian@badgerpower.com' );
     }
   )
 
   test.serial(
-    'table delete',
+    'insert yet another row',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.insert(
+        {
+          name:  'Frank Ferret',
+          email: 'frank@badgerpower.com'
+        },
+        { reload: true }
+      );
+      t.is( result.id, 3 );
+      t.is( result.name, 'Frank Ferret' );
+      t.is( result.email, 'frank@badgerpower.com' );
+    }
+  )
+
+  test.serial(
+    'fetch all',
+    async t => {
+      const users = await db.table('users');
+      const rows = await users.allRows();
+      t.is( rows.length, 3 );
+    }
+  )
+
+  test.serial(
+    'delete first row',
     async t => {
       const users = await db.table('users');
       const result = await users.delete({
         email: 'bobby@badgerpower.com'
       });
       t.is( result.changes, 1 );
+    }
+  )
+
+  test.serial(
+    'fetch two',
+    async t => {
+      const users = await db.table('users');
+      const rows = await users.allRows();
+      t.is( rows.length, 2 );
+    }
+  )
+
+  test.serial(
+    'delete all rows',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.delete();
+      t.is( result.changes, 2 );
     }
   )
 

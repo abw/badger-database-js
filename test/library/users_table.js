@@ -7,9 +7,10 @@ export const createUsersTableQuery = engine => {
   const serial = serialTypeFragment(engine);
   return `
     CREATE TABLE users (
-      id    ${serial},
-      name  TEXT,
-      email TEXT
+      id      ${serial},
+      name    TEXT,
+      email   TEXT,
+      friends INTEGER
     )`
 }
 

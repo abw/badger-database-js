@@ -4,7 +4,7 @@ import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import recordProxy from "./Proxy/Record.js";
 // import Schema from "./Schema.js";
-import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
+import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
@@ -112,7 +112,7 @@ export class Table {
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
     return options.reload
-      ? this.reload(data, insert)
+      ? this.insertReload(data, insert)
       : insert;
   }
   async insertAll(data, options) {
@@ -143,7 +143,7 @@ export class Table {
       return unexpectedRowCount(update.changes, 'updated');
     }
     return options.reload
-      ? this.reload(set, where)
+      ? this.updateReload(set, where)
       : update;
   }
   async updateAny(set, where, options={}) {
@@ -154,7 +154,9 @@ export class Table {
       return unexpectedRowCount(update.changes, 'updated');
     }
     return options.reload
-      ? this.reload(set, where)
+      ? update.changes === 1
+        ? this.updateReload(set, where)
+        : undefined
       : update;
   }
   async updateAll(set, where, options={}) {
@@ -250,13 +252,25 @@ export class Table {
       {}
     );
   }
-  async reload(input, output) {
-    // for insert and update queries where the input data is used
-    // to run the query, and the output data is returned from the
-    // query
+  async insertReload(input, output) {
+    // For insert queries where the input data is used to run the query,
+    // and the output data is returned from the query. We should have
+    // values for each of this.keys because they should always be
+    // either specified in the input data, or returned by the database
     const fetch = { };
     this.keys.map(
-      key => fetch[key] = output[key] || input[key]
+      key => fetch[key] = firstValue(output[key], input[key])
+    );
+    return this.oneRow(fetch);
+  }
+  async updateReload(set, where) {
+    // For update queries things are a little more complicated.  In the
+    // usual case we can reload the rows using the original selection
+    // criteria (where).  But we might have done an update which changes
+    // that selection criteria (set), so we should use those values instead.
+    const fetch = { };
+    Object.keys(where).map(
+      key => fetch[key] = firstValue(set[key], where[key])
     );
     return this.oneRow(fetch);
   }
