@@ -7,7 +7,12 @@
 
 * table insertRecord()?  insertRecords(), insertOneRecord(), insertOneRow()
 
+* table fetch columns with aliases: { alias: column } ???
+
 * oneRow/anyRow/allRows, etc., should have order_by?
 
 * Database model
 
+* relations
+
+* query builder (operations)
