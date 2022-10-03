@@ -6,7 +6,7 @@ import recordProxy from "./Proxy/Record.js";
 // import Schema from "./Schema.js";
 import { fail, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
-import { throwColumnValidationError } from "./Utils/Error.js";
+import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Table {
@@ -111,26 +111,15 @@ export class Table {
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
-
-    if (options.reload) {
-      // the reload option can be set reload the record using the id/keys
-      const fetch = { };
-      this.keys.map(
-        key => fetch[key] = insert[key] || data[key]
-      );
-      // console.log('post-insert fetch: ', fetch);
-
-      return this.oneRow(fetch);
-    }
-    else {
-      return insert;
-    }
+    return options.reload
+      ? this.reload(data, insert)
+      : insert;
   }
   async insertAll(data, options) {
     this.debug("insertAll: ", data);
     let rows = [ ];
     for (const row of data) {
-      rows.push(await this.insert(row, options));
+      rows.push(await this.insertOne(row, options));
     }
     return rows;
   }
@@ -138,11 +127,49 @@ export class Table {
   //-----------------------------------------------------------------------------
   // update
   //-----------------------------------------------------------------------------
-  async update(data, where) {
-    this.debug("update: ", data, where);
-    const [dcols, dvals] = this.checkWritableColumns(data);
+  prepareUpdate(set, where) {
+    const [dcols, dvals] = this.checkWritableColumns(set);
     const [wcols, wvals] = this.checkColumns(where);
-    return this.engine.update(this.table, dcols, dvals, wcols, wvals);
+    return [dcols, dvals, wcols, wvals];
+  }
+  async update(...args) {
+    return this.updateAll(...args);
+  }
+  async updateOne(set, where, options={}) {
+    this.debug("updateOne: ", set, where);
+    const args = this.prepareUpdate(set, where);
+    const update = await this.engine.update(this.table, ...args);
+    if (update.changes !== 1) {
+      return unexpectedRowCount(update.changes, 'updated');
+    }
+    return options.reload
+      ? this.reload(set, where)
+      : update;
+  }
+  async updateAny(set, where, options={}) {
+    this.debug("updateAny: ", set, where);
+    const args = this.prepareUpdate(set, where);
+    const update = await this.engine.update(this.table, ...args);
+    if (update.changes > 1) {
+      return unexpectedRowCount(update.changes, 'updated');
+    }
+    return options.reload
+      ? this.reload(set, where)
+      : update;
+  }
+  async updateAll(set, where, options={}) {
+    this.debug("updateAll: ", set, where);
+    const args   = this.prepareUpdate(set, where);
+    const update = await this.engine.update(this.table, ...args);
+    // return update;
+    //let rows = [ ];
+    //for (const row of data) {
+    //  rows.push(await this.insertOne(row, options));
+    //}
+    //return rows;
+    return options.reload
+      ? fail("Cannot reload multiple updated rows")
+      : update;
   }
 
   //-----------------------------------------------------------------------------
@@ -182,25 +209,6 @@ export class Table {
   //-----------------------------------------------------------------------------
   // oneRecord(), anyRecord() and allRecords()
   //-----------------------------------------------------------------------------
-  newRecord(row) {
-    return recordProxy(
-      new this.recordClass(this, row, this.recordOptions)
-    );
-  }
-  record(row) {
-    this.debug("record()", row);
-    return Promise.resolve(
-      this.newRecord(row, this.recordOptions)
-    );
-  }
-  records(rows) {
-    this.debug("records()", rows);
-    return Promise.resolve(
-      rows.map(
-        row => this.newRecord(row)
-      )
-    );
-  }
   async oneRecord(where, options={}) {
     this.debug("oneRecord: ", where, options);
     const row = await this.oneRow(where, options);
@@ -240,6 +248,35 @@ export class Table {
         return result
       },
       {}
+    );
+  }
+  async reload(input, output) {
+    // for insert and update queries where the input data is used
+    // to run the query, and the output data is returned from the
+    // query
+    const fetch = { };
+    this.keys.map(
+      key => fetch[key] = output[key] || input[key]
+    );
+    return this.oneRow(fetch);
+  }
+  newRecord(row) {
+    return recordProxy(
+      new this.recordClass(this, row, this.recordOptions)
+    );
+  }
+  record(row) {
+    this.debug("record()", row);
+    return Promise.resolve(
+      this.newRecord(row, this.recordOptions)
+    );
+  }
+  records(rows) {
+    this.debug("records()", rows);
+    return Promise.resolve(
+      rows.map(
+        row => this.newRecord(row)
+      )
     );
   }
 }

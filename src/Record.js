@@ -10,14 +10,11 @@ export class Record {
     this.relations = { };
     addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, options);
   }
-  update(set) {
-    const where = this.schema.identity(this.data);
-    return this.table.update(set, where).then(
-      rows => {
-        this.data = rows[0];
-        return this;
-      }
-    )
+  async update(set) {
+    const where = this.table.identity(this.row);
+    const update = await this.table.updateOne(set, where, { reload: true });
+    Object.assign(this.row, update);
+    return this;
   }
   relation(name) {
     this.debug('relation(%s)', name);

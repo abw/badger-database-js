@@ -205,6 +205,19 @@ export function runTableRecordsTests(engine) {
     }
   )
 
+  // record update
+  test.serial(
+    'record update',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.oneRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      await bobby.update({ name: 'Roberto Badger' });
+      t.is( bobby.name, 'Roberto Badger' );
+    }
+  )
+
   // cleanup
   test.serial(
     'destroy',
