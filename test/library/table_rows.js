@@ -153,6 +153,16 @@ export function runTableRowsTests(engine) {
     }
   )
   test.serial(
+    'allRows() with orderBy',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.allRows({ }, { orderBy: 'name DESC' });
+      t.is( rows.length, 2 );
+      t.is( rows[0].name, 'Brian Badger' );
+      t.is( rows[1].name, 'Bobby Badger' );
+    }
+  )
+  test.serial(
     'oneRow() with columns',
     async t => {
       const users = await db.table('users');
