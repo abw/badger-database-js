@@ -11,7 +11,6 @@ export class Record {
     this.relations = { };
     this.config    = config;
     addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}\n----------> ` }, config);
-
   }
   async update(set) {
     this.debugData("update()", { set });
@@ -41,17 +40,17 @@ export class Record {
       )
     }
   }
-  relation(name) {
+  async relation(name) {
     this.debug('relation(%s)', name);
     return this.relations[name]
-      ||=  this.initRelation(name);
+      ||=  await this.initRelation(name);
   }
-  initRelation(name) {
+  async initRelation(name) {
     this.debug('initRelation(%s)', name);
     const relation = this.table.relations[name] || fail("Invalid relation specified: ", name);
     const rfunc    = relations[relation.type] || fail("Invalid relation type: ", relation.type);
     relation.name ||= name;
-    return rfunc(this, relation);
+    return await rfunc(this, relation);
   }
 }
 

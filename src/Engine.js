@@ -22,7 +22,7 @@ const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
   update: 'UPDATE <table> SET <set> WHERE <where>',
   delete: 'DELETE FROM <table> WHERE <where>',
-  select: 'SELECT <columns> FROM <table> WHERE <where>',
+  select: 'SELECT <columns> FROM <table> WHERE <where> <order>',
 }
 
 export class Engine {
@@ -159,7 +159,8 @@ export class Engine {
     this.debugData("selectQuery()", { table, wherecols, options });
     const columns = this.formatColumns(options.columns);
     const where   = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
-    return format(queries.select, { table, columns, where });
+    const order   = this.formatOrderBy(options.orderBy || options.order);
+    return format(queries.select, { table, columns, where, order });
   }
   async selectAll(table, wherecols, wherevals, options={}) {
     this.debugData("selectAll()", { table, wherecols, wherevals, options });
@@ -227,6 +228,11 @@ export class Engine {
   }
   formatReturning() {
     return '';
+  }
+  formatOrderBy(order) {
+    return hasValue(order)
+      ? `ORDER BY ${order}`
+      : '';
   }
 
 

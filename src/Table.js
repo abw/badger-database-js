@@ -25,6 +25,7 @@ export class Table {
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
     this.fragments     = this.prepareFragments(schema);
+    this.relations     = schema.relations || { };
     this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}\n----------> ` });
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}\n----------> ` }, schema);
   }

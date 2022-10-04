@@ -4,22 +4,19 @@ export const recordProxy = record =>
     {
       get(target, prop) {
         // console.log('recordProxy get(%s)', prop);
+        // first look to see if the record has the property/method itself
         if (Reflect.has(target, prop)) {
           return Reflect.get(target, prop);
         }
+        // then look to see if it's a data item
         if (Reflect.has(target.row, prop)) {
-          // console.log('recordProxy column: ', prop);
           return Reflect.get(target.row, prop);
         }
-        /*
-        if (prop === 'then' && Reflect.has(target, prop)) {
-          // console.log('recordProxy then: ', prop);
-          return (
-            fn => recordProxy(target.then(fn))
-          ).bind(target)
+        // then look to see if it's a relation
+        if (Reflect.has(target.table.relations, prop)) {
+          // console.log('recordProxy column: ', prop);
+          return target.relation(prop);
         }
-        */
-        // console.log('recordProxy default: ', prop);
         return Reflect.get(target, prop);
       }
     }

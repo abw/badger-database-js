@@ -16,7 +16,7 @@ export function runTableRowsTests(engine) {
         database,
         tables: {
           users: {
-            columns: 'id:readonly name:required email:required'
+            columns: 'id:readonly name:required email:required',
           }
         }
       });
@@ -139,7 +139,17 @@ export function runTableRowsTests(engine) {
       t.is( rows[0].name, 'Bobby Badger' );
       t.is( rows[0].friends, undefined );
       t.is( rows[1].name, 'Brian Badger' );
-      t.is( rows[0].friends, undefined );
+      t.is( rows[1].friends, undefined );
+    }
+  )
+  test.serial(
+    'allRows() with order',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.allRows({ }, { order: 'name DESC' });
+      t.is( rows.length, 2 );
+      t.is( rows[0].name, 'Brian Badger' );
+      t.is( rows[1].name, 'Bobby Badger' );
     }
   )
   test.serial(

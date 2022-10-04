@@ -3,7 +3,21 @@ import Record from "../../src/Record.js";
 import Table from "../../src/Table.js";
 import { connect } from "../../src/Database.js";
 import { databaseConfig } from './database.js';
+import { setDebug } from '../../src/Utils/Debug.js';
 
+//-----------------------------------------------------------------------------
+// debugging
+//-----------------------------------------------------------------------------
+const debugArtists = false;
+const debugAlbums  = false;
+const debugTracks  = false;
+setDebug({
+  // record: true
+})
+
+//-----------------------------------------------------------------------------
+// Table and Record classes
+//-----------------------------------------------------------------------------
 export class Artists extends Table {
 }
 
@@ -22,6 +36,9 @@ export class Album extends Record {
 export class Track extends Record {
 }
 
+//-----------------------------------------------------------------------------
+// Connect to database and setup tables
+//-----------------------------------------------------------------------------
 export async function connectMusicDatabase(engine='sqlite') {
   const database = databaseConfig(engine);
   const sqlite  = engine === 'sqlite';
@@ -63,6 +80,7 @@ export async function connectMusicDatabase(engine='sqlite') {
         id        ${serial},
         title     TEXT,
         album_id  ${reftype},
+        track_no  INTEGER,
         ${sqlite ? '' : 'PRIMARY KEY (id),'}
         FOREIGN KEY (album_id) REFERENCES albums(id)
       )`,
@@ -106,13 +124,15 @@ export async function connectMusicDatabase(engine='sqlite') {
   const artists = {
     columns:      'id name',
     tableClass:   Artists,
-    recordClass:  Artist
+    recordClass:  Artist,
+    debug:        debugArtists
   };
 
   const albums = {
     columns:        'id title year artist_id',
     tableClass:     Albums,
     recordClass:    Album,
+    debug:          debugAlbums,
     fragments:      albumsFragments,
     queries:        albumsQueries,
     relations: {
@@ -127,14 +147,16 @@ export async function connectMusicDatabase(engine='sqlite') {
         table:      'tracks',
         localKey:   'id',
         remoteKey:  'album_id',
+        orderBy:    'track_no',
       }
     }
   };
 
   const tracks = {
-    columns:      'id title album_id',
+    columns:      'id title album_id track_no',
     tableClass:   Tracks,
-    recordClass:  Track
+    recordClass:  Track,
+    debug:        debugTracks,
   };
 
   const tables = {
@@ -148,6 +170,9 @@ export async function connectMusicDatabase(engine='sqlite') {
   return musicdb;
 }
 
+//-----------------------------------------------------------------------------
+// Run numerous tests
+//-----------------------------------------------------------------------------
 export const runMusicDatabaseTests = async (database, options) => {
   const musicdb = await connectMusicDatabase(database, options);
   const artists = await musicdb.table('artists');
@@ -247,35 +272,35 @@ export const runMusicDatabaseTests = async (database, options) => {
     async t => {
       await tracks.insert([
         // The Dark Side of the Moon
-        { album_id: DSOTM.id,    title: 'Speak to Me / Breathe' },
-        { album_id: DSOTM.id,    title: 'On the Run' },
-        { album_id: DSOTM.id,    title: 'Time' },
-        { album_id: DSOTM.id,    title: 'The Great Gig in the Sky' },
-        { album_id: DSOTM.id,    title: 'Money' },
-        { album_id: DSOTM.id,    title: 'Us and Them' },
-        { album_id: DSOTM.id,    title: 'Any Colour You Like' },
-        { album_id: DSOTM.id,    title: 'Brain Damage' },
-        { album_id: DSOTM.id,    title: 'Eclipse' },
-        // Wish You Were Here
-        { album_id: WYWH.id,     title: 'Shine On You Crazy Diamond (Parts I-V)' },
-        { album_id: WYWH.id,     title: 'Welcome to the Machine' },
-        { album_id: WYWH.id,     title: 'Have a Cigar' },
-        { album_id: WYWH.id,     title: 'Shine On You Crazy Diamond (Parts VI-IX)' },
+        { album_id: DSOTM.id,    track_no: 1, title: 'Speak to Me / Breathe' },
+        { album_id: DSOTM.id,    track_no: 2, title: 'On the Run' },
+        { album_id: DSOTM.id,    track_no: 3, title: 'Time' },
+        { album_id: DSOTM.id,    track_no: 4, title: 'The Great Gig in the Sky' },
+        { album_id: DSOTM.id,    track_no: 5, title: 'Money' },
+        { album_id: DSOTM.id,    track_no: 6, title: 'Us and Them' },
+        { album_id: DSOTM.id,    track_no: 7, title: 'Any Colour You Like' },
+        { album_id: DSOTM.id,    track_no: 8, title: 'Brain Damage' },
+        { album_id: DSOTM.id,    track_no: 9, title: 'Eclipse' },
+        // Wish You Were Here - insert them in the wrong order to check they get ordered by track_no
+        { album_id: WYWH.id,     track_no: 4, title: 'Shine On You Crazy Diamond (Parts VI-IX)' },
+        { album_id: WYWH.id,     track_no: 3, title: 'Have a Cigar' },
+        { album_id: WYWH.id,     track_no: 2, title: 'Welcome to the Machine' },
+        { album_id: WYWH.id,     track_no: 1, title: 'Shine On You Crazy Diamond (Parts I-V)' },
         // Foxtrot
-        { album_id: Foxtrot.id,  title: 'Watcher of the Skies' },
-        { album_id: Foxtrot.id,  title: 'Time Table' },
-        { album_id: Foxtrot.id,  title: "Get 'em Out by Friday" },
-        { album_id: Foxtrot.id,  title: 'Can-Utility and the Coastliners' },
-        { album_id: Foxtrot.id,  title: 'Horizons' },
-        { album_id: Foxtrot.id,  title: 'Dancing with the Moonlit Knight' },
+        { album_id: Foxtrot.id,  track_no: 1, title: 'Watcher of the Skies' },
+        { album_id: Foxtrot.id,  track_no: 2, title: 'Time Table' },
+        { album_id: Foxtrot.id,  track_no: 3, title: "Get 'em Out by Friday" },
+        { album_id: Foxtrot.id,  track_no: 4, title: 'Can-Utility and the Coastliners' },
+        { album_id: Foxtrot.id,  track_no: 5, title: 'Horizons' },
+        { album_id: Foxtrot.id,  track_no: 6, title: 'Dancing with the Moonlit Knight' },
         // Selling England by the Pound
-        { album_id: Selling.id,  title: 'I Know What I Like (In Your Wardrobe)' },
-        { album_id: Selling.id,  title: 'Firth of Fifth' },
-        { album_id: Selling.id,  title: 'More Fool Me' },
-        { album_id: Selling.id,  title: 'The Battle of Epping Forest' },
-        { album_id: Selling.id,  title: 'After the Ordeal' },
-        { album_id: Selling.id,  title: 'The Cinema Show' },
-        { album_id: Selling.id,  title: 'Aisle of Plenty' },
+        { album_id: Selling.id,  track_no: 1, title: 'I Know What I Like (In Your Wardrobe)' },
+        { album_id: Selling.id,  track_no: 2, title: 'Firth of Fifth' },
+        { album_id: Selling.id,  track_no: 3, title: 'More Fool Me' },
+        { album_id: Selling.id,  track_no: 4, title: 'The Battle of Epping Forest' },
+        { album_id: Selling.id,  track_no: 5, title: 'After the Ordeal' },
+        { album_id: Selling.id,  track_no: 6, title: 'The Cinema Show' },
+        { album_id: Selling.id,  track_no: 7, title: 'Aisle of Plenty' },
       ]);
       t.pass();
     }
@@ -335,6 +360,59 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( albumList[1].title, 'The Dark Side of the Moon' );
       t.is( albumList[2].title, 'Selling England by the Pound' );
       t.is( albumList[3].title, 'Wish You Were Here');
+    }
+  )
+
+  test.serial(
+    'fetch album record',
+    async t => {
+      const albums = await musicdb.model.albums;
+      const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
+      t.is( dsotm.title, 'The Dark Side of the Moon' );
+    }
+  )
+
+  test.serial(
+    'fetch album artist relation',
+    async t => {
+      const albums = await musicdb.model.albums;
+      const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
+      const artist = await dsotm.relation('artist');
+      t.is( artist.name, 'Pink Floyd' );
+    }
+  )
+
+  test.serial(
+    'fetch album artist',
+    async t => {
+      const albums = await musicdb.model.albums;
+      const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
+      const artist = await dsotm.artist;
+      t.is( artist.name, 'Pink Floyd' );
+    }
+  )
+
+  test.serial(
+    'fetch album tracks',
+    async t => {
+      const albums = await musicdb.model.albums;
+      const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
+      const tracks = await dsotm.tracks;
+      t.is( tracks.length, 9 );
+    }
+  )
+
+  test.serial(
+    'fetch album tracks with sort order',
+    async t => {
+      const albums = await musicdb.model.albums;
+      const wywh   = await albums.oneRecord({ title: 'Wish You Were Here' });
+      const tracks = await wywh.tracks;
+      t.is( tracks.length, 4 );
+      t.is( tracks[0].track_no, 1 );
+      t.is( tracks[1].track_no, 2 );
+      t.is( tracks[2].track_no, 3 );
+      t.is( tracks[3].track_no, 4 );
     }
   )
 

@@ -1,13 +1,19 @@
-export const many = (record, spec={}) => {
-  const lkey  = spec.localKey  || spec.local_key;
-  const rkey  = spec.remoteKey || spec.remote_key;
-  const where = { [rkey]: record.data[lkey] };
+export const many = async (record, spec={}) => {
+  const lkey  = spec.localKey;
+  const rkey  = spec.remoteKey;
+  const order = spec.orderBy || spec.order;
+  let where   = spec.where   || { };
+  if (lkey && rkey) {
+    where[rkey] = record.row[lkey];
+  }
+  const options = order ? { order } : { };
   if (spec.debug) {
     console.log('many() relation: ', spec);
     console.log('many() relation table: ', spec.table);
     console.log('many() relation where: ', where);
   }
-  return record.database.table(spec.table).fetchRows(where).records();
+  const table = await record.database.table(spec.table);
+  return await table.allRecords(where, options);
 }
 
 export default many
