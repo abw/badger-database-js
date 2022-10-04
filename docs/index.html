@@ -241,7 +241,7 @@ await database.run(
   'insertUser',
   ['Bobby Badger', 'bobby@badgerpower.com']
 );
-const select = await database.one(
+const select1 = await database.one(
   'selectUserByEmail',
   ['bobby@badgerpower.com']
 );

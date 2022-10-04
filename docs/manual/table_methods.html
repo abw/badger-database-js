@@ -84,11 +84,15 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_methods.html"><a href="manual/table_methods.html" data-ice="link">Table Methods</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert--" data-ice="link">insert()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update--" data-ice="link">update()</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall--" data-ice="link">updateAll()</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone--" data-ice="link">updateOne()</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany--" data-ice="link">updateAny()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows--" data-ice="link">updateAllRows()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow--" data-ice="link">updateOneRow()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow--" data-ice="link">updateAnyRow()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete--" data-ice="link">delete()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerow--" data-ice="link">oneRow()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrow--" data-ice="link">anyRow()</a></li>
@@ -157,7 +161,7 @@ const db = await connect({
 
 // fetch the users table
 const users = await db.table('users');</code></code></pre>
-<h2 id="insert--">insert()</h2><p>The <code>insert()</code> method will construct and run an <code>INSERT</code> SQL query to insert a
+<h2 id="insert-data--options-">insert(data, options)</h2><p>The <code>insert()</code> method will construct and run an <code>INSERT</code> SQL query to insert a
 row from the column data that you provide.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const result = await users.insert({
   name:  'Brian Badger',
@@ -203,18 +207,93 @@ Or even easier, pass a second argument to the method as an object containing the
 <code>reload</code> option set to a true value.</p>
 <p>After inserting a row the table <code>insert()</code> method will immediately reload it from the
 database and return the data for the row.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const franky = await users.insert(
+<pre><code class="lang-js"><code class="source-code prettyprint">const frank = await users.insert(
   {
-    name:  'Franky Ferret',
-    email: 'franky@ferrets-r-us.com'
+    name:  'Frank Ferret',
+    email: 'frank@ferrets-r-us.com'
   },
   { reload: true }
 );
-console.log("id:", franky.id);       // e.g. 3
-console.log("name:", franky.name);   // Franky Ferret
-console.log("email:", franky.email); // franky@ferrets-r-us.com</code></code></pre>
+console.log(frank.id);      // e.g. 3
+console.log(frank.name);    // Frank Ferret
+console.log(frank.email);   // frank@ferrets-r-us.com</code></code></pre>
 <p>The same thing happens if you insert multiple rows and specify the <code>reload</code> options.
 The only difference is that the return value will be an array of rows.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const users = await users.insert(
+  [
+    {
+      name:  'Frank Ferret',
+      email: 'frank@ferrets-r-us.com'
+    },
+    {
+      name:  'Simon Stoat',
+      email: 'simon@stoats-r-superb.com'
+    },
+  ],
+  { reload: true }
+);
+console.log(users.length);        // 2
+console.log(users[0].id);         // e.g. 4
+console.log(users[0].name);       // Frank Ferret
+console.log(users[0].email);      // frank@ferrets-r-us.com
+console.log(users[1].id);         // e.g. 5
+console.log(users[1].name);       // Simon Stoat
+console.log(users[1].email);      // simon@stoats-r-superb.com</code></code></pre>
+<p>The other option that is supported by the insert methods is <code>record</code>.
+This will reload the row from the database (as per the <code>reload</code> option)
+and return it as a record object.  We'll be talking more about
+<a href="manual/records.html">records</a> shortly but for now you should know that
+it exists.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const frank = await users.insert(
+  {
+    name:  'Frank Ferret',
+    email: 'frank@ferrets-r-us.com'
+  },
+  { record: true }
+);
+// frank is a record object but it still behaves like a row
+console.log(frank.id);      // e.g. 3
+console.log(frank.name);    // Frank Ferret
+console.log(frank.email);   // frank@ferrets-r-us.com</code></code></pre>
+<h2 id="insertonerow-data--options-">insertOneRow(data, options)</h2><p>Internally, the <a href="#insert-data--options-">insert()</a> method calls either
+<code>insertAllRows()</code>, if the value passed is an array, or <code>insertOneRow()</code>
+if it's a single data object. You can call these methods directly if you prefer.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const result = await users.insertOneRow({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<h2 id="insertallrows-array--options-">insertAllRows(array, options)</h2><p>Here's an example explicitly calling the <code>insertAllRows()</code> method.  It's exactly the
+same as calling <a href="#insert-data--options-">insert()</a> with an array of rows to insert.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const results = await users.insertAllRows([
+  {
+    name:  'Frank Ferret',
+    email: 'frank@badgerpower.com'
+  }
+  {
+    name:  'Simon Stoat',
+    email: 'simon@badgerpower.com'
+  }
+]);</code></code></pre>
+<h2 id="insertonerecord-data--options-">insertOneRecord(data, options)</h2><p>This is a wrapper around the <a href="insertonerow-data-options-">insertOneRow()</a>
+which automatically sets the <code>record</code> option for you.  The result returned
+will be a record object instead of a result object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const record = await users.insertOneRecord({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});</code></code></pre>
+<h2 id="insertallrecords-array--options-">insertAllRecords(array, options)</h2><p>This is a wrapper around the <a href="insertallrows-array-options-">insertAllRow()</a>
+which automatically sets the <code>record</code> option for you.  The result returned
+will be an array of record objects instead of an array of results.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const records = await users.insertAllRecords([
+  {
+    name:  'Bobby Badger',
+    email: 'bobby@badgerpower.com'
+  },
+  {
+    name:  'Brian Badger',
+    email: 'brian@badgerpower.com'
+  }
+]);</code></code></pre>
 <h2 id="update--">update()</h2><p>The <code>update()</code> method, as the name suggests, allows you to update rows.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
   { name: 'Brian "The Brains" Badger' },
@@ -230,19 +309,19 @@ SET    name=?
 WHERE  email=?</code></code></pre>
 <p>Again, the format for Postgres is slightly different, using <code>$1</code> and <code>$2</code> for
 placeholders instead of <code>?</code>, but works exactly the same.</p>
-<h2 id="updateall--">updateAll()</h2><p>The <code>update()</code> method is actually a wrapper around <code>updateAll()</code>.  If you want
-additional checks to be performed to ensure that you're only updating one row,
-or if you want to automatically reload a row after an update then you can use
-the <code>updateOne()</code> or <code>updateAny()</code> methods.</p>
-<h2 id="updateone--">updateOne()</h2><p>This is a variant of the <code>update()</code> / <code>updateAll()</code> method that has an additional
-assertion check that exactly one row is updated.  If zero or more rows are
-updated then an <code>UnexpectedRowCount</code> error will be thrown with a message of
-the form <code>N rows were updated when one was expected</code>.</p>
+<h2 id="updateallrows--">updateAllRows()</h2><p>The <code>update()</code> method is actually a wrapper around <code>updateAllRows()</code>.  If you
+want additional checks to be performed to ensure that you're only updating one
+row, or if you want to automatically reload a row after an update then you can
+use the <code>updateOneRow()</code> or <code>updateAnyRow()</code> methods.</p>
+<h2 id="updateonerow--">updateOneRow()</h2><p>This is a variant of the <code>update()</code> / <code>updateAllRows()</code> method that has an
+additional assertion check that exactly one row is updated.  If zero or more
+rows are updated then an <code>UnexpectedRowCount</code> error will be thrown with a
+message of the form <code>N rows were updated when one was expected</code>.</p>
 <p>This method also supports the <code>reload</code> option.  When set, the method will
 automatically reload the row from the database after performing the update.
 This can be useful if you've got a column which is automatically set when the
 record is updated, e.g. a <code>modified</code> column, which you want to inspect.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOne(
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOneRow(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -251,7 +330,7 @@ console.log('updated record:', row);</code></code></pre>
 <p>One thing to note: this uses the modification and selection criteria specified
 to reload the data.  If, for example, you change the email address of a row
 then it will correctly reload the record using the new email address.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOne(
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOneRow(
   { email: 'brian-badger@badgerpower.com' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -262,7 +341,7 @@ was modified, based on the criteria provided.  Consider this somewhat contrived
 example: if the users table has a <code>friends</code> column and there is exactly one record
 where the <code>friends</code> count is set to <code>0</code>.  You feel sorry for the poor user and
 decide to modify their <code>friends</code> count to be <code>1</code>.  You'll be their friend, right?</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOne(
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOneRow(
   { friends: 1 },
   { friends: 0 },
   { reload: true }
@@ -272,18 +351,18 @@ the update, once the update has been applied there may be multiple rows which ha
 the <code>friends</code> count set to <code>1</code>.  The reload will fail with an <code>UnexpectedRowCount</code>
 error.  In these cases you should always provide some other unique attribute to ensure
 that the correct row can be identified and reloaded:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOne(
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOneRow(
   { friends: 1 },
   { email: 'bobby@badger.com' },
   { reload: true }
 );</code></code></pre>
-<h2 id="updateany--">updateAny()</h2><p>This is a variant of the <code>update()</code> / <code>updateAll()</code> method that has an additional
-assertion check that no more than one row is updated.  If more than one rows are
-updated then an <code>UnexpectedRowCount</code> error will be thrown with a message of
-the form <code>N rows were updated when one was expected</code>.</p>
+<h2 id="updateanyrow--">updateAnyRow()</h2><p>This is a variant of the <code>update()</code> / <code>updateAllRows()</code> method that has an
+additional assertion check that no more than one row is updated.  If more
+than one rows are updated then an <code>UnexpectedRowCount</code> error will be thrown
+with a message of the form <code>N rows were updated when one was expected</code>.</p>
 <p>This also supports the <code>reload</code> option.  If a row is updated then the complete
 row data will be returned.  Otherwise it will return <code>undefined</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateAny(
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateAnyRow(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }

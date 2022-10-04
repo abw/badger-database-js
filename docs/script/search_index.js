@@ -1980,15 +1980,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#insertall",
-    "class/src/Table.js~Table.html#instance-method-insertAll",
-    "src/Table.js~Table#insertAll",
+    "src/table.js~table#insertallrecords",
+    "class/src/Table.js~Table.html#instance-method-insertAllRecords",
+    "src/Table.js~Table#insertAllRecords",
     "method"
   ],
   [
-    "src/table.js~table#insertone",
-    "class/src/Table.js~Table.html#instance-method-insertOne",
-    "src/Table.js~Table#insertOne",
+    "src/table.js~table#insertallrows",
+    "class/src/Table.js~Table.html#instance-method-insertAllRows",
+    "src/Table.js~Table#insertAllRows",
+    "method"
+  ],
+  [
+    "src/table.js~table#insertonerecord",
+    "class/src/Table.js~Table.html#instance-method-insertOneRecord",
+    "src/Table.js~Table#insertOneRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#insertonerow",
+    "class/src/Table.js~Table.html#instance-method-insertOneRow",
+    "src/Table.js~Table#insertOneRow",
     "method"
   ],
   [
@@ -2136,21 +2148,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#updateall",
-    "class/src/Table.js~Table.html#instance-method-updateAll",
-    "src/Table.js~Table#updateAll",
+    "src/table.js~table#updateallrows",
+    "class/src/Table.js~Table.html#instance-method-updateAllRows",
+    "src/Table.js~Table#updateAllRows",
     "method"
   ],
   [
-    "src/table.js~table#updateany",
-    "class/src/Table.js~Table.html#instance-method-updateAny",
-    "src/Table.js~Table#updateAny",
+    "src/table.js~table#updateanyrow",
+    "class/src/Table.js~Table.html#instance-method-updateAnyRow",
+    "src/Table.js~Table#updateAnyRow",
     "method"
   ],
   [
-    "src/table.js~table#updateone",
-    "class/src/Table.js~Table.html#instance-method-updateOne",
-    "src/Table.js~Table#updateOne",
+    "src/table.js~table#updateonerow",
+    "class/src/Table.js~Table.html#instance-method-updateOneRow",
+    "src/Table.js~Table#updateOneRow",
     "method"
   ],
   [

@@ -205,27 +205,34 @@ export class Table {
   //-----------------------------------------------------------------------------
   async insert(data, options) {
     return isArray(data, options)
-      ? this.insertAll(data, options)
-      : this.insertOne(data, options)
+      ? this.insertAllRows(data, options)
+      : this.insertOneRow(data, options)
   }
-  async insertOne(data, options={}) {
-    this.debug("insertOne: ", data);
+  async insertOneRow(data, options={}) {
+    this.debug("insertOneRow: ", data);
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
-    return options.reload
-      ? this.insertReload(data, insert)
+    return options.reload || options.record
+      ? this.insertReload(data, insert, options)
       : insert;
   }
-  async insertAll(data, options) {
-    this.debug("insertAll: ", data);
+  async insertAllRows(data, options) {
+    this.debug("insertAllRows: ", data);
     let rows = [ ];
     for (const row of data) {
-      rows.push(await this.insertOne(row, options));
+      rows.push(await this.insertOneRow(row, options));
     }
     return rows;
   }
-
+  async insertOneRecord(data, options={}) {
+    this.debug("insertOneRecord: ", data);
+    return this.insertOneRow(data, { ...options, record: true })
+  }
+  async insertAllRecords(data, options={}) {
+    this.debug("insertAllRecords: ", data);
+    return this.insertAllRecords(data, { ...options, record: true })
+  }
   //-----------------------------------------------------------------------------
   // update
   //-----------------------------------------------------------------------------
@@ -235,10 +242,10 @@ export class Table {
     return [dcols, dvals, wcols, wvals];
   }
   async update(...args) {
-    return this.updateAll(...args);
+    return this.updateAllRows(...args);
   }
-  async updateOne(set, where, options={}) {
-    this.debug("updateOne: ", set, where);
+  async updateOneRow(set, where, options={}) {
+    this.debug("updateOneRow: ", set, where);
     const args = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes !== 1) {
@@ -248,8 +255,8 @@ export class Table {
       ? this.updateReload(set, where)
       : update;
   }
-  async updateAny(set, where, options={}) {
-    this.debug("updateAny: ", set, where);
+  async updateAnyRow(set, where, options={}) {
+    this.debug("updateAnyRow: ", set, where);
     const args = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes &gt; 1) {
@@ -261,8 +268,8 @@ export class Table {
         : undefined
       : update;
   }
-  async updateAll(set, where, options={}) {
-    this.debug("updateAll: ", set, where);
+  async updateAllRows(set, where, options={}) {
+    this.debug("updateAllRows: ", set, where);
     const args   = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     // return update;
@@ -356,7 +363,7 @@ export class Table {
       {}
     );
   }
-  async insertReload(input, output) {
+  async insertReload(input, output, options={}) {
     // For insert queries where the input data is used to run the query,
     // and the output data is returned from the query. We should have
     // values for each of this.keys because they should always be
@@ -365,7 +372,9 @@ export class Table {
     this.keys.map(
       key =&gt; fetch[key] = firstValue(output[key], input[key])
     );
-    return this.oneRow(fetch);
+    return options.record
+      ? this.oneRecord(fetch)
+      : this.oneRow(fetch);
   }
   async updateReload(set, where) {
     // For update queries things are a little more complicated.  In the
