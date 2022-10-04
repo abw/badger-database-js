@@ -101,16 +101,22 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Relation/one.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export const one = (record, spec={}) =&gt; {
-  const lkey  = spec.localKey  || spec.local_key;
-  const rkey  = spec.remoteKey || spec.remote_key;
-  const where = { [rkey]: record.data[lkey] };
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export const one = async (record, spec={}) =&gt; {
+  // console.log('relation:one record: ', record);
+  // console.log('relation:one spec: ', spec);
+  const lkey  = spec.localKey;
+  const rkey  = spec.remoteKey;
+  let where   = spec.where || { };
+  if (lkey &amp;&amp; rkey) {
+    where[rkey] = record.row[lkey];
+  }
   if (spec.debug) {
     console.log('one() relation: ', spec);
     console.log('one() relation table: ', spec.table);
     console.log('one() relation where: ', where);
   }
-  return record.database.table(spec.table).fetchRow(where).record();
+  const table = await record.database.table(spec.table);
+  return await table.oneRecord(where);
 }
 
 export default one</code></pre>

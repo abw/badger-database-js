@@ -207,19 +207,30 @@ export class Table {
     this.debugData("oneRow()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
-    return this.engine.selectOne(this.table, wcols, wvals, params);
+    const row = await this.engine.selectOne(this.table, wcols, wvals, params);
+    return options.record
+      ? this.record(row)
+      : row;
   }
   async anyRow(where, options={}) {
     this.debugData("anyRow()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
-    return this.engine.selectAny(this.table, wcols, wvals, params);
+    const row = await this.engine.selectAny(this.table, wcols, wvals, params);
+    return row
+      ? options.record
+        ? this.record(row)
+        : row
+      : undefined;
   }
   async allRows(where, options={}) {
     this.debugData("allRows()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
-    return this.engine.selectAll(this.table, wcols, wvals, params);
+    const rows = await this.engine.selectAll(this.table, wcols, wvals, params);
+    return options.record
+      ? this.records(rows)
+      : rows;
   }
 
   //-----------------------------------------------------------------------------
@@ -227,20 +238,15 @@ export class Table {
   //-----------------------------------------------------------------------------
   async oneRecord(where, options={}) {
     this.debugData("oneRecord()", { where, options });
-    const row = await this.oneRow(where, options);
-    return this.record(row);
+    return this.oneRow(where, { ...options, record: true });
   }
   async anyRecord(where, options={}) {
     this.debugData("anyRecord()", { where, options });
-    const row = await this.anyRow(where, options);
-    return row
-      ? this.record(row)
-      : row;
+    return this.anyRow(where, { ...options, record: true });
   }
   async allRecords(where, options={}) {
     this.debugData("allRecords()", { where, options });
-    const rows = await this.allRows(where, options);
-    return this.records(rows);
+    return this.allRows(where, { ...options, record: true });
   }
 
   // select() is the old name for fetchAll() which I'm in the process of

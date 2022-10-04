@@ -183,7 +183,7 @@ const results = await users.insertAllRows([
 
 ## insertOneRecord(data, options)
 
-This is a wrapper around the [insertOneRow()](insertonerow-data-options-)
+This is a wrapper around the [insertOneRow()](#insertonerow-data--options-)
 which automatically sets the `record` option for you.  The result returned
 will be a record object instead of a result object.
 
@@ -199,7 +199,7 @@ console.log(record.email);  // brian@badgerpower.com
 
 ## insertAllRecords(array, options)
 
-This is a wrapper around the [insertAllRow()](insertallrows-array-options-)
+This is a wrapper around the [insertAllRows()](#insertallrows-array--options-)
 which automatically sets the `record` option for you.  The result returned
 will be an array of record objects instead of an array of results.
 
@@ -346,7 +346,7 @@ else {
 }
 ```
 
-## delete()
+## delete(where)
 
 You can probably guess what the `delete()` method does.
 
@@ -373,7 +373,7 @@ await users.delete()
 
 Naturally, you should use this method with caution.
 
-## oneRow()
+## oneRow(where, options)
 
 There are three different methods for fetching rows from the table using
 selection criteria.  The `oneRow()` method will return a single row.
@@ -410,15 +410,25 @@ const brian = await users.oneRow(
 );
 ```
 
-The generated SQL for this method (and also `anyRow()` and `allRows()`)
-will look something like this:
+The `record` option can be specified if you want the data returned as a
+[record](manual/record.html) instead of a row.
+
+```js
+const brian = await users.oneRow(
+  { email: 'brian@badgerpower.com' },
+  { record: true }
+);
+```
+
+The generated SQL for this method (and also [anyRow()](#anyrow-where--options-)
+and [allRows()](#allrows-where--options-) will look something like this:
 
 ```sql
 SELECT "users"."id", "users"."name" FROM users
 WHERE email=?
 ```
 
-## anyRow()
+## anyRow(where, options)
 
 The `anyRow()` method will return a single row if it exists or `undefined` if it doesn't.
 
@@ -435,7 +445,26 @@ else {
 }
 ```
 
-## allRows()
+As per [oneRow()](#onerow-where--options-) you can pass an additional objects
+containing options.  For example, to specify the columns you want returned:
+
+```js
+const brian = await users.anyRow(
+  { email: 'brian@badgerpower.com' },
+  { columns: 'id email' }
+);
+```
+
+Or to return the row as a record object:
+
+```js
+const brian = await users.anyRow(
+  { email: 'brian@badgerpower.com' },
+  { record: true }
+);
+```
+
+## allRows(where, options)
 
 The `allRows()` method will return an array of all matching rows.
 
@@ -456,34 +485,48 @@ If you want to return all matching rows then you can omit the criteria or
 specify an empty object.
 
 ```js
-const allUsers = await users.fetchAll();
+const allUsers = await users.allRows();
 ```
 
 ```js
-const allUsers = await users.fetchAll({ });
+const allUsers = await users.allRows({ });
 ```
 
-## oneRecord()
+As per [oneRow()](#onerow-where--options-) you can pass an additional objects
+containing options.  It supports the `columns` and `record` options.  You can
+also provide `order` (or `orderBy` if you prefer to use a naming convention as
+close as possible to the SQL equivalent of `ORDER BY`) to specify the order in
+which rows should be returned:
 
-This method is a wrapper around `oneRow()` which returns the row as
-a record object.
+```js
+const allUsers = await users.allRows(
+  { },  // you can specify selection criteria or use an empty object to fetch all rows
+  { order: 'name DESC' }
+);
+```
+
+## oneRecord(where, options)
+
+This method is a wrapper around [oneRow()](#onerow-where--options-) which returns
+the row as a record object.  It effectively sets the `record` option for you.
 
 Read more about records [here](manual/records.html).
 
-## anyRecord()
+## anyRecord(where, options)
 
-This method is a wrapper around `anyRow()` which returns the row as
-a record object.
+This method is a wrapper around [anyRow()](#anyrow-where--options-) which returns
+the row as a record object.
 
-## allRecords()
+## allRecords(where, options)
 
-This method is a wrapper around `allRows()` which returns the rows as
-an array of record objects.
+This method is a wrapper around [allRows()](#allrows-where--options-) which returns
+the rows as an array of record objects.
 
-## run()
+## run(sql, values)
 
 This is a low-level method for running any arbitrary SQL query where
-you're not expecting to fetch any rows.  It's just like the `run()`
+you're not expecting to fetch any rows.  It's just like the
+[run()](manual/basic_queries.html#run-query--values--options-)
 method on the database object.  The only difference is that there are
 some table-specific fragments pre-defined: `table` contains the table
 name and `columns` contains a comma separated list of all column names.
@@ -502,12 +545,13 @@ As a trivial example, you can embed the `table` name in a query like so:
 users.run('DROP TABLE &lt;table&gt;')
 ```
 
-## one()
+## one(query, values, options)
 
 This is another low-level method for running an SQL query where you're
 expecting to get exactly one row returned.  It's just like the
-corresponding `one()` database method, with the additional table-specific
-SQL fragments available, as per `run()`.
+corresponding [one()](manual/basic_queries.html#one-query--values--options-)
+database method, with the additional table-specific SQL fragments available, as
+per [run()](#run-query--values--options-).
 
 ```js
 const bobby = users.one(
@@ -516,11 +560,16 @@ const bobby = users.one(
 )
 ```
 
-## any()
+## any(query, values, options)
 
 This is yet another low-level method for running an SQL query, but where
 you're expecting to get one row returned which may or may not exist.
-It's just like the corresponding `any()` database method, with the additional
+It's just like the corresponding
+[any()](manual/basic_queries.html#any-query--values--options-)
+database method, with the additional table-specific SQL fragments available,
+as per [run()](#run-query--values--options-).
+
+database method, with the additional
 table-specific SQL fragments available, as per `run()`.
 
 ```js
@@ -530,11 +579,13 @@ const bobby = users.any(
 )
 ```
 
-## all()
+## all(query, values, options)
 
 The final low-level method for running an SQL query where you're expecting to
-get multiple rows.  It's just like the corresponding `all()` database method,
-with the additional table-specific SQL fragments available, as per `run()`.
+get multiple rows.  It's just like the corresponding
+[all()](manual/basic_queries.html#all-query--values--options-)
+database method, with the additional table-specific SQL fragments available, as
+per [run()](#run-query--values--options-).
 
 ```js
 const rows = users.all(

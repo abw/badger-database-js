@@ -25,7 +25,7 @@ const record = await users.oneRecord({
 })
 ```
 
-## update()
+## update(set)
 
 The `update()` method allows you to update any columns in the row that the record
 represents.
@@ -60,7 +60,7 @@ After deleting the record the `record.deleted` flag will be set `true`.  Any
 attempt to update the record (or delete it again) will throw a `DeletedRecordError`
 with a message of the form `Cannot update deleted users record #123`.
 
-## relation()
+## relation(name)
 
 This method allows you to access relations for a table.  Read more on that in
 the [relations](manual/relations.html) manual page.

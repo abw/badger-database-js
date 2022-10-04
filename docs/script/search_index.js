@@ -948,6 +948,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine.js~engine#formatorderby",
+    "class/src/Engine.js~Engine.html#instance-method-formatOrderBy",
+    "src/Engine.js~Engine#formatOrderBy",
+    "method"
+  ],
+  [
     "src/engine.js~engine#formatplaceholders",
     "class/src/Engine.js~Engine.html#instance-method-formatPlaceholders",
     "src/Engine.js~Engine#formatPlaceholders",
@@ -2098,6 +2104,12 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-records",
     "src/Table.js~Table#records",
     "method"
+  ],
+  [
+    "src/table.js~table#relations",
+    "class/src/Table.js~Table.html#instance-member-relations",
+    "src/Table.js~Table#relations",
+    "member"
   ],
   [
     "src/table.js~table#required",
