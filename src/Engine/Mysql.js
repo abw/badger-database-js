@@ -3,24 +3,21 @@ import Engine from '../Engine.js';
 import { defaultIdColumn } from '../Constants.js';
 
 export class MysqlEngine extends Engine {
-  configure(config) {
-    config.debugPrefix ||= 'MysqlEngine> ';
-    return config;
-  }
-
   //-----------------------------------------------------------------------------
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect: ", this.database);
+    this.debug(
+      "connect()\n  database: %o",
+      this.database
+    );
     return mysql.createConnection(this.database);
   }
   async connected() {
-    this.debug("connected");
     return true;
   }
   async disconnect(connection) {
-    this.debug("disconnect");
+    this.debug("disconnect()");
     connection.destroy();
   }
 
@@ -28,17 +25,29 @@ export class MysqlEngine extends Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async run(sql, params, options) {
+    this.debug(
+      "run()\n       sql: %s\n    params: %o\n   options: %o",
+      sql, params, options
+    );
     [params, options] = this.optionalParams(params, options);
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([result]) => result );
   }
   async any(sql, params, options) {
+    this.debug(
+      "any()\n       sql: %s\n    params: %o\n   options: %o",
+      sql, params, options
+    );
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows[0] );
   }
   async all(sql, params, options) {
+    this.debug(
+      "all()\n       sql: %s\n    params: %o\n   options: %o",
+      sql, params, options
+    );
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows );

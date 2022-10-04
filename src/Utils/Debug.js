@@ -1,35 +1,35 @@
-import { addDebug } from "@abw/badger";
-import { fail, isBoolean, isObject } from "@abw/badger-utils";
+import { addDebug, ANSIescape, ANSIreset } from "@abw/badger";
+import { doNothing, fail, isBoolean, isObject } from "@abw/badger-utils";
 
 export let debug = {
   database: {
     debug:  false,
-    prefix: 'Database> ',
-    color:  'green',
+    prefix: 'Database -> ',
+    color:  'bright magenta',
   },
   engine: {
     debug:  false,
-    prefix: 'Engine> ',
+    prefix: 'Engine ---> ',
     color:  'red',
   },
   queries: {
     debug:  false,
-    prefix: 'Queries> ',
+    prefix: 'Queries --> ',
     color:  'blue',
   },
   table: {
     debug:  false,
-    prefix: 'Table> ',
-    color:  'yellow',
+    prefix: 'Table ----> ',
+    color:  'bright cyan',
   },
   record: {
     debug:  false,
-    prefix: 'Record> ',
+    prefix: 'Record ---> ',
     color:  'green',
   },
   test: {
     debug:  false,
-    prefix: 'Test> ',
+    prefix: 'Test     -> ',
     color:  'green'
   },
 }
@@ -62,10 +62,29 @@ export const getDebug = (name, ...configs) => {
 
 export const addDebugMethod = (object, name, ...configs) => {
   const options = getDebug(name, ...configs);
-  addDebug(
-    object,
-    options.debug,
-    options.debugPrefix || options.prefix,
-    options.debugColor  || options.color
-  );
+  const enabled = options.debug;
+  const prefix  = options.debugPrefix || options.prefix;
+  const color   = options.debugColor  || options.color;
+  addDebug(object, enabled, prefix, color);
+  object.debugData = DataDebugger(enabled, prefix, color);
+}
+
+export function DataDebugger(enabled, prefix, color, length=10) {
+  return enabled
+    ? (message, data={}) => {
+        console.log(
+          '%s' + prefix + '%s' + message,
+          color ? ANSIescape(color) : '',
+          color ? ANSIreset() : ''
+        );
+        Object.entries(data).map(
+          ([key, value]) => console.log(
+            '%s' + key.padStart(length, ' ') + '%s:',
+            color ? ANSIescape(color) : '',
+            color ? ANSIreset() : '',
+            value
+          )
+        )
+      }
+    : doNothing;
 }

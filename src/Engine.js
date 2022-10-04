@@ -45,14 +45,14 @@ export class Engine {
   initPool(options={}) {
     return new Pool({
       create: () => {
-        this.debug("create");
+        this.debug("connecting to pool");
         return this.connect();
       },
       validate: connection => {
         return this.connected(connection);
       },
       destroy: connection => {
-        this.debug("destroy");
+        this.debug("disconnecting from pool");
         return this.disconnect(connection);
       },
       ...poolDefaults,
@@ -81,7 +81,7 @@ export class Engine {
     return this.pool.acquire().promise;
   }
   async release(connection) {
-    this.debug("release() ", connection);
+    this.debug("release()");
     await this.pool.release(connection);
   }
 
@@ -89,7 +89,7 @@ export class Engine {
   // Generic query methods
   //-----------------------------------------------------------------------------
   async execute(sql, action, options={}) {
-    this.debug("execute() ", sql);
+    this.debugData("execute()", { sql, options });
     const connection = await this.acquire();
     const query      = await this.prepare(connection, sql);
     const result     = await action(query);
@@ -99,7 +99,7 @@ export class Engine {
       : result;
   }
   async prepare(connection, sql) {
-    this.debug("prepare() ", sql);
+    this.debugData("prepare()", { sql });
     return connection.prepare(sql);
   }
   optionalParams(params, options) {
@@ -119,6 +119,7 @@ export class Engine {
     notImplemented('all()');
   }
   async one(sql, params, options) {
+    this.debugData("one()", { sql, params, options });
     const rows = await this.all(sql, params, options);
     if (rows.length === 1) {
       return rows[0];
@@ -131,46 +132,51 @@ export class Engine {
   // Specific queries
   //-----------------------------------------------------------------------------
   async insert(table, colnames, values, keys) {
+    this.debugData("insert()", { table, colnames, values, keys });
     const columns      = this.formatColumns(colnames);
     const placeholders = this.formatPlaceholders(values);
     const returning    = this.formatReturning(keys);
-    // console.log('columns: ', columns);
-    // console.log('returning: ', returning);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
-    this.debug('insert: ', sql);
+    this.debug('insert() generated SQL:', sql);
     return this.run(sql, values, { keys, sanitizeResult: true });
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
+    this.debugData("update()", { table, datacols, datavals, wherecols, wherevals });
     const set   = this.formatColumnPlaceholders(datacols);
     const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1) || whereTrue;
     const sql   = format(queries.update, { table, set, where });
-    this.debug('update: ', sql);
+    this.debug('update() generated SQL:', sql);
     return this.run(sql, [...datavals, ...wherevals], { sanitizeResult: true });
   }
   async delete(table, wherecols, wherevals) {
+    this.debugData("delete()", { table, wherecols, wherevals });
     const where = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
     const sql   = format(queries.delete, { table, where });
-    this.debug('delete: ', sql);
+    this.debug('delete() generated SQL:', sql);
     return this.run(sql, wherevals, { sanitizeResult: true });
   }
   selectQuery(table, wherecols, options={}) {
+    this.debugData("selectQuery()", { table, wherecols, options });
     const columns = this.formatColumns(options.columns);
     const where   = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
     return format(queries.select, { table, columns, where });
   }
   async selectAll(table, wherecols, wherevals, options={}) {
+    this.debugData("selectAll()", { table, wherecols, wherevals, options });
     const sql = this.selectQuery(table, wherecols, options);
-    this.debug('selectAll: ', sql);
+    this.debug('selectAll() generated SQL:', sql);
     return this.all(sql, wherevals);
   }
   async selectAny(table, wherecols, wherevals, options={}) {
+    this.debugData("selectAny()", { table, wherecols, wherevals, options });
     const sql = this.selectQuery(table, wherecols, options);
-    this.debug('selectAny: ', sql);
+    this.debug('selectAny() generated SQL:', sql);
     return this.any(sql, wherevals);
   }
   async selectOne(table, wherecols, wherevals, options={}) {
+    this.debugData("selectOne()", { table, wherecols, wherevals, options });
     const sql = this.selectQuery(table, wherecols, options);
-    this.debug('select: ', sql);
+    this.debug('selectOne() generated SQL:', sql);
     return this.one(sql, wherevals);
   }
   async select(...args) {

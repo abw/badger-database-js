@@ -10,9 +10,11 @@ export class Record {
     this.row       = row;
     this.relations = { };
     this.config    = config;
-    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}> ` }, config);
+    addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}\n----------> ` }, config);
+
   }
   async update(set) {
+    this.debugData("update()", { set });
     this.assertNotDeleted('update');
     const where = this.table.identity(this.row);
     const update = await this.table.updateOneRow(set, where, { reload: true });
@@ -20,6 +22,7 @@ export class Record {
     return this;
   }
   async delete() {
+    this.debugData("delete()");
     this.assertNotDeleted('delete');
     const where = this.table.identity(this.row);
     await this.table.delete(where);

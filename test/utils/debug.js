@@ -6,7 +6,7 @@ test.serial(
   t => {
     const test = debug.test;
     t.is( test.debug, false );
-    t.is( test.prefix, 'Test> ' );
+    t.is( test.prefix, 'Test     -> ' );
   }
 )
 
@@ -15,10 +15,10 @@ test.serial(
   t => {
     const test = debug.test;
     t.is( test.debug, false );
-    t.is( test.prefix, 'Test> ' );
+    t.is( test.prefix, 'Test     -> ' );
     setDebug({ test: true });
     t.is( test.debug, true );
-    t.is( test.prefix, 'Test> ' );
+    t.is( test.prefix, 'Test     -> ' );
   }
 )
 
@@ -27,7 +27,7 @@ test.serial(
   t => {
     const test = debug.test;
     t.is( test.debug, true );
-    t.is( test.prefix, 'Test> ' );
+    t.is( test.prefix, 'Test     -> ' );
     setDebug({ test: { prefix: 'Testing123> ' } });
     t.is( test.debug, true );
     t.is( test.prefix, 'Testing123> ' );

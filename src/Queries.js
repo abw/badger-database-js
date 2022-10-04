@@ -30,7 +30,6 @@ export class Queries {
     let max = this.config.maxExpansion;
     let runaway = 0;
     let expanded = [ ];
-    this.debug("Expanding fragments: ", sql);
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -43,11 +42,7 @@ export class Queries {
           return fragments[word] || fail("Invalid fragment in SQL expansion: <", word, ">");
         }
       );
-      if (replaced) {
-        this.debug("Replaced: ", sql);
-      }
-      else {
-        this.debug("No more replacements: ", sql);
+      if (! replaced) {
         break;
       }
       if (++runaway >= max) {
@@ -57,6 +52,7 @@ export class Queries {
         )
       }
     }
+    this.debugData("expandFragments()", { query, sql });
     return sql;
   }
 }

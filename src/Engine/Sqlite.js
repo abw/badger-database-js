@@ -14,7 +14,6 @@ export class SqliteEngine extends Engine {
     config.pool.min ||= 1;
     config.pool.max ||= 1;
 
-    config.debugPrefix ||= 'SqliteEngine> ';
     return config;
   }
 
@@ -22,15 +21,14 @@ export class SqliteEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect");
+    this.debugData("connect()", { filename: this.filename, options: this.options });
     return new Database(this.filename, this.options);
   }
   async connected(db) {
-    this.debug("connected");
     return db.open;
   }
   async disconnect(db) {
-    this.debug("disconnect");
+    this.debug("disconnect()");
     db.close();
   }
 
@@ -38,13 +36,16 @@ export class SqliteEngine extends Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async run(sql, params=[], options) {
+    this.debugData("run()", { sql, params, options });
     [params, options] = this.optionalParams(params, options);
     return this.execute(sql, query => query.run(...params), options);
   }
   async any(sql, params=[], options) {
+    this.debugData("any()", { sql, params, options });
     return this.execute(sql, query => query.get(...params), options);
   }
   async all(sql, params=[], options) {
+    this.debugData("all()", { sql, params, options });
     return this.execute(sql, query => query.all(...params), options);
   }
 

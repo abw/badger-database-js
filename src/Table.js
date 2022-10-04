@@ -25,8 +25,8 @@ export class Table {
     this.rowProxy      = rowProxy(this);
     this.rowsProxy     = rowsProxy(this);
     this.fragments     = this.prepareFragments(schema);
-    this.queries       = new Queries({ ...schema, debugPrefix: `Queries ${this.table}> ` });
-    addDebugMethod(this, 'table', { debugPrefix: `Table ${this.table}> ` }, schema);
+    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}\n----------> ` });
+    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}\n----------> ` }, schema);
   }
   prepareFragments(schema) {
     const quote       = this.database.quote.bind(this.database);
@@ -86,15 +86,19 @@ export class Table {
     return this.queries.query(name);
   }
   run(query, params, options) {
+    this.debugData("run()", { query, params, options });
     return this.engine.run(this.query(query), params, options)
   }
   any(query, params, options) {
+    this.debugData("any()", { query, params, options });
     return this.engine.any(this.query(query), params, options)
   }
   all(query, params, options) {
+    this.debugData("all()", { query, params, options });
     return this.engine.all(this.query(query), params, options)
   }
   one(query, params, options) {
+    this.debugData("one()", { query, params, options });
     return this.engine.one(this.query(query), params, options)
   }
 
@@ -107,7 +111,7 @@ export class Table {
       : this.insertOneRow(data, options)
   }
   async insertOneRow(data, options={}) {
-    this.debug("insertOneRow: ", data);
+    this.debugData("insertOneRow()", { data, options });
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
@@ -116,7 +120,7 @@ export class Table {
       : insert;
   }
   async insertAllRows(data, options) {
-    this.debug("insertAllRows: ", data);
+    this.debugData("insertAllRows()", { data, options });
     let rows = [ ];
     for (const row of data) {
       rows.push(await this.insertOneRow(row, options));
@@ -124,11 +128,11 @@ export class Table {
     return rows;
   }
   async insertOneRecord(data, options={}) {
-    this.debug("insertOneRecord: ", data);
+    this.debugData("insertOneRecord()", { data, options });
     return this.insertOneRow(data, { ...options, record: true })
   }
   async insertAllRecords(data, options={}) {
-    this.debug("insertAllRecords: ", data);
+    this.debugData("insertAllRecords()", { data, options });
     return this.insertAllRecords(data, { ...options, record: true })
   }
   //-----------------------------------------------------------------------------
@@ -143,7 +147,7 @@ export class Table {
     return this.updateAllRows(...args);
   }
   async updateOneRow(set, where, options={}) {
-    this.debug("updateOneRow: ", set, where);
+    this.debugData("updateOneRow()", { set, where, options });
     const args = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes !== 1) {
@@ -154,7 +158,7 @@ export class Table {
       : update;
   }
   async updateAnyRow(set, where, options={}) {
-    this.debug("updateAnyRow: ", set, where);
+    this.debugData("updateAnyRow()", { set, where, options });
     const args = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes > 1) {
@@ -167,7 +171,7 @@ export class Table {
       : update;
   }
   async updateAllRows(set, where, options={}) {
-    this.debug("updateAllRows: ", set, where);
+    this.debugData("updateAllRows()", { set, where, options });
     const args   = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     // return update;
@@ -185,7 +189,7 @@ export class Table {
   // delete
   //-----------------------------------------------------------------------------
   async delete(where) {
-    this.debug("delete: ", where);
+    this.debugData("delete()", { where });
     const [cols, vals] = this.checkColumns(where);
     return this.engine.delete(this.table, cols, vals);
   }
@@ -199,19 +203,19 @@ export class Table {
     return this.checkColumns(where);
   }
   async oneRow(where, options={}) {
-    this.debug("oneRow: ", where, options);
+    this.debugData("oneRow()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     return this.engine.selectOne(this.table, wcols, wvals, params);
   }
   async anyRow(where, options={}) {
-    this.debug("anyRow: ", where, options);
+    this.debugData("anyRow()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     return this.engine.selectAny(this.table, wcols, wvals, params);
   }
   async allRows(where, options={}) {
-    this.debug("allRows: ", where, options);
+    this.debugData("allRows()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     return this.engine.selectAll(this.table, wcols, wvals, params);
@@ -221,19 +225,19 @@ export class Table {
   // oneRecord(), anyRecord() and allRecords()
   //-----------------------------------------------------------------------------
   async oneRecord(where, options={}) {
-    this.debug("oneRecord: ", where, options);
+    this.debugData("oneRecord()", { where, options });
     const row = await this.oneRow(where, options);
     return this.record(row);
   }
   async anyRecord(where, options={}) {
-    this.debug("anyRecord: ", where, options);
+    this.debugData("anyRecord()", { where, options });
     const row = await this.anyRow(where, options);
     return row
       ? this.record(row)
       : row;
   }
   async allRecords(where, options={}) {
-    this.debug("allRecords: ", where, options);
+    this.debugData("allRecords()", { where, options });
     const rows = await this.allRows(where, options);
     return this.records(rows);
   }

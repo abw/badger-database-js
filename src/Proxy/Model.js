@@ -5,6 +5,9 @@ export const modelProxy = database =>
     database,
     {
       get(target, prop) {
+        if (prop === 'then') {
+          return Reflect.get(target, prop);
+        }
         if (target.hasTable(prop)) {
           return target.table(prop);
         }

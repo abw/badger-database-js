@@ -1,35 +1,37 @@
 import test from 'ava';
-import { musicdb, createMusicDb, Artists, Albums, Tracks } from '../library/music.js'
+import { Albums, Artists, connectMusicDatabase, Tracks } from '../library/music_database.js';
+
+let musicdb;
 
 test.before(
   async t => {
-    await createMusicDb();
-    t.pass("created music database")
+    musicdb = await connectMusicDatabase();
+    t.pass("connected to music database")
   }
 );
 
 test.serial(
   'model.artists',
-  t => {
-    const artists = musicdb.model.artists;
+  async t => {
+    const artists = await musicdb.model.artists;
     t.true( artists instanceof Artists );
   }
 )
 
 test.serial(
   'model.albums',
-  t => {
+  async t => {
     const model = musicdb.model;
-    const albums = model.albums;
+    const albums = await model.albums;
     t.true( albums instanceof Albums );
   }
 )
 
 test.serial(
   'model.table("tracks")',
-  t => {
+  async t => {
     const model = musicdb.model;
-    const tracks = model.table('tracks');
+    const tracks = await model.table('tracks');
     t.true( tracks instanceof Tracks );
   }
 )
@@ -48,5 +50,5 @@ test.serial(
 )
 
 test.after(
-  () => musicdb.destroy()
+  () => musicdb.disconnect()
 )

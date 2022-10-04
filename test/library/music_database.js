@@ -22,7 +22,7 @@ export class Album extends Record {
 export class Track extends Record {
 }
 
-export async function connectMusicDatabase(engine) {
+export async function connectMusicDatabase(engine='sqlite') {
   const database = databaseConfig(engine);
   const sqlite  = engine === 'sqlite';
   const mysql   = engine === 'mysql';

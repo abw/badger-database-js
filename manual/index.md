@@ -16,6 +16,9 @@ This is the manual for the `badger-database` Javascript module.
 * [Records](manual/records.html) - using records
 * [Record Methods](manual/record_methods.html) - calling record methods
 * [Record Class](manual/record_class.html) - defining custom record classes
+* [Model](manual/model.html) - accessing database tables in a simpler form
+* [Waiter](manual/waiter.html) - chaining together asynchronous operations
+* [Debugging](manual/debugging.html) - enabling debugging messages
 * [Extending](manual/extending.html) - extending badger-database to add your own functionality
 
 ## NOTE:
