@@ -155,7 +155,7 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
-    <li data-ice="manualNav" class="indent-h1" data-link="manual/extending.html"><a href="manual/extending.html" data-ice="link">Extending Badger Database</a></li>
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/extending.html"><a href="manual/extending.html" data-ice="link">Extending</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-class" data-ice="link">Custom Tables Class</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
 </ul>
@@ -190,7 +190,7 @@ const musicdb = await connect({
 // wait for the artists table
 const artists = await musicdb.model.artists;
 
-// wait to insert a record
+// wait to fetch a record
 const artist = await artists.oneRecord({
   name: 'The Pink Floyd'
 });
@@ -202,8 +202,10 @@ await artist.update({
 
 // fetch the new artist name
 const name = artist.name;
+
+// check we got the expected value
 console.log(name);    // Pink Floyd</code></code></pre>
-<p>The database object that is returned from the <code>connect()</code> method (which you do
+<p>The database object that is returned from the <code>connect()</code> method (which you <em>do</em>
 have to wait for) includes a <code>waiter</code> property that allows you to "place your
 entire order at once" and then wait for the result.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const musicdb = await connect({

@@ -32,7 +32,7 @@ const musicdb = await connect({
 // wait for the artists table
 const artists = await musicdb.model.artists;
 
-// wait to insert a record
+// wait to fetch a record
 const artist = await artists.oneRecord({
   name: 'The Pink Floyd'
 });
@@ -44,10 +44,12 @@ await artist.update({
 
 // fetch the new artist name
 const name = artist.name;
+
+// check we got the expected value
 console.log(name);    // Pink Floyd
 ```
 
-The database object that is returned from the `connect()` method (which you do
+The database object that is returned from the `connect()` method (which you *do*
 have to wait for) includes a `waiter` property that allows you to "place your
 entire order at once" and then wait for the result.
 

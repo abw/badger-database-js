@@ -1,4 +1,4 @@
-# Extending Badger Database
+# Extending
 
 ## Custom Tables Class
 
