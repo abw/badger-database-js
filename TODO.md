@@ -7,10 +7,10 @@
 
 * table fetch columns with aliases: { alias: column } ???
 
-* should allRows(), etc., should have order_by?
-
-* relations
+* relations - clean up and document
 
 * query builder (operations)
 
 * document query() method to view generated SQL
+
+* additional 'where' criteria for relations (check names get properly quoted)
