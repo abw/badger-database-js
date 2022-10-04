@@ -81,6 +81,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataDebugger">DataDebugger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
@@ -100,38 +101,38 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Utils/Debug.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { addDebug } from "@abw/badger";
-import { fail, isBoolean, isObject } from "@abw/badger-utils";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { addDebug, ANSIescape, ANSIreset } from "@abw/badger";
+import { doNothing, fail, isBoolean, isObject } from "@abw/badger-utils";
 
 export let debug = {
   database: {
     debug:  false,
-    prefix: 'Database&gt; ',
-    color:  'green',
+    prefix: 'Database -&gt; ',
+    color:  'bright magenta',
   },
   engine: {
     debug:  false,
-    prefix: 'Engine&gt; ',
+    prefix: 'Engine ---&gt; ',
     color:  'red',
   },
   queries: {
     debug:  false,
-    prefix: 'Queries&gt; ',
+    prefix: 'Queries --&gt; ',
     color:  'blue',
   },
   table: {
     debug:  false,
-    prefix: 'Table&gt; ',
-    color:  'yellow',
+    prefix: 'Table ----&gt; ',
+    color:  'bright cyan',
   },
   record: {
     debug:  false,
-    prefix: 'Record&gt; ',
+    prefix: 'Record ---&gt; ',
     color:  'green',
   },
   test: {
     debug:  false,
-    prefix: 'Test&gt; ',
+    prefix: 'Test     -&gt; ',
     color:  'green'
   },
 }
@@ -164,13 +165,33 @@ export const getDebug = (name, ...configs) =&gt; {
 
 export const addDebugMethod = (object, name, ...configs) =&gt; {
   const options = getDebug(name, ...configs);
-  addDebug(
-    object,
-    options.debug,
-    options.debugPrefix || options.prefix,
-    options.debugColor  || options.color
-  );
-}</code></pre>
+  const enabled = options.debug;
+  const prefix  = options.debugPrefix || options.prefix;
+  const color   = options.debugColor  || options.color;
+  addDebug(object, enabled, prefix, color);
+  object.debugData = DataDebugger(enabled, prefix, color);
+}
+
+export function DataDebugger(enabled, prefix, color, length=10) {
+  return enabled
+    ? (message, data={}) =&gt; {
+        console.log(
+          '%s' + prefix + '%s' + message,
+          color ? ANSIescape(color) : '',
+          color ? ANSIreset() : ''
+        );
+        Object.entries(data).map(
+          ([key, value]) =&gt; console.log(
+            '%s' + key.padStart(length, ' ') + '%s:',
+            color ? ANSIescape(color) : '',
+            color ? ANSIreset() : '',
+            value
+          )
+        )
+      }
+    : doNothing;
+}
+</code></pre>
 
 </div>
 

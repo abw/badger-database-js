@@ -163,54 +163,65 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="named-queries">Named Queries</h1><p>Instead of embedding SQL queries directly into your code, you can
-define them as named queries.  This allows you to hide away some of the
-details of the database implemenentation so that your application code
-can be simpler and clearer.</p>
-<p>To keep things simple, this example has all the code in one file,
-which isn't really hiding anything at all.  In practice, you would usually
-move the database definition into a separate module.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
-
-const dbConfig = {
-  database: 'sqlite:test.db',
-  queries: {
-    createUsersTable:`
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY ASC,
-        name TEXT,
-        email TEXT
-      )`,
-    insertUser:
-      'INSERT INTO users (name, email) VALUES (?, ?)',
-    selectUserByEmail:
-      'SELECT * FROM users WHERE email=?'
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="debugging">Debugging</h1><p>To enable debugging messages for the database library add the <code>debug</code> flag to the
+<code>connect()</code> configuration, set to <code>true</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  database: 'sqlite:memory',
+  debug: true
+})</code></code></pre>
+<p>To enable debugging for individual tables, add the <code>debug</code> flag to the table
+configuration.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: {
+      columns: 'id name email',
+      debug: true,
+    }
   }
-};
+})</code></code></pre>
+<p>To enable debugging for a record object associated with a table, set the <code>recordConfig</code>
+for the table to include the <code>debug</code> flag.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: {
+      columns: 'id name email',
+      recordConfig: {
+        debug: true
+      }
+    }
+  }
+})</code></code></pre>
+<p>To enable debugging on a global level (for example, to enable it for all tables,
+records, etc.), use the <code>setDebug</code> function.  You can set any of the following
+flags to <code>true</code> to enable debugging for that component.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect, setDebug } from '../src/Utils/Debug.js';
 
-async function main() {
-  // connect to the database
-  const db = await connect(dbConfig);
-
-  // create the users table using a named query
-  await db.run('createUsersTable');
-
-  // insert a row using a named query
-  const insert = await db.run(
-    'insertUser',
-    ['Bobby Badger', 'bobby@badgerpower.com']
-  );
-  console.log("Inserted ID:", insert.lastInsertRowid);
-
-  // fetch a row using a named query
-  const bobby = await db.one(
-    'selectUserByEmail',
-    ['bobby@badgerpower.com']
-  );
-  console.log("Fetched row:", bobby);
-}
-
-main()</code></code></pre>
+setDebug({
+  database: true,   // general database queries
+  engine:   true,   // lower level functionality
+  queries:  true,   // query lookup and expansion
+  table:    true,   // table methods
+  record:   true,   // record methods
+})</code></code></pre>
+<p>Inside a custom table or record module you can print debugging messages to the console
+using the <code>debug()</code> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">export class User extends Record {
+  helloWorld() {
+    this.debug("helloWorld()");
+    // ...your code goes here...
+  }
+}</code></code></pre>
+<p>You can use the <code>debugData()</code> method to generate debugging messages to display
+the contents of data items.  This is a useful way to inspect the parameters
+passed to a method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">export class User extends Record {
+  helloWorld(message, options) {
+    this.debugData("helloWorld()", { message, options });
+    // ...your code goes here...
+  }
+}</code></code></pre>
 </div>
 </div>
 

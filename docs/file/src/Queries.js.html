@@ -81,6 +81,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataDebugger">DataDebugger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
@@ -132,7 +133,6 @@ export class Queries {
     let max = this.config.maxExpansion;
     let runaway = 0;
     let expanded = [ ];
-    this.debug("Expanding fragments: ", sql);
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -145,11 +145,7 @@ export class Queries {
           return fragments[word] || fail("Invalid fragment in SQL expansion: &lt;", word, "&gt;");
         }
       );
-      if (replaced) {
-        this.debug("Replaced: ", sql);
-      }
-      else {
-        this.debug("No more replacements: ", sql);
+      if (! replaced) {
         break;
       }
       if (++runaway &gt;= max) {
@@ -159,6 +155,7 @@ export class Queries {
         )
       }
     }
+    this.debugData("expandFragments()", { query, sql });
     return sql;
   }
 }

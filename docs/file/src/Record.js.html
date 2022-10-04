@@ -81,6 +81,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataDebugger">DataDebugger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
@@ -112,9 +113,11 @@ export class Record {
     this.row       = row;
     this.relations = { };
     this.config    = config;
-    addDebugMethod(this, 'record', { debugPrefix: `Record ${this.table}&gt; ` }, config);
+    addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}\n----------&gt; ` }, config);
+
   }
   async update(set) {
+    this.debugData("update()", { set });
     this.assertNotDeleted('update');
     const where = this.table.identity(this.row);
     const update = await this.table.updateOneRow(set, where, { reload: true });
@@ -122,6 +125,7 @@ export class Record {
     return this;
   }
   async delete() {
+    this.debugData("delete()");
     this.assertNotDeleted('delete');
     const where = this.table.identity(this.row);
     await this.table.delete(where);

@@ -81,6 +81,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataDebugger">DataDebugger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setDebug">setDebug</a></span></span></li>
@@ -116,7 +117,6 @@ export class SqliteEngine extends Engine {
     config.pool.min ||= 1;
     config.pool.max ||= 1;
 
-    config.debugPrefix ||= 'SqliteEngine&gt; ';
     return config;
   }
 
@@ -124,15 +124,14 @@ export class SqliteEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug("connect");
+    this.debugData("connect()", { filename: this.filename, options: this.options });
     return new Database(this.filename, this.options);
   }
   async connected(db) {
-    this.debug("connected");
     return db.open;
   }
   async disconnect(db) {
-    this.debug("disconnect");
+    this.debug("disconnect()");
     db.close();
   }
 
@@ -140,13 +139,16 @@ export class SqliteEngine extends Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async run(sql, params=[], options) {
+    this.debugData("run()", { sql, params, options });
     [params, options] = this.optionalParams(params, options);
     return this.execute(sql, query =&gt; query.run(...params), options);
   }
   async any(sql, params=[], options) {
+    this.debugData("any()", { sql, params, options });
     return this.execute(sql, query =&gt; query.get(...params), options);
   }
   async all(sql, params=[], options) {
+    this.debugData("all()", { sql, params, options });
     return this.execute(sql, query =&gt; query.all(...params), options);
   }
 

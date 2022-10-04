@@ -89,10 +89,10 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update--" data-ice="link">update()</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows--" data-ice="link">updateAllRows()</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow--" data-ice="link">updateOneRow()</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow--" data-ice="link">updateAnyRow()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows-set--where--options-" data-ice="link">updateAllRows(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete--" data-ice="link">delete()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerow--" data-ice="link">oneRow()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrow--" data-ice="link">anyRow()</a></li>
@@ -132,6 +132,24 @@
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/record_class.html"><a href="manual/record_class.html" data-ice="link">Record Class</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/record_class.html"><a href="manual/record_class.html#record-configuration-options" data-ice="link">Record Configuration Options</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/model.html"><a href="manual/model.html" data-ice="link">Model</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/waiter.html"><a href="manual/waiter.html" data-ice="link">Waiter</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -280,7 +298,10 @@ will be a record object instead of a result object.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const record = await users.insertOneRecord({
   name:  'Brian Badger',
   email: 'brian@badgerpower.com'
-});</code></code></pre>
+});
+// a record object still behaves like a row
+console.log(record.name);   // Brian Badger
+console.log(record.email);  // brian@badgerpower.com</code></code></pre>
 <h2 id="insertallrecords-array--options-">insertAllRecords(array, options)</h2><p>This is a wrapper around the <a href="insertallrows-array-options-">insertAllRow()</a>
 which automatically sets the <code>record</code> option for you.  The result returned
 will be an array of record objects instead of an array of results.</p>
@@ -293,8 +314,14 @@ will be an array of record objects instead of an array of results.</p>
     name:  'Brian Badger',
     email: 'brian@badgerpower.com'
   }
-]);</code></code></pre>
-<h2 id="update--">update()</h2><p>The <code>update()</code> method, as the name suggests, allows you to update rows.</p>
+]);
+// array of records returned, but they behave like rows
+console.log(records.length); // 2
+console.log(records[0].name);    // Bobby Badger
+console.log(records[0].email);   // bobby@badgerpower.com
+console.log(records[1].name);    // Brian Badger
+console.log(records[1].email);   // brian@badgerpower.com</code></code></pre>
+<h2 id="update-set--where--options-">update(set, where, options)</h2><p>The <code>update()</code> method, as the name suggests, allows you to update rows.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' }
@@ -309,11 +336,14 @@ SET    name=?
 WHERE  email=?</code></code></pre>
 <p>Again, the format for Postgres is slightly different, using <code>$1</code> and <code>$2</code> for
 placeholders instead of <code>?</code>, but works exactly the same.</p>
-<h2 id="updateallrows--">updateAllRows()</h2><p>The <code>update()</code> method is actually a wrapper around <code>updateAllRows()</code>.  If you
-want additional checks to be performed to ensure that you're only updating one
-row, or if you want to automatically reload a row after an update then you can
-use the <code>updateOneRow()</code> or <code>updateAnyRow()</code> methods.</p>
-<h2 id="updateonerow--">updateOneRow()</h2><p>This is a variant of the <code>update()</code> / <code>updateAllRows()</code> method that has an
+<h2 id="updateallrows-set--where--options-">updateAllRows(set, where, options)</h2><p>The <a href="#update-set--where--options-">update()</a> method is internally a wrapper
+around <code>updateAllRows()</code>.  If you want additional checks to be performed to
+ensure that you're only updating one row, or if you want to automatically
+reload a row after an update then you can use the
+<a href="#updateonerow-set--where--options-">updateOneRow()</a> or
+<a href="#updateanyrow-set--where--options-">updateAnyRow()</a> methods.</p>
+<h2 id="updateonerow-set--where--options-">updateOneRow(set, where, options)</h2><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
+<a href="#updateallrows-set--where--options-">updateAllRows()</a> method that has an
 additional assertion check that exactly one row is updated.  If zero or more
 rows are updated then an <code>UnexpectedRowCount</code> error will be thrown with a
 message of the form <code>N rows were updated when one was expected</code>.</p>
@@ -356,7 +386,8 @@ that the correct row can be identified and reloaded:</p>
   { email: 'bobby@badger.com' },
   { reload: true }
 );</code></code></pre>
-<h2 id="updateanyrow--">updateAnyRow()</h2><p>This is a variant of the <code>update()</code> / <code>updateAllRows()</code> method that has an
+<h2 id="updateanyrow-set--where--options-">updateAnyRow(set, where, options)</h2><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
+<a href="#updateallrows-set--where--options-">updateAllRows()</a> method that has an
 additional assertion check that no more than one row is updated.  If more
 than one rows are updated then an <code>UnexpectedRowCount</code> error will be thrown
 with a message of the form <code>N rows were updated when one was expected</code>.</p>

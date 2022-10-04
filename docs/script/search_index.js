@@ -30,6 +30,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~datadebugger",
+    "function/index.html#static-function-DataDebugger",
+    "<span>DataDebugger</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~database",
     "class/src/Database.js~Database.html",
     "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -822,6 +828,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/database.js~database#waiter",
+    "class/src/Database.js~Database.html#instance-member-waiter",
+    "src/Database.js~Database#waiter",
+    "member"
+  ],
+  [
     "src/engine.js",
     "file/src/Engine.js.html",
     "src/Engine.js",
@@ -1074,12 +1086,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/mysql.js~mysqlengine#configure",
-    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-configure",
-    "src/Engine/Mysql.js~MysqlEngine#configure",
-    "method"
-  ],
-  [
     "src/engine/mysql.js~mysqlengine#connect",
     "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-connect",
     "src/Engine/Mysql.js~MysqlEngine#connect",
@@ -1125,12 +1131,6 @@ window.esdocSearchIndex = [
     "src/engine/postgres.js~postgresengine#any",
     "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-any",
     "src/Engine/Postgres.js~PostgresEngine#any",
-    "method"
-  ],
-  [
-    "src/engine/postgres.js~postgresengine#configure",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-configure",
-    "src/Engine/Postgres.js~PostgresEngine#configure",
     "method"
   ],
   [

@@ -57,3 +57,29 @@ setDebug({
   record:   true,   // record methods
 })
 ```
+
+Inside a custom table or record module you can print debugging messages to the console
+using the `debug()` method.
+
+```js
+export class User extends Record {
+  helloWorld() {
+    this.debug("helloWorld()");
+    // ...your code goes here...
+  }
+}
+```
+
+You can use the `debugData()` method to generate debugging messages to display
+the contents of data items.  This is a useful way to inspect the parameters
+passed to a method.
+
+```js
+export class User extends Record {
+  helloWorld(message, options) {
+    this.debugData("helloWorld()", { message, options });
+    // ...your code goes here...
+  }
+}
+```
+
