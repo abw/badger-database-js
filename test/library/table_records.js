@@ -260,6 +260,67 @@ export function runTableRecordsTests(engine) {
     }
   )
 
+  test.serial(
+    'insert a record',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.insert(
+        {
+          name:  'Bobby Badger',
+          email: 'bobby@badgerpower.com'
+        },
+        { record: true }
+      );
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby instanceof Record, true );
+    }
+  )
+
+  test.serial(
+    'insert a record with reload',
+    async t => {
+      const users = await db.table('users');
+      const brian = await users.insert(
+        {
+          name:  'Brian Badger',
+          email: 'brian@badgerpower.com'
+        },
+        { record: true, reload: true }
+      );
+      t.is( brian.name, 'Brian Badger' );
+      t.is( brian.email, 'brian@badgerpower.com' );
+      t.is( brian instanceof Record, true );
+    }
+  )
+
+  test.serial(
+    'insert records',
+    async t => {
+      const users = await db.table('users');
+      const records = await users.insert(
+        [
+          {
+            name:  'Frank Ferret',
+            email: 'frank@badgerpower.com'
+          },
+          {
+            name:  'Simon Stoat',
+            email: 'simon@badgerpower.com'
+          },
+        ],
+        { record: true, reload: true }
+      );
+      t.is( records.length, 2 );
+      t.is( records[0].name, 'Frank Ferret' );
+      t.is( records[0].email, 'frank@badgerpower.com' );
+      t.is( records[0] instanceof Record, true );
+      t.is( records[1].name, 'Simon Stoat' );
+      t.is( records[1].email, 'simon@badgerpower.com' );
+      t.is( records[1] instanceof Record, true );
+    }
+  )
+
   // cleanup
   test.serial(
     'destroy',

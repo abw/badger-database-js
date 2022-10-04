@@ -61,10 +61,10 @@ export function runTableInsertTests(engine) {
 
   // insert another row
   test.serial(
-    'insert another row',
+    'insert another row using insertOneRow()',
     async t => {
       const users = await db.table('users');
-      const result = await users.insert(
+      const result = await users.insertOneRow(
         {
           name:  'Brian Badger',
           email: 'brian@badgerpower.com'
@@ -141,6 +141,54 @@ export function runTableInsertTests(engine) {
       t.is( result[1].email, 'simon@badgerpower.com' );
     }
   )
+
+  test.serial(
+    'insert multiple rows using insertAllRows()',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.insertAllRows([
+        {
+          name:  'Edward Elephant',
+          email: 'edward@badgerpower.com'
+        },
+        {
+          name:  'Alan Aaardvark',
+          email: 'alan@badgerpower.com'
+        },
+      ]);
+      t.is( result.length, 2 );
+      t.is( result[0].id, 7 );
+      t.is( result[0].name, undefined );
+      t.is( result[1].id, 8 );
+      t.is( result[1].name, undefined );
+    }
+  )
+
+  test.serial(
+    'insert multiple rows using insertAllRows() with reload',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.insertAllRows(
+        [
+          {
+            name:  'Hector Horse',
+            email: 'hector@badgerpower.com'
+          },
+          {
+            name:  'Ian Iguana',
+            email: 'ian@badgerpower.com'
+          },
+        ],
+        { reload: true }
+      );
+      t.is( result.length, 2 );
+      t.is( result[0].id, 9 );
+      t.is( result[0].name, 'Hector Horse' );
+      t.is( result[1].id, 10 );
+      t.is( result[1].name, 'Ian Iguana' );
+    }
+  )
+
 
   // cleanup
   test.after(

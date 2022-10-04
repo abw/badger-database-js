@@ -71,7 +71,7 @@ export function runTableUpdateTests(engine) {
     'table update one',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateOne(
+      const result = await users.updateOneRow(
         { name:  'Roberto Badger' },
         { email: 'bobby@badgerpower.com' }
       );
@@ -84,7 +84,7 @@ export function runTableUpdateTests(engine) {
     async t => {
       const users = await db.table('users');
       const error = await t.throwsAsync(
-        () => users.updateOne(
+        () => users.updateOneRow(
           { name:  'Roberto Badger' },
           { email: 'bobby@badgerpower.co.uk' }
         )
@@ -97,7 +97,7 @@ export function runTableUpdateTests(engine) {
     'table update one with reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateOne(
+      const result = await users.updateOneRow(
         { name:  'Robert Badger' },
         { email: 'bobby@badgerpower.com' },
         { reload: true }
@@ -113,7 +113,7 @@ export function runTableUpdateTests(engine) {
     'table update any',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateAny(
+      const result = await users.updateAnyRow(
         { name:  'Roberto Badger' },
         { email: 'bobby@badgerpower.com' }
       );
@@ -125,7 +125,7 @@ export function runTableUpdateTests(engine) {
     'table update any not found',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateAny(
+      const result = await users.updateAnyRow(
         { name:  'Roberto Badger' },
         { email: 'bobby@badgerpower.co.uk' }
       );
@@ -137,7 +137,7 @@ export function runTableUpdateTests(engine) {
     'table update any with reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateAny(
+      const result = await users.updateAnyRow(
         { name:  'Robbie Badger' },
         { email: 'bobby@badgerpower.com' },
         { reload: true }
@@ -153,7 +153,7 @@ export function runTableUpdateTests(engine) {
     'table update any with reload on changed item',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateAny(
+      const result = await users.updateAnyRow(
         { email: 'robbie@badgerpower.com' },
         { email: 'bobby@badgerpower.com' },
         { reload: true }
@@ -169,7 +169,7 @@ export function runTableUpdateTests(engine) {
     'table update any with reload on changed item which is 0',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateAny(
+      const result = await users.updateAnyRow(
         { friends: 0 },
         { email: 'robbie@badgerpower.com', friends: 1 },
         { reload: true }
@@ -186,12 +186,39 @@ export function runTableUpdateTests(engine) {
     'table update any not found with reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.updateAny(
+      const result = await users.updateAnyRow(
         { name:  'Robbie Badger' },
         { email: 'bobby@badgerpower.co.uk' },
         { reload: true }
       );
       t.is( result, undefined );
+    }
+  )
+
+  test.serial(
+    'table update all not found',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.updateAllRows(
+        { name:  'Robbie Badger' },
+        { email: 'bobby@badgerpower.co.uk' },
+      );
+      t.is( result.changes, 0 );
+    }
+  )
+
+  test.serial(
+    'table update all not found with reload error',
+    async t => {
+      const users = await db.table('users');
+      const error = await t.throwsAsync(
+        () => users.updateAllRows(
+          { name:  'Robbie Badger' },
+          { email: 'bobby@badgerpower.co.uk' },
+          { reload: true }
+        )
+      );
+      t.is( error.message, "Cannot reload multiple updated rows" );
     }
   )
 

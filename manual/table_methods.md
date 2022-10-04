@@ -21,7 +21,7 @@ const db = await connect({
 const users = await db.table('users');
 ```
 
-## insert()
+## insert(data, options)
 
 The `insert()` method will construct and run an `INSERT` SQL query to insert a
 row from the column data that you provide.
@@ -92,22 +92,137 @@ After inserting a row the table `insert()` method will immediately reload it fro
 database and return the data for the row.
 
 ```js
-const franky = await users.insert(
+const frank = await users.insert(
   {
-    name:  'Franky Ferret',
-    email: 'franky@ferrets-r-us.com'
+    name:  'Frank Ferret',
+    email: 'frank@ferrets-r-us.com'
   },
   { reload: true }
 );
-console.log("id:", franky.id);       // e.g. 3
-console.log("name:", franky.name);   // Franky Ferret
-console.log("email:", franky.email); // franky@ferrets-r-us.com
+console.log(frank.id);      // e.g. 3
+console.log(frank.name);    // Frank Ferret
+console.log(frank.email);   // frank@ferrets-r-us.com
 ```
 
 The same thing happens if you insert multiple rows and specify the `reload` options.
 The only difference is that the return value will be an array of rows.
 
-## update()
+```js
+const users = await users.insert(
+  [
+    {
+      name:  'Frank Ferret',
+      email: 'frank@ferrets-r-us.com'
+    },
+    {
+      name:  'Simon Stoat',
+      email: 'simon@stoats-r-superb.com'
+    },
+  ],
+  { reload: true }
+);
+console.log(users.length);        // 2
+console.log(users[0].id);         // e.g. 4
+console.log(users[0].name);       // Frank Ferret
+console.log(users[0].email);      // frank@ferrets-r-us.com
+console.log(users[1].id);         // e.g. 5
+console.log(users[1].name);       // Simon Stoat
+console.log(users[1].email);      // simon@stoats-r-superb.com
+```
+
+The other option that is supported by the insert methods is `record`.
+This will reload the row from the database (as per the `reload` option)
+and return it as a record object.  We'll be talking more about
+[records](manual/records.html) shortly but for now you should know that
+it exists.
+
+```js
+const frank = await users.insert(
+  {
+    name:  'Frank Ferret',
+    email: 'frank@ferrets-r-us.com'
+  },
+  { record: true }
+);
+// frank is a record object but it still behaves like a row
+console.log(frank.id);      // e.g. 3
+console.log(frank.name);    // Frank Ferret
+console.log(frank.email);   // frank@ferrets-r-us.com
+```
+
+## insertOneRow(data, options)
+
+Internally, the [insert()](#insert-data--options-) method calls either
+`insertAllRows()`, if the value passed is an array, or `insertOneRow()`
+if it's a single data object. You can call these methods directly if you prefer.
+
+```js
+const result = await users.insertOneRow({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+```
+
+## insertAllRows(array, options)
+
+Here's an example explicitly calling the `insertAllRows()` method.  It's exactly the
+same as calling [insert()](#insert-data--options-) with an array of rows to insert.
+
+```js
+const results = await users.insertAllRows([
+  {
+    name:  'Frank Ferret',
+    email: 'frank@badgerpower.com'
+  }
+  {
+    name:  'Simon Stoat',
+    email: 'simon@badgerpower.com'
+  }
+]);
+```
+
+## insertOneRecord(data, options)
+
+This is a wrapper around the [insertOneRow()](insertonerow-data-options-)
+which automatically sets the `record` option for you.  The result returned
+will be a record object instead of a result object.
+
+```js
+const record = await users.insertOneRecord({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+// a record object still behaves like a row
+console.log(record.name);   // Brian Badger
+console.log(record.email);  // brian@badgerpower.com
+```
+
+## insertAllRecords(array, options)
+
+This is a wrapper around the [insertAllRow()](insertallrows-array-options-)
+which automatically sets the `record` option for you.  The result returned
+will be an array of record objects instead of an array of results.
+
+```js
+const records = await users.insertAllRecords([
+  {
+    name:  'Bobby Badger',
+    email: 'bobby@badgerpower.com'
+  },
+  {
+    name:  'Brian Badger',
+    email: 'brian@badgerpower.com'
+  }
+]);
+// array of records returned, but they behave like rows
+console.log(records.length); // 2
+console.log(records[0].name);    // Bobby Badger
+console.log(records[0].email);   // bobby@badgerpower.com
+console.log(records[1].name);    // Brian Badger
+console.log(records[1].email);   // brian@badgerpower.com
+```
+
+## update(set, where, options)
 
 The `update()` method, as the name suggests, allows you to update rows.
 
@@ -134,19 +249,22 @@ WHERE  email=?
 Again, the format for Postgres is slightly different, using `$1` and `$2` for
 placeholders instead of `?`, but works exactly the same.
 
-## updateAll()
+## updateAllRows(set, where, options)
 
-The `update()` method is actually a wrapper around `updateAll()`.  If you want
-additional checks to be performed to ensure that you're only updating one row,
-or if you want to automatically reload a row after an update then you can use
-the `updateOne()` or `updateAny()` methods.
+The [update()](#update-set--where--options-) method is internally a wrapper
+around `updateAllRows()`.  If you want additional checks to be performed to
+ensure that you're only updating one row, or if you want to automatically
+reload a row after an update then you can use the
+[updateOneRow()](#updateonerow-set--where--options-) or
+[updateAnyRow()](#updateanyrow-set--where--options-) methods.
 
-## updateOne()
+## updateOneRow(set, where, options)
 
-This is a variant of the `update()` / `updateAll()` method that has an additional
-assertion check that exactly one row is updated.  If zero or more rows are
-updated then an `UnexpectedRowCount` error will be thrown with a message of
-the form `N rows were updated when one was expected`.
+This is a variant of the [update()](#update-set--where--options-) /
+[updateAllRows()](#updateallrows-set--where--options-) method that has an
+additional assertion check that exactly one row is updated.  If zero or more
+rows are updated then an `UnexpectedRowCount` error will be thrown with a
+message of the form `N rows were updated when one was expected`.
 
 This method also supports the `reload` option.  When set, the method will
 automatically reload the row from the database after performing the update.
@@ -154,7 +272,7 @@ This can be useful if you've got a column which is automatically set when the
 record is updated, e.g. a `modified` column, which you want to inspect.
 
 ```js
-const row = await users.updateOne(
+const row = await users.updateOneRow(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -167,7 +285,7 @@ to reload the data.  If, for example, you change the email address of a row
 then it will correctly reload the record using the new email address.
 
 ```js
-const row = await users.updateOne(
+const row = await users.updateOneRow(
   { email: 'brian-badger@badgerpower.com' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -182,7 +300,7 @@ where the `friends` count is set to `0`.  You feel sorry for the poor user and
 decide to modify their `friends` count to be `1`.  You'll be their friend, right?
 
 ```js
-await users.updateOne(
+await users.updateOneRow(
   { friends: 1 },
   { friends: 0 },
   { reload: true }
@@ -196,25 +314,26 @@ error.  In these cases you should always provide some other unique attribute to 
 that the correct row can be identified and reloaded:
 
 ```js
-await users.updateOne(
+await users.updateOneRow(
   { friends: 1 },
   { email: 'bobby@badger.com' },
   { reload: true }
 );
 ```
 
-## updateAny()
+## updateAnyRow(set, where, options)
 
-This is a variant of the `update()` / `updateAll()` method that has an additional
-assertion check that no more than one row is updated.  If more than one rows are
-updated then an `UnexpectedRowCount` error will be thrown with a message of
-the form `N rows were updated when one was expected`.
+This is a variant of the [update()](#update-set--where--options-) /
+[updateAllRows()](#updateallrows-set--where--options-) method that has an
+additional assertion check that no more than one row is updated.  If more
+than one rows are updated then an `UnexpectedRowCount` error will be thrown
+with a message of the form `N rows were updated when one was expected`.
 
 This also supports the `reload` option.  If a row is updated then the complete
 row data will be returned.  Otherwise it will return `undefined`.
 
 ```js
-const row = await users.updateAny(
+const row = await users.updateAnyRow(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
