@@ -81,6 +81,7 @@ export async function connectMusicDatabase(engine='sqlite') {
         title     TEXT,
         album_id  ${reftype},
         track_no  INTEGER,
+        bonus     BOOLEAN DEFAULT false,
         ${sqlite ? '' : 'PRIMARY KEY (id),'}
         FOREIGN KEY (album_id) REFERENCES albums(id)
       )`,
@@ -107,6 +108,7 @@ export async function connectMusicDatabase(engine='sqlite') {
       FROM      albums
       JOIN      tracks
       ON        tracks.album_id=albums.id
+      AND       tracks.bonus=false
       GROUP BY  albums.id`
   };
 
@@ -125,7 +127,10 @@ export async function connectMusicDatabase(engine='sqlite') {
     columns:      'id name',
     tableClass:   Artists,
     recordClass:  Artist,
-    debug:        debugArtists
+    debug:        debugArtists,
+    relations: {
+      albums: 'id => albums.artist_id'
+    }
   };
 
   const albums = {
@@ -136,24 +141,28 @@ export async function connectMusicDatabase(engine='sqlite') {
     fragments:      albumsFragments,
     queries:        albumsQueries,
     relations: {
-      artist: {
-        type:       'one',
-        table:      'artists',
-        localKey:   'artist_id',
-        remoteKey:  'id',
-      },
+      artist: 'artist_id -> artists.id',
       tracks: {
         type:       'many',
         table:      'tracks',
         localKey:   'id',
         remoteKey:  'album_id',
         orderBy:    'track_no',
+        where:      { bonus: 0 }
+      },
+      bonus_tracks: {
+        type:       'many',
+        table:      'tracks',
+        localKey:   'id',
+        remoteKey:  'album_id',
+        orderBy:    'track_no',
+        where:      { bonus: 1 }
       }
     }
   };
 
   const tracks = {
-    columns:      'id title album_id track_no',
+    columns:      'id title album_id track_no bonus',
     tableClass:   Tracks,
     recordClass:  Track,
     debug:        debugTracks,
@@ -301,6 +310,7 @@ export const runMusicDatabaseTests = async (database, options) => {
         { album_id: Selling.id,  track_no: 5, title: 'After the Ordeal' },
         { album_id: Selling.id,  track_no: 6, title: 'The Cinema Show' },
         { album_id: Selling.id,  track_no: 7, title: 'Aisle of Plenty' },
+        { album_id: Selling.id,  track_no: 8, title: 'I Know What I Like (live at Knebworth)', bonus: 1 },
       ]);
       t.pass();
     }
@@ -413,6 +423,22 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( tracks[1].track_no, 2 );
       t.is( tracks[2].track_no, 3 );
       t.is( tracks[3].track_no, 4 );
+    }
+  )
+  test.serial(
+    'fetch album bonus tracks',
+    async t => {
+      const albums = await musicdb.model.albums;
+      const sebtp  = await albums.oneRecord({ title: 'Selling England by the Pound' });
+      const tracks = await sebtp.tracks;
+      t.is( tracks.length, 7 );
+      t.is( tracks[0].track_no, 1 );
+      t.is( tracks[1].track_no, 2 );
+      t.is( tracks[2].track_no, 3 );
+      t.is( tracks[3].track_no, 4 );
+      const bonus = await sebtp.bonus_tracks;
+      t.is( bonus.length, 1 );
+      t.is( bonus[0].track_no, 8 );
     }
   )
 
