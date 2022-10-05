@@ -121,11 +121,31 @@ export function runTableDeleteTests(engine) {
   )
 
   test.serial(
+    'delete second row with comparison',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.delete({
+        id: ['>', 2]
+      });
+      t.is( result.changes, 1 );
+    }
+  )
+
+  test.serial(
+    'fetch one',
+    async t => {
+      const users = await db.table('users');
+      const rows = await users.allRows();
+      t.is( rows.length, 1 );
+    }
+  )
+
+  test.serial(
     'delete all rows',
     async t => {
       const users = await db.table('users');
       const result = await users.delete();
-      t.is( result.changes, 2 );
+      t.is( result.changes, 1 );
     }
   )
 

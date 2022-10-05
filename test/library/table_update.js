@@ -42,7 +42,7 @@ export function runTableUpdateTests(engine) {
   );
 
   test.serial(
-    'table insert',
+    'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -56,7 +56,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update',
+    'update',
     async t => {
       const users = await db.table('users');
       const result = await users.update(
@@ -68,7 +68,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update one',
+    'update one',
     async t => {
       const users = await db.table('users');
       const result = await users.updateOneRow(
@@ -80,7 +80,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update one, not found',
+    'update one, not found',
     async t => {
       const users = await db.table('users');
       const error = await t.throwsAsync(
@@ -94,7 +94,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update one with reload',
+    'update one with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.updateOneRow(
@@ -110,7 +110,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update any',
+    'update any',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAnyRow(
@@ -122,7 +122,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update any not found',
+    'update any not found',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAnyRow(
@@ -134,7 +134,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update any with reload',
+    'update any with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAnyRow(
@@ -150,7 +150,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update any with reload on changed item',
+    'update any with reload on changed item',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAnyRow(
@@ -166,7 +166,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update any with reload on changed item which is 0',
+    'update any with reload on changed item which is 0',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAnyRow(
@@ -183,7 +183,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update any not found with reload',
+    'update any not found with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAnyRow(
@@ -196,7 +196,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update all not found',
+    'update all not found',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAllRows(
@@ -208,7 +208,7 @@ export function runTableUpdateTests(engine) {
   )
 
   test.serial(
-    'table update all not found with reload error',
+    'update all not found with reload error',
     async t => {
       const users = await db.table('users');
       const error = await t.throwsAsync(
@@ -221,6 +221,37 @@ export function runTableUpdateTests(engine) {
       t.is( error.message, "Cannot reload multiple updated rows" );
     }
   )
+
+  test.serial(
+    'insert another row',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.insert({
+        name:   'Brian Badger',
+        email:  'brian@badgerpower.com',
+        friends: 1,
+      });
+      t.is( result.id, 2 );
+      t.is( result.changes, 1 );
+    }
+  )
+
+  test.serial(
+    'update any with negative email comparison',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.updateAnyRow(
+        { email: 'brian-badger@badgerpower.com' },
+        { email: ['!=', 'robbie@badgerpower.com'] },
+        { reload: true }
+      );
+      t.is( result.changes, undefined );
+      t.is( result.id, 2 );
+      t.is( result.name, 'Brian Badger' );
+      t.is( result.email, 'brian-badger@badgerpower.com' );
+    }
+  )
+
 
   test.serial(
     'destroy',

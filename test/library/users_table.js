@@ -1,4 +1,4 @@
-const serialTypeFragment = engine =>
+export const serialTypeFragment = engine =>
   engine === 'sqlite'
     ? 'INTEGER PRIMARY KEY ASC'
     : 'SERIAL'

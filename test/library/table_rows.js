@@ -163,6 +163,17 @@ export function runTableRowsTests(engine) {
     }
   )
   test.serial(
+    'allRows() with name comparison',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.allRows({
+        name: ['!=', 'Bobby Badger']
+      });
+      t.is( rows.length, 1 );
+      t.is( rows[0].name, 'Brian Badger' );
+    }
+  )
+  test.serial(
     'oneRow() with columns',
     async t => {
       const users = await db.table('users');
