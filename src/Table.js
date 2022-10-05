@@ -3,7 +3,6 @@ import Record from "./Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import recordProxy from "./Proxy/Record.js";
-// import Schema from "./Schema.js";
 import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
@@ -13,7 +12,6 @@ export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
     this.engine        = database.engine;
-    //this.schema        = new Schema(database, schema)
     this.table         = schema.table;
     this.columns       = prepareColumns(schema);
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
@@ -27,6 +25,14 @@ export class Table {
     this.fragments     = this.prepareFragments(schema);
     this.relations     = schema.relations || { };
     this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}\n----------> ` });
+
+    // method aliases
+    this.insertRow     = this.insertOneRow;
+    this.insertRows    = this.insertAllRows;
+    this.insertRecord  = this.insertOneRecord;
+    this.insertRecords = this.insertAllRecords;
+    this.updateRow     = this.updateOneRow;
+    this.updateRows    = this.updateAllRows;
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}\n----------> ` }, schema);
   }
   prepareFragments(schema) {
