@@ -16,8 +16,8 @@ CREATE TABLE artists (
 )
 ```
 
-Another will store the albums that they release, including the year and title.
-Note the `artist_id` which forms a relation to the artists that released the
+Another will store the albums that they release, including the `year` and `title`.
+Note the `artist_id` which forms a relation to the artist that released the
 album.  In this simple example we're going to assume that only one artist can
 release an album.  This isn't the case in the real world if you consider things
 like multi-artist collaborations and compilation albums, but we're just trying
@@ -34,10 +34,10 @@ CREATE TABLE albums (
 )
 ```
 
-A third table will store the tracks on each album, include the track title,
+A third table will store the tracks on each album, include the track `title`,
 the `album_id` linking it to the album that it appears on, and the `track_no`
 to indicate it's position in the track listing for the album.  The `bonus`
-columns is a boolean value which defaults to false, which is used to indicate
+column is a boolean value which defaults to false, which is used to indicate
 "bonus tracks" that sometime appear on albums.
 
 ```sql
@@ -59,7 +59,7 @@ that exists between artists and albums, and the "one to many" relation that
 exists between albums and track.
 
 Each artist can release many albums.  But in this simple example we're assuming
-that an albums can only be released by one artists.  Therefore this is a "many
+that an albums can only be released by one artist.  Therefore this is a "many
 to one" relation.
 
 Each album can have many tracks, but each track can only appear on a single album.
@@ -109,9 +109,9 @@ const musicdb = connect({
       relations: {
         album: {
           type:   'one',
-          table:  'albums',
           from:   'album_id',
           to:     'id',
+          table:  'albums',
         },
       }
     }
@@ -126,9 +126,9 @@ The relation goes from the `id` column on the `artists` table to the
 // tables.artists.relations...
 albums: {
   type:  'many',
-  table: 'albums',
   from:  'id',
   to:    'artist_id',
+  table: 'albums',
 }
 ```
 
@@ -143,9 +143,9 @@ this relation should be ordered by the `track_no` column.
 // tables.albums.relations...
 artist: {
   type:   'one',
-  table:  'artists',
-  to:     'id',
   from:   'artist_id',
+  to:     'id',
+  table:  'artists',
 },
 tracks: {
   type:   'many',
@@ -214,8 +214,8 @@ const artist = await dsotm.artist;
 console.log(artist.name);   // Pink Floyd
 ```
 
-We can also fetch the tracks on the album, ordered by the
-`track_no` column.
+We can also fetch the tracks on the album.  They will be automatically
+ordered by the `track_no` column.
 
 ```js
 const tracks = await dsotm.tracks;
@@ -275,7 +275,6 @@ same thing).
 const bonus = await dsotm.bonus_tracks;
 console.log(bonus[0].title);  // Us and Them (Richard Wright Demo)
 console.log(bonus[1].title);  // Money (Roger Waters Demo)
-// ...etc...
 ```
 
 ## Shorthand Syntax for Defining Relations

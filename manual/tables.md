@@ -33,8 +33,8 @@ await users.insert({
 
 // update a row
 await users.update(
-  { name: 'Brian "The Brains" Badger' },
-  { email: 'brian@badgerpower.com' }
+  { name: 'Brian "The Brains" Badger' },  // set...
+  { email: 'brian@badgerpower.com' }      // where...
 );
 
 // fetch a row

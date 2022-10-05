@@ -1,7 +1,7 @@
 # Table Methods
 
 The table object provides a number of methods for generating and running
-queries on table row.
+queries on table rows.
 
 As per the previous examples, we'll assume the table definition looks
 something like this:
@@ -108,7 +108,7 @@ The same thing happens if you insert multiple rows and specify the `reload` opti
 The only difference is that the return value will be an array of rows.
 
 ```js
-const users = await users.insert(
+const animals = await users.insert(
   [
     {
       name:  'Frank Ferret',
@@ -121,13 +121,13 @@ const users = await users.insert(
   ],
   { reload: true }
 );
-console.log(users.length);        // 2
-console.log(users[0].id);         // e.g. 4
-console.log(users[0].name);       // Frank Ferret
-console.log(users[0].email);      // frank@ferrets-r-us.com
-console.log(users[1].id);         // e.g. 5
-console.log(users[1].name);       // Simon Stoat
-console.log(users[1].email);      // simon@stoats-r-superb.com
+console.log(animals.length);        // 2
+console.log(animals[0].id);         // e.g. 4
+console.log(animals[0].name);       // Frank Ferret
+console.log(animals[0].email);      // frank@ferrets-r-us.com
+console.log(animals[1].id);         // e.g. 5
+console.log(animals[1].name);       // Simon Stoat
+console.log(animals[1].email);      // simon@stoats-r-superb.com
 ```
 
 The other option that is supported by the insert methods is `record`.
@@ -277,7 +277,7 @@ const row = await users.updateOneRow(
   { email: 'brian@badgerpower.com' },
   { reload: true }
 );
-console.log('updated record:', row);
+console.log('updated row:', row);
 ```
 
 One thing to note: this uses the modification and selection criteria specified
@@ -568,9 +568,6 @@ It's just like the corresponding
 [any()](manual/basic_queries.html#any-query--values--options-)
 database method, with the additional table-specific SQL fragments available,
 as per [run()](#run-query--values--options-).
-
-database method, with the additional
-table-specific SQL fragments available, as per `run()`.
 
 ```js
 const bobby = users.any(

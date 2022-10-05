@@ -174,130 +174,237 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-columns">Table Columns</h1><p>For simple cases you can define table columns using a whitespace delimited string,
-e.g. <code>id name email</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="relations">Relations</h1><p>Relations are, rather unsurprisingly, at the heart of relational databases.</p>
+<p>To demonstrate the concepts we're going to use an overly simple schema for
+a music database.  We'll assume that the database tables have already been
+created and populated with some sample data.</p>
+<p>One table will store the <code>artists</code>.</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">CREATE TABLE artists (
+  id   SERIAL,
+  name TEXT,
+  PRIMARY KEY (id)
+)</code></code></pre>
+<p>Another will store the albums that they release, including the <code>year</code> and <code>title</code>.
+Note the <code>artist_id</code> which forms a relation to the artist that released the
+album.  In this simple example we're going to assume that only one artist can
+release an album.  This isn't the case in the real world if you consider things
+like multi-artist collaborations and compilation albums, but we're just trying
+to demonstrate the basic concepts here, not build the next Spotify.</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">CREATE TABLE albums (
+  id        SERIAL,
+  year      INTEGER,
+  title     TEXT,
+  artist_id INTEGER,
+  PRIMARY KEY (id),
+  FOREIGN KEY (artist_id) REFERENCES artists(id)
+)</code></code></pre>
+<p>A third table will store the tracks on each album, include the track <code>title</code>,
+the <code>album_id</code> linking it to the album that it appears on, and the <code>track_no</code>
+to indicate it's position in the track listing for the album.  The <code>bonus</code>
+column is a boolean value which defaults to false, which is used to indicate
+"bonus tracks" that sometime appear on albums.</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">CREATE TABLE tracks (
+  id        SERIAL,
+  title     TEXT,
+  album_id  INTEGER,
+  track_no  INTEGER,
+  bonus     BOOLEAN DEFAULT false,
+  PRIMARY KEY (id),
+  FOREIGN KEY (album_id) REFERENCES albums(id)
+)</code></code></pre>
+<h2 id="relation-types">Relation Types</h2><p>This example demonstrates two basic relation types: the "many to one" relation
+that exists between artists and albums, and the "one to many" relation that
+exists between albums and track.</p>
+<p>Each artist can release many albums.  But in this simple example we're assuming
+that an albums can only be released by one artist.  Therefore this is a "many
+to one" relation.</p>
+<p>Each album can have many tracks, but each track can only appear on a single album.
+Therefore this is a "one to many" relation.</p>
+<h2 id="defining-table-relations">Defining Table Relations</h2><p>The relations for each table should be added to the <code>tables</code> configuration
+as the <code>relations</code> object.  This is what our main database configuration
+should look like.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const musicdb = connect({
+  database: 'postgres://musicdb',
   tables: {
-    users: {
-      columns: 'id name email'
-    }
-  }
-});
-const users = await db.table('users');</code></code></pre>
-<p>You don't have to include all of the columns in the database table if you don't
-want to for some reason.  If there are columns that you don't want or need to
-access from your application code then you can omit them.  Just be warned that
-you won't be able to access any columns that aren't defined here.</p>
-<p>You can add flags to the column names.  These include <code>id</code> to denote the unique
-identifier (this is optional if the column is already called <code>id</code> as we assume
-that's the default name for the id column), <code>required</code> to indicate
-that a column must be provided when a row is inserted, and <code>readonly</code> to indicate
-that a column cannot be inserted or updated.  Multiple flags can be added, each
-separated by a colon.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
-  tables: {
-    users: {
-      columns: 'id:readonly name:required email:required'
-    }
-  }
-});</code></code></pre>
-<p>If you try to insert a row without providing any of the <code>required</code> columns
-then an error will be throw.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'Missing required column "email" for the users table'
-await users.insert({
-  name: 'Brian Badger',
-});</code></code></pre>
-<p>The same thing will happen if you try to insert or update a <code>readonly</code> column.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'The "id" column is readonly in the users table'
-await users.insert({
-  id:    999,
-  name:  'Brian Badger',
-  email: 'brian@badgerpower.com',
-});</code></code></pre>
-<p>There may be times when you want to insert rows with pre-defined ids.  That's fine -
-you don't have to define your id column as being readonly in this case.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
-  tables: {
-    users: {
-      columns: 'id name:required email:required'
-    }
-  }
-});
-const users = await db.table('users');
-
-// This is fine - id isn't readonly
-await users.insert({
-  id:    999,
-  name:  'Brian Badger',
-  email: 'brian@badgerpower.com',
-});</code></code></pre>
-<p>If your unique ID column isn't called <code>id</code> then you can mark the relevant column
-using the <code>id</code> tag.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
-  tables: {
-    users: {
-      columns: 'user_id:readonly:id name:required email:required'
-    }
-  }
-});</code></code></pre>
-<p>In the rare cases where you don't have a unique id column and instead you have multiple
-keys that are used to uniquely identify a row then you can mark them with the <code>key</code> tag.
-For example, you might have an <code>employee</code> table which has rows that are uniquely identified
-by the <code>company_id</code> and <code>user_id</code> columns.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
-  tables: {
-    employees: {
-      columns: 'company_id:key user_id:key job_title'
-    }
-  }
-});</code></code></pre>
-<p>Note that some databases (e.g. Sqlite) will automatically create an <code>id</code> for each
-row regardless.  There certainly are valid cases where you might chose to NOT have
-a unique id column in a database but they are generally few and far between.
-See <a href="https://stackoverflow.com/questions/1207983/in-general-should-every-table-in-a-database-have-an-identity-field-to-use-as-a">this Stack Overflow post</a> for
-further enlightenment.</p>
-<p>Defining the columns using a string is a convenient short hand for simpler
-tables.  The more explicit form is to use an object with the column names as
-keys.  The corresponding values can be strings containing any flags for the
-columns, or an empty string if there aren't any.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
-  tables: {
-    users: {
-      columns: {
-        user_id: 'readonly:id',
-        name:    'required',
-        email:   'required',
-        comment: '',
-    }
-  }
-});</code></code></pre>
-<p>Or you can fully expand them like so:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // ...database, etc...
-  tables: {
-    users: {
-      columns: {
-        user_id: {
-          readonly: true,
-          id:       true
+    artists: {
+      columns: 'id name',
+      relations: {
+        albums: {
+          type:  'many',
+          from:  'id',
+          to:    'artist_id',
+          table: 'albums',
+        }
+      }
+    },
+    albums: {
+      columns: 'id year title artist_id',
+      relations: {
+        artist: {
+          type:   'one',
+          from:   'artist_id',
+          to:     'id',
+          table:  'artists',
         },
-        name: {
-          required: true
+        tracks: {
+          type:   'many',
+          from:   'id',
+          to:     'album_id',
+          table:  'tracks',
+          order:  'track_no',
         }
-        email: {
-          required: true
-        }
-        comment: { }
       }
     }
-  }
-});</code></code></pre>
+    tracks: {
+      columns: 'id title album_id track_no bonus',
+      relations: {
+        album: {
+          type:   'one',
+          from:   'album_id',
+          to:     'id',
+          table:  'albums',
+        },
+      }
+    }
+})</code></code></pre>
+<p>The <code>artists</code> table has an <code>albums</code> relation which can include many albums.
+The relation goes from the <code>id</code> column on the <code>artists</code> table to the
+<code>artist_id</code> column on the <code>albums</code> table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.artists.relations...
+albums: {
+  type:  'many',
+  from:  'id',
+  to:    'artist_id',
+  table: 'albums',
+}</code></code></pre>
+<p>The <code>albums</code> table has two relations.  The <code>artist</code> relation is one
+artist with the join going from the <code>artist_id</code> column on the <code>albums</code>
+table to the <code>id</code> column on the <code>artists</code> table.  The <code>tracks</code> relation
+is many tracks with the join going from the <code>id</code> column on the <code>tracks</code>
+table to the <code>album_id</code> column on the <code>albums</code> table.  The tracks in
+this relation should be ordered by the <code>track_no</code> column.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.albums.relations...
+artist: {
+  type:   'one',
+  from:   'artist_id',
+  to:     'id',
+  table:  'artists',
+},
+tracks: {
+  type:   'many',
+  from:   'id',
+  to:     'album_id',
+  table:  'tracks',
+  order:  'track_no',
+}</code></code></pre>
+<p>The <code>tracks</code> table has a single relation for the <code>album</code> that it appears on.
+The join goes from the <code>album_id</code> column on the <code>tracks</code> table to the <code>id</code>
+column on the <code>albums</code> table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.tracks.relations...
+album: {
+  type:   'one',
+  from:   'album_id',
+  to:     'id',
+  table:  'albums',
+},</code></code></pre>
+<h2 id="fetching-relations">Fetching Relations</h2><p>Let's assume we've got Pink Floyd defined as an artist, and their
+seminal albums "The Dark Side of the Moon" and "Wish You Were Here"
+have already been added to the database.</p>
+<p>We can start by fetching an artist record for Pink Floyd.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const artists = await musicdb.table('artists');
+const artist = await artists.oneRecord({ name: 'Pink Floyd' });</code></code></pre>
+<p>The <code>relation()</code> method allows us to fetch all related records in
+a relation.  The <code>albums</code> relation is defined as a <code>many</code> type, so
+it returns an array of records from the <code>albums</code> table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const albums = await artist.relation('albums');
+console.log(albums[0].title);   // The Dark Side of the Moon
+console.log(albums[1].title);   // Wish You Were Here</code></code></pre>
+<p>The record proxy object allows you to simplify this.  If there's a
+relation defined for a record then you can access it as a property
+of the record.  Just remember that there's actually a method call
+and database access going on behind the scenes so you have to <code>await</code>
+the result.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const albums = await artist.albums;
+console.log(albums[0].title);   // The Dark Side of the Moon
+console.log(albums[1].title);   // Wish You Were Here</code></code></pre>
+<p>We can take one of those albums and use the <code>artist</code> relation
+to fetch the artist that recorded the album.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const dsotm = albums[0];
+const artist = await dsotm.artist;
+console.log(artist.name);   // Pink Floyd</code></code></pre>
+<p>We can also fetch the tracks on the album.  They will be automatically
+ordered by the <code>track_no</code> column.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const tracks = await dsotm.tracks;
+console.log(tracks[0].title);  // Speak to Me / Breathe
+console.log(tracks[1].title);  // On the Run
+console.log(tracks[2].title);  // Time
+console.log(tracks[3].title);  // The Great Gig in the Sky
+// ...etc...</code></code></pre>
+<p>And finally, we can go the other way and, for a given track,
+we can fetch the album that it appears on.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const time = tracks[2];
+const album = await time.album;
+console.log(album.title);   // The Dark Side of the Moon</code></code></pre>
+<h2 id="additional-constraints">Additional Constraints</h2><p>Additional constraints for a relation can be defined using the
+<code>where</code> property.</p>
+<p>For example, we might want to define the <code>tracks</code> relation
+to only return tracks that aren't bonus tracks, and define a
+new <code>bonus_tracks</code> relations for those that are.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.albums.relations...
+tracks: {
+  type:   'many',
+  from:   'id',
+  to:     'album_id',
+  table:  'tracks',
+  order:  'track_no',
+  where:  { bonus: 0 }
+},
+bonus_tracks: {
+  type:   'many',
+  from:   'id',
+  to:     'album_id',
+  table:  'tracks',
+  order:  'track_no',
+  where:  { bonus: 1 }
+}</code></code></pre>
+<p>If your copy of The Dark Side of the Moon has
+"Us and Them (Richard Wright Demo)" and "Money (Roger Waters Demo)"
+included as bonus tracks (you lucky thing!) then you could fetch them
+like so.  Assuming, of course, that they're in the database and have
+the <code>bonus</code> columns set to <code>true</code> (or <code>1</code> which databases treat as the
+same thing).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bonus = await dsotm.bonus_tracks;
+console.log(bonus[0].title);  // Us and Them (Richard Wright Demo)
+console.log(bonus[1].title);  // Money (Roger Waters Demo)</code></code></pre>
+<h2 id="shorthand-syntax-for-defining-relations">Shorthand Syntax for Defining Relations</h2><p>If you've got a simple relation then you can define it as a string
+using the shorthand syntax.  The general format for the <code>one</code> relation is:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">from -&gt; table.to</code></code></pre>
+<p>For a <code>many</code> relation it uses a "fat arrow" instead.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">from =&gt; table.to</code></code></pre>
+<p>For example, the <code>album</code> relation defined for the <code>tracks</code> table looks
+like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.tracks.relations...
+album: {
+  type:   'one',
+  from:   'album_id',
+  to:     'id',
+  table:  'albums',
+},</code></code></pre>
+<p>That can be shortened to:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">album: 'album_id -&gt; albums.id'</code></code></pre>
+<p>Similarly, the <code>albums</code> relation for <code>artists</code> can be shortened from
+this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.artists.relations...
+albums: {
+  type:  'many',
+  table: 'albums',
+  from:  'id',
+  to:    'artist_id',
+}</code></code></pre>
+<p>To this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">albums: 'id =&gt; albums.artist_id'</code></code></pre>
+<p>You can't specify an <code>order</code> or additional <code>where</code> constraints using this
+syntax so it really is only for simple cases.</p>
 </div>
 </div>
 

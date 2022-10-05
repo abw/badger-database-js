@@ -137,6 +137,17 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/relations.html"><a href="manual/relations.html" data-ice="link">Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#relation-types" data-ice="link">Relation Types</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#defining-table-relations" data-ice="link">Defining Table Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
     <li data-ice="manualNav" class="indent-h1" data-link="manual/model.html"><a href="manual/model.html" data-ice="link">Model</a></li>
 </ul>
   </div>
@@ -164,7 +175,7 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-methods">Table Methods</h1><p>The table object provides a number of methods for generating and running
-queries on table row.</p>
+queries on table rows.</p>
 <p>As per the previous examples, we'll assume the table definition looks
 something like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// define the users table and the columns it contains
@@ -237,7 +248,7 @@ console.log(frank.name);    // Frank Ferret
 console.log(frank.email);   // frank@ferrets-r-us.com</code></code></pre>
 <p>The same thing happens if you insert multiple rows and specify the <code>reload</code> options.
 The only difference is that the return value will be an array of rows.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const users = await users.insert(
+<pre><code class="lang-js"><code class="source-code prettyprint">const animals = await users.insert(
   [
     {
       name:  'Frank Ferret',
@@ -250,13 +261,13 @@ The only difference is that the return value will be an array of rows.</p>
   ],
   { reload: true }
 );
-console.log(users.length);        // 2
-console.log(users[0].id);         // e.g. 4
-console.log(users[0].name);       // Frank Ferret
-console.log(users[0].email);      // frank@ferrets-r-us.com
-console.log(users[1].id);         // e.g. 5
-console.log(users[1].name);       // Simon Stoat
-console.log(users[1].email);      // simon@stoats-r-superb.com</code></code></pre>
+console.log(animals.length);        // 2
+console.log(animals[0].id);         // e.g. 4
+console.log(animals[0].name);       // Frank Ferret
+console.log(animals[0].email);      // frank@ferrets-r-us.com
+console.log(animals[1].id);         // e.g. 5
+console.log(animals[1].name);       // Simon Stoat
+console.log(animals[1].email);      // simon@stoats-r-superb.com</code></code></pre>
 <p>The other option that is supported by the insert methods is <code>record</code>.
 This will reload the row from the database (as per the <code>reload</code> option)
 and return it as a record object.  We'll be talking more about
