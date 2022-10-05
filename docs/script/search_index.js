@@ -984,6 +984,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine.js~engine#formatplaceholder",
+    "class/src/Engine.js~Engine.html#instance-method-formatPlaceholder",
+    "src/Engine.js~Engine#formatPlaceholder",
+    "method"
+  ],
+  [
     "src/engine.js~engine#formatplaceholders",
     "class/src/Engine.js~Engine.html#instance-method-formatPlaceholders",
     "src/Engine.js~Engine#formatPlaceholders",
@@ -993,6 +999,18 @@ window.esdocSearchIndex = [
     "src/engine.js~engine#formatreturning",
     "class/src/Engine.js~Engine.html#instance-method-formatReturning",
     "src/Engine.js~Engine#formatReturning",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatwhereplaceholder",
+    "class/src/Engine.js~Engine.html#instance-method-formatWherePlaceholder",
+    "src/Engine.js~Engine#formatWherePlaceholder",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatwhereplaceholders",
+    "class/src/Engine.js~Engine.html#instance-method-formatWherePlaceholders",
+    "src/Engine.js~Engine#formatWherePlaceholders",
     "method"
   ],
   [
@@ -1029,6 +1047,12 @@ window.esdocSearchIndex = [
     "src/engine.js~engine#prepare",
     "class/src/Engine.js~Engine.html#instance-method-prepare",
     "src/Engine.js~Engine#prepare",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#preparevalues",
+    "class/src/Engine.js~Engine.html#instance-method-prepareValues",
+    "src/Engine.js~Engine#prepareValues",
     "method"
   ],
   [
@@ -1194,21 +1218,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/postgres.js~postgresengine#formatcolumnplaceholder",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatColumnPlaceholder",
-    "src/Engine/Postgres.js~PostgresEngine#formatColumnPlaceholder",
-    "method"
-  ],
-  [
-    "src/engine/postgres.js~postgresengine#formatcolumnplaceholders",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatColumnPlaceholders",
-    "src/Engine/Postgres.js~PostgresEngine#formatColumnPlaceholders",
-    "method"
-  ],
-  [
-    "src/engine/postgres.js~postgresengine#formatplaceholders",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatPlaceholders",
-    "src/Engine/Postgres.js~PostgresEngine#formatPlaceholders",
+    "src/engine/postgres.js~postgresengine#formatplaceholder",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-formatPlaceholder",
+    "src/Engine/Postgres.js~PostgresEngine#formatPlaceholder",
     "method"
   ],
   [
@@ -1956,6 +1968,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#checkwherecolumns",
+    "class/src/Table.js~Table.html#instance-method-checkWhereColumns",
+    "src/Table.js~Table#checkWhereColumns",
+    "method"
+  ],
+  [
     "src/table.js~table#checkwritablecolumns",
     "class/src/Table.js~Table.html#instance-method-checkWritableColumns",
     "src/Table.js~Table#checkWritableColumns",
@@ -2040,10 +2058,34 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#insertrecord",
+    "class/src/Table.js~Table.html#instance-member-insertRecord",
+    "src/Table.js~Table#insertRecord",
+    "member"
+  ],
+  [
+    "src/table.js~table#insertrecords",
+    "class/src/Table.js~Table.html#instance-member-insertRecords",
+    "src/Table.js~Table#insertRecords",
+    "member"
+  ],
+  [
     "src/table.js~table#insertreload",
     "class/src/Table.js~Table.html#instance-method-insertReload",
     "src/Table.js~Table#insertReload",
     "method"
+  ],
+  [
+    "src/table.js~table#insertrow",
+    "class/src/Table.js~Table.html#instance-member-insertRow",
+    "src/Table.js~Table#insertRow",
+    "member"
+  ],
+  [
+    "src/table.js~table#insertrows",
+    "class/src/Table.js~Table.html#instance-member-insertRows",
+    "src/Table.js~Table#insertRows",
+    "member"
   ],
   [
     "src/table.js~table#keys",
@@ -2212,6 +2254,18 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-updateReload",
     "src/Table.js~Table#updateReload",
     "method"
+  ],
+  [
+    "src/table.js~table#updaterow",
+    "class/src/Table.js~Table.html#instance-member-updateRow",
+    "src/Table.js~Table#updateRow",
+    "member"
+  ],
+  [
+    "src/table.js~table#updaterows",
+    "class/src/Table.js~Table.html#instance-member-updateRows",
+    "src/Table.js~Table#updateRows",
+    "member"
   ],
   [
     "src/tables.js",

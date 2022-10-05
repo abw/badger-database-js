@@ -111,7 +111,6 @@ import Record from "./Record.js";
 import rowProxy from "./Proxy/Row.js";
 import rowsProxy from "./Proxy/Rows.js";
 import recordProxy from "./Proxy/Record.js";
-// import Schema from "./Schema.js";
 import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
@@ -121,7 +120,6 @@ export class Table {
   constructor(database, schema) {
     this.database      = database || fail("No database specified");
     this.engine        = database.engine;
-    //this.schema        = new Schema(database, schema)
     this.table         = schema.table;
     this.columns       = prepareColumns(schema);
     this.readonly      = Object.keys(this.columns).filter( key =&gt; this.columns[key].readonly );
@@ -135,6 +133,14 @@ export class Table {
     this.fragments     = this.prepareFragments(schema);
     this.relations     = schema.relations || { };
     this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}\n----------&gt; ` });
+
+    // method aliases
+    this.insertRow     = this.insertOneRow;
+    this.insertRows    = this.insertAllRows;
+    this.insertRecord  = this.insertOneRecord;
+    this.insertRecords = this.insertAllRecords;
+    this.updateRow     = this.updateOneRow;
+    this.updateRows    = this.updateAllRows;
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}\n----------&gt; ` }, schema);
   }
   prepareFragments(schema) {
@@ -157,14 +163,14 @@ export class Table {
           || throwColumnValidationError('unknown', { column, table })
     )
   }
-  checkColumns(data={}, cols=[], vals=[], test={}) {
+  checkColumns(data={}, cols=[], vals=[], options={}) {
     const table = this.table;
     // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
       column =&gt; {
         const spec = this.columns[column]
           || throwColumnValidationError('unknown', { column, table });
-        if (test.writable &amp;&amp; spec.readonly) {
+        if (options.writable &amp;&amp; spec.readonly) {
           throwColumnValidationError('readonly', { column, table });
         }
         cols.push(spec.column);
@@ -174,8 +180,10 @@ export class Table {
     return [cols, vals];
   }
   checkWritableColumns(data, cols=[], vals=[]) {
-    // check that all the values supplied correspond to valid columns that are not readonly
     return this.checkColumns(data, cols, vals, { writable: true })
+  }
+  checkWhereColumns(...args) {
+    return this.checkColumns(...args)
   }
   checkRequiredColumns(data) {
     const table = this.table;
@@ -249,7 +257,7 @@ export class Table {
   //-----------------------------------------------------------------------------
   prepareUpdate(set, where) {
     const [dcols, dvals] = this.checkWritableColumns(set);
-    const [wcols, wvals] = this.checkColumns(where);
+    const [wcols, wvals] = this.checkWhereColumns(where);
     return [dcols, dvals, wcols, wvals];
   }
   async update(...args) {
@@ -299,7 +307,7 @@ export class Table {
   //-----------------------------------------------------------------------------
   async delete(where) {
     this.debugData("delete()", { where });
-    const [cols, vals] = this.checkColumns(where);
+    const [cols, vals] = this.checkWhereColumns(where);
     return this.engine.delete(this.table, cols, vals);
   }
 
@@ -309,7 +317,7 @@ export class Table {
   prepareFetch(where, params) {
     params.columns ||= Object.keys(this.columns);
     this.checkColumnNames(params.columns);
-    return this.checkColumns(where);
+    return this.checkWhereColumns(where);
   }
   async oneRow(where, options={}) {
     this.debugData("oneRow()", { where, options });

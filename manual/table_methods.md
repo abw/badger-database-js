@@ -163,6 +163,8 @@ const result = await users.insertOneRow({
 });
 ```
 
+The `insertRow()` method is provided as an alias for this method.
+
 ## insertAllRows(array, options)
 
 Here's an example explicitly calling the `insertAllRows()` method.  It's exactly the
@@ -181,6 +183,8 @@ const results = await users.insertAllRows([
 ]);
 ```
 
+The `insertRows()` method is provided as an alias for this method.
+
 ## insertOneRecord(data, options)
 
 This is a wrapper around the [insertOneRow()](#insertonerow-data--options-)
@@ -196,6 +200,8 @@ const record = await users.insertOneRecord({
 console.log(record.name);   // Brian Badger
 console.log(record.email);  // brian@badgerpower.com
 ```
+
+The `insertRecord()` method is provided as an alias for this method.
 
 ## insertAllRecords(array, options)
 
@@ -222,14 +228,16 @@ console.log(records[1].name);    // Brian Badger
 console.log(records[1].email);   // brian@badgerpower.com
 ```
 
+The `insertRecords()` method is provided as an alias for this method.
+
 ## update(set, where, options)
 
 The `update()` method, as the name suggests, allows you to update rows.
 
 ```js
 await users.update(
-  { name: 'Brian "The Brains" Badger' },
-  { email: 'brian@badgerpower.com' }
+  { name: 'Brian "The Brains" Badger' },  // SET...
+  { email: 'brian@badgerpower.com' }      // WHERE...
 );
 ```
 
@@ -249,6 +257,30 @@ WHERE  email=?
 Again, the format for Postgres is slightly different, using `$1` and `$2` for
 placeholders instead of `?`, but works exactly the same.
 
+If you want to use comparison operators (other than the default `=`) in the
+`WHERE` clause then specify the value as an array of `[operator, value]`.
+
+For example, to update all rows where the email address isn't `brian@badgerpower.com`
+(I know, I know, this is a terrible example), then you could write:
+
+```js
+await users.update(
+  { name: "He's not the Messiah, he's a very naughty boy" },
+  { email: ['!=', 'brian@badgerpower.com'] }
+);
+```
+
+The SQL generated for this example will look something like this:
+
+```sql
+UPDATE users
+SET    name=?
+WHERE  email!=?
+```
+
+Any single value SQL operator can be used, e.g. `=`, `!=`, `<`, `<=`, `>`, `>=`.
+You can't use operators that expect lists of values, e.g. `in (...)`.
+
 ## updateAllRows(set, where, options)
 
 The [update()](#update-set--where--options-) method is internally a wrapper
@@ -257,6 +289,8 @@ ensure that you're only updating one row, or if you want to automatically
 reload a row after an update then you can use the
 [updateOneRow()](#updateonerow-set--where--options-) or
 [updateAnyRow()](#updateanyrow-set--where--options-) methods.
+
+The `updateRows()` method is provided as an alias for this method.
 
 ## updateOneRow(set, where, options)
 
@@ -279,6 +313,11 @@ const row = await users.updateOneRow(
 );
 console.log('updated row:', row);
 ```
+
+The `where` clause defaults to using the equality operator, `=`, but as described
+in the [update()](#update-set--where--options-) method, you can use other comparison
+operators by specifying the value as an an array, e.g. `{ year: ['>', 2000] }`
+to match all records where the `year` is greater than `2000`.
 
 One thing to note: this uses the modification and selection criteria specified
 to reload the data.  If, for example, you change the email address of a row
@@ -321,6 +360,8 @@ await users.updateOneRow(
 );
 ```
 
+The `updateRow()` method is provided as an alias for this method.
+
 ## updateAnyRow(set, where, options)
 
 This is a variant of the [update()](#update-set--where--options-) /
@@ -345,6 +386,10 @@ else {
   console.log("could not update row - Brian not found!")
 }
 ```
+
+You can also use other comparison operator as per the [update()](#update-set--where--options-)
+method, e.g. `{ year: ['>', 2000] }` to match all records where the `year` is greater
+than `2000`.
 
 ## delete(where)
 
@@ -373,6 +418,10 @@ await users.delete()
 
 Naturally, you should use this method with caution.
 
+You can also use other comparison operator in the `where` clause, as per the
+[update()](#update-set--where--options-) method, e.g. `{ year: ['>', 2000] }`
+to match all records where the `year` is greater than `2000`.
+
 ## oneRow(where, options)
 
 There are three different methods for fetching rows from the table using
@@ -388,6 +437,11 @@ const brian = await users.oneRow({
 });
 console.log('Brian:', brian);
 ```
+
+The `where` clause default to using the equality operator, `=`, but like the
+[update()](#update-set--where--options-) and [delete()](#delete-where-) method,
+you can use other comparison operators, e.g. `{ year: ['>', 2000] }` to match
+all records where the `year` is greater than `2000`.
 
 You can pass a second argument which can contain various options to modify
 the selection.  For example, the `columns` option can be used to specify
@@ -445,6 +499,11 @@ else {
 }
 ```
 
+The `where` clause default to using the equality operator, `=`, but like numerous
+other methods described above, you can use other comparison operators e.g.
+`{ year: ['>', 2000] }` to match all records where the `year` is greater
+than `2000`.
+
 As per [oneRow()](#onerow-where--options-) you can pass an additional objects
 containing options.  For example, to specify the columns you want returned:
 
@@ -491,6 +550,10 @@ const allUsers = await users.allRows();
 ```js
 const allUsers = await users.allRows({ });
 ```
+
+It shouldn't surprise you to learn that you can use other comparison operators
+in the `where` clause, e.g. `{ year: ['>', 2000] }` to match all records where
+the `year` is greater than `2000`.
 
 As per [oneRow()](#onerow-where--options-) you can pass an additional objects
 containing options.  It supports the `columns` and `record` options.  You can

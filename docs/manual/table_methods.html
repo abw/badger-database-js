@@ -171,6 +171,12 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
 </ul>
   </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/limitations.html"><a href="manual/limitations.html" data-ice="link">Limitations</a></li>
+</ul>
+  </div>
 </div>
 </nav>
 
@@ -291,6 +297,7 @@ if it's a single data object. You can call these methods directly if you prefer.
   name:  'Brian Badger',
   email: 'brian@badgerpower.com'
 });</code></code></pre>
+<p>The <code>insertRow()</code> method is provided as an alias for this method.</p>
 <h2 id="insertallrows-array--options-">insertAllRows(array, options)</h2><p>Here's an example explicitly calling the <code>insertAllRows()</code> method.  It's exactly the
 same as calling <a href="#insert-data--options-">insert()</a> with an array of rows to insert.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const results = await users.insertAllRows([
@@ -303,6 +310,7 @@ same as calling <a href="#insert-data--options-">insert()</a> with an array of r
     email: 'simon@badgerpower.com'
   }
 ]);</code></code></pre>
+<p>The <code>insertRows()</code> method is provided as an alias for this method.</p>
 <h2 id="insertonerecord-data--options-">insertOneRecord(data, options)</h2><p>This is a wrapper around the <a href="#insertonerow-data--options-">insertOneRow()</a>
 which automatically sets the <code>record</code> option for you.  The result returned
 will be a record object instead of a result object.</p>
@@ -313,6 +321,7 @@ will be a record object instead of a result object.</p>
 // a record object still behaves like a row
 console.log(record.name);   // Brian Badger
 console.log(record.email);  // brian@badgerpower.com</code></code></pre>
+<p>The <code>insertRecord()</code> method is provided as an alias for this method.</p>
 <h2 id="insertallrecords-array--options-">insertAllRecords(array, options)</h2><p>This is a wrapper around the <a href="#insertallrows-array--options-">insertAllRows()</a>
 which automatically sets the <code>record</code> option for you.  The result returned
 will be an array of record objects instead of an array of results.</p>
@@ -332,10 +341,11 @@ console.log(records[0].name);    // Bobby Badger
 console.log(records[0].email);   // bobby@badgerpower.com
 console.log(records[1].name);    // Brian Badger
 console.log(records[1].email);   // brian@badgerpower.com</code></code></pre>
+<p>The <code>insertRecords()</code> method is provided as an alias for this method.</p>
 <h2 id="update-set--where--options-">update(set, where, options)</h2><p>The <code>update()</code> method, as the name suggests, allows you to update rows.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
-  { name: 'Brian "The Brains" Badger' },
-  { email: 'brian@badgerpower.com' }
+  { name: 'Brian "The Brains" Badger' },  // SET...
+  { email: 'brian@badgerpower.com' }      // WHERE...
 );</code></code></pre>
 <p>The first argument is an object containing the changes you want to make.
 The second optional argument is the <code>WHERE</code> clause identifying the rows
@@ -347,12 +357,27 @@ SET    name=?
 WHERE  email=?</code></code></pre>
 <p>Again, the format for Postgres is slightly different, using <code>$1</code> and <code>$2</code> for
 placeholders instead of <code>?</code>, but works exactly the same.</p>
+<p>If you want to use comparison operators (other than the default <code>=</code>) in the
+<code>WHERE</code> clause then specify the value as an array of <code>[operator, value]</code>.</p>
+<p>For example, to update all rows where the email address isn't <code>brian@badgerpower.com</code>
+(I know, I know, this is a terrible example), then you could write:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
+  { name: "He's not the Messiah, he's a very naughty boy" },
+  { email: ['!=', 'brian@badgerpower.com'] }
+);</code></code></pre>
+<p>The SQL generated for this example will look something like this:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">UPDATE users
+SET    name=?
+WHERE  email!=?</code></code></pre>
+<p>Any single value SQL operator can be used, e.g. <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>.
+You can't use operators that expect lists of values, e.g. <code>in (...)</code>.</p>
 <h2 id="updateallrows-set--where--options-">updateAllRows(set, where, options)</h2><p>The <a href="#update-set--where--options-">update()</a> method is internally a wrapper
 around <code>updateAllRows()</code>.  If you want additional checks to be performed to
 ensure that you're only updating one row, or if you want to automatically
 reload a row after an update then you can use the
 <a href="#updateonerow-set--where--options-">updateOneRow()</a> or
 <a href="#updateanyrow-set--where--options-">updateAnyRow()</a> methods.</p>
+<p>The <code>updateRows()</code> method is provided as an alias for this method.</p>
 <h2 id="updateonerow-set--where--options-">updateOneRow(set, where, options)</h2><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
 <a href="#updateallrows-set--where--options-">updateAllRows()</a> method that has an
 additional assertion check that exactly one row is updated.  If zero or more
@@ -367,7 +392,11 @@ record is updated, e.g. a <code>modified</code> column, which you want to inspec
   { email: 'brian@badgerpower.com' },
   { reload: true }
 );
-console.log('updated record:', row);</code></code></pre>
+console.log('updated row:', row);</code></code></pre>
+<p>The <code>where</code> clause defaults to using the equality operator, <code>=</code>, but as described
+in the <a href="#update-set--where--options-">update()</a> method, you can use other comparison
+operators by specifying the value as an an array, e.g. <code>{ year: ['&gt;', 2000] }</code>
+to match all records where the <code>year</code> is greater than <code>2000</code>.</p>
 <p>One thing to note: this uses the modification and selection criteria specified
 to reload the data.  If, for example, you change the email address of a row
 then it will correctly reload the record using the new email address.</p>
@@ -397,6 +426,7 @@ that the correct row can be identified and reloaded:</p>
   { email: 'bobby@badger.com' },
   { reload: true }
 );</code></code></pre>
+<p>The <code>updateRow()</code> method is provided as an alias for this method.</p>
 <h2 id="updateanyrow-set--where--options-">updateAnyRow(set, where, options)</h2><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
 <a href="#updateallrows-set--where--options-">updateAllRows()</a> method that has an
 additional assertion check that no more than one row is updated.  If more
@@ -415,6 +445,9 @@ if (row) {
 else {
   console.log("could not update row - Brian not found!")
 }</code></code></pre>
+<p>You can also use other comparison operator as per the <a href="#update-set--where--options-">update()</a>
+method, e.g. <code>{ year: ['&gt;', 2000] }</code> to match all records where the <code>year</code> is greater
+than <code>2000</code>.</p>
 <h2 id="delete-where-">delete(where)</h2><p>You can probably guess what the <code>delete()</code> method does.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.delete({
   email: 'brian@badgerpower.com'
@@ -426,6 +459,9 @@ WHERE email=?</code></code></pre>
 <p>You can omit the selection criteria if you want to delete all rows in the table.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.delete()</code></code></pre>
 <p>Naturally, you should use this method with caution.</p>
+<p>You can also use other comparison operator in the <code>where</code> clause, as per the
+<a href="#update-set--where--options-">update()</a> method, e.g. <code>{ year: ['&gt;', 2000] }</code>
+to match all records where the <code>year</code> is greater than <code>2000</code>.</p>
 <h2 id="onerow-where--options-">oneRow(where, options)</h2><p>There are three different methods for fetching rows from the table using
 selection criteria.  The <code>oneRow()</code> method will return a single row.
 If the row isn't found or multiple rows match the criteria then an
@@ -436,6 +472,10 @@ const brian = await users.oneRow({
   email: 'brian@badgerpower.com'
 });
 console.log('Brian:', brian);</code></code></pre>
+<p>The <code>where</code> clause default to using the equality operator, <code>=</code>, but like the
+<a href="#update-set--where--options-">update()</a> and <a href="#delete-where-">delete()</a> method,
+you can use other comparison operators, e.g. <code>{ year: ['&gt;', 2000] }</code> to match
+all records where the <code>year</code> is greater than <code>2000</code>.</p>
 <p>You can pass a second argument which can contain various options to modify
 the selection.  For example, the <code>columns</code> option can be used to specify
 the columns that you want to select.  They can be specified as a string
@@ -470,6 +510,10 @@ if (brian) {
 else {
   console.log('Brian Badger was not found');
 }</code></code></pre>
+<p>The <code>where</code> clause default to using the equality operator, <code>=</code>, but like numerous
+other methods described above, you can use other comparison operators e.g.
+<code>{ year: ['&gt;', 2000] }</code> to match all records where the <code>year</code> is greater
+than <code>2000</code>.</p>
 <p>As per <a href="#onerow-where--options-">oneRow()</a> you can pass an additional objects
 containing options.  For example, to specify the columns you want returned:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.anyRow(
@@ -496,6 +540,9 @@ else {
 specify an empty object.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.allRows();</code></code></pre>
 <pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.allRows({ });</code></code></pre>
+<p>It shouldn't surprise you to learn that you can use other comparison operators
+in the <code>where</code> clause, e.g. <code>{ year: ['&gt;', 2000] }</code> to match all records where
+the <code>year</code> is greater than <code>2000</code>.</p>
 <p>As per <a href="#onerow-where--options-">oneRow()</a> you can pass an additional objects
 containing options.  It supports the <code>columns</code> and <code>record</code> options.  You can
 also provide <code>order</code> (or <code>orderBy</code> if you prefer to use a naming convention as
@@ -542,8 +589,6 @@ It's just like the corresponding
 <a href="manual/basic_queries.html#any-query--values--options-">any()</a>
 database method, with the additional table-specific SQL fragments available,
 as per <a href="#run-query--values--options-">run()</a>.</p>
-<p>database method, with the additional
-table-specific SQL fragments available, as per <code>run()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = users.any(
   'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
   ['Bobby Badger']

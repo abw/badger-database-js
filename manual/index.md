@@ -21,6 +21,7 @@ This is the manual for the `badger-database` Javascript module.
 * [Waiter](manual/waiter.html) - chaining together asynchronous operations
 * [Debugging](manual/debugging.html) - enabling debugging messages
 * [Extending](manual/extending.html) - extending badger-database to add your own functionality
+* [Limitations](manual/limitations.html) - coping with the limitations of badger-database
 
 ## NOTE:
 

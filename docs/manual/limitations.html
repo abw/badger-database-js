@@ -180,136 +180,37 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="connecting">Connecting</h1><p>The <code>connect()</code> function is used to connect to a database.  It is the default
-export from the <code>@abw/badger-database</code> module.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'</code></code></pre>
-<p>You can also use named imports.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { connect } from '@abw/badger-database'</code></code></pre>
-<p>Or you can use <code>require()</code> if you're still using Common JS format.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const { connect } = require('@abw/badger-database')</code></code></pre>
-<h2 id="connection-string">Connection String</h2><p>The simplest way to connect to a database is using a connection string for the
-<code>database</code> parameter. This is a concept that should be familiar to Postgres users.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'postgresql://user:password@hostname:5432/database'
-})</code></code></pre>
-<p>Internally we use the slightly shorter name of <code>postgres</code> (no <code>ql</code> at the end)
-for the Postgres engine name.  To avoid any chance of confusion, we also support
-this in the connection string and automatically "correct" it for you.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // 'postgres://...' works the same as 'postgresql://...'
-  database: 'postgres://user:password@hostname:5432/database'
-})</code></code></pre>
-<p>You can use the same connection string format for Mysql databases:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'mysql://user:password@hostname:3306/database'
-})</code></code></pre>
-<p>And also for Sqlite databases, although here the only parameter supported
-is the database filename.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'sqlite://database'
-})</code></code></pre>
-<p>For an in-memory Sqlite database, use <code>:memory:</code> as the database name:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'sqlite://:memory:'
-})</code></code></pre>
-<p>Or if you find that a bit clunky, you can use the shortened version:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'sqlite:memory'
-})</code></code></pre>
-<p>Most of the elements are optional for Postgres and Mysql databases.
-Here are the minimal versions which assume the default host (<code>localhost</code>),
-port (<code>3306</code> for Mysql and <code>5432</code> for Postgres) and no username or password.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'postgresql://database'
-})</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: 'mysql://database'
-})</code></code></pre>
-<h2 id="connection-parameters">Connection Parameters</h2><p>The connection strings shown in the previous sections are short-hand versions
-for the more verbose form.  If your connection parameters are stored in a file,
-loaded via an API call, or fetched in some other way then it may be more
-convenient to use this form.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  // "postgres://badger:s3cr3t@dbhost.com:5433/animals" is short for:
-  database: {
-    engine:   'postgres',   // or 'postgresql'
-    user:     'badger',
-    password: 's3cr3t',
-    host:     'dbhost.com',
-    port:     '5433',
-    database: 'animals',
-  }
-})</code></code></pre>
-<p>The same configuration options apply to Mysql.  For Sqlite the only supported
-option is <code>filename</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: {
-    engine:   'sqlite',
-    filename: 'animals.db',
-  }
-})</code></code></pre>
-<p>You can also use <code>:memory:</code> as the <code>filename</code> for an in-memory database.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: {
-    engine:   'sqlite',
-    filename: ':memory:',
-  }
-})</code></code></pre>
-<h2 id="connection-parameter-aliases">Connection Parameter Aliases</h2><p>I don't know about you, but whenever I'm writing the code to connect to a database there's
-a good chance I'll get one of the parameter names wrong.  Is it <code>user</code> or <code>username</code>?
-<code>pass</code> or <code>password</code>? <code>host</code> or <code>hostname</code>? <code>file</code> or <code>filename</code>?</p>
-<p>Of course you could google it, but there's no need. You can specify any of the "incorrect"
-parameters and we'll automatically fix them for you.</p>
-<p>For example, if you specify <code>file</code> instead of <code>filename</code> for a Sqlite database, we'll
-silently correct it.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: {
-    engine: 'sqlite',
-    file:   'animals.db',   // converted to 'filename'
-  }
-})</code></code></pre>
-<p>This also just works:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: {
-    engine:   'postgres',
-    database: 'animals',
-    user:     'badger',
-    pass:     's3cr3t',     // converted to 'password'
-    host:     'dbhost.com',
-    port:     '5433',
-  }
-})</code></code></pre>
-<p>And this works too:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: {
-    engine:   'postgres',
-    database: 'animals',
-    username: 'badger',     // converted to 'user'
-    password: 's3cr3t',
-    hostname: 'dbhost.com', // converted to 'host'
-    port:     '5433',
-  }
-})</code></code></pre>
-<h2 id="pool-options">Pool Options</h2><p>The Postgres and Mysql database engines use a connection pool for efficiency.
-By default, the minimum number of connections is 2 and the maximum is 10.  You
-can change these values using the <code>pool</code> option.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
-  database: { ... },
-  pool: {
-    min: 5,
-    max: 20
-  }
-})</code></code></pre>
-<p>The Sqlite engine uses <a href="https://github.com/WiseLibs/better-sqlite3">better-sqlite3</a>
-which uses synchronous functions.  This is because Sqlite serialises all queries
-and there is nothing to gain (and the potential for problems) by using a connection
-pool and/or asynchronous function (for further information about this from the author
-of better-sqlite3, see <a href="https://github.com/WiseLibs/better-sqlite3/issues/32">here</a>).</p>
-<p>As such, the pool is effectively disabled for Sqlite by setting the <code>min</code> and <code>max</code>
-values to 1.</p>
-<h2 id="disconnecting">Disconnecting</h2><p>When you're finished using the database you should call the <code>disconnect()</code> method on
-it.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">db.disconnect()</code></code></pre>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="limitations">Limitations</h1><p>The scope of the library is, quite deliberately, limited.</p>
+<p>The table methods to insert, update, select and delete rows,
+for example, are intended to automate <em>most</em> of the trivial queries
+that you might want to perform, but there will undoubtedly be cases
+where they fall short.</p>
+<p>You can't select, update or delete rows using a JOIN onto another
+table, for example.  Nor can you select rows using subqueries or
+temporary tables.</p>
+<p>Similarly, the support for relations has some shortcomings.  For example,
+you can't define many-to-many relations that use intermediate link
+tables (although that might be something that appears in a later version),</p>
+<p>These are all deliberate design decision.  Supporting everything that
+is possible in SQL would require a full-blown ORM or SQL query generator
+with all the problems that they bring.</p>
+<p>The library aims to hit the 90/10 sweet spot, where it handles 90% of
+trivial tasks that can easily be automated, leaving the remaining 10%
+(which would take 90% of the effort) up to you.</p>
+<p>Instead, the library makes it easy for you to define named queries and
+custom table or record methods so that you can use the full power of SQL
+behind the scenes, without having to embed SQL directly into your
+application code.</p>
+<p>This approach also makes it easier for the SQL expert in your team (if
+you have one), to take responsibility for building and maintaining your
+database abstraction layer, allowing other developers to treat it more
+like a black box, accessing the complex functionality hidden behind the
+scenes through simple method calls.  Even if you don't have an SQL expert,
+the fact that the library supports and encourages the use of SQL queries
+makes it easier to cut and paste examples from Stack Overflow without
+having to first translate the SQL into the right calls to a query generator.</p>
+<p>SQL is powerful.  SQL is portable.  SQL is (nearly always) the solution
+if the library doesn't already do what you want.</p>
 </div>
 </div>
 

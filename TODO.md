@@ -7,19 +7,11 @@
 
 * table fetch columns with aliases: { alias: column } ???
 
-* relations - clean up and document
-
-* relations: from (localKey) / to (remoteKey)
-
-* relations short form: localKey -> table.remoteKey
-
-{
-  artist: artist_id -> artists.id
-  tracks: id => tracks.albums_id
-}
-
 * query builder (operations)
 
 * document query() method to view generated SQL
 
 * additional 'where' criteria for relations (check names get properly quoted)
+
+* waiter is not throwing errors
+
