@@ -55,14 +55,14 @@ export class Table {
           || throwColumnValidationError('unknown', { column, table })
     )
   }
-  checkColumns(data={}, cols=[], vals=[], test={}) {
+  checkColumns(data={}, cols=[], vals=[], options={}) {
     const table = this.table;
     // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
       column => {
         const spec = this.columns[column]
           || throwColumnValidationError('unknown', { column, table });
-        if (test.writable && spec.readonly) {
+        if (options.writable && spec.readonly) {
           throwColumnValidationError('readonly', { column, table });
         }
         cols.push(spec.column);
@@ -72,8 +72,10 @@ export class Table {
     return [cols, vals];
   }
   checkWritableColumns(data, cols=[], vals=[]) {
-    // check that all the values supplied correspond to valid columns that are not readonly
     return this.checkColumns(data, cols, vals, { writable: true })
+  }
+  checkWhereColumns(...args) {
+    return this.checkColumns(...args)
   }
   checkRequiredColumns(data) {
     const table = this.table;
@@ -147,7 +149,7 @@ export class Table {
   //-----------------------------------------------------------------------------
   prepareUpdate(set, where) {
     const [dcols, dvals] = this.checkWritableColumns(set);
-    const [wcols, wvals] = this.checkColumns(where);
+    const [wcols, wvals] = this.checkWhereColumns(where);
     return [dcols, dvals, wcols, wvals];
   }
   async update(...args) {
@@ -197,7 +199,7 @@ export class Table {
   //-----------------------------------------------------------------------------
   async delete(where) {
     this.debugData("delete()", { where });
-    const [cols, vals] = this.checkColumns(where);
+    const [cols, vals] = this.checkWhereColumns(where);
     return this.engine.delete(this.table, cols, vals);
   }
 
@@ -207,7 +209,7 @@ export class Table {
   prepareFetch(where, params) {
     params.columns ||= Object.keys(this.columns);
     this.checkColumnNames(params.columns);
-    return this.checkColumns(where);
+    return this.checkWhereColumns(where);
   }
   async oneRow(where, options={}) {
     this.debugData("oneRow()", { where, options });
