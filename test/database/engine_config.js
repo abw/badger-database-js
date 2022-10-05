@@ -1,5 +1,5 @@
 import test from 'ava';
-import { databaseConfig, parseDatabaseString } from "../../src/Engines.js";
+import { databaseConfig, parseDatabaseString } from "../../src/Utils/Database.js";
 
 
 //-----------------------------------------------------------------------------
