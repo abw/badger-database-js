@@ -3576,7 +3576,7 @@
     "__docId__": 166,
     "kind": "file",
     "name": "src/Engines.js",
-    "content": "import { hasValue, isString, remove } from \"@abw/badger-utils\";\nimport { invalid, missing } from \"./Utils/Error.js\";\nimport { databaseAliases, databaseStringElements, databaseStringRegex } from \"./Constants.js\";\n\nlet Engines = { };\n\nexport const registerEngine = (name, module) => {\n  Engines[name] = async config => {\n    const engimp = await import(module);\n    const engcls = engimp.default;\n    return new engcls(config);\n  }\n}\n\nregisterEngine('sqlite',     './Engine/Sqlite.js');\nregisterEngine('mysql',      './Engine/Mysql.js');\nregisterEngine('postgres',   './Engine/Postgres.js');\nregisterEngine('postgresql', './Engine/Postgres.js');\n\n//-----------------------------------------------------------------------------\n// Engine constructor\n//-----------------------------------------------------------------------------\nexport const engine = async config => {\n  config = databaseConfig(config);\n  const engine = config.engine || missing('database.engine');\n  const handler = Engines[engine] || invalid('database.engine', engine);\n  return await handler(config);\n}\n\n//-----------------------------------------------------------------------------\n// Engine configuration\n//-----------------------------------------------------------------------------\n// databaseConfig(string)\n// databaseConfig({ database: { engine: xxx, ... } })\n//-----------------------------------------------------------------------------\nexport const databaseConfig = config => {\n  let database = config.database || missing('database');\n\n  if (isString(database)) {\n    // parse connection string\n    config.database = database = parseDatabaseString(database);\n  }\n\n  // extract the engine name to top level config\n  config.engine ||= database.engine || missing('database.engine');\n  delete database.engine;\n\n  // fixup any aliases\n  Object.entries(databaseAliases).map(\n    ([key, value]) => {\n      if (hasValue(database[key])) {\n        database[value] ||= remove(database, key);\n      }\n    }\n  )\n\n  return config;\n}\n\n//-----------------------------------------------------------------------------\n// Parse Database String\n//-----------------------------------------------------------------------------\n// parseDatabaseString('postgresql://user:password@host:port/database')\n// parseDatabaseString('sqlite://filename.db')\n// parseDatabaseString('sqlite://:memory:')\n// parseDatabaseString('sqlite:memory')\n// parseDatabaseString('driver://user:password@host:port/database')\n//                    1^^^^^   2^^^ 3^^^^^^^ 4^^^ 5^^^ 6^^^^^^^\n//-----------------------------------------------------------------------------\nexport const parseDatabaseString = string => {\n  let config = { };\n  let match;\n\n  if (string.match(/^postgres(ql)?:/)) {\n    // special case for postgres which can handle a connectionString\n    // NOTE: we accept postgresql: or postgres: as prefixes and Do The\n    // Right Thing\n    config.engine = 'postgres';\n    config.connectionString = string.replace(/^postgres:/, 'postgresql:');\n  }\n  else if ((match = string.match(/^sqlite:\\/\\/(.*)/))) {\n    // special case for sqlite which only has a filename (or \":memory:\")\n    config.engine   = 'sqlite';\n    config.filename = match[1];\n  }\n  else if (string === 'sqlite:memory') {\n    // special case for sqlite allowing 'sqlite:memory' as short for 'sqlite://:memory:'\n    config.engine   = 'sqlite';\n    config.filename = ':memory:';\n  }\n  else if ((match = string.match(databaseStringRegex))) {\n    // all other cases (e.g. mysql)\n    Object.entries(databaseStringElements).map(\n      ([key, index]) => {\n        const value = match[index];\n        if (hasValue(value)) {\n          config[key] = value;\n        }\n      }\n    );\n  }\n  else {\n    invalid('database', string);\n  }\n  return config;\n}\n\nexport default Engines;\n",
+    "content": "import { databaseConfig } from \"./Utils/Database.js\";\nimport { invalid, missing } from \"./Utils/Error.js\";\n\nlet Engines = { };\n\nexport const registerEngine = (name, module) => {\n  Engines[name] = async config => {\n    const engimp = await import(module);\n    const engcls = engimp.default;\n    return new engcls(config);\n  }\n}\n\nregisterEngine('sqlite',     './Engine/Sqlite.js');\nregisterEngine('mysql',      './Engine/Mysql.js');\nregisterEngine('postgres',   './Engine/Postgres.js');\nregisterEngine('postgresql', './Engine/Postgres.js');\n\n//-----------------------------------------------------------------------------\n// Engine constructor\n//-----------------------------------------------------------------------------\nexport const engine = async config => {\n  config = databaseConfig(config);\n  const engine = config.engine || missing('database.engine');\n  const handler = Engines[engine] || invalid('database.engine', engine);\n  return await handler(config);\n}\n\nexport default Engines;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Engines.js",
     "access": "public",
@@ -3597,7 +3597,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{registerEngine}",
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 6,
     "undocument": true,
     "params": [
       {
@@ -3629,7 +3629,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{engine}",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 22,
     "undocument": true,
     "params": [
       {
@@ -3647,66 +3647,6 @@
   },
   {
     "__docId__": 169,
-    "kind": "function",
-    "name": "databaseConfig",
-    "memberof": "src/Engines.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Engines.js~databaseConfig",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger-database",
-    "importStyle": "{databaseConfig}",
-    "description": null,
-    "lineNumber": 36,
-    "undocument": true,
-    "params": [
-      {
-        "name": "config",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 170,
-    "kind": "function",
-    "name": "parseDatabaseString",
-    "memberof": "src/Engines.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Engines.js~parseDatabaseString",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger-database",
-    "importStyle": "{parseDatabaseString}",
-    "description": null,
-    "lineNumber": 70,
-    "undocument": true,
-    "params": [
-      {
-        "name": "string",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 171,
     "kind": "variable",
     "name": "Engines",
     "memberof": "src/Engines.js",
@@ -3717,7 +3657,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "Engines",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 4,
     "undocument": true,
     "type": {
       "types": [
@@ -3726,7 +3666,7 @@
     }
   },
   {
-    "__docId__": 172,
+    "__docId__": 170,
     "kind": "file",
     "name": "src/Operator/After.js",
     "content": "import Operator from '../Operator.js';\n\nexport class After extends Operator {\n  initOperator() {\n    this.key = 'after';\n  }\n}\n\nexport default After",
@@ -3737,7 +3677,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 173,
+    "__docId__": 171,
     "kind": "class",
     "name": "After",
     "memberof": "src/Operator/After.js",
@@ -3756,7 +3696,7 @@
     ]
   },
   {
-    "__docId__": 174,
+    "__docId__": 172,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/After.js~After",
@@ -3772,7 +3712,7 @@
     "return": null
   },
   {
-    "__docId__": 175,
+    "__docId__": 173,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/After.js~After",
@@ -3789,7 +3729,7 @@
     }
   },
   {
-    "__docId__": 176,
+    "__docId__": 174,
     "kind": "file",
     "name": "src/Operator/Before.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Before extends Operator {\n  initOperator() {\n    this.key = 'before';\n  }\n}\n\nexport default Before",
@@ -3800,7 +3740,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 177,
+    "__docId__": 175,
     "kind": "class",
     "name": "Before",
     "memberof": "src/Operator/Before.js",
@@ -3819,7 +3759,7 @@
     ]
   },
   {
-    "__docId__": 178,
+    "__docId__": 176,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Before.js~Before",
@@ -3835,7 +3775,7 @@
     "return": null
   },
   {
-    "__docId__": 179,
+    "__docId__": 177,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Before.js~Before",
@@ -3852,7 +3792,7 @@
     }
   },
   {
-    "__docId__": 180,
+    "__docId__": 178,
     "kind": "file",
     "name": "src/Operator/Database.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Database extends Operator {\n  initOperator(args) {\n    this.database = args;\n  }\n  resolve(context) {\n    return {\n      database: this.database,\n      ...context,\n    }\n  }\n  dump() {\n    this.debug(\"From dump\")\n    return this.keyword + ' ' + this.table;\n  }\n}\n\nexport default Database",
@@ -3863,7 +3803,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 181,
+    "__docId__": 179,
     "kind": "class",
     "name": "Database",
     "memberof": "src/Operator/Database.js",
@@ -3882,7 +3822,7 @@
     ]
   },
   {
-    "__docId__": 182,
+    "__docId__": 180,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Database.js~Database",
@@ -3905,7 +3845,7 @@
     "return": null
   },
   {
-    "__docId__": 183,
+    "__docId__": 181,
     "kind": "member",
     "name": "database",
     "memberof": "src/Operator/Database.js~Database",
@@ -3922,7 +3862,7 @@
     }
   },
   {
-    "__docId__": 184,
+    "__docId__": 182,
     "kind": "method",
     "name": "resolve",
     "memberof": "src/Operator/Database.js~Database",
@@ -3949,7 +3889,7 @@
     }
   },
   {
-    "__docId__": 185,
+    "__docId__": 183,
     "kind": "method",
     "name": "dump",
     "memberof": "src/Operator/Database.js~Database",
@@ -3969,7 +3909,7 @@
     }
   },
   {
-    "__docId__": 186,
+    "__docId__": 184,
     "kind": "file",
     "name": "src/Operator/From.js",
     "content": "import Operator from '../Operator.js';\n\nexport class From extends Operator {\n  initOperator() {\n    this.key = 'from';\n  }\n}\n\nexport default From",
@@ -3980,7 +3920,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 187,
+    "__docId__": 185,
     "kind": "class",
     "name": "From",
     "memberof": "src/Operator/From.js",
@@ -3999,7 +3939,7 @@
     ]
   },
   {
-    "__docId__": 188,
+    "__docId__": 186,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/From.js~From",
@@ -4015,7 +3955,7 @@
     "return": null
   },
   {
-    "__docId__": 189,
+    "__docId__": 187,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/From.js~From",
@@ -4032,7 +3972,7 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 188,
     "kind": "file",
     "name": "src/Operator/Group.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Group extends Operator {\n  initOperator() {\n    this.key = 'group';\n  }\n}\n\nexport default Group",
@@ -4043,7 +3983,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 191,
+    "__docId__": 189,
     "kind": "class",
     "name": "Group",
     "memberof": "src/Operator/Group.js",
@@ -4062,7 +4002,7 @@
     ]
   },
   {
-    "__docId__": 192,
+    "__docId__": 190,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Group.js~Group",
@@ -4078,7 +4018,7 @@
     "return": null
   },
   {
-    "__docId__": 193,
+    "__docId__": 191,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Group.js~Group",
@@ -4095,7 +4035,7 @@
     }
   },
   {
-    "__docId__": 194,
+    "__docId__": 192,
     "kind": "file",
     "name": "src/Operator/Having.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Having extends Operator {\n  initOperator() {\n    this.key = 'having';\n  }\n}\n\nexport default Having",
@@ -4106,7 +4046,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 195,
+    "__docId__": 193,
     "kind": "class",
     "name": "Having",
     "memberof": "src/Operator/Having.js",
@@ -4125,7 +4065,7 @@
     ]
   },
   {
-    "__docId__": 196,
+    "__docId__": 194,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Having.js~Having",
@@ -4141,7 +4081,7 @@
     "return": null
   },
   {
-    "__docId__": 197,
+    "__docId__": 195,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Having.js~Having",
@@ -4158,7 +4098,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 196,
     "kind": "file",
     "name": "src/Operator/Join.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Join extends Operator {\n  initOperator() {\n    this.key = 'join';\n  }\n}\n\nexport default Join",
@@ -4169,7 +4109,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 199,
+    "__docId__": 197,
     "kind": "class",
     "name": "Join",
     "memberof": "src/Operator/Join.js",
@@ -4188,7 +4128,7 @@
     ]
   },
   {
-    "__docId__": 200,
+    "__docId__": 198,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Join.js~Join",
@@ -4204,7 +4144,7 @@
     "return": null
   },
   {
-    "__docId__": 201,
+    "__docId__": 199,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Join.js~Join",
@@ -4221,7 +4161,7 @@
     }
   },
   {
-    "__docId__": 202,
+    "__docId__": 200,
     "kind": "file",
     "name": "src/Operator/Order.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Order extends Operator {\n  initOperator() {\n    this.key = 'order';\n  }\n}\n\nexport default Order",
@@ -4232,7 +4172,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 203,
+    "__docId__": 201,
     "kind": "class",
     "name": "Order",
     "memberof": "src/Operator/Order.js",
@@ -4251,7 +4191,7 @@
     ]
   },
   {
-    "__docId__": 204,
+    "__docId__": 202,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Order.js~Order",
@@ -4267,7 +4207,7 @@
     "return": null
   },
   {
-    "__docId__": 205,
+    "__docId__": 203,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Order.js~Order",
@@ -4284,7 +4224,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 204,
     "kind": "file",
     "name": "src/Operator/Select.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Select extends Operator {\n  initOperator() {\n    this.key = 'select';\n  }\n}\n\nexport default Select",
@@ -4295,7 +4235,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 207,
+    "__docId__": 205,
     "kind": "class",
     "name": "Select",
     "memberof": "src/Operator/Select.js",
@@ -4314,7 +4254,7 @@
     ]
   },
   {
-    "__docId__": 208,
+    "__docId__": 206,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Select.js~Select",
@@ -4330,7 +4270,7 @@
     "return": null
   },
   {
-    "__docId__": 209,
+    "__docId__": 207,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Select.js~Select",
@@ -4347,7 +4287,7 @@
     }
   },
   {
-    "__docId__": 210,
+    "__docId__": 208,
     "kind": "file",
     "name": "src/Operator/Where.js",
     "content": "import Operator from '../Operator.js';\n\nexport class Where extends Operator {\n  initOperator() {\n    this.key = 'where';\n  }\n}\n\nexport default Where",
@@ -4358,7 +4298,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 211,
+    "__docId__": 209,
     "kind": "class",
     "name": "Where",
     "memberof": "src/Operator/Where.js",
@@ -4377,7 +4317,7 @@
     ]
   },
   {
-    "__docId__": 212,
+    "__docId__": 210,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator/Where.js~Where",
@@ -4393,7 +4333,7 @@
     "return": null
   },
   {
-    "__docId__": 213,
+    "__docId__": 211,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator/Where.js~Where",
@@ -4410,7 +4350,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 212,
     "kind": "file",
     "name": "src/Operator.js",
     "content": "// work in progress / experiment\nimport { addDebug } from \"@abw/badger\";\nimport { hasValue, objMap } from \"@abw/badger-utils\";\n\nconst defaultContext = () => ({\n  after:   [ ],\n  before:  [ ],\n  from:    [ ],\n  group:   [ ],\n  having:  [ ],\n  join:    [ ],\n  order:   [ ],\n  select:  [ ],\n  where:   [ ],\n  unknown: [ ],\n});\n\n// Each of the parts of a select query in order.  The first entry\n// is the opening keyword, the second is the text used to join\n// multiple values, e.g. { where: ['a=1', 'b=2'] } is expanded to\n// WHERE a=1 AND b=2.  Note that the entries must have whitespace\n// where applicable, e.g. after the opening keyword, e.g. 'WHERE ',\n// and around joining keywords/syntax, e.g. ' AND '\nconst parts = {\n  before:  ['',          \"\\n\"     ],\n  select:  ['SELECT ',   ', '     ],\n  from:    ['FROM ',     ', '     ],\n  join:    ['JOIN ',     \"\\nJOIN \"],\n  where:   ['WHERE ',    ' AND '  ],\n  group:   ['GROUP BY ', ', '     ],\n  having:  ['HAVING ',   ' AND '  ],\n  order:   ['ORDER BY ', ', '     ],\n  after:   ['',          \"\\n\"     ],\n};\n\nexport class Operator {\n  constructor(factory, parent, ...args) {\n    this.factory = factory;\n    this.parent  = parent;\n    this.args    = args;\n    this.key     = 'unknown';\n    this.initOperator(...args);\n\n    // debugging\n    addDebug(this, false, 'Operator > ', 'red');\n    this.debug(\"parent: \", parent?.constructor.name);\n    this.debug(\"args: \", args);\n  }\n  initOperator() {\n    // stub for subclasses\n  }\n  resolveChain() {\n    return this.resolve(\n      this.parent\n        ? this.parent.resolveChain()\n        : defaultContext()\n    );\n  }\n  resolve(context) {\n    const key = this.key;\n    return {\n      ...context,\n      [key]: [...context[key], ...this.args]\n    }\n  }\n  sqlFragments(context=this.resolveChain()) {\n    return objMap(\n      context,\n      (value, key) => {\n        const part = parts[key];\n        return part && value.length\n          ? part[0] + value.join(part[1])\n          : null;\n      }\n    )\n  }\n  sql() {\n    const frags = this.sqlFragments();\n\n    return Object.keys(parts)\n      .map( part => frags[part] )\n      .filter( i => hasValue(i) )\n      .join(\"\\n\");\n  }\n}\n\nexport default Operator",
@@ -4421,7 +4361,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 215,
+    "__docId__": 213,
     "kind": "function",
     "name": "defaultContext",
     "memberof": "src/Operator.js",
@@ -4441,7 +4381,7 @@
     "ignore": true
   },
   {
-    "__docId__": 216,
+    "__docId__": 214,
     "kind": "variable",
     "name": "parts",
     "memberof": "src/Operator.js",
@@ -4462,7 +4402,7 @@
     "ignore": true
   },
   {
-    "__docId__": 217,
+    "__docId__": 215,
     "kind": "class",
     "name": "Operator",
     "memberof": "src/Operator.js",
@@ -4478,7 +4418,7 @@
     "interface": false
   },
   {
-    "__docId__": 218,
+    "__docId__": 216,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Operator.js~Operator",
@@ -4492,7 +4432,7 @@
     "undocument": true
   },
   {
-    "__docId__": 219,
+    "__docId__": 217,
     "kind": "member",
     "name": "factory",
     "memberof": "src/Operator.js~Operator",
@@ -4509,7 +4449,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 218,
     "kind": "member",
     "name": "parent",
     "memberof": "src/Operator.js~Operator",
@@ -4526,7 +4466,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 219,
     "kind": "member",
     "name": "args",
     "memberof": "src/Operator.js~Operator",
@@ -4543,7 +4483,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 220,
     "kind": "member",
     "name": "key",
     "memberof": "src/Operator.js~Operator",
@@ -4560,7 +4500,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 221,
     "kind": "method",
     "name": "initOperator",
     "memberof": "src/Operator.js~Operator",
@@ -4576,7 +4516,7 @@
     "return": null
   },
   {
-    "__docId__": 224,
+    "__docId__": 222,
     "kind": "method",
     "name": "resolveChain",
     "memberof": "src/Operator.js~Operator",
@@ -4596,7 +4536,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 223,
     "kind": "method",
     "name": "resolve",
     "memberof": "src/Operator.js~Operator",
@@ -4623,7 +4563,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 224,
     "kind": "method",
     "name": "sqlFragments",
     "memberof": "src/Operator.js~Operator",
@@ -4651,7 +4591,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 225,
     "kind": "method",
     "name": "sql",
     "memberof": "src/Operator.js~Operator",
@@ -4671,7 +4611,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 226,
     "kind": "file",
     "name": "src/Operators.js",
     "content": "// work in progress / experiment\n\nimport After     from './Operator/After.js';\nimport Before    from './Operator/Before.js';\nimport From      from './Operator/From.js';\nimport Group     from './Operator/Group.js';\nimport Having    from './Operator/Having.js';\nimport Join      from './Operator/Join.js';\nimport Order     from './Operator/Order.js';\nimport Select    from './Operator/Select.js';\nimport Where     from './Operator/Where.js';\n\nexport const operators = {\n  after:     After,\n  before:    Before,\n  from:      From,\n  group:     Group,\n  groupBy:   Group,\n  having:    Having,\n  join:      Join,\n  order:     Order,\n  orderBy:   Order,\n  select:    Select,\n  where:     Where,\n}\n\nexport const factory = (parent, type, ...args) => {\n  // console.log('factory [%s] => ', type);\n  return new operators[type](factory, parent, ...args);\n}\n\nexport default factory;",
@@ -4682,7 +4622,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 229,
+    "__docId__": 227,
     "kind": "variable",
     "name": "operators",
     "memberof": "src/Operators.js",
@@ -4702,7 +4642,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 228,
     "kind": "function",
     "name": "factory",
     "memberof": "src/Operators.js",
@@ -4745,7 +4685,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 229,
     "kind": "file",
     "name": "src/Proxy/Model.js",
     "content": "import { fail } from \"@abw/badger-utils\";\n\nexport const modelProxy = database =>\n  new Proxy(\n    database,\n    {\n      get(target, prop) {\n        if (prop === 'then') {\n          return Reflect.get(target, prop);\n        }\n        if (target.hasTable(prop)) {\n          return target.table(prop);\n        }\n        return target[prop]\n          || fail(\"Invalid table specified: \", prop);\n      }\n    }\n  );\n\nexport default modelProxy\n",
@@ -4756,7 +4696,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 232,
+    "__docId__": 230,
     "kind": "function",
     "name": "modelProxy",
     "memberof": "src/Proxy/Model.js",
@@ -4786,7 +4726,7 @@
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 231,
     "kind": "file",
     "name": "src/Proxy/Operator.js",
     "content": "import { operators } from \"../Operators.js\";\n\nexport const operatorProxy = parent =>\n  new Proxy(\n    parent,\n    {\n      get(target, prop) {\n        // console.log('operatorProxy %s', prop);\n        if (operators[prop]) {\n          return (\n            (...args) => operatorProxy(target.factory(parent, prop, ...args))\n          ).bind(target);\n        }\n        else {\n          return target[prop];\n        }\n      }\n    }\n  );\n\nexport default operatorProxy\n",
@@ -4797,7 +4737,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 234,
+    "__docId__": 232,
     "kind": "function",
     "name": "operatorProxy",
     "memberof": "src/Proxy/Operator.js",
@@ -4827,7 +4767,7 @@
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 233,
     "kind": "file",
     "name": "src/Proxy/Record.js",
     "content": "export const recordProxy = record =>\n  new Proxy(\n    record,\n    {\n      get(target, prop) {\n        // console.log('recordProxy get(%s)', prop);\n        // first look to see if the record has the property/method itself\n        if (Reflect.has(target, prop)) {\n          return Reflect.get(target, prop);\n        }\n        // then look to see if it's a data item\n        if (Reflect.has(target.row, prop)) {\n          return Reflect.get(target.row, prop);\n        }\n        // then look to see if it's a relation\n        if (Reflect.has(target.table.relations, prop)) {\n          // console.log('recordProxy column: ', prop);\n          return target.relation(prop);\n        }\n        return Reflect.get(target, prop);\n      }\n    }\n  );\n\nexport default recordProxy\n",
@@ -4838,7 +4778,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 236,
+    "__docId__": 234,
     "kind": "function",
     "name": "recordProxy",
     "memberof": "src/Proxy/Record.js",
@@ -4868,7 +4808,7 @@
     }
   },
   {
-    "__docId__": 237,
+    "__docId__": 235,
     "kind": "file",
     "name": "src/Proxy/Row.js",
     "content": "export const rowProxy = table => query =>\n  new Proxy(\n    query,\n    {\n      get(target, prop) {\n        if (prop === 'record') {\n          return () => table.record(...arguments);\n        }\n        else if (prop === 'then') {\n          return (\n            fn => table.rowProxy(target.then(fn))\n          ).bind(target)\n        }\n        return target[prop];\n      }\n    }\n  );\n\nexport default rowProxy\n",
@@ -4879,7 +4819,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 238,
+    "__docId__": 236,
     "kind": "function",
     "name": "rowProxy",
     "memberof": "src/Proxy/Row.js",
@@ -4909,7 +4849,7 @@
     }
   },
   {
-    "__docId__": 239,
+    "__docId__": 237,
     "kind": "file",
     "name": "src/Proxy/Rows.js",
     "content": "export const rowsProxy = table => query =>\n  new Proxy(\n    query,\n    {\n      get(target, prop) {\n        if (prop === 'records') {\n          return () => table.records(...arguments);\n        }\n        else if (prop === 'then') {\n          return (\n            fn => table.rowsProxy(target.then(fn))\n          ).bind(target)\n        }\n        return target[prop];\n      }\n    }\n  );\n\nexport default rowsProxy\n",
@@ -4920,7 +4860,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 240,
+    "__docId__": 238,
     "kind": "function",
     "name": "rowsProxy",
     "memberof": "src/Proxy/Rows.js",
@@ -4950,7 +4890,7 @@
     }
   },
   {
-    "__docId__": 241,
+    "__docId__": 239,
     "kind": "file",
     "name": "src/Queries.js",
     "content": "import { fail } from \"@abw/badger-utils\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nconst defaults = {\n  maxExpansion: 16,\n  fragments: { },\n  queries:  { }\n};\n\nexport class Queries {\n  constructor(schema) {\n    const config = this.config = { ...defaults, ...schema };\n    //this.fragments = schema.fragments || { };\n    //this.queries = schema.queries || { };\n    //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;\n    addDebugMethod(this, 'queries', config);\n  }\n  query(name) {\n    // if the name is a single word then it must be a named query, otherwise\n    // we assume it's an SQL query possibly with embedded fragments.\n    return this.expandFragments(\n      name.match(/^\\w+$/)\n        ? this.config.queries[name] || fail(\"Invalid query specified: \", name)\n        : name\n    );\n  }\n  expandFragments(query) {\n    const fragments = this.config.fragments;\n    let sql = query;\n    let max = this.config.maxExpansion;\n    let runaway = 0;\n    let expanded = [ ];\n\n    // eslint-disable-next-line no-constant-condition\n    while (true) {\n      let replaced = false;\n      sql = sql.replace(\n        /<(\\w+?)>/g,\n        (match, word) => {\n          replaced = true;\n          expanded.push(word);\n          return fragments[word] || fail(\"Invalid fragment in SQL expansion: <\", word, \">\");\n        }\n      );\n      if (! replaced) {\n        break;\n      }\n      if (++runaway >= max) {\n        fail(\n          \"Maximum SQL expansion limit (maxExpansion=\", max, \") exceeded: \",\n          expanded.join(' -> ', )\n        )\n      }\n    }\n    this.debugData(\"expandFragments()\", { query, sql });\n    return sql;\n  }\n}\n\nexport const queries = (schema) =>\n  new Queries(schema)\n\nexport default Queries",
@@ -4961,7 +4901,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 242,
+    "__docId__": 240,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Queries.js",
@@ -4982,7 +4922,7 @@
     "ignore": true
   },
   {
-    "__docId__": 243,
+    "__docId__": 241,
     "kind": "class",
     "name": "Queries",
     "memberof": "src/Queries.js",
@@ -4998,7 +4938,7 @@
     "interface": false
   },
   {
-    "__docId__": 244,
+    "__docId__": 242,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Queries.js~Queries",
@@ -5012,7 +4952,7 @@
     "undocument": true
   },
   {
-    "__docId__": 245,
+    "__docId__": 243,
     "kind": "method",
     "name": "query",
     "memberof": "src/Queries.js~Queries",
@@ -5039,7 +4979,7 @@
     }
   },
   {
-    "__docId__": 246,
+    "__docId__": 244,
     "kind": "method",
     "name": "expandFragments",
     "memberof": "src/Queries.js~Queries",
@@ -5066,7 +5006,7 @@
     }
   },
   {
-    "__docId__": 247,
+    "__docId__": 245,
     "kind": "function",
     "name": "queries",
     "memberof": "src/Queries.js",
@@ -5092,7 +5032,7 @@
     "return": null
   },
   {
-    "__docId__": 248,
+    "__docId__": 246,
     "kind": "file",
     "name": "src/Query.js",
     "content": "import { fail } from \"@abw/badger-utils\";\nimport { notImplementedInBaseClass } from \"./Utils.js\";\n\nconst notImplemented = notImplementedInBaseClass('Query');\n\nexport class Query {\n  async execute() {\n    notImplemented(\"execute()\")\n  }\n  async all() {\n    notImplemented(\"all()\")\n  }\n  async any() {\n    notImplemented(\"any()\")\n  }\n  async one(params) {\n    const rows = await this.all(params);\n    if (rows.length === 1) {\n      return rows[0];\n    }\n    else if (rows.length === 0) {\n      fail(\"No rows returned when one was expected\");\n    }\n    else {\n      fail(`${rows.length} rows returned when one was expected`);\n    }\n  }\n}\n\nexport default Query",
@@ -5103,7 +5043,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 249,
+    "__docId__": 247,
     "kind": "variable",
     "name": "notImplemented",
     "memberof": "src/Query.js",
@@ -5124,7 +5064,7 @@
     "ignore": true
   },
   {
-    "__docId__": 250,
+    "__docId__": 248,
     "kind": "class",
     "name": "Query",
     "memberof": "src/Query.js",
@@ -5140,7 +5080,7 @@
     "interface": false
   },
   {
-    "__docId__": 251,
+    "__docId__": 249,
     "kind": "method",
     "name": "execute",
     "memberof": "src/Query.js~Query",
@@ -5156,7 +5096,7 @@
     "return": null
   },
   {
-    "__docId__": 252,
+    "__docId__": 250,
     "kind": "method",
     "name": "all",
     "memberof": "src/Query.js~Query",
@@ -5172,7 +5112,7 @@
     "return": null
   },
   {
-    "__docId__": 253,
+    "__docId__": 251,
     "kind": "method",
     "name": "any",
     "memberof": "src/Query.js~Query",
@@ -5188,7 +5128,7 @@
     "return": null
   },
   {
-    "__docId__": 254,
+    "__docId__": 252,
     "kind": "method",
     "name": "one",
     "memberof": "src/Query.js~Query",
@@ -5215,10 +5155,10 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 253,
     "kind": "file",
     "name": "src/Record.js",
-    "content": "import relations from \"./Relation/index.js\";\nimport { fail } from \"@abw/badger-utils\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\nimport { throwDeletedRecordError } from \"./Utils/Error.js\";\n\nexport class Record {\n  constructor(table, row, config={}) {\n    this.table     = table;\n    this.database  = table.database;\n    this.row       = row;\n    this.relations = { };\n    this.config    = config;\n    addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}\\n----------> ` }, config);\n  }\n  async update(set) {\n    this.debugData(\"update()\", { set });\n    this.assertNotDeleted('update');\n    const where = this.table.identity(this.row);\n    const update = await this.table.updateOneRow(set, where, { reload: true });\n    Object.assign(this.row, update);\n    return this;\n  }\n  async delete() {\n    this.debugData(\"delete()\");\n    this.assertNotDeleted('delete');\n    const where = this.table.identity(this.row);\n    await this.table.delete(where);\n    this.deleted = true;\n    return this;\n  }\n  assertNotDeleted(action) {\n    if (this.deleted) {\n      throwDeletedRecordError(\n        'action',\n        {\n          action,\n          table: this.table.table,\n          id:    this.table.keys.map( key => this.row[key] ).join('/')\n        }\n      )\n    }\n  }\n  async relation(name) {\n    this.debug('relation(%s)', name);\n    return this.relations[name]\n      ||=  await this.initRelation(name);\n  }\n  async initRelation(name) {\n    this.debug('initRelation(%s)', name);\n    const relation = this.table.relations[name] || fail(\"Invalid relation specified: \", name);\n    const rfunc    = relations[relation.type] || fail(\"Invalid relation type: \", relation.type);\n    relation.name ||= name;\n    return await rfunc(this, relation);\n  }\n}\n\nexport default Record;\n",
+    "content": "import relations from \"./Relation/index.js\";\nimport { fail } from \"@abw/badger-utils\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\nimport { throwDeletedRecordError } from \"./Utils/Error.js\";\nimport { relationConfig } from \"./Utils/Relation.js\";\n\nexport class Record {\n  constructor(table, row, config={}) {\n    this.table     = table;\n    this.database  = table.database;\n    this.row       = row;\n    this.relations = { };\n    this.config    = config;\n    addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}\\n----------> ` }, config);\n  }\n  async update(set) {\n    this.debugData(\"update()\", { set });\n    this.assertNotDeleted('update');\n    const where = this.table.identity(this.row);\n    const update = await this.table.updateOneRow(set, where, { reload: true });\n    Object.assign(this.row, update);\n    return this;\n  }\n  async delete() {\n    this.debugData(\"delete()\");\n    this.assertNotDeleted('delete');\n    const where = this.table.identity(this.row);\n    await this.table.delete(where);\n    this.deleted = true;\n    return this;\n  }\n  assertNotDeleted(action) {\n    if (this.deleted) {\n      throwDeletedRecordError(\n        'action',\n        {\n          action,\n          table: this.table.table,\n          id:    this.table.keys.map( key => this.row[key] ).join('/')\n        }\n      )\n    }\n  }\n  async relation(name) {\n    this.debug('relation(%s)', name);\n    return this.relations[name]\n      ||=  await this.initRelation(name);\n  }\n  async initRelation(name) {\n    this.debug('initRelation(%s)', name);\n    const table = this.table.table;\n    const relation = relationConfig(\n      table, name,\n      this.table.relations[name]\n        || fail(`Invalid \"${name}\" relation specified for ${table} table`)\n    )\n    const rfunc = relations[relation.type]\n      || fail(`Invalid \"${relation.type}\" relation type specified for ${name} relation in ${table} table`);\n    return await rfunc(this, relation);\n  }\n}\n\nexport default Record;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Record.js",
     "access": "public",
@@ -5226,7 +5166,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 256,
+    "__docId__": 254,
     "kind": "class",
     "name": "Record",
     "memberof": "src/Record.js",
@@ -5237,12 +5177,12 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{Record}",
     "description": null,
-    "lineNumber": 6,
+    "lineNumber": 7,
     "undocument": true,
     "interface": false
   },
   {
-    "__docId__": 257,
+    "__docId__": 255,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Record.js~Record",
@@ -5252,33 +5192,16 @@
     "longname": "src/Record.js~Record#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 8,
     "undocument": true
   },
   {
-    "__docId__": 258,
+    "__docId__": 256,
     "kind": "member",
     "name": "table",
     "memberof": "src/Record.js~Record",
     "static": false,
     "longname": "src/Record.js~Record#table",
-    "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 259,
-    "kind": "member",
-    "name": "database",
-    "memberof": "src/Record.js~Record",
-    "static": false,
-    "longname": "src/Record.js~Record#database",
     "access": "public",
     "description": null,
     "lineNumber": 9,
@@ -5290,12 +5213,12 @@
     }
   },
   {
-    "__docId__": 260,
+    "__docId__": 257,
     "kind": "member",
-    "name": "row",
+    "name": "database",
     "memberof": "src/Record.js~Record",
     "static": false,
-    "longname": "src/Record.js~Record#row",
+    "longname": "src/Record.js~Record#database",
     "access": "public",
     "description": null,
     "lineNumber": 10,
@@ -5307,32 +5230,15 @@
     }
   },
   {
-    "__docId__": 261,
+    "__docId__": 258,
     "kind": "member",
-    "name": "relations",
+    "name": "row",
     "memberof": "src/Record.js~Record",
     "static": false,
-    "longname": "src/Record.js~Record#relations",
+    "longname": "src/Record.js~Record#row",
     "access": "public",
     "description": null,
     "lineNumber": 11,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{}"
-      ]
-    }
-  },
-  {
-    "__docId__": 262,
-    "kind": "member",
-    "name": "config",
-    "memberof": "src/Record.js~Record",
-    "static": false,
-    "longname": "src/Record.js~Record#config",
-    "access": "public",
-    "description": null,
-    "lineNumber": 12,
     "undocument": true,
     "type": {
       "types": [
@@ -5341,7 +5247,41 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 259,
+    "kind": "member",
+    "name": "relations",
+    "memberof": "src/Record.js~Record",
+    "static": false,
+    "longname": "src/Record.js~Record#relations",
+    "access": "public",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{}"
+      ]
+    }
+  },
+  {
+    "__docId__": 260,
+    "kind": "member",
+    "name": "config",
+    "memberof": "src/Record.js~Record",
+    "static": false,
+    "longname": "src/Record.js~Record#config",
+    "access": "public",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 261,
     "kind": "method",
     "name": "update",
     "memberof": "src/Record.js~Record",
@@ -5351,7 +5291,7 @@
     "longname": "src/Record.js~Record#update",
     "access": "public",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 16,
     "undocument": true,
     "params": [
       {
@@ -5368,7 +5308,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 262,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Record.js~Record",
@@ -5378,7 +5318,7 @@
     "longname": "src/Record.js~Record#delete",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "params": [],
     "return": {
@@ -5388,7 +5328,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 263,
     "kind": "member",
     "name": "deleted",
     "memberof": "src/Record.js~Record",
@@ -5396,7 +5336,7 @@
     "longname": "src/Record.js~Record#deleted",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 29,
     "undocument": true,
     "type": {
       "types": [
@@ -5405,7 +5345,7 @@
     }
   },
   {
-    "__docId__": 266,
+    "__docId__": 264,
     "kind": "method",
     "name": "assertNotDeleted",
     "memberof": "src/Record.js~Record",
@@ -5415,7 +5355,7 @@
     "longname": "src/Record.js~Record#assertNotDeleted",
     "access": "public",
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "undocument": true,
     "params": [
       {
@@ -5428,7 +5368,7 @@
     "return": null
   },
   {
-    "__docId__": 267,
+    "__docId__": 265,
     "kind": "method",
     "name": "relation",
     "memberof": "src/Record.js~Record",
@@ -5438,7 +5378,7 @@
     "longname": "src/Record.js~Record#relation",
     "access": "public",
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 44,
     "undocument": true,
     "params": [
       {
@@ -5455,7 +5395,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 266,
     "kind": "method",
     "name": "initRelation",
     "memberof": "src/Record.js~Record",
@@ -5465,7 +5405,7 @@
     "longname": "src/Record.js~Record#initRelation",
     "access": "public",
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 49,
     "undocument": true,
     "params": [
       {
@@ -5482,10 +5422,10 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 267,
     "kind": "file",
     "name": "src/Relation/many.js",
-    "content": "export const many = async (record, spec={}) => {\n  const lkey  = spec.localKey;\n  const rkey  = spec.remoteKey;\n  const order = spec.orderBy || spec.order;\n  let where   = spec.where   || { };\n  if (lkey && rkey) {\n    where[rkey] = record.row[lkey];\n  }\n  const options = order ? { order } : { };\n  if (spec.debug) {\n    console.log('many() relation: ', spec);\n    console.log('many() relation table: ', spec.table);\n    console.log('many() relation where: ', where);\n  }\n  const table = await record.database.table(spec.table);\n  return await table.allRecords(where, options);\n}\n\nexport default many\n",
+    "content": "export const many = async (record, spec={}) => {\n  const lkey  = spec.from;\n  const rkey  = spec.to;\n  const order = spec.order;\n  let where   = spec.where   || { };\n  if (lkey && rkey) {\n    where[rkey] = record.row[lkey];\n  }\n  const options = order ? { order } : { };\n  if (spec.debug) {\n    console.log('many() relation: ', spec);\n    console.log('many() relation table: ', spec.table);\n    console.log('many() relation where: ', where);\n  }\n  const table = await record.database.table(spec.table);\n  return await table.allRecords(where, options);\n}\n\nexport default many\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Relation/many.js",
     "access": "public",
@@ -5493,7 +5433,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 270,
+    "__docId__": 268,
     "kind": "function",
     "name": "many",
     "memberof": "src/Relation/many.js",
@@ -5532,10 +5472,10 @@
     }
   },
   {
-    "__docId__": 271,
+    "__docId__": 269,
     "kind": "file",
     "name": "src/Relation/one.js",
-    "content": "export const one = async (record, spec={}) => {\n  // console.log('relation:one record: ', record);\n  // console.log('relation:one spec: ', spec);\n  const lkey  = spec.localKey;\n  const rkey  = spec.remoteKey;\n  let where   = spec.where || { };\n  if (lkey && rkey) {\n    where[rkey] = record.row[lkey];\n  }\n  if (spec.debug) {\n    console.log('one() relation: ', spec);\n    console.log('one() relation table: ', spec.table);\n    console.log('one() relation where: ', where);\n  }\n  const table = await record.database.table(spec.table);\n  return await table.oneRecord(where);\n}\n\nexport default one",
+    "content": "export const one = async (record, spec={}) => {\n  // console.log('relation:one record: ', record);\n  // console.log('relation:one spec: ', spec);\n  const lkey  = spec.from;\n  const rkey  = spec.to;\n  let where   = spec.where || { };\n  if (lkey && rkey) {\n    where[rkey] = record.row[lkey];\n  }\n  if (spec.debug) {\n    console.log('one() relation: ', spec);\n    console.log('one() relation table: ', spec.table);\n    console.log('one() relation where: ', where);\n  }\n  const table = await record.database.table(spec.table);\n  return await table.oneRecord(where);\n}\n\nexport default one",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Relation/one.js",
     "access": "public",
@@ -5543,7 +5483,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 272,
+    "__docId__": 270,
     "kind": "function",
     "name": "one",
     "memberof": "src/Relation/one.js",
@@ -5582,7 +5522,7 @@
     }
   },
   {
-    "__docId__": 273,
+    "__docId__": 271,
     "kind": "file",
     "name": "src/Schema.js",
     "content": "import Queries from \"./Queries.js\";\nimport { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from \"@abw/badger-utils\";\nimport { addDebug } from \"@abw/badger\";\n\nconst DEFAULT_ID = 'id';\nconst COLUMN_SET_PREFIX = /^(@|\\.\\.\\.)/;\n\nexport class Schema {\n  constructor(database, schema) {\n    this.database       = database || fail(\"No database specified\");\n    this.table          = schema.table || fail(\"No table name specified\");\n    this.relations      = schema.relations || { };\n    this.prepareColumns(schema);\n    this.prepareKeys(schema);\n    this.prepareColumnSets(schema);\n    this.prepareFragments(schema);\n    this.queries = new Queries({\n      queries:   schema.queries,\n      fragments: this.fragments\n    });\n    // TODO: column sets for select, update, etc.\n\n    addDebug(this, schema.debug, schema.debugPrefix || 'Schema', schema.debugColor);\n    this.debug('columnIndex: ', this.columnIndex);\n    this.debug('fragments: ', this.fragments);\n  }\n  prepareColumns(schema) {\n    const table      = schema.table;\n    const columns    = schema.columns;\n    const index      = splitHash(columns, () => ({ }))\n    this.columnIndex = objMap(\n      index,\n      (value, key) => {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = key);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = table + '.' + column;\n        return value;\n      }\n    )\n    this.columnNames    = Object.keys(this.columnIndex);\n    this.virtualColumns = schema.virtualColumns || { };\n    this.allColumns     = {\n      // ...splitHash(this.columnNames),\n      // ...splitHash(Object.keys(this.virtualColumns))\n      ...this.columnIndex,\n      ...this.virtualColumns\n    };\n  }\n  prepareColumnSets(schema) {\n    const index = splitHash(schema.columnSets, () => ({ }))\n    this.columnSets = objMap(\n      index,\n      (spec) => {\n        const basis   = (isString(spec) || isArray(spec)) ? splitList(spec) : this.columnNames;\n        const include = splitList(spec.include);\n        const exclude = splitHash(spec.exclude);\n        const result = [...basis, ...include]\n          .filter( column => ! exclude[column] );\n        return result;\n      }\n    )\n  }\n  prepareKeys(schema) {\n    this.keys = splitList(schema.keys);\n    if (schema.id) {\n      this.id = schema.id;\n      this.keys.unshift(this.id);\n    }\n    else if (this.keys.length === 0) {\n      this.id = DEFAULT_ID;\n      this.keys.unshift(this.id);\n    }\n    this.keyIndex = splitHash(this.keys);\n  }\n  prepareFragments(schema) {\n    const quote     = this.database.quote.bind(this.database);\n    const fragments = schema.fragments || { };\n    const vcolumns  = Object.entries(this.virtualColumns).reduce(\n      (result, [name, defn]) => {\n        result[name] = `${defn} as ${name}`;\n        return result;\n      },\n      { }\n    );\n    this.fragments = {\n      table:    quote(this.table),\n      columns:  this.columnNames.map(quote).join(', '),\n      tcolumns: this.columnNames.map( n => quote(this.columnIndex[n].tableColumn) ).join(', '),\n      ...vcolumns,\n      ...fragments\n    };\n  }\n  query(name) {\n    return this.queries.query(name);\n  }\n\n  // TODO: refactor remaining methods\n  column(name) {\n    return this.columnIndex[name]\n      ? this.columnIndex[name].tableColumn\n      : this.virtualColumns[name]\n        ? this.database.raw(`${this.virtualColumns[name]} as ${name}`)\n        : fail('Invalid column specified: ', name);\n  }\n  columnSet(name) {\n    return this.columnSets[name]\n      || fail('Invalid columnSet specified: ', name);\n  }\n  defaultColumns() {\n    return this.columnSets.default\n      || this.columns;\n  }\n  columns(names) {\n    return hasValue(names)\n      ? this.resolveColumns(names)\n      : this.defaultColumns().map( name => this.column(name) );\n  }\n  resolveColumns(names) {\n    const list = splitList(names);\n    let cols = [ ];\n    list.forEach(\n      name => {\n        this.debug(\"resolveColumns(%s) / %s\", names, name);\n        if (isString(name)) {\n          if (name.match(COLUMN_SET_PREFIX)) {\n            this.debug(\"%s is a columnSet %s\", name, name.replace(COLUMN_SET_PREFIX, ''));\n            cols.push(\n              ...this.columnSet(name.replace(COLUMN_SET_PREFIX, ''))\n                .map( name => this.column(name) )\n            );\n          }\n          else {\n            this.debug(\"%s is a column\", name);\n            cols.push(this.column(name));\n          }\n        }\n        else {\n          fail(\"resolveColumns() can only currently resolve strings\");\n        }\n      }\n    )\n    this.debug(\"resolveColumns(%s) => \", names, cols)\n    return cols;\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n}\n\nexport const schema = (database, schema) =>\n  new Schema(database, schema);\n\nexport default Schema\n",
@@ -5593,7 +5533,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 274,
+    "__docId__": 272,
     "kind": "variable",
     "name": "DEFAULT_ID",
     "memberof": "src/Schema.js",
@@ -5614,7 +5554,7 @@
     "ignore": true
   },
   {
-    "__docId__": 275,
+    "__docId__": 273,
     "kind": "variable",
     "name": "COLUMN_SET_PREFIX",
     "memberof": "src/Schema.js",
@@ -5635,7 +5575,7 @@
     "ignore": true
   },
   {
-    "__docId__": 276,
+    "__docId__": 274,
     "kind": "class",
     "name": "Schema",
     "memberof": "src/Schema.js",
@@ -5651,7 +5591,7 @@
     "interface": false
   },
   {
-    "__docId__": 277,
+    "__docId__": 275,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Schema.js~Schema",
@@ -5665,7 +5605,7 @@
     "undocument": true
   },
   {
-    "__docId__": 278,
+    "__docId__": 276,
     "kind": "member",
     "name": "database",
     "memberof": "src/Schema.js~Schema",
@@ -5682,7 +5622,7 @@
     }
   },
   {
-    "__docId__": 279,
+    "__docId__": 277,
     "kind": "member",
     "name": "table",
     "memberof": "src/Schema.js~Schema",
@@ -5699,7 +5639,7 @@
     }
   },
   {
-    "__docId__": 280,
+    "__docId__": 278,
     "kind": "member",
     "name": "relations",
     "memberof": "src/Schema.js~Schema",
@@ -5716,7 +5656,7 @@
     }
   },
   {
-    "__docId__": 281,
+    "__docId__": 279,
     "kind": "member",
     "name": "queries",
     "memberof": "src/Schema.js~Schema",
@@ -5733,7 +5673,7 @@
     }
   },
   {
-    "__docId__": 282,
+    "__docId__": 280,
     "kind": "method",
     "name": "prepareColumns",
     "memberof": "src/Schema.js~Schema",
@@ -5756,7 +5696,7 @@
     "return": null
   },
   {
-    "__docId__": 283,
+    "__docId__": 281,
     "kind": "member",
     "name": "columnIndex",
     "memberof": "src/Schema.js~Schema",
@@ -5773,7 +5713,7 @@
     }
   },
   {
-    "__docId__": 284,
+    "__docId__": 282,
     "kind": "member",
     "name": "columnNames",
     "memberof": "src/Schema.js~Schema",
@@ -5790,7 +5730,7 @@
     }
   },
   {
-    "__docId__": 285,
+    "__docId__": 283,
     "kind": "member",
     "name": "virtualColumns",
     "memberof": "src/Schema.js~Schema",
@@ -5807,7 +5747,7 @@
     }
   },
   {
-    "__docId__": 286,
+    "__docId__": 284,
     "kind": "member",
     "name": "allColumns",
     "memberof": "src/Schema.js~Schema",
@@ -5824,7 +5764,7 @@
     }
   },
   {
-    "__docId__": 287,
+    "__docId__": 285,
     "kind": "method",
     "name": "prepareColumnSets",
     "memberof": "src/Schema.js~Schema",
@@ -5847,7 +5787,7 @@
     "return": null
   },
   {
-    "__docId__": 288,
+    "__docId__": 286,
     "kind": "member",
     "name": "columnSets",
     "memberof": "src/Schema.js~Schema",
@@ -5864,7 +5804,7 @@
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 287,
     "kind": "method",
     "name": "prepareKeys",
     "memberof": "src/Schema.js~Schema",
@@ -5887,7 +5827,7 @@
     "return": null
   },
   {
-    "__docId__": 290,
+    "__docId__": 288,
     "kind": "member",
     "name": "keys",
     "memberof": "src/Schema.js~Schema",
@@ -5904,7 +5844,7 @@
     }
   },
   {
-    "__docId__": 291,
+    "__docId__": 289,
     "kind": "member",
     "name": "id",
     "memberof": "src/Schema.js~Schema",
@@ -5921,7 +5861,7 @@
     }
   },
   {
-    "__docId__": 293,
+    "__docId__": 291,
     "kind": "member",
     "name": "keyIndex",
     "memberof": "src/Schema.js~Schema",
@@ -5938,7 +5878,7 @@
     }
   },
   {
-    "__docId__": 294,
+    "__docId__": 292,
     "kind": "method",
     "name": "prepareFragments",
     "memberof": "src/Schema.js~Schema",
@@ -5961,7 +5901,7 @@
     "return": null
   },
   {
-    "__docId__": 295,
+    "__docId__": 293,
     "kind": "member",
     "name": "fragments",
     "memberof": "src/Schema.js~Schema",
@@ -5978,7 +5918,7 @@
     }
   },
   {
-    "__docId__": 296,
+    "__docId__": 294,
     "kind": "method",
     "name": "query",
     "memberof": "src/Schema.js~Schema",
@@ -6005,7 +5945,7 @@
     }
   },
   {
-    "__docId__": 297,
+    "__docId__": 295,
     "kind": "method",
     "name": "column",
     "memberof": "src/Schema.js~Schema",
@@ -6032,7 +5972,7 @@
     }
   },
   {
-    "__docId__": 298,
+    "__docId__": 296,
     "kind": "method",
     "name": "columnSet",
     "memberof": "src/Schema.js~Schema",
@@ -6059,7 +5999,7 @@
     }
   },
   {
-    "__docId__": 299,
+    "__docId__": 297,
     "kind": "method",
     "name": "defaultColumns",
     "memberof": "src/Schema.js~Schema",
@@ -6079,7 +6019,7 @@
     }
   },
   {
-    "__docId__": 300,
+    "__docId__": 298,
     "kind": "method",
     "name": "columns",
     "memberof": "src/Schema.js~Schema",
@@ -6106,7 +6046,7 @@
     }
   },
   {
-    "__docId__": 301,
+    "__docId__": 299,
     "kind": "method",
     "name": "resolveColumns",
     "memberof": "src/Schema.js~Schema",
@@ -6133,7 +6073,7 @@
     }
   },
   {
-    "__docId__": 302,
+    "__docId__": 300,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Schema.js~Schema",
@@ -6160,7 +6100,7 @@
     }
   },
   {
-    "__docId__": 303,
+    "__docId__": 301,
     "kind": "function",
     "name": "schema",
     "memberof": "src/Schema.js",
@@ -6192,7 +6132,7 @@
     "return": null
   },
   {
-    "__docId__": 304,
+    "__docId__": 302,
     "kind": "file",
     "name": "src/Table.js",
     "content": "import Queries from \"./Queries.js\";\nimport Record from \"./Record.js\";\nimport rowProxy from \"./Proxy/Row.js\";\nimport rowsProxy from \"./Proxy/Rows.js\";\nimport recordProxy from \"./Proxy/Record.js\";\n// import Schema from \"./Schema.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.engine        = database.engine;\n    //this.schema        = new Schema(database, schema)\n    this.table         = schema.table;\n    this.columns       = prepareColumns(schema);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(schema, this.columns);\n    this.id            = schema.id;\n    this.recordClass   = schema.recordClass || Record;\n    this.recordConfig  = schema.recordConfig;\n    this.rowProxy      = rowProxy(this);\n    this.rowsProxy     = rowsProxy(this);\n    this.fragments     = this.prepareFragments(schema);\n    this.relations     = schema.relations || { };\n    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}\\n----------> ` });\n    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}\\n----------> ` }, schema);\n  }\n  prepareFragments(schema) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = schema.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n  checkColumns(data={}, cols=[], vals=[], test={}) {\n    const table = this.table;\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column]\n          || throwColumnValidationError('unknown', { column, table });\n        if (test.writable && spec.readonly) {\n          throwColumnValidationError('readonly', { column, table });\n        }\n        cols.push(spec.column);\n        vals.push(data[column])\n      }\n    )\n    return [cols, vals];\n  }\n  checkWritableColumns(data, cols=[], vals=[]) {\n    // check that all the values supplied correspond to valid columns that are not readonly\n    return this.checkColumns(data, cols, vals, { writable: true })\n  }\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    this.debugData(\"run()\", { query, params, options });\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    this.debugData(\"any()\", { query, params, options });\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    this.debugData(\"all()\", { query, params, options });\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    this.debugData(\"one()\", { query, params, options });\n    return this.engine.one(this.query(query), params, options)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAllRows(data, options)\n      : this.insertOneRow(data, options)\n  }\n  async insertOneRow(data, options={}) {\n    this.debugData(\"insertOneRow()\", { data, options });\n    const [cols, vals] = this.checkWritableColumns(data);\n    this.checkRequiredColumns(data);\n    const insert = await this.engine.insert(this.table, cols, vals, this.keys);\n    return options.reload || options.record\n      ? this.insertReload(data, insert, options)\n      : insert;\n  }\n  async insertAllRows(data, options) {\n    this.debugData(\"insertAllRows()\", { data, options });\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOneRow(row, options));\n    }\n    return rows;\n  }\n  async insertOneRecord(data, options={}) {\n    this.debugData(\"insertOneRecord()\", { data, options });\n    return this.insertOneRow(data, { ...options, record: true })\n  }\n  async insertAllRecords(data, options={}) {\n    this.debugData(\"insertAllRecords()\", { data, options });\n    return this.insertAllRecords(data, { ...options, record: true })\n  }\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  prepareUpdate(set, where) {\n    const [dcols, dvals] = this.checkWritableColumns(set);\n    const [wcols, wvals] = this.checkColumns(where);\n    return [dcols, dvals, wcols, wvals];\n  }\n  async update(...args) {\n    return this.updateAllRows(...args);\n  }\n  async updateOneRow(set, where, options={}) {\n    this.debugData(\"updateOneRow()\", { set, where, options });\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where)\n      : update;\n  }\n  async updateAnyRow(set, where, options={}) {\n    this.debugData(\"updateAnyRow()\", { set, where, options });\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where)\n        : undefined\n      : update;\n  }\n  async updateAllRows(set, where, options={}) {\n    this.debugData(\"updateAllRows()\", { set, where, options });\n    const args   = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    // return update;\n    //let rows = [ ];\n    //for (const row of data) {\n    //  rows.push(await this.insertOne(row, options));\n    //}\n    //return rows;\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where) {\n    this.debugData(\"delete()\", { where });\n    const [cols, vals] = this.checkColumns(where);\n    return this.engine.delete(this.table, cols, vals);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRow(), anyRow() and allRows()\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, params) {\n    params.columns ||= Object.keys(this.columns);\n    this.checkColumnNames(params.columns);\n    return this.checkColumns(where);\n  }\n  async oneRow(where, options={}) {\n    this.debugData(\"oneRow()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const row = await this.engine.selectOne(this.table, wcols, wvals, params);\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n  async anyRow(where, options={}) {\n    this.debugData(\"anyRow()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const row = await this.engine.selectAny(this.table, wcols, wvals, params);\n    return row\n      ? options.record\n        ? this.record(row)\n        : row\n      : undefined;\n  }\n  async allRows(where, options={}) {\n    this.debugData(\"allRows()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const rows = await this.engine.selectAll(this.table, wcols, wvals, params);\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRecord(), anyRecord() and allRecords()\n  //-----------------------------------------------------------------------------\n  async oneRecord(where, options={}) {\n    this.debugData(\"oneRecord()\", { where, options });\n    return this.oneRow(where, { ...options, record: true });\n  }\n  async anyRecord(where, options={}) {\n    this.debugData(\"anyRecord()\", { where, options });\n    return this.anyRow(where, { ...options, record: true });\n  }\n  async allRecords(where, options={}) {\n    this.debugData(\"allRecords()\", { where, options });\n    return this.allRows(where, { ...options, record: true });\n  }\n\n  // select() is the old name for fetchAll() which I'm in the process of\n  // reworking.\n  async select(where, options={}) {\n    this.debug(\"select: \", where, options);\n    if (options.columns) {\n      this.checkColumnNames(options.columns);\n    }\n    const [wcols, wvals] = this.checkColumns(where);\n    return this.engine.select(this.table, wcols, wvals, options);\n  }\n\n  tableFragments() {\n    return this.tableFragments\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n  async insertReload(input, output, options={}) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return options.record\n      ? this.oneRecord(fetch)\n      : this.oneRow(fetch);\n  }\n  async updateReload(set, where) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch);\n  }\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordConfig)\n    );\n  }\n  record(row) {\n    this.debug(\"record()\", row);\n    return Promise.resolve(\n      this.newRecord(row)\n    );\n  }\n  records(rows) {\n    this.debug(\"records()\", rows);\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n}\n\nexport default Table;\n",
@@ -6203,7 +6143,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 305,
+    "__docId__": 303,
     "kind": "class",
     "name": "Table",
     "memberof": "src/Table.js",
@@ -6219,7 +6159,7 @@
     "interface": false
   },
   {
-    "__docId__": 306,
+    "__docId__": 304,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Table.js~Table",
@@ -6233,7 +6173,7 @@
     "undocument": true
   },
   {
-    "__docId__": 307,
+    "__docId__": 305,
     "kind": "member",
     "name": "database",
     "memberof": "src/Table.js~Table",
@@ -6250,7 +6190,7 @@
     }
   },
   {
-    "__docId__": 308,
+    "__docId__": 306,
     "kind": "member",
     "name": "engine",
     "memberof": "src/Table.js~Table",
@@ -6267,7 +6207,7 @@
     }
   },
   {
-    "__docId__": 309,
+    "__docId__": 307,
     "kind": "member",
     "name": "table",
     "memberof": "src/Table.js~Table",
@@ -6284,7 +6224,7 @@
     }
   },
   {
-    "__docId__": 310,
+    "__docId__": 308,
     "kind": "member",
     "name": "columns",
     "memberof": "src/Table.js~Table",
@@ -6301,7 +6241,7 @@
     }
   },
   {
-    "__docId__": 311,
+    "__docId__": 309,
     "kind": "member",
     "name": "readonly",
     "memberof": "src/Table.js~Table",
@@ -6318,7 +6258,7 @@
     }
   },
   {
-    "__docId__": 312,
+    "__docId__": 310,
     "kind": "member",
     "name": "required",
     "memberof": "src/Table.js~Table",
@@ -6335,7 +6275,7 @@
     }
   },
   {
-    "__docId__": 313,
+    "__docId__": 311,
     "kind": "member",
     "name": "keys",
     "memberof": "src/Table.js~Table",
@@ -6352,7 +6292,7 @@
     }
   },
   {
-    "__docId__": 314,
+    "__docId__": 312,
     "kind": "member",
     "name": "id",
     "memberof": "src/Table.js~Table",
@@ -6369,7 +6309,7 @@
     }
   },
   {
-    "__docId__": 315,
+    "__docId__": 313,
     "kind": "member",
     "name": "recordClass",
     "memberof": "src/Table.js~Table",
@@ -6386,7 +6326,7 @@
     }
   },
   {
-    "__docId__": 316,
+    "__docId__": 314,
     "kind": "member",
     "name": "recordConfig",
     "memberof": "src/Table.js~Table",
@@ -6403,7 +6343,7 @@
     }
   },
   {
-    "__docId__": 317,
+    "__docId__": 315,
     "kind": "member",
     "name": "rowProxy",
     "memberof": "src/Table.js~Table",
@@ -6420,7 +6360,7 @@
     }
   },
   {
-    "__docId__": 318,
+    "__docId__": 316,
     "kind": "member",
     "name": "rowsProxy",
     "memberof": "src/Table.js~Table",
@@ -6437,7 +6377,7 @@
     }
   },
   {
-    "__docId__": 319,
+    "__docId__": 317,
     "kind": "member",
     "name": "fragments",
     "memberof": "src/Table.js~Table",
@@ -6454,7 +6394,7 @@
     }
   },
   {
-    "__docId__": 320,
+    "__docId__": 318,
     "kind": "member",
     "name": "relations",
     "memberof": "src/Table.js~Table",
@@ -6471,7 +6411,7 @@
     }
   },
   {
-    "__docId__": 321,
+    "__docId__": 319,
     "kind": "member",
     "name": "queries",
     "memberof": "src/Table.js~Table",
@@ -6488,7 +6428,7 @@
     }
   },
   {
-    "__docId__": 322,
+    "__docId__": 320,
     "kind": "method",
     "name": "prepareFragments",
     "memberof": "src/Table.js~Table",
@@ -6515,7 +6455,7 @@
     }
   },
   {
-    "__docId__": 323,
+    "__docId__": 321,
     "kind": "method",
     "name": "checkColumnNames",
     "memberof": "src/Table.js~Table",
@@ -6538,7 +6478,7 @@
     "return": null
   },
   {
-    "__docId__": 324,
+    "__docId__": 322,
     "kind": "method",
     "name": "checkColumns",
     "memberof": "src/Table.js~Table",
@@ -6595,7 +6535,7 @@
     }
   },
   {
-    "__docId__": 325,
+    "__docId__": 323,
     "kind": "method",
     "name": "checkWritableColumns",
     "memberof": "src/Table.js~Table",
@@ -6640,7 +6580,7 @@
     }
   },
   {
-    "__docId__": 326,
+    "__docId__": 324,
     "kind": "method",
     "name": "checkRequiredColumns",
     "memberof": "src/Table.js~Table",
@@ -6663,7 +6603,7 @@
     "return": null
   },
   {
-    "__docId__": 327,
+    "__docId__": 325,
     "kind": "method",
     "name": "query",
     "memberof": "src/Table.js~Table",
@@ -6690,7 +6630,7 @@
     }
   },
   {
-    "__docId__": 328,
+    "__docId__": 326,
     "kind": "method",
     "name": "run",
     "memberof": "src/Table.js~Table",
@@ -6729,7 +6669,7 @@
     }
   },
   {
-    "__docId__": 329,
+    "__docId__": 327,
     "kind": "method",
     "name": "any",
     "memberof": "src/Table.js~Table",
@@ -6768,7 +6708,7 @@
     }
   },
   {
-    "__docId__": 330,
+    "__docId__": 328,
     "kind": "method",
     "name": "all",
     "memberof": "src/Table.js~Table",
@@ -6807,7 +6747,7 @@
     }
   },
   {
-    "__docId__": 331,
+    "__docId__": 329,
     "kind": "method",
     "name": "one",
     "memberof": "src/Table.js~Table",
@@ -6846,7 +6786,7 @@
     }
   },
   {
-    "__docId__": 332,
+    "__docId__": 330,
     "kind": "method",
     "name": "insert",
     "memberof": "src/Table.js~Table",
@@ -6879,7 +6819,7 @@
     }
   },
   {
-    "__docId__": 333,
+    "__docId__": 331,
     "kind": "method",
     "name": "insertOneRow",
     "memberof": "src/Table.js~Table",
@@ -6915,7 +6855,7 @@
     }
   },
   {
-    "__docId__": 334,
+    "__docId__": 332,
     "kind": "method",
     "name": "insertAllRows",
     "memberof": "src/Table.js~Table",
@@ -6948,7 +6888,7 @@
     }
   },
   {
-    "__docId__": 335,
+    "__docId__": 333,
     "kind": "method",
     "name": "insertOneRecord",
     "memberof": "src/Table.js~Table",
@@ -6984,7 +6924,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 334,
     "kind": "method",
     "name": "insertAllRecords",
     "memberof": "src/Table.js~Table",
@@ -7020,7 +6960,7 @@
     }
   },
   {
-    "__docId__": 337,
+    "__docId__": 335,
     "kind": "method",
     "name": "prepareUpdate",
     "memberof": "src/Table.js~Table",
@@ -7053,7 +6993,7 @@
     }
   },
   {
-    "__docId__": 338,
+    "__docId__": 336,
     "kind": "method",
     "name": "update",
     "memberof": "src/Table.js~Table",
@@ -7081,7 +7021,7 @@
     }
   },
   {
-    "__docId__": 339,
+    "__docId__": 337,
     "kind": "method",
     "name": "updateOneRow",
     "memberof": "src/Table.js~Table",
@@ -7123,7 +7063,7 @@
     }
   },
   {
-    "__docId__": 340,
+    "__docId__": 338,
     "kind": "method",
     "name": "updateAnyRow",
     "memberof": "src/Table.js~Table",
@@ -7165,7 +7105,7 @@
     }
   },
   {
-    "__docId__": 341,
+    "__docId__": 339,
     "kind": "method",
     "name": "updateAllRows",
     "memberof": "src/Table.js~Table",
@@ -7207,7 +7147,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 340,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Table.js~Table",
@@ -7234,7 +7174,7 @@
     }
   },
   {
-    "__docId__": 343,
+    "__docId__": 341,
     "kind": "method",
     "name": "prepareFetch",
     "memberof": "src/Table.js~Table",
@@ -7267,7 +7207,7 @@
     }
   },
   {
-    "__docId__": 344,
+    "__docId__": 342,
     "kind": "method",
     "name": "oneRow",
     "memberof": "src/Table.js~Table",
@@ -7303,7 +7243,7 @@
     }
   },
   {
-    "__docId__": 345,
+    "__docId__": 343,
     "kind": "method",
     "name": "anyRow",
     "memberof": "src/Table.js~Table",
@@ -7339,7 +7279,7 @@
     }
   },
   {
-    "__docId__": 346,
+    "__docId__": 344,
     "kind": "method",
     "name": "allRows",
     "memberof": "src/Table.js~Table",
@@ -7375,7 +7315,7 @@
     }
   },
   {
-    "__docId__": 347,
+    "__docId__": 345,
     "kind": "method",
     "name": "oneRecord",
     "memberof": "src/Table.js~Table",
@@ -7411,7 +7351,7 @@
     }
   },
   {
-    "__docId__": 348,
+    "__docId__": 346,
     "kind": "method",
     "name": "anyRecord",
     "memberof": "src/Table.js~Table",
@@ -7447,7 +7387,7 @@
     }
   },
   {
-    "__docId__": 349,
+    "__docId__": 347,
     "kind": "method",
     "name": "allRecords",
     "memberof": "src/Table.js~Table",
@@ -7483,7 +7423,7 @@
     }
   },
   {
-    "__docId__": 350,
+    "__docId__": 348,
     "kind": "method",
     "name": "select",
     "memberof": "src/Table.js~Table",
@@ -7519,7 +7459,7 @@
     }
   },
   {
-    "__docId__": 351,
+    "__docId__": 349,
     "kind": "method",
     "name": "tableFragments",
     "memberof": "src/Table.js~Table",
@@ -7539,7 +7479,7 @@
     }
   },
   {
-    "__docId__": 352,
+    "__docId__": 350,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Table.js~Table",
@@ -7566,7 +7506,7 @@
     }
   },
   {
-    "__docId__": 353,
+    "__docId__": 351,
     "kind": "method",
     "name": "insertReload",
     "memberof": "src/Table.js~Table",
@@ -7608,7 +7548,7 @@
     }
   },
   {
-    "__docId__": 354,
+    "__docId__": 352,
     "kind": "method",
     "name": "updateReload",
     "memberof": "src/Table.js~Table",
@@ -7641,7 +7581,7 @@
     }
   },
   {
-    "__docId__": 355,
+    "__docId__": 353,
     "kind": "method",
     "name": "newRecord",
     "memberof": "src/Table.js~Table",
@@ -7668,7 +7608,7 @@
     }
   },
   {
-    "__docId__": 356,
+    "__docId__": 354,
     "kind": "method",
     "name": "record",
     "memberof": "src/Table.js~Table",
@@ -7695,7 +7635,7 @@
     }
   },
   {
-    "__docId__": 357,
+    "__docId__": 355,
     "kind": "method",
     "name": "records",
     "memberof": "src/Table.js~Table",
@@ -7722,7 +7662,7 @@
     }
   },
   {
-    "__docId__": 358,
+    "__docId__": 356,
     "kind": "file",
     "name": "src/Tables.js",
     "content": "export class Tables {\n  constructor(tables={}) {\n    this.tables = tables;\n  }\n  table(name) {\n    return this.tables[name];\n  }\n}\n\nexport default Tables;",
@@ -7733,7 +7673,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 359,
+    "__docId__": 357,
     "kind": "class",
     "name": "Tables",
     "memberof": "src/Tables.js",
@@ -7749,7 +7689,7 @@
     "interface": false
   },
   {
-    "__docId__": 360,
+    "__docId__": 358,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Tables.js~Tables",
@@ -7763,7 +7703,7 @@
     "undocument": true
   },
   {
-    "__docId__": 361,
+    "__docId__": 359,
     "kind": "member",
     "name": "tables",
     "memberof": "src/Tables.js~Tables",
@@ -7780,7 +7720,7 @@
     }
   },
   {
-    "__docId__": 362,
+    "__docId__": 360,
     "kind": "method",
     "name": "table",
     "memberof": "src/Tables.js~Tables",
@@ -7807,7 +7747,7 @@
     }
   },
   {
-    "__docId__": 363,
+    "__docId__": 361,
     "kind": "file",
     "name": "src/Utils/Columns.js",
     "content": "import { fail, isArray, isObject, isString, objMap, splitList } from \"@abw/badger-utils\";\nimport { bitSplitter, defaultIdColumn } from \"../Constants.js\";\nimport { throwColumnValidationError } from \"./Error.js\";\n\nexport const prepareColumns = (schema) => {\n  const columns = schema.columns\n    || throwColumnValidationError('noColumns', { table: schema.table });\n\n  if (isString(columns)) {\n    return prepareColumnsString(columns, schema);\n  }\n  else if (isArray(columns)) {\n    return prepareColumnsArray(columns, schema);\n  }\n  else if (isObject(columns)) {\n    return prepareColumnsHash(columns, schema);\n  }\n  else {\n    return throwColumnValidationError('invalidColumns', { table: schema.table, columns });\n  }\n}\n\nconst prepareColumnsString = (columns, schema) => {\n  // columns can be a string of whitespace delimited values, which\n  // is equivalent to passing an array of strings\n  return prepareColumnsArray(splitList(columns), schema);\n}\n\nconst prepareColumnsArray = (columns, schema) => {\n  // columns can be an array of strings, each of which should be a\n  // name, optionally followed by a series of flags or key=value\n  // items, separated by colons, e.g. 'name:required', 'name:type=text',\n  // 'name:required:type=text'\n  let index = { };\n  columns.forEach(\n    item => {\n      const bits  = item.split(bitSplitter);\n      const name  = bits.shift();\n      index[name] = prepareColumnBits(name, bits, schema);\n    }\n  )\n  return prepareColumnsHash(index, schema);\n}\n\nconst prepareColumnsHash = (columns, schema) => {\n  return objMap(\n    columns,\n    (value, name) => {\n      if (isString(value)) {\n        return prepareColumnBits(name, value.split(bitSplitter), schema)\n      }\n      else if (isObject(value)) {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = name);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = schema.table + '.' + column;\n        return value;\n      }\n      else {\n        fail(`Invalid \"${name}\" columns specified in ${schema.table} table: ${value}`)\n      }\n    }\n  )\n}\n\nconst prepareColumnBits = (name, bits, schema) => {\n  return bits.reduce(\n    (result, bit) => {\n      const kv = bit.split('=', 2);\n      const key = kv.shift();\n      result[key] = kv.length ? kv[0] : true;\n      return result\n    },\n    { column: name, tableColumn: schema.table + '.' + name }\n  );\n}\n\nexport const prepareKeys = (schema, columns={}) => {\n  let keys  = splitList(schema.keys);\n  const ids = Object.keys(columns).filter( key => columns[key].id );\n  if (ids.length > 1) {\n    return throwColumnValidationError('multipleIds', { table: schema.table });\n  }\n  if (keys.length === 0) {\n    keys = Object.keys(columns).filter( key => columns[key].key );\n  }\n  if (schema.id) {\n    keys.unshift(schema.id);\n  }\n  else if (ids.length) {\n    schema.id = ids[0];\n    keys.unshift(schema.id);\n  }\n  else if (keys.length === 0) {\n    schema.id = defaultIdColumn;\n    keys.unshift(schema.id);\n  }\n  return keys;\n}\n",
@@ -7818,7 +7758,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 364,
+    "__docId__": 362,
     "kind": "function",
     "name": "prepareColumns",
     "memberof": "src/Utils/Columns.js",
@@ -7848,7 +7788,7 @@
     }
   },
   {
-    "__docId__": 365,
+    "__docId__": 363,
     "kind": "function",
     "name": "prepareColumnsString",
     "memberof": "src/Utils/Columns.js",
@@ -7885,7 +7825,7 @@
     "ignore": true
   },
   {
-    "__docId__": 366,
+    "__docId__": 364,
     "kind": "function",
     "name": "prepareColumnsArray",
     "memberof": "src/Utils/Columns.js",
@@ -7922,7 +7862,7 @@
     "ignore": true
   },
   {
-    "__docId__": 367,
+    "__docId__": 365,
     "kind": "function",
     "name": "prepareColumnsHash",
     "memberof": "src/Utils/Columns.js",
@@ -7959,7 +7899,7 @@
     "ignore": true
   },
   {
-    "__docId__": 368,
+    "__docId__": 366,
     "kind": "function",
     "name": "prepareColumnBits",
     "memberof": "src/Utils/Columns.js",
@@ -8002,7 +7942,7 @@
     "ignore": true
   },
   {
-    "__docId__": 369,
+    "__docId__": 367,
     "kind": "function",
     "name": "prepareKeys",
     "memberof": "src/Utils/Columns.js",
@@ -8041,7 +7981,78 @@
     }
   },
   {
+    "__docId__": 368,
+    "kind": "file",
+    "name": "src/Utils/Database.js",
+    "content": "import { hasValue, isString, remove } from \"@abw/badger-utils\";\nimport { databaseAliases, databaseStringElements, databaseStringRegex } from \"../Constants.js\";\nimport { invalid, missing } from \"./Error.js\";\n\n\n//-----------------------------------------------------------------------------\n// Database configuration\n//-----------------------------------------------------------------------------\n// databaseConfig(string)\n// databaseConfig({ database: { engine: xxx, ... } })\n//-----------------------------------------------------------------------------\nexport const databaseConfig = config => {\n  let database = config.database || missing('database');\n\n  if (isString(database)) {\n    // parse connection string\n    config.database = database = parseDatabaseString(database);\n  }\n\n  // extract the engine name to top level config\n  config.engine ||= database.engine || missing('database.engine');\n  delete database.engine;\n\n  // fixup any aliases\n  Object.entries(databaseAliases).map(\n    ([key, value]) => {\n      if (hasValue(database[key])) {\n        database[value] ||= remove(database, key);\n      }\n    }\n  )\n\n  return config;\n}\n\n\n//-----------------------------------------------------------------------------\n// Parse Database String\n//-----------------------------------------------------------------------------\n// parseDatabaseString('postgresql://user:password@host:port/database')\n// parseDatabaseString('sqlite://filename.db')\n// parseDatabaseString('sqlite://:memory:')\n// parseDatabaseString('sqlite:memory')\n// parseDatabaseString('driver://user:password@host:port/database')\n//                    1^^^^^   2^^^ 3^^^^^^^ 4^^^ 5^^^ 6^^^^^^^\n//-----------------------------------------------------------------------------\nexport const parseDatabaseString = string => {\n  let config = { };\n  let match;\n\n  if (string.match(/^postgres(ql)?:/)) {\n    // special case for postgres which can handle a connectionString\n    // NOTE: we accept postgresql: or postgres: as prefixes and Do The\n    // Right Thing\n    config.engine = 'postgres';\n    config.connectionString = string.replace(/^postgres:/, 'postgresql:');\n  }\n  else if ((match = string.match(/^sqlite:\\/\\/(.*)/))) {\n    // special case for sqlite which only has a filename (or \":memory:\")\n    config.engine   = 'sqlite';\n    config.filename = match[1];\n  }\n  else if (string === 'sqlite:memory') {\n    // special case for sqlite allowing 'sqlite:memory' as short for 'sqlite://:memory:'\n    config.engine   = 'sqlite';\n    config.filename = ':memory:';\n  }\n  else if ((match = string.match(databaseStringRegex))) {\n    // all other cases (e.g. mysql)\n    Object.entries(databaseStringElements).map(\n      ([key, index]) => {\n        const value = match[index];\n        if (hasValue(value)) {\n          config[key] = value;\n        }\n      }\n    );\n  }\n  else {\n    invalid('database', string);\n  }\n  return config;\n}\n",
+    "static": true,
+    "longname": "/Users/abw/js/badger-database-js/src/Utils/Database.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 369,
+    "kind": "function",
+    "name": "databaseConfig",
+    "memberof": "src/Utils/Database.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Utils/Database.js~databaseConfig",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{databaseConfig}",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "__docId__": 370,
+    "kind": "function",
+    "name": "parseDatabaseString",
+    "memberof": "src/Utils/Database.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Utils/Database.js~parseDatabaseString",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{parseDatabaseString}",
+    "description": null,
+    "lineNumber": 47,
+    "undocument": true,
+    "params": [
+      {
+        "name": "string",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 371,
     "kind": "file",
     "name": "src/Utils/Debug.js",
     "content": "import { addDebug, ANSIescape, ANSIreset } from \"@abw/badger\";\nimport { doNothing, fail, isBoolean, isObject } from \"@abw/badger-utils\";\n\nexport let debug = {\n  database: {\n    debug:  false,\n    prefix: 'Database -> ',\n    color:  'bright magenta',\n  },\n  engine: {\n    debug:  false,\n    prefix: 'Engine ---> ',\n    color:  'red',\n  },\n  queries: {\n    debug:  false,\n    prefix: 'Queries --> ',\n    color:  'blue',\n  },\n  table: {\n    debug:  false,\n    prefix: 'Table ----> ',\n    color:  'bright cyan',\n  },\n  record: {\n    debug:  false,\n    prefix: 'Record ---> ',\n    color:  'green',\n  },\n  test: {\n    debug:  false,\n    prefix: 'Test     -> ',\n    color:  'green'\n  },\n}\n\nconst invalidDebugItem = item =>\n  fail(`Invalid debug item \"${item}\" specified`)\n\nexport const setDebug = options => {\n  Object.entries(options).map(\n    ([key, value]) => {\n      const set = debug[key] || invalidDebugItem(key);\n      if (isBoolean(value)) {\n        set.debug = value;\n      }\n      else if (isObject(value)) {\n        Object.assign(set, value);\n      }\n    }\n  )\n}\n\nexport const getDebug = (name, ...configs) => {\n  const defaults = debug[name] || invalidDebugItem(name);\n  return Object.assign(\n    {},\n    defaults,\n    ...configs\n  );\n}\n\nexport const addDebugMethod = (object, name, ...configs) => {\n  const options = getDebug(name, ...configs);\n  const enabled = options.debug;\n  const prefix  = options.debugPrefix || options.prefix;\n  const color   = options.debugColor  || options.color;\n  addDebug(object, enabled, prefix, color);\n  object.debugData = DataDebugger(enabled, prefix, color);\n}\n\nexport function DataDebugger(enabled, prefix, color, length=10) {\n  return enabled\n    ? (message, data={}) => {\n        console.log(\n          '%s' + prefix + '%s' + message,\n          color ? ANSIescape(color) : '',\n          color ? ANSIreset() : ''\n        );\n        Object.entries(data).map(\n          ([key, value]) => console.log(\n            '%s' + key.padStart(length, ' ') + '%s:',\n            color ? ANSIescape(color) : '',\n            color ? ANSIreset() : '',\n            value\n          )\n        )\n      }\n    : doNothing;\n}\n",
@@ -8052,7 +8063,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 371,
+    "__docId__": 372,
     "kind": "variable",
     "name": "debug",
     "memberof": "src/Utils/Debug.js",
@@ -8072,7 +8083,7 @@
     }
   },
   {
-    "__docId__": 372,
+    "__docId__": 373,
     "kind": "function",
     "name": "invalidDebugItem",
     "memberof": "src/Utils/Debug.js",
@@ -8099,7 +8110,7 @@
     "ignore": true
   },
   {
-    "__docId__": 373,
+    "__docId__": 374,
     "kind": "function",
     "name": "setDebug",
     "memberof": "src/Utils/Debug.js",
@@ -8125,7 +8136,7 @@
     "return": null
   },
   {
-    "__docId__": 374,
+    "__docId__": 375,
     "kind": "function",
     "name": "getDebug",
     "memberof": "src/Utils/Debug.js",
@@ -8162,7 +8173,7 @@
     }
   },
   {
-    "__docId__": 375,
+    "__docId__": 376,
     "kind": "function",
     "name": "addDebugMethod",
     "memberof": "src/Utils/Debug.js",
@@ -8201,7 +8212,7 @@
     "return": null
   },
   {
-    "__docId__": 376,
+    "__docId__": 377,
     "kind": "function",
     "name": "DataDebugger",
     "memberof": "src/Utils/Debug.js",
@@ -8252,7 +8263,7 @@
     }
   },
   {
-    "__docId__": 377,
+    "__docId__": 378,
     "kind": "file",
     "name": "src/Utils/Error.js",
     "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\nexport class UnexpectedRowCount extends CustomError { }\nexport class ColumnValidationError extends CustomError { }\nexport class InsertValidationError extends CustomError { }\nexport class DeletedRecordError extends CustomError { }\n\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n\nexport const throwDeletedRecordError = thrower(\n  {\n    action: 'Cannot <action> deleted <table> record #<id>',\n  },\n  DeletedRecordError\n)\n",
@@ -8263,7 +8274,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 378,
+    "__docId__": 379,
     "kind": "function",
     "name": "missing",
     "memberof": "src/Utils/Error.js",
@@ -8289,7 +8300,7 @@
     "return": null
   },
   {
-    "__docId__": 379,
+    "__docId__": 380,
     "kind": "function",
     "name": "invalid",
     "memberof": "src/Utils/Error.js",
@@ -8321,7 +8332,7 @@
     "return": null
   },
   {
-    "__docId__": 380,
+    "__docId__": 381,
     "kind": "function",
     "name": "notImplemented",
     "memberof": "src/Utils/Error.js",
@@ -8353,7 +8364,7 @@
     "return": null
   },
   {
-    "__docId__": 381,
+    "__docId__": 382,
     "kind": "function",
     "name": "notImplementedInModule",
     "memberof": "src/Utils/Error.js",
@@ -8379,7 +8390,7 @@
     "return": null
   },
   {
-    "__docId__": 382,
+    "__docId__": 383,
     "kind": "function",
     "name": "notImplementedInBaseClass",
     "memberof": "src/Utils/Error.js",
@@ -8405,7 +8416,7 @@
     "return": null
   },
   {
-    "__docId__": 383,
+    "__docId__": 384,
     "kind": "class",
     "name": "CustomError",
     "memberof": "src/Utils/Error.js",
@@ -8424,7 +8435,7 @@
     ]
   },
   {
-    "__docId__": 384,
+    "__docId__": 385,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -8438,7 +8449,7 @@
     "undocument": true
   },
   {
-    "__docId__": 385,
+    "__docId__": 386,
     "kind": "member",
     "name": "name",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -8455,7 +8466,7 @@
     }
   },
   {
-    "__docId__": 386,
+    "__docId__": 387,
     "kind": "class",
     "name": "UnexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -8474,7 +8485,7 @@
     ]
   },
   {
-    "__docId__": 387,
+    "__docId__": 388,
     "kind": "class",
     "name": "ColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8493,7 +8504,7 @@
     ]
   },
   {
-    "__docId__": 388,
+    "__docId__": 389,
     "kind": "class",
     "name": "InsertValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8512,7 +8523,7 @@
     ]
   },
   {
-    "__docId__": 389,
+    "__docId__": 390,
     "kind": "class",
     "name": "DeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -8531,7 +8542,7 @@
     ]
   },
   {
-    "__docId__": 390,
+    "__docId__": 391,
     "kind": "function",
     "name": "unexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -8566,7 +8577,7 @@
     "return": null
   },
   {
-    "__docId__": 391,
+    "__docId__": 392,
     "kind": "function",
     "name": "thrower",
     "memberof": "src/Utils/Error.js",
@@ -8601,7 +8612,7 @@
     "return": null
   },
   {
-    "__docId__": 392,
+    "__docId__": 393,
     "kind": "variable",
     "name": "throwColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8621,7 +8632,7 @@
     }
   },
   {
-    "__docId__": 393,
+    "__docId__": 394,
     "kind": "variable",
     "name": "throwDeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -8641,7 +8652,7 @@
     }
   },
   {
-    "__docId__": 394,
+    "__docId__": 395,
     "kind": "file",
     "name": "src/Utils/Format.js",
     "content": "import { fail, noValue } from \"@abw/badger-utils\";\n\nexport const format = (msg, data) =>\n  msg.replace(\n    /<(\\w+)>/g,\n    (_, key) => {\n      const val = data[key];\n      if (noValue(val)) {\n        fail(`Invalid variable expansion <${key}> in message format: ${msg}`);\n      }\n      return val;\n    }\n  );\n",
@@ -8652,7 +8663,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 395,
+    "__docId__": 396,
     "kind": "function",
     "name": "format",
     "memberof": "src/Utils/Format.js",
@@ -8682,6 +8693,149 @@
       }
     ],
     "return": null
+  },
+  {
+    "__docId__": 397,
+    "kind": "file",
+    "name": "src/Utils/Relation.js",
+    "content": "import { fail, hasValue, isString, noValue, remove } from \"@abw/badger-utils\";\n\nexport const relationStringRegex = /^(\\w+)\\s*([-=]>)\\s*(\\w+)\\.(\\w+)$/;\nexport const relationType = {\n  '->': 'one',\n  '=>': 'many'\n};\nexport const relationAliases = {\n  localKey:   'from',\n  local_key:  'from',\n  remoteKey:  'to',\n  remote_key: 'to',\n  orderBy:    'order',\n  order_by:   'order',\n};\n\nexport const relationConfig = (table, name, config) => {\n  if (isString(config)) {\n    config = parseRelationString(config);\n  }\n\n  // fix up any aliases\n  Object.entries(relationAliases).map(\n    ([key, value]) => {\n      if (hasValue(config[key])) {\n        config[value] ||= remove(config, key);\n      }\n    }\n  );\n\n  // check for missing parameters\n  ['type', 'table', 'to', 'from'].forEach(\n    key => {\n      if (noValue(config[key])) {\n        fail(`Missing \"${key}\" in ${name} relation for ${table} table`);\n      }\n    }\n  )\n\n  // set the name\n  config.name = `${table}.${name}`;\n\n  return config;\n}\n\nexport const parseRelationString = string => {\n  let match;\n  return ((match = string.match(relationStringRegex)))\n    ? {\n        from:  match[1],\n        type:  relationType[match[2]] || fail('Invalid type \"', match[2], '\" specified in relation: ', string),\n        table: match[3],\n        to:    match[4],\n      }\n    : fail(\"Invalid relation string specified: \", string);\n}",
+    "static": true,
+    "longname": "/Users/abw/js/badger-database-js/src/Utils/Relation.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 398,
+    "kind": "variable",
+    "name": "relationStringRegex",
+    "memberof": "src/Utils/Relation.js",
+    "static": true,
+    "longname": "src/Utils/Relation.js~relationStringRegex",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{relationStringRegex}",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    }
+  },
+  {
+    "__docId__": 399,
+    "kind": "variable",
+    "name": "relationType",
+    "memberof": "src/Utils/Relation.js",
+    "static": true,
+    "longname": "src/Utils/Relation.js~relationType",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{relationType}",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"->\": string, \"=>\": string}"
+      ]
+    }
+  },
+  {
+    "__docId__": 400,
+    "kind": "variable",
+    "name": "relationAliases",
+    "memberof": "src/Utils/Relation.js",
+    "static": true,
+    "longname": "src/Utils/Relation.js~relationAliases",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{relationAliases}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"localKey\": string, \"local_key\": string, \"remoteKey\": string, \"remote_key\": string, \"orderBy\": string, \"order_by\": string}"
+      ]
+    }
+  },
+  {
+    "__docId__": 401,
+    "kind": "function",
+    "name": "relationConfig",
+    "memberof": "src/Utils/Relation.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Utils/Relation.js~relationConfig",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{relationConfig}",
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "params": [
+      {
+        "name": "table",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 402,
+    "kind": "function",
+    "name": "parseRelationString",
+    "memberof": "src/Utils/Relation.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Utils/Relation.js~parseRelationString",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{parseRelationString}",
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "params": [
+      {
+        "name": "string",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
   },
   {
     "kind": "index",

@@ -330,6 +330,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-database~parserelationstring",
+    "function/index.html#static-function-parseRelationString",
+    "<span>parseRelationString</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~preparecolumns",
     "function/index.html#static-function-prepareColumns",
     "<span>prepareColumns</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -358,6 +364,30 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-registerEngine",
     "<span>registerEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
+  ],
+  [
+    "@abw/badger-database~relationaliases",
+    "variable/index.html#static-variable-relationAliases",
+    "<span>relationAliases</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~relationconfig",
+    "function/index.html#static-function-relationConfig",
+    "<span>relationConfig</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~relationstringregex",
+    "variable/index.html#static-variable-relationStringRegex",
+    "<span>relationStringRegex</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~relationtype",
+    "variable/index.html#static-variable-relationType",
+    "<span>relationType</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~rowproxy",
@@ -2214,6 +2244,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/utils/database.js",
+    "file/src/Utils/Database.js.html",
+    "src/Utils/Database.js",
+    "file"
+  ],
+  [
     "src/utils/debug.js",
     "file/src/Utils/Debug.js.html",
     "src/Utils/Debug.js",
@@ -2241,6 +2277,12 @@ window.esdocSearchIndex = [
     "src/utils/format.js",
     "file/src/Utils/Format.js.html",
     "src/Utils/Format.js",
+    "file"
+  ],
+  [
+    "src/utils/relation.js",
+    "file/src/Utils/Relation.js.html",
+    "src/Utils/Relation.js",
     "file"
   ]
 ]

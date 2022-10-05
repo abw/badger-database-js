@@ -37,9 +37,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
@@ -81,6 +79,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataDebugger">DataDebugger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
@@ -93,17 +93,21 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseRelationString">parseRelationString</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-relationConfig">relationConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwDeletedRecordError">throwDeletedRecordError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-relationAliases">relationAliases</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-relationStringRegex">relationStringRegex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-relationType">relationType</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Engines.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { hasValue, isString, remove } from "@abw/badger-utils";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { databaseConfig } from "./Utils/Database.js";
 import { invalid, missing } from "./Utils/Error.js";
-import { databaseAliases, databaseStringElements, databaseStringRegex } from "./Constants.js";
 
 let Engines = { };
 
@@ -128,84 +132,6 @@ export const engine = async config =&gt; {
   const engine = config.engine || missing('database.engine');
   const handler = Engines[engine] || invalid('database.engine', engine);
   return await handler(config);
-}
-
-//-----------------------------------------------------------------------------
-// Engine configuration
-//-----------------------------------------------------------------------------
-// databaseConfig(string)
-// databaseConfig({ database: { engine: xxx, ... } })
-//-----------------------------------------------------------------------------
-export const databaseConfig = config =&gt; {
-  let database = config.database || missing('database');
-
-  if (isString(database)) {
-    // parse connection string
-    config.database = database = parseDatabaseString(database);
-  }
-
-  // extract the engine name to top level config
-  config.engine ||= database.engine || missing('database.engine');
-  delete database.engine;
-
-  // fixup any aliases
-  Object.entries(databaseAliases).map(
-    ([key, value]) =&gt; {
-      if (hasValue(database[key])) {
-        database[value] ||= remove(database, key);
-      }
-    }
-  )
-
-  return config;
-}
-
-//-----------------------------------------------------------------------------
-// Parse Database String
-//-----------------------------------------------------------------------------
-// parseDatabaseString('postgresql://user:password@host:port/database')
-// parseDatabaseString('sqlite://filename.db')
-// parseDatabaseString('sqlite://:memory:')
-// parseDatabaseString('sqlite:memory')
-// parseDatabaseString('driver://user:password@host:port/database')
-//                    1^^^^^   2^^^ 3^^^^^^^ 4^^^ 5^^^ 6^^^^^^^
-//-----------------------------------------------------------------------------
-export const parseDatabaseString = string =&gt; {
-  let config = { };
-  let match;
-
-  if (string.match(/^postgres(ql)?:/)) {
-    // special case for postgres which can handle a connectionString
-    // NOTE: we accept postgresql: or postgres: as prefixes and Do The
-    // Right Thing
-    config.engine = 'postgres';
-    config.connectionString = string.replace(/^postgres:/, 'postgresql:');
-  }
-  else if ((match = string.match(/^sqlite:\/\/(.*)/))) {
-    // special case for sqlite which only has a filename (or ":memory:")
-    config.engine   = 'sqlite';
-    config.filename = match[1];
-  }
-  else if (string === 'sqlite:memory') {
-    // special case for sqlite allowing 'sqlite:memory' as short for 'sqlite://:memory:'
-    config.engine   = 'sqlite';
-    config.filename = ':memory:';
-  }
-  else if ((match = string.match(databaseStringRegex))) {
-    // all other cases (e.g. mysql)
-    Object.entries(databaseStringElements).map(
-      ([key, index]) =&gt; {
-        const value = match[index];
-        if (hasValue(value)) {
-          config[key] = value;
-        }
-      }
-    );
-  }
-  else {
-    invalid('database', string);
-  }
-  return config;
 }
 
 export default Engines;

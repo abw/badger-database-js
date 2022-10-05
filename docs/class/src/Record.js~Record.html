@@ -37,9 +37,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
@@ -81,6 +79,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataDebugger">DataDebugger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDebug">getDebug</a></span></span></li>
@@ -93,21 +93,26 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseRelationString">parseRelationString</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-relationConfig">relationConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-debug">debug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwColumnValidationError">throwColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-throwDeletedRecordError">throwDeletedRecordError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-relationAliases">relationAliases</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-relationStringRegex">relationStringRegex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-relationType">relationType</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Record} from '<span><a href="file/src/Record.js.html#lineNumber6">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Record} from '<span><a href="file/src/Record.js.html#lineNumber7">@abw/badger-database</a></span>'</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/Record.js.html#lineNumber6">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/Record.js.html#lineNumber7">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -517,7 +522,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber7">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber8">source</a></span></span>
     </span>
   </h3>
 
@@ -563,7 +568,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber12">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber13">source</a></span></span>
     </span>
   </h3>
 
@@ -606,7 +611,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber9">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber10">source</a></span></span>
     </span>
   </h3>
 
@@ -649,7 +654,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber28">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber29">source</a></span></span>
     </span>
   </h3>
 
@@ -692,7 +697,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber11">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber12">source</a></span></span>
     </span>
   </h3>
 
@@ -735,7 +740,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber10">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber11">source</a></span></span>
     </span>
   </h3>
 
@@ -778,7 +783,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber8">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber9">source</a></span></span>
     </span>
   </h3>
 
@@ -824,7 +829,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber31">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber32">source</a></span></span>
     </span>
   </h3>
 
@@ -883,7 +888,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber23">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber24">source</a></span></span>
     </span>
   </h3>
 
@@ -938,7 +943,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber48">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber49">source</a></span></span>
     </span>
   </h3>
 
@@ -1009,7 +1014,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber43">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber44">source</a></span></span>
     </span>
   </h3>
 
@@ -1080,7 +1085,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Record.js.html#lineNumber16">source</a></span></span>
     </span>
   </h3>
 
