@@ -1,7 +1,7 @@
 import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
 import { format } from './Utils/Format.js';
-import { hasValue, isObject, splitList } from '@abw/badger-utils';
+import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
 import { allColumns, whereTrue } from './Constants.js';
 
@@ -128,8 +128,9 @@ export class Engine {
       unexpectedRowCount(rows.length);
     }
   }
+
   //-----------------------------------------------------------------------------
-  // Specific queries
+  // Specific queries: insert, update and delete
   //-----------------------------------------------------------------------------
   async insert(table, colnames, values, keys) {
     this.debugData("insert()", { table, colnames, values, keys });
@@ -142,43 +143,52 @@ export class Engine {
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
     this.debugData("update()", { table, datacols, datavals, wherecols, wherevals });
-    const set   = this.formatColumnPlaceholders(datacols);
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ', datacols.length + 1) || whereTrue;
-    const sql   = format(queries.update, { table, set, where });
+    const set    = this.formatColumnPlaceholders(datacols);
+    const where  = this.formatWherePlaceholders(wherecols, wherevals, datacols.length + 1);
+    const values = this.prepareValues(wherevals);
+    const sql    = format(queries.update, { table, set, where });
     this.debug('update() generated SQL:', sql);
-    return this.run(sql, [...datavals, ...wherevals], { sanitizeResult: true });
+    return this.run(sql, [...datavals, ...values], { sanitizeResult: true });
   }
   async delete(table, wherecols, wherevals) {
     this.debugData("delete()", { table, wherecols, wherevals });
-    const where = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
-    const sql   = format(queries.delete, { table, where });
+    const where  = this.formatWherePlaceholders(wherecols, wherevals);
+    const values = this.prepareValues(wherevals);
+    const sql    = format(queries.delete, { table, where });
     this.debug('delete() generated SQL:', sql);
-    return this.run(sql, wherevals, { sanitizeResult: true });
+    return this.run(sql, values, { sanitizeResult: true });
   }
-  selectQuery(table, wherecols, options={}) {
+
+  //-----------------------------------------------------------------------------
+  // Select queries
+  //-----------------------------------------------------------------------------
+  selectQuery(table, wherecols, wherevals, options={}) {
     this.debugData("selectQuery()", { table, wherecols, options });
     const columns = this.formatColumns(options.columns);
-    const where   = this.formatColumnPlaceholders(wherecols, ' AND ') || whereTrue;
+    const where   = this.formatWherePlaceholders(wherecols, wherevals);
     const order   = this.formatOrderBy(options.orderBy || options.order);
-    return format(queries.select, { table, columns, where, order });
+    return [
+      format(queries.select, { table, columns, where, order }),
+      this.prepareValues(wherevals)
+    ]
   }
   async selectAll(table, wherecols, wherevals, options={}) {
     this.debugData("selectAll()", { table, wherecols, wherevals, options });
-    const sql = this.selectQuery(table, wherecols, options);
+    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
     this.debug('selectAll() generated SQL:', sql);
-    return this.all(sql, wherevals);
+    return this.all(sql, values);
   }
   async selectAny(table, wherecols, wherevals, options={}) {
     this.debugData("selectAny()", { table, wherecols, wherevals, options });
-    const sql = this.selectQuery(table, wherecols, options);
+    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
     this.debug('selectAny() generated SQL:', sql);
-    return this.any(sql, wherevals);
+    return this.any(sql, values);
   }
   async selectOne(table, wherecols, wherevals, options={}) {
     this.debugData("selectOne()", { table, wherecols, wherevals, options });
-    const sql = this.selectQuery(table, wherecols, options);
+    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
     this.debug('selectOne() generated SQL:', sql);
-    return this.one(sql, wherevals);
+    return this.one(sql, values);
   }
   async select(...args) {
     return this.selectAll(...args);
@@ -204,18 +214,33 @@ export class Engine {
       ? this.quote(column)
       : this.quote(`${table}.${column}`);
   }
-  formatPlaceholders(values) {
+  formatPlaceholder() {
+    return '?';
+  }
+  formatColumnPlaceholder(column, n) {
+    return `${this.quote(column)}=${this.formatPlaceholder(n)}`;
+  }
+  formatWherePlaceholder(column, value, n) {
+    // value can be an array containing a comparison operator and a value,
+    // e.g. ['>' 1973], otherwise we assume it's an equality operator, '='
+    const cmp = isArray(value) ? value[0] : '=';
+    return `${this.quote(column)}${cmp}${this.formatPlaceholder(n)}`;
+  }
+  formatPlaceholders(values, n=1) {
     return values.map(
-      () => '?'
+      () => this.formatPlaceholder(n++)
     ).join(', ');
   }
-  formatColumnPlaceholder(column) {
-    return `${this.quote(column)}=?`;
-  }
-  formatColumnPlaceholders(columns, joint=', ') {
+  formatColumnPlaceholders(columns, n=1, joint=', ') {
     return columns.map(
-      column => this.formatColumnPlaceholder(column)
+      column => this.formatColumnPlaceholder(column, n++)
     ).join(joint);
+  }
+  formatWherePlaceholders(columns, values, n=1, joint=' AND ') {
+    let i = 0;
+    return columns.map(
+      column => this.formatWherePlaceholder(column, values[i++], n++)
+    ).join(joint) || whereTrue;
   }
   formatColumns(columns) {
     return hasValue(columns)
@@ -233,6 +258,15 @@ export class Engine {
     return hasValue(order)
       ? `ORDER BY ${order}`
       : '';
+  }
+  prepareValues(values) {
+    return values.map(
+      // values can be arrays with a comparison, e.g. ['>', 1973], in which case
+      // we only want the second element
+      value => isArray(value)
+        ? value[1]
+        : value
+    )
   }
 
 

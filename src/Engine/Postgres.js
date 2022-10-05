@@ -82,17 +82,8 @@ export class PostgresEngine extends Engine {
     }
     return result;
   }
-  formatPlaceholders(values) {
-    let n = 1;
-    return values.map(() => '$' + n++).join(', ');
-  }
-  formatColumnPlaceholder(column, n) {
-    return `${this.quote(column)}=$${n}`;
-  }
-  formatColumnPlaceholders(columns, joint=', ', n=1) {
-    return columns.map(
-      column => this.formatColumnPlaceholder(column, n++)
-    ).join(joint);
+  formatPlaceholder(n) {
+    return '$' + n;
   }
   formatReturning(keys) {
     return ' RETURNING ' + this.formatColumns(keys);
