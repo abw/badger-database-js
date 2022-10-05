@@ -1,7 +1,7 @@
 export const many = async (record, spec={}) => {
-  const lkey  = spec.localKey;
-  const rkey  = spec.remoteKey;
-  const order = spec.orderBy || spec.order;
+  const lkey  = spec.from;
+  const rkey  = spec.to;
+  const order = spec.order;
   let where   = spec.where   || { };
   if (lkey && rkey) {
     where[rkey] = record.row[lkey];

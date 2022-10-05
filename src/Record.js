@@ -2,6 +2,7 @@ import relations from "./Relation/index.js";
 import { fail } from "@abw/badger-utils";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { throwDeletedRecordError } from "./Utils/Error.js";
+import { relationConfig } from "./Utils/Relation.js";
 
 export class Record {
   constructor(table, row, config={}) {
@@ -47,9 +48,14 @@ export class Record {
   }
   async initRelation(name) {
     this.debug('initRelation(%s)', name);
-    const relation = this.table.relations[name] || fail("Invalid relation specified: ", name);
-    const rfunc    = relations[relation.type] || fail("Invalid relation type: ", relation.type);
-    relation.name ||= name;
+    const table = this.table.table;
+    const relation = relationConfig(
+      table, name,
+      this.table.relations[name]
+        || fail(`Invalid "${name}" relation specified for ${table} table`)
+    )
+    const rfunc = relations[relation.type]
+      || fail(`Invalid "${relation.type}" relation type specified for ${name} relation in ${table} table`);
     return await rfunc(this, relation);
   }
 }

@@ -4,7 +4,7 @@ import { invalid, missing } from "./Error.js";
 
 
 //-----------------------------------------------------------------------------
-// Engine configuration
+// Database configuration
 //-----------------------------------------------------------------------------
 // databaseConfig(string)
 // databaseConfig({ database: { engine: xxx, ... } })

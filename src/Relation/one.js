@@ -1,8 +1,8 @@
 export const one = async (record, spec={}) => {
   // console.log('relation:one record: ', record);
   // console.log('relation:one spec: ', spec);
-  const lkey  = spec.localKey;
-  const rkey  = spec.remoteKey;
+  const lkey  = spec.from;
+  const rkey  = spec.to;
   let where   = spec.where || { };
   if (lkey && rkey) {
     where[rkey] = record.row[lkey];
