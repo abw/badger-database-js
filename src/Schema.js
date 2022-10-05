@@ -1,3 +1,4 @@
+// DEPRECATED
 import Queries from "./Queries.js";
 import { hasValue, isString, splitList, splitHash, fail, objMap, isArray } from "@abw/badger-utils";
 import { addDebug } from "@abw/badger";
