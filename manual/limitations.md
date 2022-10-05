@@ -9,11 +9,13 @@ where they fall short.
 
 You can't select, update or delete rows using a JOIN onto another
 table, for example.  Nor can you select rows using subqueries or
-temporary tables.
+temporary tables.  Aliases for selecting columns aren't support at
+the time of writing (although they might be by the time you read this).
 
 Similarly, the support for relations has some shortcomings.  For example,
 you can't define many-to-many relations that use intermediate link
-tables (although that might be something that appears in a later version),
+tables (although that might also be something that appears in a later
+version),
 
 These are all deliberate design decision.  Supporting everything that
 is possible in SQL would require a full-blown ORM or SQL query generator
