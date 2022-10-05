@@ -278,3 +278,58 @@ console.log(bonus[1].title);  // Money (Roger Waters Demo)
 // ...etc...
 ```
 
+## Shorthand Syntax for Defining Relations
+
+If you've got a simple relation then you can define it as a string
+using the shorthand syntax.  The general format for the `one` relation is:
+
+```js
+from -> table.to
+```
+
+For a `many` relation it uses a "fat arrow" instead.
+
+```js
+from => table.to
+```
+
+For example, the `album` relation defined for the `tracks` table looks
+like this:
+
+```js
+// tables.tracks.relations...
+album: {
+  type:   'one',
+  from:   'album_id',
+  to:     'id',
+  table:  'albums',
+},
+```
+
+That can be shortened to:
+
+```js
+album: 'album_id -> albums.id'
+```
+
+Similarly, the `albums` relation for `artists` can be shortened from
+this:
+
+```js
+// tables.artists.relations...
+albums: {
+  type:  'many',
+  table: 'albums',
+  from:  'id',
+  to:    'artist_id',
+}
+```
+
+To this:
+
+```js
+albums: 'id => albums.artist_id'
+```
+
+You can't specify an `order` or additional `where` constraints using this
+syntax so it really is only for simple cases.
