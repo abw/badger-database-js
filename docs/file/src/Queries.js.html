@@ -134,6 +134,7 @@ export class Queries {
   }
   expandFragments(query) {
     const fragments = this.config.fragments;
+    query = query.trim();
     let sql = query;
     let max = this.config.maxExpansion;
     let runaway = 0;

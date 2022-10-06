@@ -15,3 +15,10 @@
 
 * waiter is not throwing errors
 
+* database inspection to grok tables automagically?
+
+* search component
+
+* music database example, complete with custom tables, records, etc.
+
+* change debugging methods to automatically pad prefix with --->

@@ -242,7 +242,7 @@ Additional constraints for a relation can be defined using the
 
 For example, we might want to define the `tracks` relation
 to only return tracks that aren't bonus tracks, and define a
-new `bonus_tracks` relations for those that are.
+new `bonus_tracks` relation for those that are.
 
 ```js
 // tables.albums.relations...

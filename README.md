@@ -165,24 +165,32 @@ const database = connect({
       VALUES (?, ?)
     `,
     selectUserByEmail: `
-      &lt;selectUser&gt;
+      <selectUser>;
       WHERE email=?
     `,
     selectUserByName: `
-      &lt;selectUser&gt;
+      <selectUser>;
       WHERE name=?
     `,
   }
 })
+
+// run named query to create table
 await database.run('createUsers');
+
+// run named query to insert a row
 await database.run(
   'insertUser',
   ['Bobby Badger', 'bobby@badgerpower.com']
 );
+
+// run named query to fetch one row
 const select1 = await database.one(
   'selectUserByEmail',
   ['bobby@badgerpower.com']
 );
+
+// another named query to fetch one row
 const select2 = await database.one(
   'selectUserByName',
   ['Bobby Badger']
@@ -209,12 +217,20 @@ const database = connect({
     }
   }
 })
+
+// fetch table
 await users = database.table('users');
+
+// run named query defined for table
 await users.run('create');
+
+// insert a row
 await users.insert({
   name: 'Bobby Badger',
   email: 'bobby@badgerpower.com',
 });
+
+// fetch one row
 const select = await users.oneRow({
   email: 'bobby@badgerpower.com'
 });
@@ -223,18 +239,77 @@ const select = await users.oneRow({
 Use records to perform further operations on rows.
 
 ```js
+// fetch one record
 const record = await users.oneRecord({
   email: 'bobby@badgerpower.com'
 });
+console.log(record.name);   // Bobby Badger
+console.log(record.email);  // bobby@badgerpower.com
+
+// update record
 await record.update({
   name: 'Robert Badger'
 });
+
+// delete record
 await record.delete();
 ```
 
-You can also define relations to connect records to related records,
-and define your own custom table and record modules to
-perform custom processing and implement your business logic.
+Define relations between tables.
+
+```js
+const musicdb = connect({
+  database: 'postgres://musicdb',
+  tables: {
+    artists: {
+      columns: 'id name',
+      relations: {
+        // each arist has (potentially) many albums
+        albums: 'id => albums:artist_id'
+      }
+    },
+    albums: {
+      columns: 'id artist_id title year',
+      relations: {
+        // each album has one artist
+        artist: 'artist_id -> artists.id',
+        // each albums has many tracks
+        tracks: 'id => tracks.album_id,
+      }
+    }
+    tracks: {
+      columns: 'id album_id title',
+      relations: {
+        // each track appears on one album
+        album: 'album_id -> albums.id',
+      }
+    }
+  }
+})
+
+// fetch artists table
+const artists = await musicdb.table('artists');
+
+// fetch record for Pink Floyd
+const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
+
+// fetch albums by Pink Floyd
+const albums = await floyd.albums;
+
+// first album returned, e.g. Dark Side of the Moon
+const album = albums[0];
+console.log(album.title); // Dark Side of the Moon
+
+// artist relation leads back to Pink Floyd
+const artist = await album.artist;
+console.log(artist.name); // Pink Floyd
+
+// fetch tracks for album
+const tracks = await album.tracks;
+console.log(tracks[0].title);  // Speak to Me
+console.log(tracks[1].title);  // Breathe
+console.log(tracks[2].title);  // On the Run
+```
 
 Read the [fine manual](https://abw.github.io/badger-database-js/docs/manual/) for
 further information.

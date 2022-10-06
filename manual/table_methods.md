@@ -608,6 +608,14 @@ As a trivial example, you can embed the `table` name in a query like so:
 users.run('DROP TABLE &lt;table&gt;')
 ```
 
+You can also run any named `queries` that you've pre-defined for the table,
+or include any table `fragments` in your queries.  For example, if you've
+defined a named query called `drop` then you can run it like so:
+
+```js
+users.run('drop')
+```
+
 ## one(query, values, options)
 
 This is another low-level method for running an SQL query where you're
@@ -622,6 +630,9 @@ const bobby = users.one(
   ['Bobby Badger']
 )
 ```
+
+You can also run any pre-defined named `queries` or include query `fragments`
+in the queries you run using this method.
 
 ## any(query, values, options)
 
@@ -639,6 +650,9 @@ const bobby = users.any(
 )
 ```
 
+Pre-defined named `queries` can also be run, or you can include query
+`fragments` in the SQL.
+
 ## all(query, values, options)
 
 The final low-level method for running an SQL query where you're expecting to
@@ -652,3 +666,6 @@ const rows = users.all(
   'SELECT &lt;columns&gt; FROM &lt;table&gt;',
 )
 ```
+
+Unsurprisingly, this method also allows you to run pre-defined named
+`queries` or embed query `fragments` in the SQL.

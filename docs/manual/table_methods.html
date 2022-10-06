@@ -574,6 +574,10 @@ the database.  For example, a <code>users</code> table having columns defined as
 For Mysql the backtick character is used instead of double quotes.</p>
 <p>As a trivial example, you can embed the <code>table</code> name in a query like so:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">users.run('DROP TABLE &lt;table&gt;')</code></code></pre>
+<p>You can also run any named <code>queries</code> that you've pre-defined for the table,
+or include any table <code>fragments</code> in your queries.  For example, if you've
+defined a named query called <code>drop</code> then you can run it like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">users.run('drop')</code></code></pre>
 <h2 id="one-query--values--options-">one(query, values, options)</h2><p>This is another low-level method for running an SQL query where you're
 expecting to get exactly one row returned.  It's just like the
 corresponding <a href="manual/basic_queries.html#one-query--values--options-">one()</a>
@@ -583,6 +587,8 @@ per <a href="#run-query--values--options-">run()</a>.</p>
   'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
   ['Bobby Badger']
 )</code></code></pre>
+<p>You can also run any pre-defined named <code>queries</code> or include query <code>fragments</code>
+in the queries you run using this method.</p>
 <h2 id="any-query--values--options-">any(query, values, options)</h2><p>This is yet another low-level method for running an SQL query, but where
 you're expecting to get one row returned which may or may not exist.
 It's just like the corresponding
@@ -593,6 +599,8 @@ as per <a href="#run-query--values--options-">run()</a>.</p>
   'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
   ['Bobby Badger']
 )</code></code></pre>
+<p>Pre-defined named <code>queries</code> can also be run, or you can include query
+<code>fragments</code> in the SQL.</p>
 <h2 id="all-query--values--options-">all(query, values, options)</h2><p>The final low-level method for running an SQL query where you're expecting to
 get multiple rows.  It's just like the corresponding
 <a href="manual/basic_queries.html#all-query--values--options-">all()</a>
@@ -601,6 +609,8 @@ per <a href="#run-query--values--options-">run()</a>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = users.all(
   'SELECT &lt;columns&gt; FROM &lt;table&gt;',
 )</code></code></pre>
+<p>Unsurprisingly, this method also allows you to run pre-defined named
+<code>queries</code> or embed query <code>fragments</code> in the SQL.</p>
 </div>
 </div>
 
