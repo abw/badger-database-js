@@ -7,8 +7,6 @@
 
 * table fetch columns with aliases: { alias: column } ???
 
-* query builder (operations)
-
 * document query() method to view generated SQL
 
 * additional 'where' criteria for relations (check names get properly quoted)
@@ -17,8 +15,10 @@
 
 * database inspection to grok tables automagically?
 
-* search component
+* search component / query builder (operations)
 
-* music database example, complete with custom tables, records, etc.
+* music database example, complete with custom `tables, records, etc.
 
-* change debugging methods to automatically pad prefix with --->
+* API documentation
+
+* debug documenation - prefix and color

@@ -7,10 +7,7 @@ export class PostgresEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug(
-      "connect()\n  database: %o",
-      this.database
-    );
+    this.debugData("connect()", { database: this.database });
     const client = new pg.Client(this.database);
     await client.connect();
     return client;
@@ -27,10 +24,7 @@ export class PostgresEngine extends Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async execute(sql, params, options={}) {
-    this.debug(
-      "execute()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("execute()", { sql, params, options });
     const client = await this.acquire();
     const result = await client.query(sql, params);
     this.release(client);
@@ -39,28 +33,19 @@ export class PostgresEngine extends Engine {
       : result;
   }
   async run(sql, params, options) {
-    this.debug(
-      "run()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("run()", { sql, params, options });
     [params, options] = this.optionalParams(params, options);
     return this
       .execute(sql, params, options)
   }
   async any(sql, params, options) {
-    this.debug(
-      "any()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("any()", { sql, params, options });
     return this
       .execute(sql, params, options)
       .then( ({rows}) => rows[0] );
   }
   async all(sql, params, options) {
-    this.debug(
-      "all()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("all()", { sql, params, options });
     return this
       .execute(sql, params, options)
       .then( ({rows}) => rows );

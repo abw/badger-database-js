@@ -7,10 +7,7 @@ export class MysqlEngine extends Engine {
   // Pool connections methods
   //-----------------------------------------------------------------------------
   async connect() {
-    this.debug(
-      "connect()\n  database: %o",
-      this.database
-    );
+    this.debugData("connect()", { database: this.database });
     return mysql.createConnection(this.database);
   }
   async connected() {
@@ -25,29 +22,20 @@ export class MysqlEngine extends Engine {
   // Query methods
   //-----------------------------------------------------------------------------
   async run(sql, params, options) {
-    this.debug(
-      "run()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("run()", { sql, params, options });
     [params, options] = this.optionalParams(params, options);
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([result]) => result );
   }
   async any(sql, params, options) {
-    this.debug(
-      "any()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("any()", { sql, params, options });
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows[0] );
   }
   async all(sql, params, options) {
-    this.debug(
-      "all()\n       sql: %s\n    params: %o\n   options: %o",
-      sql, params, options
-    );
+    this.debugData("all()", { sql, params, options });
     return this
       .execute(sql, query => query.execute(params), options)
       .then( ([rows]) => rows );
