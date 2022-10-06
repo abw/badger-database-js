@@ -237,7 +237,7 @@ const select = await users.oneRow({
 });
 ```
 
-Use [records](https://abw.github.io/badger-database-js/docs/manual/tables.html)
+Use [records](https://abw.github.io/badger-database-js/docs/manual/records.html)
 to perform further operations on rows.
 
 ```js
