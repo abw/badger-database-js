@@ -97,9 +97,9 @@ to install `@abw/badger-database` and at least one of the driver modules.
 
 ## Quick Start
 
-Import the `connect` function from `@abw/badger-database`
-and create a database connection.  This example shows a `sqlite3`
-in-memory database which is ideal for testing.
+Import the [connect()](https://abw.github.io/badger-database-js/docs/manual/connecting.html)
+function from `@abw/badger-database` and create a database connection.  This example shows a
+`sqlite` in-memory database which is ideal for testing.
 
 ```js
 const database = connect({
@@ -107,7 +107,7 @@ const database = connect({
 })
 ```
 
-Use the [run()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#run--)
+Use the [run()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#run-query--values--options-)
 method to run SQL queries.  For example, to create a `users` table:
 
 ```js
@@ -130,7 +130,7 @@ const insert = await database.run(
 console.log("Inserted ID:", insert.lastInsertRowid);
 ```
 
-Use the [one()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#one--)
+Use the [one()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#one-query--values--options-)
 method to fetch a row of data:
 
 ```js
@@ -141,8 +141,9 @@ const select = await database.one(
 console.log("User Name:", select.name);
 ```
 
-Define named queries and reusable query fragments up front so that you
-don't have to embed SQL in your application code:
+Define [named queries](https://abw.github.io/badger-database-js/docs/manual/named_queries.html)
+and reusable [query fragments](https://abw.github.io/badger-database-js/docs/manual/query_fragments.html)
+up front so that you don't have to embed SQL in your application code:
 
 ```js
 const database = connect({
@@ -165,11 +166,11 @@ const database = connect({
       VALUES (?, ?)
     `,
     selectUserByEmail: `
-      <selectUser>;
+      <selectUser>
       WHERE email=?
     `,
     selectUserByName: `
-      <selectUser>;
+      <selectUser>
       WHERE name=?
     `,
   }
@@ -197,8 +198,8 @@ const select2 = await database.one(
 );
 ```
 
-Define tables to benefit from table-scoped queries and automatically generated
-queries:
+Define [tables](https://abw.github.io/badger-database-js/docs/manual/tables.html)
+to benefit from table-scoped queries and automatically generated queries:
 
 ```js
 const database = connect({
@@ -236,7 +237,8 @@ const select = await users.oneRow({
 });
 ```
 
-Use records to perform further operations on rows.
+Use [records](https://abw.github.io/badger-database-js/docs/manual/tables.html)
+to perform further operations on rows.
 
 ```js
 // fetch one record
@@ -255,7 +257,8 @@ await record.update({
 await record.delete();
 ```
 
-Define relations between tables.
+Define [relations](https://abw.github.io/badger-database-js/docs/manual/relations.html)
+between tables.
 
 ```js
 const musicdb = connect({
@@ -276,7 +279,7 @@ const musicdb = connect({
         // each albums has many tracks
         tracks: 'id => tracks.album_id,
       }
-    }
+    },
     tracks: {
       columns: 'id album_id title',
       relations: {
