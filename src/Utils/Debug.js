@@ -1,35 +1,36 @@
 import { addDebug, ANSIescape, ANSIreset } from "@abw/badger";
 import { doNothing, fail, isBoolean, isObject } from "@abw/badger-utils";
 
+const debugWidth = 16;
 export let debug = {
   database: {
     debug:  false,
-    prefix: 'Database -> ',
+    prefix: 'Database',
     color:  'bright magenta',
   },
   engine: {
     debug:  false,
-    prefix: 'Engine ---> ',
+    prefix: 'Engine',
     color:  'red',
   },
   queries: {
     debug:  false,
-    prefix: 'Queries --> ',
+    prefix: 'Queries',
     color:  'blue',
   },
   table: {
     debug:  false,
-    prefix: 'Table ----> ',
+    prefix: 'Table',
     color:  'bright cyan',
   },
   record: {
     debug:  false,
-    prefix: 'Record ---> ',
+    prefix: 'Record',
     color:  'green',
   },
   test: {
     debug:  false,
-    prefix: 'Test     -> ',
+    prefix: 'Test',
     color:  'green'
   },
 }
@@ -65,11 +66,14 @@ export const addDebugMethod = (object, name, ...configs) => {
   const enabled = options.debug;
   const prefix  = options.debugPrefix || options.prefix;
   const color   = options.debugColor  || options.color;
-  addDebug(object, enabled, prefix, color);
-  object.debugData = DataDebugger(enabled, prefix, color);
+  const preline = prefix.length > debugWidth - 2
+    ? prefix + "\n" + "".padEnd(debugWidth, '-') + '> '
+    : (prefix + ' ').padEnd(debugWidth, '-') + '> ';
+  addDebug(object, enabled, preline, color);
+  object.debugData = DataDebugger(enabled, preline, color);
 }
 
-export function DataDebugger(enabled, prefix, color, length=10) {
+export function DataDebugger(enabled, prefix, color, length=debugWidth) {
   return enabled
     ? (message, data={}) => {
         console.log(

@@ -133,29 +133,26 @@ export class Engine {
   // Specific queries: insert, update and delete
   //-----------------------------------------------------------------------------
   async insert(table, colnames, values, keys) {
-    this.debugData("insert()", { table, colnames, values, keys });
     const columns      = this.formatColumns(colnames);
     const placeholders = this.formatPlaceholders(values);
     const returning    = this.formatReturning(keys);
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
-    this.debug('insert() generated SQL:', sql);
+    this.debugData("insert()", { table, colnames, values, keys, sql });
     return this.run(sql, values, { keys, sanitizeResult: true });
   }
   async update(table, datacols, datavals, wherecols, wherevals) {
-    this.debugData("update()", { table, datacols, datavals, wherecols, wherevals });
     const set    = this.formatColumnPlaceholders(datacols);
     const where  = this.formatWherePlaceholders(wherecols, wherevals, datacols.length + 1);
     const values = this.prepareValues(wherevals);
     const sql    = format(queries.update, { table, set, where });
-    this.debug('update() generated SQL:', sql);
+    this.debugData("update()", { table, datacols, datavals, wherecols, wherevals, sql });
     return this.run(sql, [...datavals, ...values], { sanitizeResult: true });
   }
   async delete(table, wherecols, wherevals) {
-    this.debugData("delete()", { table, wherecols, wherevals });
     const where  = this.formatWherePlaceholders(wherecols, wherevals);
     const values = this.prepareValues(wherevals);
     const sql    = format(queries.delete, { table, where });
-    this.debug('delete() generated SQL:', sql);
+    this.debugData("delete()", { table, wherecols, wherevals, sql });
     return this.run(sql, values, { sanitizeResult: true });
   }
 
@@ -173,21 +170,18 @@ export class Engine {
     ]
   }
   async selectAll(table, wherecols, wherevals, options={}) {
-    this.debugData("selectAll()", { table, wherecols, wherevals, options });
     const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debug('selectAll() generated SQL:', sql);
+    this.debugData("selectAll()", { table, wherecols, wherevals, options, sql, values });
     return this.all(sql, values);
   }
   async selectAny(table, wherecols, wherevals, options={}) {
-    this.debugData("selectAny()", { table, wherecols, wherevals, options });
     const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debug('selectAny() generated SQL:', sql);
+    this.debugData("selectAny()", { table, wherecols, wherevals, options, sql, values });
     return this.any(sql, values);
   }
   async selectOne(table, wherecols, wherevals, options={}) {
-    this.debugData("selectOne()", { table, wherecols, wherevals, options });
     const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debug('selectOne() generated SQL:', sql);
+    this.debugData("selectOne()", { table, wherecols, wherevals, options, sql, values });
     return this.one(sql, values);
   }
   async select(...args) {

@@ -24,7 +24,7 @@ export class Table {
     this.rowsProxy     = rowsProxy(this);
     this.fragments     = this.prepareFragments(schema);
     this.relations     = schema.relations || { };
-    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}\n----------> ` });
+    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}` });
 
     // method aliases
     this.insertRow     = this.insertOneRow;
@@ -33,7 +33,7 @@ export class Table {
     this.insertRecords = this.insertAllRecords;
     this.updateRow     = this.updateOneRow;
     this.updateRows    = this.updateAllRows;
-    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}\n----------> ` }, schema);
+    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, schema);
   }
   prepareFragments(schema) {
     const quote       = this.database.quote.bind(this.database);
@@ -310,13 +310,13 @@ export class Table {
     );
   }
   record(row) {
-    this.debug("record()", row);
+    this.debugData("record()", { row });
     return Promise.resolve(
       this.newRecord(row)
     );
   }
   records(rows) {
-    this.debug("records()", rows);
+    this.debugData("records()", { rows });
     return Promise.resolve(
       rows.map(
         row => this.newRecord(row)

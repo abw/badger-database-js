@@ -11,7 +11,7 @@ export class Record {
     this.row       = row;
     this.relations = { };
     this.config    = config;
-    addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}\n----------> ` }, config);
+    addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}` }, config);
   }
   async update(set) {
     this.debugData("update()", { set });

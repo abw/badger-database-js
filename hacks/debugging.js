@@ -19,6 +19,11 @@ async function main() {
         // debug: true,
         recordConfig: {
           // debug: true
+        },
+        queries: {
+          selectByName: `
+            SELECT <columns> FROM <table> WHERE name=?
+          `
         }
       }
     }
@@ -45,6 +50,10 @@ async function main() {
   await bobby.update({
     name: 'Robert Badger'
   })
+  const rob = await users.one(
+    'selectByName',
+    ['Robert Badger']
+  );
   db.disconnect();
 }
 
