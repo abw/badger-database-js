@@ -1,7 +1,5 @@
 import Queries from "./Queries.js";
 import Record from "./Record.js";
-import rowProxy from "./Proxy/Row.js";
-import rowsProxy from "./Proxy/Rows.js";
 import recordProxy from "./Proxy/Record.js";
 import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
@@ -20,8 +18,6 @@ export class Table {
     this.id            = schema.id;
     this.recordClass   = schema.recordClass || Record;
     this.recordConfig  = schema.recordConfig;
-    this.rowProxy      = rowProxy(this);
-    this.rowsProxy     = rowsProxy(this);
     this.fragments     = this.prepareFragments(schema);
     this.relations     = schema.relations || { };
     this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}` });

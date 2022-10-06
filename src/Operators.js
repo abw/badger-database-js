@@ -1,5 +1,4 @@
 // work in progress / experiment
-
 import After     from './Operator/After.js';
 import Before    from './Operator/Before.js';
 import From      from './Operator/From.js';
