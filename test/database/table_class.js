@@ -1,17 +1,13 @@
 import test from 'ava';
 import Table from '../../src/Table.js';
-import Tables from '../../src/Tables.js';
 import { connect } from '../../src/Database.js'
 
 let db;
-let fetchedTable = '';
 
-// dummy Tables class which sets fetchTable so we can check
-// it's being called
-class MyTables extends Tables {
-  table(name) {
-    fetchedTable = name;
-    return this.tables[name];
+class Users extends Table {
+  configure(schema) {
+    schema.columns = 'id name email'
+    return schema;
   }
 }
 
@@ -20,11 +16,8 @@ test.serial(
   async t => {
     db = await connect({
       database: 'sqlite:memory',
-      tablesClass: MyTables,
       tables: {
-        users: {
-          columns: 'id name email'
-        }
+        users: Users,
       }
     })
     t.is( db.engine.engine, 'sqlite' );
@@ -32,11 +25,11 @@ test.serial(
 )
 
 test.serial(
-  'users table',
+  'fetch users',
   async t => {
     const users = await db.table('users');
     t.true( users instanceof Table );
-    t.is( fetchedTable, 'users' );
+    t.is( users.columns.id.column, 'id' );
   }
 )
 

@@ -8,6 +8,7 @@ import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Table {
   constructor(database, schema) {
+    this.schema        = this.configure(schema);
     this.database      = database || fail("No database specified");
     this.engine        = database.engine;
     this.table         = schema.table;
@@ -30,6 +31,9 @@ export class Table {
     this.updateRow     = this.updateOneRow;
     this.updateRows    = this.updateAllRows;
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, schema);
+  }
+  configure(schema) {
+    return schema;
   }
   prepareFragments(schema) {
     const quote       = this.database.quote.bind(this.database);
