@@ -234,7 +234,7 @@ export class Table {
   }
   async insertAllRecords(data, options={}) {
     this.debugData("insertAllRecords()", { data, options });
-    return this.insertAllRecords(data, { ...options, record: true })
+    return this.insertAllRows(data, { ...options, record: true })
   }
   //-----------------------------------------------------------------------------
   // update
