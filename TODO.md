@@ -23,5 +23,3 @@
 
 * debug documenation - prefix and color
 
-* document tables configuration() option and ability to list tables
-  as a tableClass

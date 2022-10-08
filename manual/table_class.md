@@ -75,3 +75,63 @@ async function main() {
 
 main()
 ```
+
+## Table Configuration
+
+You can define a `configure()` function to your table class
+to provide the configuration options.  It will be passed an
+object containing any configuration options from the main
+configuration for the table.  You can then add in any other
+configuration options.
+
+Don't forget to return the `schema` at the end of the method.
+
+```js
+export class Users extends Table {
+  configure(schema) {
+    schema.columns = 'id:readonly name:required email:required animal:required',
+    scheme.queries = {
+      create: `
+        CREATE TABLE users (
+          id     INTEGER PRIMARY KEY ASC,
+          name   TEXT,
+          email  TEXT,
+          animal TEXT
+        )`
+    }
+    return schema;
+  }
+  badgers() {
+    // custom method to fetch all badgers
+    return this.allRows({ animal: 'Badger' });
+  }
+}
+```
+
+When you define the `tables` for the database you then only need
+to specify the `tableClass`.
+
+```js
+const db = await connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: {
+      tableClass: Users,
+    }
+  }
+});
+```
+
+If you don't have any other table configuration options that you
+want to specify then you can use a shortcut and point the `users`
+tables directly at your class.
+
+```js
+const db = await connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: Users,
+  }
+});
+```
+
