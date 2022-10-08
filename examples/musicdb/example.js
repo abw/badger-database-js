@@ -9,14 +9,14 @@ async function main() {
   const floyd   = await artists.insertRecord({ name: 'Pink Floyd' });
   console.log("Added Pink Floyd as artist #%s", floyd.id);
 
-  // add some Pink Floyd albums
+  // add The Dark Side of the Moon album
   const albums = await musicdb.model.albums;
-  const [dsotm, wywh] = await albums.insertRecords([
-    { artist_id: floyd.id, year: 1973, title: 'The Dark Side of the Moon' },
-    { artist_id: floyd.id, year: 1975, title: 'Wish You Were Here' },
-  ]);
-  console.log("Added The Dark Side of the Moon as album #%s", dsotm.id);
-  console.log("Added Wish You Were Here as album #%s", wywh.id);
+  const dsotm  = await albums.insertRecord({
+    title:     'The Dark Side of the Moon',
+    artist_id: floyd.id,
+    year:      1973,
+  });
+  console.log("\nAdded The Dark Side of the Moon as album #%s", dsotm.id);
 
   // add tracks to The Dark Side of the Moon
   const tracks = await musicdb.model.tracks;
@@ -34,11 +34,18 @@ async function main() {
   // fetch tracks for The Dark Side of the Moon
   const dsotmTracks = await dsotm.tracks;
 
-  // print track listing manual
+  // print track listing
   console.log('Track listing for The Dark Side of the Moon:');
   dsotmTracks.forEach(
     track => console.log("  %s: %s", track.track_no, track.title)
   );
+
+  // add Wish You Were Here, using the artists addAlbum() method
+  const wywh = await floyd.addAlbum({
+    title: 'Wish You Were Here',
+    year:   1975,
+  });
+  console.log("\nAdded Wish You Were Here as album #%s", wywh.id);
 
   // add tracks to Wish You Were Here using the Album record insertTracks() method
   // note that we insert them in the wrong order to check they get ordered by track_no
@@ -51,6 +58,23 @@ async function main() {
 
   // call the Album record trackListing() method
   await wywh.trackListing();
+
+  // Now add Atom Heart Mother using the all-in-one approach
+  const ahm = await floyd.addAlbum({
+    title: 'Atom Heart Mother',
+    year:  1970,
+    tracks: [
+      { track_no: 1, title: 'Atom Heart Mother' },
+      { track_no: 2, title: 'If' },
+      { track_no: 3, title: "Summer '68" },
+      { track_no: 4, title: 'Fat Old Sun' },
+      { track_no: 5, title: "Alan's Psychedelic Breakfast" },
+    ]
+  });
+  console.log("\nAdded Atom Heart Mother as album #%s", ahm.id);
+
+  // call the Album record trackListing() method
+  await ahm.trackListing();
 
   // disconnect
   musicdb.disconnect();
