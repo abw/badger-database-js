@@ -2,6 +2,51 @@ import { fail, isArray, isObject, isString, objMap, splitList } from "@abw/badge
 import { bitSplitter, defaultIdColumn } from "../Constants.js";
 import { throwColumnValidationError } from "./Error.js";
 
+
+/**
+ * Function to prepare column definitions for a table.  If the columns specified
+ * are a string of whitespace delimited tokens then they are first split into an
+ * array.  An array is converted to a hash object by splitting each item on the
+ * first colon, e.g. `id:required` has the column name `id` and flags of `required`.
+ * Each value is then converted to an object, e.g. `required` becomes `{ required: true }`.
+ * Then end result is an object where the keys are the column names and corresponding
+ * values are objects containing any flags defined for the column.
+ * @param {!Object} schema - scheme containing table properties
+ * @param {!String} [schema.table] - the database table name
+ * @param {String|Array|Object} [schema.columns] - the table columns
+ * @return {Object} a column specification object
+ * @example
+ * const columns = prepareColumns({
+ *   table:   'artists',
+ *   columns: 'id name'
+ * })
+ * @example
+ * const columns = prepareColumns({
+ *   table:   'artists',
+ *   columns: 'id:readonly name:required'
+ * })
+ * @example
+ * const columns = prepareColumns({
+ *   table: 'artists',
+ *   columns: ['id:readonly', 'name:required']
+ * })
+ * @example
+ * const columns = prepareColumns({
+ *   table: 'artists',
+ *   columns: {
+ *     id:   'readonly',
+ *     name: 'required'
+ *   }
+ * })
+ * @example
+ * const columns = prepareColumns({
+ *   table: 'artists',
+ *   columns: {
+ *     id:   { readonly: true },
+ *     name: { required: true }
+ *   }
+ * })
+ */
 export const prepareColumns = (schema) => {
   const columns = schema.columns
     || throwColumnValidationError('noColumns', { table: schema.table });
@@ -21,16 +66,10 @@ export const prepareColumns = (schema) => {
 }
 
 const prepareColumnsString = (columns, schema) => {
-  // columns can be a string of whitespace delimited values, which
-  // is equivalent to passing an array of strings
   return prepareColumnsArray(splitList(columns), schema);
 }
 
 const prepareColumnsArray = (columns, schema) => {
-  // columns can be an array of strings, each of which should be a
-  // name, optionally followed by a series of flags or key=value
-  // items, separated by colons, e.g. 'name:required', 'name:type=text',
-  // 'name:required:type=text'
   let index = { };
   columns.forEach(
     item => {
@@ -64,6 +103,11 @@ const prepareColumnsHash = (columns, schema) => {
   )
 }
 
+/**
+ * @ignore
+ * Internal function to convert an array of colon delimited parts from a column
+ * specification string to an object.
+ */
 const prepareColumnBits = (name, bits, schema) => {
   return bits.reduce(
     (result, bit) => {
@@ -76,6 +120,19 @@ const prepareColumnBits = (name, bits, schema) => {
   );
 }
 
+
+/**
+ * Function to determine the id and/or keys columns for a table.
+ * If the keys are explicitly listed in the schema then they are used.
+ * Otherwise it looks for each column that defines the `key` flag.
+ * If the `id` column is set in the schema, or as an `id` flag on a
+ * column then that is assumed to be both the id and single key.
+ * If no keys or id is defined then we assume it's an `id` column.
+ * @param {!Object} schema - scheme containing table properties
+ * @param {!String} [schema.table] - the database table name
+ * @param {Object} columns - the table columns
+ * @return {Array} - an array of keys
+ */
 export const prepareKeys = (schema, columns={}) => {
   let keys  = splitList(schema.keys);
   const ids = Object.keys(columns).filter( key => columns[key].id );

@@ -1,7 +1,16 @@
 import { addDebug, ANSIescape, ANSIreset } from "@abw/badger";
 import { doNothing, fail, isBoolean, isObject } from "@abw/badger-utils";
 
+/**
+ * @ignore
+ * Default width for debugging prefix column.
+ */
 const debugWidth = 16;
+
+/**
+ * @ignore
+ * Default debugging options
+ */
 export let debug = {
   database: {
     debug:  false,
@@ -35,9 +44,31 @@ export let debug = {
   },
 }
 
+/**
+ * @ignore
+ * Function to throw an error for an invalid debug option
+ */
 const invalidDebugItem = item =>
   fail(`Invalid debug item "${item}" specified`)
 
+/**
+ * Function to set debugging options.  Each key in the `options` should be
+ * one of the components that supports debugging: `database`, `engine`, `queries`,
+ * `table` or `record`.  The corresponding values should be a boolean value to
+ * enable or disable debugging for the option or an object containing a `debug`
+ * flag, and optionally, a `prefix` and/or `color`.
+ * @param {!Object} options - debugging options
+ * @example
+ * setDebug({ engine: true })
+ * @example
+ * setDebug({
+ *   engine: {
+ *     debug: true,
+ *     prefix: 'Choo Choo!',
+ *     color: 'green'
+ *   }
+ * })
+ */
 export const setDebug = options => {
   Object.entries(options).map(
     ([key, value]) => {
@@ -52,6 +83,22 @@ export const setDebug = options => {
   )
 }
 
+/**
+ * Function to get debugging options for one of the components that supports debugging:
+ * `database`, `engine`, `queries`, `table` or `record`.  One or more additional
+ * objects can be passed that contain further configuration options. The returned object
+ * will contained a merged set of the defaults and those options.
+ * @param {!String} name - debugging options
+ * @param {...Object} configs - additional debugging options
+ * @example
+ * getDebug('engine')
+ * @example
+ * getDebug('engine', { debug: true })
+ * @example
+ * getDebug('engine', { debug: true, color: 'green' })
+ * @example
+ * getDebug('engine', { debug: true }, { color: 'green' })
+ */
 export const getDebug = (name, ...configs) => {
   const defaults = debug[name] || invalidDebugItem(name);
   return Object.assign(
@@ -61,6 +108,19 @@ export const getDebug = (name, ...configs) => {
   );
 }
 
+/**
+ * Function to add the `debug()` and `debugData()` methods to an object.
+ * `database`, `engine`, `queries`, `table` or `record`.  One or more additional
+ * objects can be passed that contain further configuration options. The returned object
+ * will contained a merged set of the defaults and those options.
+ * @param {!Object} object - object to receive methods
+ * @param {!String} name - name of component type
+ * @param {...Object} configs - additional debugging options
+ * @example
+ * addDebugMethod(myObject, 'engine', { debug: true })
+ * @example
+ * getDebug(myObject, 'engine', { debug: true }, { color: 'green' })
+ */
 export const addDebugMethod = (object, name, ...configs) => {
   const options = getDebug(name, ...configs);
   const enabled = options.debug;
@@ -73,7 +133,11 @@ export const addDebugMethod = (object, name, ...configs) => {
   object.debugData = DataDebugger(enabled, preline, color);
 }
 
-export function DataDebugger(enabled, prefix, color, length=debugWidth) {
+/**
+ * @ignore
+ * Function to generate a debugData() method for the above.
+ */
+function DataDebugger(enabled, prefix, color, length=debugWidth) {
   return enabled
     ? (message, data={}) => {
         console.log(

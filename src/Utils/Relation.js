@@ -1,11 +1,11 @@
 import { fail, hasValue, isString, noValue, remove } from "@abw/badger-utils";
 
-export const relationStringRegex = /^(\w+)\s*([-=]>)\s*(\w+)\.(\w+)$/;
-export const relationType = {
+const relationStringRegex = /^(\w+)\s*([-=]>)\s*(\w+)\.(\w+)$/;
+const relationType = {
   '->': 'one',
   '=>': 'many'
 };
-export const relationAliases = {
+const relationAliases = {
   localKey:   'from',
   local_key:  'from',
   remoteKey:  'to',
@@ -14,6 +14,27 @@ export const relationAliases = {
   order_by:   'order',
 };
 
+/**
+ * Function to prepare a relation definition.
+ * @param {!String} table - the table name
+ * @param {!String} name - the relation name
+ * @param {!String|Object} config - the relation configuration
+ * @return {Object} a relation specification object
+ * @example
+ * const relation = relationConfig(
+ *   'artists', 'albums', 'id => albums.artist_id'
+ * })
+ * @example
+ * const relation = relationConfig(
+ *   'artists', 'albums',
+ *   {
+ *     from:  'id',
+ *     type:  'many',
+ *     table: 'albums',
+ *     to:    'artist_id'
+ *    }
+ * )
+ */
 export const relationConfig = (table, name, config) => {
   if (isString(config)) {
     config = parseRelationString(config);
@@ -43,6 +64,15 @@ export const relationConfig = (table, name, config) => {
   return config;
 }
 
+/**
+ * Function to parse a relation definition string
+ * @param {!String} string - the relation definition string
+ * @return {Object} a relation specification object
+ * @example
+ * const relation = parseRelationString(
+ *   'id => albums.artist_id'
+ * })
+ */
 export const parseRelationString = string => {
   let match;
   return ((match = string.match(relationStringRegex)))

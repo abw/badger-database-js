@@ -30,12 +30,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-database~datadebugger",
-    "function/index.html#static-function-DataDebugger",
-    "<span>DataDebugger</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
-  ],
-  [
     "@abw/badger-database~database",
     "class/src/Database.js~Database.html",
     "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -138,12 +132,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-database~schema",
-    "class/src/Schema.js~Schema.html",
-    "<span>Schema</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "class"
-  ],
-  [
     "@abw/badger-database~select",
     "class/src/Operator/Select.js~Select.html",
     "<span>Select</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -204,34 +192,10 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger-database~databasealiases",
-    "variable/index.html#static-variable-databaseAliases",
-    "<span>databaseAliases</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
     "@abw/badger-database~databaseconfig",
     "function/index.html#static-function-databaseConfig",
     "<span>databaseConfig</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
-  ],
-  [
-    "@abw/badger-database~databasestringelements",
-    "variable/index.html#static-variable-databaseStringElements",
-    "<span>databaseStringElements</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger-database~databasestringregex",
-    "variable/index.html#static-variable-databaseStringRegex",
-    "<span>databaseStringRegex</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger-database~debug",
-    "variable/index.html#static-variable-debug",
-    "<span>debug</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
   ],
   [
     "@abw/badger-database~defaultidcolumn",
@@ -366,45 +330,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger-database~relationaliases",
-    "variable/index.html#static-variable-relationAliases",
-    "<span>relationAliases</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
     "@abw/badger-database~relationconfig",
     "function/index.html#static-function-relationConfig",
     "<span>relationConfig</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-database~relationstringregex",
-    "variable/index.html#static-variable-relationStringRegex",
-    "<span>relationStringRegex</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger-database~relationtype",
-    "variable/index.html#static-variable-relationType",
-    "<span>relationType</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger-database~rowproxy",
-    "function/index.html#static-function-rowProxy",
-    "<span>rowProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-database~rowsproxy",
-    "function/index.html#static-function-rowsProxy",
-    "<span>rowsProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-database~schema",
-    "function/index.html#static-function-schema",
-    "<span>schema</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
@@ -1596,18 +1524,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/proxy/row.js",
-    "file/src/Proxy/Row.js.html",
-    "src/Proxy/Row.js",
-    "file"
-  ],
-  [
-    "src/proxy/rows.js",
-    "file/src/Proxy/Rows.js.html",
-    "src/Proxy/Rows.js",
-    "file"
-  ],
-  [
     "src/queries.js",
     "file/src/Queries.js.html",
     "src/Queries.js",
@@ -1750,162 +1666,6 @@ window.esdocSearchIndex = [
     "file/src/Relation/one.js.html",
     "src/Relation/one.js",
     "file"
-  ],
-  [
-    "src/schema.js",
-    "file/src/Schema.js.html",
-    "src/Schema.js",
-    "file"
-  ],
-  [
-    "src/schema.js~schema#allcolumns",
-    "class/src/Schema.js~Schema.html#instance-member-allColumns",
-    "src/Schema.js~Schema#allColumns",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#column",
-    "class/src/Schema.js~Schema.html#instance-method-column",
-    "src/Schema.js~Schema#column",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#columnindex",
-    "class/src/Schema.js~Schema.html#instance-member-columnIndex",
-    "src/Schema.js~Schema#columnIndex",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#columnnames",
-    "class/src/Schema.js~Schema.html#instance-member-columnNames",
-    "src/Schema.js~Schema#columnNames",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#columnset",
-    "class/src/Schema.js~Schema.html#instance-method-columnSet",
-    "src/Schema.js~Schema#columnSet",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#columnsets",
-    "class/src/Schema.js~Schema.html#instance-member-columnSets",
-    "src/Schema.js~Schema#columnSets",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#columns",
-    "class/src/Schema.js~Schema.html#instance-method-columns",
-    "src/Schema.js~Schema#columns",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#constructor",
-    "class/src/Schema.js~Schema.html#instance-constructor-constructor",
-    "src/Schema.js~Schema#constructor",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#database",
-    "class/src/Schema.js~Schema.html#instance-member-database",
-    "src/Schema.js~Schema#database",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#defaultcolumns",
-    "class/src/Schema.js~Schema.html#instance-method-defaultColumns",
-    "src/Schema.js~Schema#defaultColumns",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#fragments",
-    "class/src/Schema.js~Schema.html#instance-member-fragments",
-    "src/Schema.js~Schema#fragments",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#id",
-    "class/src/Schema.js~Schema.html#instance-member-id",
-    "src/Schema.js~Schema#id",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#identity",
-    "class/src/Schema.js~Schema.html#instance-method-identity",
-    "src/Schema.js~Schema#identity",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#keyindex",
-    "class/src/Schema.js~Schema.html#instance-member-keyIndex",
-    "src/Schema.js~Schema#keyIndex",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#keys",
-    "class/src/Schema.js~Schema.html#instance-member-keys",
-    "src/Schema.js~Schema#keys",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#preparecolumnsets",
-    "class/src/Schema.js~Schema.html#instance-method-prepareColumnSets",
-    "src/Schema.js~Schema#prepareColumnSets",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#preparecolumns",
-    "class/src/Schema.js~Schema.html#instance-method-prepareColumns",
-    "src/Schema.js~Schema#prepareColumns",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#preparefragments",
-    "class/src/Schema.js~Schema.html#instance-method-prepareFragments",
-    "src/Schema.js~Schema#prepareFragments",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#preparekeys",
-    "class/src/Schema.js~Schema.html#instance-method-prepareKeys",
-    "src/Schema.js~Schema#prepareKeys",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#queries",
-    "class/src/Schema.js~Schema.html#instance-member-queries",
-    "src/Schema.js~Schema#queries",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#query",
-    "class/src/Schema.js~Schema.html#instance-method-query",
-    "src/Schema.js~Schema#query",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#relations",
-    "class/src/Schema.js~Schema.html#instance-member-relations",
-    "src/Schema.js~Schema#relations",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#resolvecolumns",
-    "class/src/Schema.js~Schema.html#instance-method-resolveColumns",
-    "src/Schema.js~Schema#resolveColumns",
-    "method"
-  ],
-  [
-    "src/schema.js~schema#table",
-    "class/src/Schema.js~Schema.html#instance-member-table",
-    "src/Schema.js~Schema#table",
-    "member"
-  ],
-  [
-    "src/schema.js~schema#virtualcolumns",
-    "class/src/Schema.js~Schema.html#instance-member-virtualColumns",
-    "src/Schema.js~Schema#virtualColumns",
-    "member"
   ],
   [
     "src/table.js",
@@ -2187,18 +1947,6 @@ window.esdocSearchIndex = [
     "src/table.js~table#required",
     "class/src/Table.js~Table.html#instance-member-required",
     "src/Table.js~Table#required",
-    "member"
-  ],
-  [
-    "src/table.js~table#rowproxy",
-    "class/src/Table.js~Table.html#instance-member-rowProxy",
-    "src/Table.js~Table#rowProxy",
-    "member"
-  ],
-  [
-    "src/table.js~table#rowsproxy",
-    "class/src/Table.js~Table.html#instance-member-rowsProxy",
-    "src/Table.js~Table#rowsProxy",
     "member"
   ],
   [

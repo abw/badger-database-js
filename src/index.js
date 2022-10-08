@@ -5,6 +5,5 @@ export * from './Engines.js';
 export * from './Record.js';
 export * from './Table.js';
 export * from './Tables.js';
-export * from './Utils/Debug.js';
-export * from './Utils/Error.js';
+export * from './Utils/index.js';
 export { connect as default } from './Database.js'

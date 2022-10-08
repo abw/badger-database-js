@@ -1,14 +1,73 @@
 import { hasValue, isString, remove } from "@abw/badger-utils";
-import { databaseAliases, databaseStringElements, databaseStringRegex } from "../Constants.js";
 import { invalid, missing } from "./Error.js";
 
+/**
+ * @ignore
+ * Regex to parse database string.
+ */
+export const databaseStringRegex = /^(\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
 
-//-----------------------------------------------------------------------------
-// Database configuration
-//-----------------------------------------------------------------------------
-// databaseConfig(string)
-// databaseConfig({ database: { engine: xxx, ... } })
-//-----------------------------------------------------------------------------
+/**
+ * @ignore
+ * Lookup table mapping captures from above regex to configuration option.
+ */
+export const databaseStringElements = {
+  engine:   1,
+  user:     2,
+  password: 3,
+  host:     4,
+  port:     5,
+  database: 6,
+};
+
+/**
+ * @ignore
+ * Lookup table of aliases for configuration options.
+ */
+export const databaseAliases = {
+  username: 'user',
+  pass:     'password',
+  hostname: 'host',
+  file:     'filename',
+};
+
+/**
+ * Function to create and sanitize a database configuration.  If the argument
+ * is a string then it is passed to {@link parseDatabaseString}.
+ * @param {!(Object|String)} config - database connection string or configuration object
+ * @param {!String} [config.engine] - database engine, one of `sqlite`, `mysql` or `postgres`
+ * @param {?String} [config.username] - alias for `user` option
+ * @param {?String} [config.user] - name of user to connect to database
+ * @param {?String} [config.password] - password for user to connect to database
+ * @param {?String} [config.pass] - alias for `password` option
+ * @param {?String} [config.host] - database host name
+ * @param {?String} [config.hostname] - alias for `host` option
+ * @param {?String} [config.port] - database port
+ * @param {?String} [config.database] - database name
+ * @param {?String} [config.filename] - database filename for sqlite databases
+ * @param {?String} [config.file] - alias for `filename` option
+ * @return {Object} the database config object
+ * @example
+ * const config = databaseConfig('sqlite://dbfile.db')
+ * @example
+ * const config = databaseConfig('mysql://user:password@hostname:port//database')
+ * @example
+ * const config = databaseConfig('postgres://user:password@hostname:port//database')
+ * @example
+ * const config = databaseConfig({
+ *   engine:   'sqlite',
+ *   filename: 'dbfile.db'
+ * })
+ * @example
+ * const config = databaseConfig({
+ *   engine:   'postgres',
+ *   database: 'musicdb',
+ *   user:     'bobby',
+ *   password: 'secret',
+ *   host:     'mydbhost.com',
+ *   port:     '5150'
+ * })
+ */
 export const databaseConfig = config => {
   let database = config.database || missing('database');
 
@@ -34,16 +93,21 @@ export const databaseConfig = config => {
 }
 
 
-//-----------------------------------------------------------------------------
-// Parse Database String
-//-----------------------------------------------------------------------------
-// parseDatabaseString('postgresql://user:password@host:port/database')
-// parseDatabaseString('sqlite://filename.db')
-// parseDatabaseString('sqlite://:memory:')
-// parseDatabaseString('sqlite:memory')
-// parseDatabaseString('driver://user:password@host:port/database')
-//                    1^^^^^   2^^^ 3^^^^^^^ 4^^^ 5^^^ 6^^^^^^^
-//-----------------------------------------------------------------------------
+/**
+ * Function to parse a database configuration string and return an object of
+ * configuration options.
+ * @param {!String} string - database connection string
+ * @return {Object} a database config object parsed from the string
+ * @example
+ * config config = parseDatabaseString('postgresql://user:password@host:port/database')
+ * @example
+ * const config = parseDatabaseString('sqlite://filename.db')
+ * @example
+ * const config = parseDatabaseString('sqlite://:memory:')
+ * @example
+ * const config = parseDatabaseString('sqlite:memory')
+ * @example
+ */
 export const parseDatabaseString = string => {
   let config = { };
   let match;

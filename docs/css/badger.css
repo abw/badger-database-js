@@ -4,6 +4,11 @@ p > code, li > code {
     background-color: rgba(0,0,120,0.04);
     border: 1px solid rgba(0,0,120,0.08);
 }
+.import-path pre.prettyprint code {
+    padding: 0.5rem 0.5rem !important;
+    background-color: #f4f4f8 !important;
+    border-left: 4px solid #ccd !important;
+}
 pre.source-code {
     padding: 0;
 }
@@ -21,7 +26,11 @@ table.summary {
 }
 .content .detail > h3 {
     background-color: rgba(0,0,120,0.04);
-    padding: 0.25rem 0.5rem;
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+.content .detail > h3 .code {
+    font-size: 1.5rem;
 }
 table.params thead {
     background-color: rgba(0,0,120,0.04);
@@ -30,4 +39,25 @@ table.params thead {
 table.summary thead {
     background-color: rgba(0,0,120,0.04);
     color: rgba(0,0,120,0.7);
+}
+.content .detail + .detail {
+    margin-top: 3rem;
+}
+.content .detail > .import-path {
+    margin-top: 0;
+}
+/*
+.content .detail > div {
+    margin-left: 1rem;
+}
+*/
+.example-doc {
+    margin-left: 10px !important;
+}
+.import-path pre.prettyprint {
+    margin-top: 1rem;
+}
+.import-path .pun {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
 }
