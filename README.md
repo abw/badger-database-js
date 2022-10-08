@@ -206,7 +206,7 @@ const database = connect({
   database: 'sqlite:memory',
   tables: {
     users: {
-      columns: 'id:readonly name:required email:required'
+      columns: 'id:readonly name:required email:required',
       queries: {
         create: `
           CREATE TABLE users (
