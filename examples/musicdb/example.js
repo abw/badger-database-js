@@ -1,0 +1,59 @@
+import connectMusicDb from "./lib/musicdb.js";
+
+async function main() {
+  // connect
+  const musicdb = await connectMusicDb();
+
+  // add Pink Floyd as an artist
+  const artists = await musicdb.model.artists;
+  const floyd   = await artists.insertRecord({ name: 'Pink Floyd' });
+  console.log("Added Pink Floyd as artist #%s", floyd.id);
+
+  // add some Pink Floyd albums
+  const albums = await musicdb.model.albums;
+  const [dsotm, wywh] = await albums.insertRecords([
+    { artist_id: floyd.id, year: 1973, title: 'The Dark Side of the Moon' },
+    { artist_id: floyd.id, year: 1975, title: 'Wish You Were Here' },
+  ]);
+  console.log("Added The Dark Side of the Moon as album #%s", dsotm.id);
+  console.log("Added Wish You Were Here as album #%s", wywh.id);
+
+  // add tracks to The Dark Side of the Moon
+  const tracks = await musicdb.model.tracks;
+  await tracks.insert([
+    { album_id: dsotm.id, track_no: 1, title: 'Speak to Me / Breathe' },
+    { album_id: dsotm.id, track_no: 2, title: 'On the Run' },
+    { album_id: dsotm.id, track_no: 3, title: 'Time' },
+    { album_id: dsotm.id, track_no: 4, title: 'The Great Gig in the Sky' },
+    { album_id: dsotm.id, track_no: 5, title: 'Money' },
+    { album_id: dsotm.id, track_no: 6, title: 'Us and Them' },
+    { album_id: dsotm.id, track_no: 7, title: 'Any Colour You Like' },
+    { album_id: dsotm.id, track_no: 8, title: 'Brain Damage' },
+    { album_id: dsotm.id, track_no: 9, title: 'Eclipse' },
+  ]);
+  // fetch tracks for The Dark Side of the Moon
+  const dsotmTracks = await dsotm.tracks;
+
+  // print track listing manual
+  console.log('Track listing for The Dark Side of the Moon:');
+  dsotmTracks.forEach(
+    track => console.log("  %s: %s", track.track_no, track.title)
+  );
+
+  // add tracks to Wish You Were Here using the Album record insertTracks() method
+  // note that we insert them in the wrong order to check they get ordered by track_no
+  await wywh.insertTracks([
+    { track_no: 4, title: 'Shine On You Crazy Diamond (Parts VI-IX)' },
+    { track_no: 3, title: 'Have a Cigar' },
+    { track_no: 2, title: 'Welcome to the Machine' },
+    { track_no: 1, title: 'Shine On You Crazy Diamond (Parts I-V)' },
+  ]);
+
+  // call the Album record trackListing() method
+  await wywh.trackListing();
+
+  // disconnect
+  musicdb.disconnect();
+}
+
+main();
