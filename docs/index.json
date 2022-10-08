@@ -5472,7 +5472,7 @@
     "__docId__": 266,
     "kind": "file",
     "name": "src/Table.js",
-    "content": "import Queries from \"./Queries.js\";\nimport Record from \"./Record.js\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nexport class Table {\n  constructor(database, schema) {\n    this.database      = database || fail(\"No database specified\");\n    this.engine        = database.engine;\n    this.table         = schema.table;\n    this.columns       = prepareColumns(schema);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(schema, this.columns);\n    this.id            = schema.id;\n    this.recordClass   = schema.recordClass || Record;\n    this.recordConfig  = schema.recordConfig;\n    this.fragments     = this.prepareFragments(schema);\n    this.relations     = schema.relations || { };\n    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}` });\n\n    // method aliases\n    this.insertRow     = this.insertOneRow;\n    this.insertRows    = this.insertAllRows;\n    this.insertRecord  = this.insertOneRecord;\n    this.insertRecords = this.insertAllRecords;\n    this.updateRow     = this.updateOneRow;\n    this.updateRows    = this.updateAllRows;\n    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, schema);\n  }\n  prepareFragments(schema) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = schema.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n  checkColumns(data={}, cols=[], vals=[], options={}) {\n    const table = this.table;\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column]\n          || throwColumnValidationError('unknown', { column, table });\n        if (options.writable && spec.readonly) {\n          throwColumnValidationError('readonly', { column, table });\n        }\n        cols.push(spec.column);\n        vals.push(data[column])\n      }\n    )\n    return [cols, vals];\n  }\n  checkWritableColumns(data, cols=[], vals=[]) {\n    return this.checkColumns(data, cols, vals, { writable: true })\n  }\n  checkWhereColumns(...args) {\n    return this.checkColumns(...args)\n  }\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    this.debugData(\"run()\", { query, params, options });\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    this.debugData(\"any()\", { query, params, options });\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    this.debugData(\"all()\", { query, params, options });\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    this.debugData(\"one()\", { query, params, options });\n    return this.engine.one(this.query(query), params, options)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAllRows(data, options)\n      : this.insertOneRow(data, options)\n  }\n  async insertOneRow(data, options={}) {\n    this.debugData(\"insertOneRow()\", { data, options });\n    const [cols, vals] = this.checkWritableColumns(data);\n    this.checkRequiredColumns(data);\n    const insert = await this.engine.insert(this.table, cols, vals, this.keys);\n    return options.reload || options.record\n      ? this.insertReload(data, insert, options)\n      : insert;\n  }\n  async insertAllRows(data, options) {\n    this.debugData(\"insertAllRows()\", { data, options });\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOneRow(row, options));\n    }\n    return rows;\n  }\n  async insertOneRecord(data, options={}) {\n    this.debugData(\"insertOneRecord()\", { data, options });\n    return this.insertOneRow(data, { ...options, record: true })\n  }\n  async insertAllRecords(data, options={}) {\n    this.debugData(\"insertAllRecords()\", { data, options });\n    return this.insertAllRows(data, { ...options, record: true })\n  }\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  prepareUpdate(set, where) {\n    const [dcols, dvals] = this.checkWritableColumns(set);\n    const [wcols, wvals] = this.checkWhereColumns(where);\n    return [dcols, dvals, wcols, wvals];\n  }\n  async update(...args) {\n    return this.updateAllRows(...args);\n  }\n  async updateOneRow(set, where, options={}) {\n    this.debugData(\"updateOneRow()\", { set, where, options });\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where)\n      : update;\n  }\n  async updateAnyRow(set, where, options={}) {\n    this.debugData(\"updateAnyRow()\", { set, where, options });\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where)\n        : undefined\n      : update;\n  }\n  async updateAllRows(set, where, options={}) {\n    this.debugData(\"updateAllRows()\", { set, where, options });\n    const args   = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    // return update;\n    //let rows = [ ];\n    //for (const row of data) {\n    //  rows.push(await this.insertOne(row, options));\n    //}\n    //return rows;\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where) {\n    this.debugData(\"delete()\", { where });\n    const [cols, vals] = this.checkWhereColumns(where);\n    return this.engine.delete(this.table, cols, vals);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRow(), anyRow() and allRows()\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, params) {\n    params.columns ||= Object.keys(this.columns);\n    this.checkColumnNames(params.columns);\n    return this.checkWhereColumns(where);\n  }\n  async oneRow(where, options={}) {\n    this.debugData(\"oneRow()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const row = await this.engine.selectOne(this.table, wcols, wvals, params);\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n  async anyRow(where, options={}) {\n    this.debugData(\"anyRow()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const row = await this.engine.selectAny(this.table, wcols, wvals, params);\n    return row\n      ? options.record\n        ? this.record(row)\n        : row\n      : undefined;\n  }\n  async allRows(where, options={}) {\n    this.debugData(\"allRows()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const rows = await this.engine.selectAll(this.table, wcols, wvals, params);\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRecord(), anyRecord() and allRecords()\n  //-----------------------------------------------------------------------------\n  async oneRecord(where, options={}) {\n    this.debugData(\"oneRecord()\", { where, options });\n    return this.oneRow(where, { ...options, record: true });\n  }\n  async anyRecord(where, options={}) {\n    this.debugData(\"anyRecord()\", { where, options });\n    return this.anyRow(where, { ...options, record: true });\n  }\n  async allRecords(where, options={}) {\n    this.debugData(\"allRecords()\", { where, options });\n    return this.allRows(where, { ...options, record: true });\n  }\n\n  // select() is the old name for fetchAll() which I'm in the process of\n  // reworking.\n  async select(where, options={}) {\n    this.debug(\"select: \", where, options);\n    if (options.columns) {\n      this.checkColumnNames(options.columns);\n    }\n    const [wcols, wvals] = this.checkColumns(where);\n    return this.engine.select(this.table, wcols, wvals, options);\n  }\n\n  tableFragments() {\n    return this.tableFragments\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n  async insertReload(input, output, options={}) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return options.record\n      ? this.oneRecord(fetch)\n      : this.oneRow(fetch);\n  }\n  async updateReload(set, where) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch);\n  }\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordConfig)\n    );\n  }\n  record(row) {\n    this.debugData(\"record()\", { row });\n    return Promise.resolve(\n      this.newRecord(row)\n    );\n  }\n  records(rows) {\n    this.debugData(\"records()\", { rows });\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n}\n\nexport default Table;\n",
+    "content": "import Queries from \"./Queries.js\";\nimport Record from \"./Record.js\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\n\nexport class Table {\n  constructor(database, schema) {\n    this.schema        = this.configure(schema);\n    this.database      = database || fail(\"No database specified\");\n    this.engine        = database.engine;\n    this.table         = schema.table;\n    this.columns       = prepareColumns(schema);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(schema, this.columns);\n    this.id            = schema.id;\n    this.recordClass   = schema.recordClass || Record;\n    this.recordConfig  = schema.recordConfig;\n    this.fragments     = this.prepareFragments(schema);\n    this.relations     = schema.relations || { };\n    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}` });\n\n    // method aliases\n    this.insertRow     = this.insertOneRow;\n    this.insertRows    = this.insertAllRows;\n    this.insertRecord  = this.insertOneRecord;\n    this.insertRecords = this.insertAllRecords;\n    this.updateRow     = this.updateOneRow;\n    this.updateRows    = this.updateAllRows;\n    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, schema);\n  }\n  configure(schema) {\n    return schema;\n  }\n  prepareFragments(schema) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = schema.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n  checkColumns(data={}, cols=[], vals=[], options={}) {\n    const table = this.table;\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column]\n          || throwColumnValidationError('unknown', { column, table });\n        if (options.writable && spec.readonly) {\n          throwColumnValidationError('readonly', { column, table });\n        }\n        cols.push(spec.column);\n        vals.push(data[column])\n      }\n    )\n    return [cols, vals];\n  }\n  checkWritableColumns(data, cols=[], vals=[]) {\n    return this.checkColumns(data, cols, vals, { writable: true })\n  }\n  checkWhereColumns(...args) {\n    return this.checkColumns(...args)\n  }\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  query(name) {\n    return this.queries.query(name);\n  }\n  run(query, params, options) {\n    this.debugData(\"run()\", { query, params, options });\n    return this.engine.run(this.query(query), params, options)\n  }\n  any(query, params, options) {\n    this.debugData(\"any()\", { query, params, options });\n    return this.engine.any(this.query(query), params, options)\n  }\n  all(query, params, options) {\n    this.debugData(\"all()\", { query, params, options });\n    return this.engine.all(this.query(query), params, options)\n  }\n  one(query, params, options) {\n    this.debugData(\"one()\", { query, params, options });\n    return this.engine.one(this.query(query), params, options)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAllRows(data, options)\n      : this.insertOneRow(data, options)\n  }\n  async insertOneRow(data, options={}) {\n    this.debugData(\"insertOneRow()\", { data, options });\n    const [cols, vals] = this.checkWritableColumns(data);\n    this.checkRequiredColumns(data);\n    const insert = await this.engine.insert(this.table, cols, vals, this.keys);\n    return options.reload || options.record\n      ? this.insertReload(data, insert, options)\n      : insert;\n  }\n  async insertAllRows(data, options) {\n    this.debugData(\"insertAllRows()\", { data, options });\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOneRow(row, options));\n    }\n    return rows;\n  }\n  async insertOneRecord(data, options={}) {\n    this.debugData(\"insertOneRecord()\", { data, options });\n    return this.insertOneRow(data, { ...options, record: true })\n  }\n  async insertAllRecords(data, options={}) {\n    this.debugData(\"insertAllRecords()\", { data, options });\n    return this.insertAllRows(data, { ...options, record: true })\n  }\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  prepareUpdate(set, where) {\n    const [dcols, dvals] = this.checkWritableColumns(set);\n    const [wcols, wvals] = this.checkWhereColumns(where);\n    return [dcols, dvals, wcols, wvals];\n  }\n  async update(...args) {\n    return this.updateAllRows(...args);\n  }\n  async updateOneRow(set, where, options={}) {\n    this.debugData(\"updateOneRow()\", { set, where, options });\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where)\n      : update;\n  }\n  async updateAnyRow(set, where, options={}) {\n    this.debugData(\"updateAnyRow()\", { set, where, options });\n    const args = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where)\n        : undefined\n      : update;\n  }\n  async updateAllRows(set, where, options={}) {\n    this.debugData(\"updateAllRows()\", { set, where, options });\n    const args   = this.prepareUpdate(set, where);\n    const update = await this.engine.update(this.table, ...args);\n    // return update;\n    //let rows = [ ];\n    //for (const row of data) {\n    //  rows.push(await this.insertOne(row, options));\n    //}\n    //return rows;\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where) {\n    this.debugData(\"delete()\", { where });\n    const [cols, vals] = this.checkWhereColumns(where);\n    return this.engine.delete(this.table, cols, vals);\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRow(), anyRow() and allRows()\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, params) {\n    params.columns ||= Object.keys(this.columns);\n    this.checkColumnNames(params.columns);\n    return this.checkWhereColumns(where);\n  }\n  async oneRow(where, options={}) {\n    this.debugData(\"oneRow()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const row = await this.engine.selectOne(this.table, wcols, wvals, params);\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n  async anyRow(where, options={}) {\n    this.debugData(\"anyRow()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const row = await this.engine.selectAny(this.table, wcols, wvals, params);\n    return row\n      ? options.record\n        ? this.record(row)\n        : row\n      : undefined;\n  }\n  async allRows(where, options={}) {\n    this.debugData(\"allRows()\", { where, options });\n    const params = { ...options };\n    const [wcols, wvals] = this.prepareFetch(where, params);\n    const rows = await this.engine.selectAll(this.table, wcols, wvals, params);\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  //-----------------------------------------------------------------------------\n  // oneRecord(), anyRecord() and allRecords()\n  //-----------------------------------------------------------------------------\n  async oneRecord(where, options={}) {\n    this.debugData(\"oneRecord()\", { where, options });\n    return this.oneRow(where, { ...options, record: true });\n  }\n  async anyRecord(where, options={}) {\n    this.debugData(\"anyRecord()\", { where, options });\n    return this.anyRow(where, { ...options, record: true });\n  }\n  async allRecords(where, options={}) {\n    this.debugData(\"allRecords()\", { where, options });\n    return this.allRows(where, { ...options, record: true });\n  }\n\n  // select() is the old name for fetchAll() which I'm in the process of\n  // reworking.\n  async select(where, options={}) {\n    this.debug(\"select: \", where, options);\n    if (options.columns) {\n      this.checkColumnNames(options.columns);\n    }\n    const [wcols, wvals] = this.checkColumns(where);\n    return this.engine.select(this.table, wcols, wvals, options);\n  }\n\n  tableFragments() {\n    return this.tableFragments\n  }\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n  async insertReload(input, output, options={}) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return options.record\n      ? this.oneRecord(fetch)\n      : this.oneRow(fetch);\n  }\n  async updateReload(set, where) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch);\n  }\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordConfig)\n    );\n  }\n  record(row) {\n    this.debugData(\"record()\", { row });\n    return Promise.resolve(\n      this.newRecord(row)\n    );\n  }\n  records(rows) {\n    this.debugData(\"records()\", { rows });\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n}\n\nexport default Table;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Table.js",
     "access": "public",
@@ -5512,10 +5512,10 @@
   {
     "__docId__": 269,
     "kind": "member",
-    "name": "database",
+    "name": "schema",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#database",
+    "longname": "src/Table.js~Table#schema",
     "access": "public",
     "description": null,
     "lineNumber": 11,
@@ -5529,10 +5529,10 @@
   {
     "__docId__": 270,
     "kind": "member",
-    "name": "engine",
+    "name": "database",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#engine",
+    "longname": "src/Table.js~Table#database",
     "access": "public",
     "description": null,
     "lineNumber": 12,
@@ -5546,10 +5546,10 @@
   {
     "__docId__": 271,
     "kind": "member",
-    "name": "table",
+    "name": "engine",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#table",
+    "longname": "src/Table.js~Table#engine",
     "access": "public",
     "description": null,
     "lineNumber": 13,
@@ -5563,10 +5563,10 @@
   {
     "__docId__": 272,
     "kind": "member",
-    "name": "columns",
+    "name": "table",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#columns",
+    "longname": "src/Table.js~Table#table",
     "access": "public",
     "description": null,
     "lineNumber": 14,
@@ -5580,10 +5580,10 @@
   {
     "__docId__": 273,
     "kind": "member",
-    "name": "readonly",
+    "name": "columns",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#readonly",
+    "longname": "src/Table.js~Table#columns",
     "access": "public",
     "description": null,
     "lineNumber": 15,
@@ -5597,10 +5597,10 @@
   {
     "__docId__": 274,
     "kind": "member",
-    "name": "required",
+    "name": "readonly",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#required",
+    "longname": "src/Table.js~Table#readonly",
     "access": "public",
     "description": null,
     "lineNumber": 16,
@@ -5614,10 +5614,10 @@
   {
     "__docId__": 275,
     "kind": "member",
-    "name": "keys",
+    "name": "required",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#keys",
+    "longname": "src/Table.js~Table#required",
     "access": "public",
     "description": null,
     "lineNumber": 17,
@@ -5631,10 +5631,10 @@
   {
     "__docId__": 276,
     "kind": "member",
-    "name": "id",
+    "name": "keys",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#id",
+    "longname": "src/Table.js~Table#keys",
     "access": "public",
     "description": null,
     "lineNumber": 18,
@@ -5648,10 +5648,10 @@
   {
     "__docId__": 277,
     "kind": "member",
-    "name": "recordClass",
+    "name": "id",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#recordClass",
+    "longname": "src/Table.js~Table#id",
     "access": "public",
     "description": null,
     "lineNumber": 19,
@@ -5665,10 +5665,10 @@
   {
     "__docId__": 278,
     "kind": "member",
-    "name": "recordConfig",
+    "name": "recordClass",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#recordConfig",
+    "longname": "src/Table.js~Table#recordClass",
     "access": "public",
     "description": null,
     "lineNumber": 20,
@@ -5682,10 +5682,10 @@
   {
     "__docId__": 279,
     "kind": "member",
-    "name": "fragments",
+    "name": "recordConfig",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#fragments",
+    "longname": "src/Table.js~Table#recordConfig",
     "access": "public",
     "description": null,
     "lineNumber": 21,
@@ -5699,10 +5699,10 @@
   {
     "__docId__": 280,
     "kind": "member",
-    "name": "relations",
+    "name": "fragments",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#relations",
+    "longname": "src/Table.js~Table#fragments",
     "access": "public",
     "description": null,
     "lineNumber": 22,
@@ -5716,10 +5716,10 @@
   {
     "__docId__": 281,
     "kind": "member",
-    "name": "queries",
+    "name": "relations",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#queries",
+    "longname": "src/Table.js~Table#relations",
     "access": "public",
     "description": null,
     "lineNumber": 23,
@@ -5733,13 +5733,13 @@
   {
     "__docId__": 282,
     "kind": "member",
-    "name": "insertRow",
+    "name": "queries",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#insertRow",
+    "longname": "src/Table.js~Table#queries",
     "access": "public",
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -5750,10 +5750,10 @@
   {
     "__docId__": 283,
     "kind": "member",
-    "name": "insertRows",
+    "name": "insertRow",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#insertRows",
+    "longname": "src/Table.js~Table#insertRow",
     "access": "public",
     "description": null,
     "lineNumber": 27,
@@ -5767,10 +5767,10 @@
   {
     "__docId__": 284,
     "kind": "member",
-    "name": "insertRecord",
+    "name": "insertRows",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#insertRecord",
+    "longname": "src/Table.js~Table#insertRows",
     "access": "public",
     "description": null,
     "lineNumber": 28,
@@ -5784,10 +5784,10 @@
   {
     "__docId__": 285,
     "kind": "member",
-    "name": "insertRecords",
+    "name": "insertRecord",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#insertRecords",
+    "longname": "src/Table.js~Table#insertRecord",
     "access": "public",
     "description": null,
     "lineNumber": 29,
@@ -5801,10 +5801,10 @@
   {
     "__docId__": 286,
     "kind": "member",
-    "name": "updateRow",
+    "name": "insertRecords",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#updateRow",
+    "longname": "src/Table.js~Table#insertRecords",
     "access": "public",
     "description": null,
     "lineNumber": 30,
@@ -5818,10 +5818,10 @@
   {
     "__docId__": 287,
     "kind": "member",
-    "name": "updateRows",
+    "name": "updateRow",
     "memberof": "src/Table.js~Table",
     "static": false,
-    "longname": "src/Table.js~Table#updateRows",
+    "longname": "src/Table.js~Table#updateRow",
     "access": "public",
     "description": null,
     "lineNumber": 31,
@@ -5834,16 +5834,33 @@
   },
   {
     "__docId__": 288,
+    "kind": "member",
+    "name": "updateRows",
+    "memberof": "src/Table.js~Table",
+    "static": false,
+    "longname": "src/Table.js~Table#updateRows",
+    "access": "public",
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 289,
     "kind": "method",
-    "name": "prepareFragments",
+    "name": "configure",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Table.js~Table#prepareFragments",
+    "longname": "src/Table.js~Table#configure",
     "access": "public",
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 35,
     "undocument": true,
     "params": [
       {
@@ -5860,7 +5877,34 @@
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 290,
+    "kind": "method",
+    "name": "prepareFragments",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Table.js~Table#prepareFragments",
+    "access": "public",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "params": [
+      {
+        "name": "schema",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 291,
     "kind": "method",
     "name": "checkColumnNames",
     "memberof": "src/Table.js~Table",
@@ -5870,7 +5914,7 @@
     "longname": "src/Table.js~Table#checkColumnNames",
     "access": "public",
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 51,
     "undocument": true,
     "params": [
       {
@@ -5883,7 +5927,7 @@
     "return": null
   },
   {
-    "__docId__": 290,
+    "__docId__": 292,
     "kind": "method",
     "name": "checkColumns",
     "memberof": "src/Table.js~Table",
@@ -5893,7 +5937,7 @@
     "longname": "src/Table.js~Table#checkColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 58,
     "undocument": true,
     "params": [
       {
@@ -5940,7 +5984,7 @@
     }
   },
   {
-    "__docId__": 291,
+    "__docId__": 293,
     "kind": "method",
     "name": "checkWritableColumns",
     "memberof": "src/Table.js~Table",
@@ -5950,7 +5994,7 @@
     "longname": "src/Table.js~Table#checkWritableColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 74,
     "undocument": true,
     "params": [
       {
@@ -5985,7 +6029,7 @@
     }
   },
   {
-    "__docId__": 292,
+    "__docId__": 294,
     "kind": "method",
     "name": "checkWhereColumns",
     "memberof": "src/Table.js~Table",
@@ -5995,7 +6039,7 @@
     "longname": "src/Table.js~Table#checkWhereColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 77,
     "undocument": true,
     "params": [
       {
@@ -6013,7 +6057,7 @@
     }
   },
   {
-    "__docId__": 293,
+    "__docId__": 295,
     "kind": "method",
     "name": "checkRequiredColumns",
     "memberof": "src/Table.js~Table",
@@ -6023,7 +6067,7 @@
     "longname": "src/Table.js~Table#checkRequiredColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 76,
+    "lineNumber": 80,
     "undocument": true,
     "params": [
       {
@@ -6036,7 +6080,7 @@
     "return": null
   },
   {
-    "__docId__": 294,
+    "__docId__": 296,
     "kind": "method",
     "name": "query",
     "memberof": "src/Table.js~Table",
@@ -6046,7 +6090,7 @@
     "longname": "src/Table.js~Table#query",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 94,
     "undocument": true,
     "params": [
       {
@@ -6063,7 +6107,7 @@
     }
   },
   {
-    "__docId__": 295,
+    "__docId__": 297,
     "kind": "method",
     "name": "run",
     "memberof": "src/Table.js~Table",
@@ -6071,45 +6115,6 @@
     "async": false,
     "static": false,
     "longname": "src/Table.js~Table#run",
-    "access": "public",
-    "description": null,
-    "lineNumber": 93,
-    "undocument": true,
-    "params": [
-      {
-        "name": "query",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "params",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 296,
-    "kind": "method",
-    "name": "any",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Table.js~Table#any",
     "access": "public",
     "description": null,
     "lineNumber": 97,
@@ -6141,14 +6146,14 @@
     }
   },
   {
-    "__docId__": 297,
+    "__docId__": 298,
     "kind": "method",
-    "name": "all",
+    "name": "any",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Table.js~Table#all",
+    "longname": "src/Table.js~Table#any",
     "access": "public",
     "description": null,
     "lineNumber": 101,
@@ -6180,14 +6185,14 @@
     }
   },
   {
-    "__docId__": 298,
+    "__docId__": 299,
     "kind": "method",
-    "name": "one",
+    "name": "all",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/Table.js~Table#one",
+    "longname": "src/Table.js~Table#all",
     "access": "public",
     "description": null,
     "lineNumber": 105,
@@ -6219,66 +6224,36 @@
     }
   },
   {
-    "__docId__": 299,
-    "kind": "method",
-    "name": "insert",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Table.js~Table#insert",
-    "access": "public",
-    "description": null,
-    "lineNumber": 113,
-    "undocument": true,
-    "params": [
-      {
-        "name": "data",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
     "__docId__": 300,
     "kind": "method",
-    "name": "insertOneRow",
+    "name": "one",
     "memberof": "src/Table.js~Table",
     "generator": false,
-    "async": true,
+    "async": false,
     "static": false,
-    "longname": "src/Table.js~Table#insertOneRow",
+    "longname": "src/Table.js~Table#one",
     "access": "public",
     "description": null,
-    "lineNumber": 118,
+    "lineNumber": 109,
     "undocument": true,
     "params": [
       {
-        "name": "data",
+        "name": "query",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "params",
         "types": [
           "*"
         ]
       },
       {
         "name": "options",
-        "optional": true,
         "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
+          "*"
+        ]
       }
     ],
     "return": {
@@ -6290,15 +6265,15 @@
   {
     "__docId__": 301,
     "kind": "method",
-    "name": "insertAllRows",
+    "name": "insert",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#insertAllRows",
+    "longname": "src/Table.js~Table#insert",
     "access": "public",
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 117,
     "undocument": true,
     "params": [
       {
@@ -6323,15 +6298,15 @@
   {
     "__docId__": 302,
     "kind": "method",
-    "name": "insertOneRecord",
+    "name": "insertOneRow",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#insertOneRecord",
+    "longname": "src/Table.js~Table#insertOneRow",
     "access": "public",
     "description": null,
-    "lineNumber": 135,
+    "lineNumber": 122,
     "undocument": true,
     "params": [
       {
@@ -6359,12 +6334,45 @@
   {
     "__docId__": 303,
     "kind": "method",
-    "name": "insertAllRecords",
+    "name": "insertAllRows",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#insertAllRecords",
+    "longname": "src/Table.js~Table#insertAllRows",
+    "access": "public",
+    "description": null,
+    "lineNumber": 131,
+    "undocument": true,
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 304,
+    "kind": "method",
+    "name": "insertOneRecord",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#insertOneRecord",
     "access": "public",
     "description": null,
     "lineNumber": 139,
@@ -6393,7 +6401,43 @@
     }
   },
   {
-    "__docId__": 304,
+    "__docId__": 305,
+    "kind": "method",
+    "name": "insertAllRecords",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#insertAllRecords",
+    "access": "public",
+    "description": null,
+    "lineNumber": 143,
+    "undocument": true,
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 306,
     "kind": "method",
     "name": "prepareUpdate",
     "memberof": "src/Table.js~Table",
@@ -6403,7 +6447,7 @@
     "longname": "src/Table.js~Table#prepareUpdate",
     "access": "public",
     "description": null,
-    "lineNumber": 146,
+    "lineNumber": 150,
     "undocument": true,
     "params": [
       {
@@ -6426,7 +6470,7 @@
     }
   },
   {
-    "__docId__": 305,
+    "__docId__": 307,
     "kind": "method",
     "name": "update",
     "memberof": "src/Table.js~Table",
@@ -6436,7 +6480,7 @@
     "longname": "src/Table.js~Table#update",
     "access": "public",
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 155,
     "undocument": true,
     "params": [
       {
@@ -6454,7 +6498,7 @@
     }
   },
   {
-    "__docId__": 306,
+    "__docId__": 308,
     "kind": "method",
     "name": "updateOneRow",
     "memberof": "src/Table.js~Table",
@@ -6464,91 +6508,7 @@
     "longname": "src/Table.js~Table#updateOneRow",
     "access": "public",
     "description": null,
-    "lineNumber": 154,
-    "undocument": true,
-    "params": [
-      {
-        "name": "set",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "where",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 307,
-    "kind": "method",
-    "name": "updateAnyRow",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Table.js~Table#updateAnyRow",
-    "access": "public",
-    "description": null,
-    "lineNumber": 165,
-    "undocument": true,
-    "params": [
-      {
-        "name": "set",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "where",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 308,
-    "kind": "method",
-    "name": "updateAllRows",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Table.js~Table#updateAllRows",
-    "access": "public",
-    "description": null,
-    "lineNumber": 178,
+    "lineNumber": 158,
     "undocument": true,
     "params": [
       {
@@ -6582,6 +6542,90 @@
   {
     "__docId__": 309,
     "kind": "method",
+    "name": "updateAnyRow",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#updateAnyRow",
+    "access": "public",
+    "description": null,
+    "lineNumber": 169,
+    "undocument": true,
+    "params": [
+      {
+        "name": "set",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "where",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 310,
+    "kind": "method",
+    "name": "updateAllRows",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#updateAllRows",
+    "access": "public",
+    "description": null,
+    "lineNumber": 182,
+    "undocument": true,
+    "params": [
+      {
+        "name": "set",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "where",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 311,
+    "kind": "method",
     "name": "delete",
     "memberof": "src/Table.js~Table",
     "generator": false,
@@ -6590,7 +6634,7 @@
     "longname": "src/Table.js~Table#delete",
     "access": "public",
     "description": null,
-    "lineNumber": 196,
+    "lineNumber": 200,
     "undocument": true,
     "params": [
       {
@@ -6607,7 +6651,7 @@
     }
   },
   {
-    "__docId__": 310,
+    "__docId__": 312,
     "kind": "method",
     "name": "prepareFetch",
     "memberof": "src/Table.js~Table",
@@ -6617,7 +6661,7 @@
     "longname": "src/Table.js~Table#prepareFetch",
     "access": "public",
     "description": null,
-    "lineNumber": 205,
+    "lineNumber": 209,
     "undocument": true,
     "params": [
       {
@@ -6640,7 +6684,7 @@
     }
   },
   {
-    "__docId__": 311,
+    "__docId__": 313,
     "kind": "method",
     "name": "oneRow",
     "memberof": "src/Table.js~Table",
@@ -6650,79 +6694,7 @@
     "longname": "src/Table.js~Table#oneRow",
     "access": "public",
     "description": null,
-    "lineNumber": 210,
-    "undocument": true,
-    "params": [
-      {
-        "name": "where",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 312,
-    "kind": "method",
-    "name": "anyRow",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Table.js~Table#anyRow",
-    "access": "public",
-    "description": null,
-    "lineNumber": 219,
-    "undocument": true,
-    "params": [
-      {
-        "name": "where",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 313,
-    "kind": "method",
-    "name": "allRows",
-    "memberof": "src/Table.js~Table",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Table.js~Table#allRows",
-    "access": "public",
-    "description": null,
-    "lineNumber": 230,
+    "lineNumber": 214,
     "undocument": true,
     "params": [
       {
@@ -6750,15 +6722,15 @@
   {
     "__docId__": 314,
     "kind": "method",
-    "name": "oneRecord",
+    "name": "anyRow",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#oneRecord",
+    "longname": "src/Table.js~Table#anyRow",
     "access": "public",
     "description": null,
-    "lineNumber": 243,
+    "lineNumber": 223,
     "undocument": true,
     "params": [
       {
@@ -6786,12 +6758,48 @@
   {
     "__docId__": 315,
     "kind": "method",
-    "name": "anyRecord",
+    "name": "allRows",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#anyRecord",
+    "longname": "src/Table.js~Table#allRows",
+    "access": "public",
+    "description": null,
+    "lineNumber": 234,
+    "undocument": true,
+    "params": [
+      {
+        "name": "where",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 316,
+    "kind": "method",
+    "name": "oneRecord",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#oneRecord",
     "access": "public",
     "description": null,
     "lineNumber": 247,
@@ -6820,14 +6828,14 @@
     }
   },
   {
-    "__docId__": 316,
+    "__docId__": 317,
     "kind": "method",
-    "name": "allRecords",
+    "name": "anyRecord",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#allRecords",
+    "longname": "src/Table.js~Table#anyRecord",
     "access": "public",
     "description": null,
     "lineNumber": 251,
@@ -6856,17 +6864,17 @@
     }
   },
   {
-    "__docId__": 317,
+    "__docId__": 318,
     "kind": "method",
-    "name": "select",
+    "name": "allRecords",
     "memberof": "src/Table.js~Table",
     "generator": false,
     "async": true,
     "static": false,
-    "longname": "src/Table.js~Table#select",
+    "longname": "src/Table.js~Table#allRecords",
     "access": "public",
     "description": null,
-    "lineNumber": 258,
+    "lineNumber": 255,
     "undocument": true,
     "params": [
       {
@@ -6892,7 +6900,43 @@
     }
   },
   {
-    "__docId__": 318,
+    "__docId__": 319,
+    "kind": "method",
+    "name": "select",
+    "memberof": "src/Table.js~Table",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Table.js~Table#select",
+    "access": "public",
+    "description": null,
+    "lineNumber": 262,
+    "undocument": true,
+    "params": [
+      {
+        "name": "where",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 320,
     "kind": "method",
     "name": "tableFragments",
     "memberof": "src/Table.js~Table",
@@ -6902,7 +6946,7 @@
     "longname": "src/Table.js~Table#tableFragments",
     "access": "public",
     "description": null,
-    "lineNumber": 267,
+    "lineNumber": 271,
     "undocument": true,
     "params": [],
     "return": {
@@ -6912,7 +6956,7 @@
     }
   },
   {
-    "__docId__": 319,
+    "__docId__": 321,
     "kind": "method",
     "name": "identity",
     "memberof": "src/Table.js~Table",
@@ -6922,7 +6966,7 @@
     "longname": "src/Table.js~Table#identity",
     "access": "public",
     "description": null,
-    "lineNumber": 270,
+    "lineNumber": 274,
     "undocument": true,
     "params": [
       {
@@ -6939,7 +6983,7 @@
     }
   },
   {
-    "__docId__": 320,
+    "__docId__": 322,
     "kind": "method",
     "name": "insertReload",
     "memberof": "src/Table.js~Table",
@@ -6949,7 +6993,7 @@
     "longname": "src/Table.js~Table#insertReload",
     "access": "public",
     "description": null,
-    "lineNumber": 279,
+    "lineNumber": 283,
     "undocument": true,
     "params": [
       {
@@ -6981,7 +7025,7 @@
     }
   },
   {
-    "__docId__": 321,
+    "__docId__": 323,
     "kind": "method",
     "name": "updateReload",
     "memberof": "src/Table.js~Table",
@@ -6991,7 +7035,7 @@
     "longname": "src/Table.js~Table#updateReload",
     "access": "public",
     "description": null,
-    "lineNumber": 292,
+    "lineNumber": 296,
     "undocument": true,
     "params": [
       {
@@ -7014,7 +7058,7 @@
     }
   },
   {
-    "__docId__": 322,
+    "__docId__": 324,
     "kind": "method",
     "name": "newRecord",
     "memberof": "src/Table.js~Table",
@@ -7024,7 +7068,7 @@
     "longname": "src/Table.js~Table#newRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 303,
+    "lineNumber": 307,
     "undocument": true,
     "params": [
       {
@@ -7041,7 +7085,7 @@
     }
   },
   {
-    "__docId__": 323,
+    "__docId__": 325,
     "kind": "method",
     "name": "record",
     "memberof": "src/Table.js~Table",
@@ -7051,7 +7095,7 @@
     "longname": "src/Table.js~Table#record",
     "access": "public",
     "description": null,
-    "lineNumber": 308,
+    "lineNumber": 312,
     "undocument": true,
     "params": [
       {
@@ -7068,7 +7112,7 @@
     }
   },
   {
-    "__docId__": 324,
+    "__docId__": 326,
     "kind": "method",
     "name": "records",
     "memberof": "src/Table.js~Table",
@@ -7078,7 +7122,7 @@
     "longname": "src/Table.js~Table#records",
     "access": "public",
     "description": null,
-    "lineNumber": 314,
+    "lineNumber": 318,
     "undocument": true,
     "params": [
       {
@@ -7095,10 +7139,10 @@
     }
   },
   {
-    "__docId__": 325,
+    "__docId__": 327,
     "kind": "file",
     "name": "src/Tables.js",
-    "content": "export class Tables {\n  constructor(tables={}) {\n    this.tables = tables;\n  }\n  table(name) {\n    return this.tables[name];\n  }\n}\n\nexport default Tables;",
+    "content": "import { isFunction } from \"@abw/badger-utils\";\n\nexport class Tables {\n  constructor(tables={}) {\n    this.tables = tables;\n  }\n  table(name) {\n    const config = this.tables[name];\n    if (isFunction(config) && isFunction(config.constructor)) {\n      // table config can be a class\n      return { tableClass: config };\n    }\n    return config;\n  }\n}\n\nexport default Tables;",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Tables.js",
     "access": "public",
@@ -7106,7 +7150,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 326,
+    "__docId__": 328,
     "kind": "class",
     "name": "Tables",
     "memberof": "src/Tables.js",
@@ -7117,12 +7161,12 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{Tables}",
     "description": null,
-    "lineNumber": 1,
+    "lineNumber": 3,
     "undocument": true,
     "interface": false
   },
   {
-    "__docId__": 327,
+    "__docId__": 329,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Tables.js~Tables",
@@ -7132,11 +7176,11 @@
     "longname": "src/Tables.js~Tables#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 2,
+    "lineNumber": 4,
     "undocument": true
   },
   {
-    "__docId__": 328,
+    "__docId__": 330,
     "kind": "member",
     "name": "tables",
     "memberof": "src/Tables.js~Tables",
@@ -7144,7 +7188,7 @@
     "longname": "src/Tables.js~Tables#tables",
     "access": "public",
     "description": null,
-    "lineNumber": 3,
+    "lineNumber": 5,
     "undocument": true,
     "type": {
       "types": [
@@ -7153,7 +7197,7 @@
     }
   },
   {
-    "__docId__": 329,
+    "__docId__": 331,
     "kind": "method",
     "name": "table",
     "memberof": "src/Tables.js~Tables",
@@ -7163,7 +7207,7 @@
     "longname": "src/Tables.js~Tables#table",
     "access": "public",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 7,
     "undocument": true,
     "params": [
       {
@@ -7180,7 +7224,7 @@
     }
   },
   {
-    "__docId__": 330,
+    "__docId__": 332,
     "kind": "file",
     "name": "src/Utils/Columns.js",
     "content": "import { fail, isArray, isObject, isString, objMap, splitList } from \"@abw/badger-utils\";\nimport { bitSplitter, defaultIdColumn } from \"../Constants.js\";\nimport { throwColumnValidationError } from \"./Error.js\";\n\n\n/**\n * Function to prepare column definitions for a table.  If the columns specified\n * are a string of whitespace delimited tokens then they are first split into an\n * array.  An array is converted to a hash object by splitting each item on the\n * first colon, e.g. `id:required` has the column name `id` and flags of `required`.\n * Each value is then converted to an object, e.g. `required` becomes `{ required: true }`.\n * Then end result is an object where the keys are the column names and corresponding\n * values are objects containing any flags defined for the column.\n * @param {!Object} schema - scheme containing table properties\n * @param {!String} [schema.table] - the database table name\n * @param {String|Array|Object} [schema.columns] - the table columns\n * @return {Object} a column specification object\n * @example\n * const columns = prepareColumns({\n *   table:   'artists',\n *   columns: 'id name'\n * })\n * @example\n * const columns = prepareColumns({\n *   table:   'artists',\n *   columns: 'id:readonly name:required'\n * })\n * @example\n * const columns = prepareColumns({\n *   table: 'artists',\n *   columns: ['id:readonly', 'name:required']\n * })\n * @example\n * const columns = prepareColumns({\n *   table: 'artists',\n *   columns: {\n *     id:   'readonly',\n *     name: 'required'\n *   }\n * })\n * @example\n * const columns = prepareColumns({\n *   table: 'artists',\n *   columns: {\n *     id:   { readonly: true },\n *     name: { required: true }\n *   }\n * })\n */\nexport const prepareColumns = (schema) => {\n  const columns = schema.columns\n    || throwColumnValidationError('noColumns', { table: schema.table });\n\n  if (isString(columns)) {\n    return prepareColumnsString(columns, schema);\n  }\n  else if (isArray(columns)) {\n    return prepareColumnsArray(columns, schema);\n  }\n  else if (isObject(columns)) {\n    return prepareColumnsHash(columns, schema);\n  }\n  else {\n    return throwColumnValidationError('invalidColumns', { table: schema.table, columns });\n  }\n}\n\nconst prepareColumnsString = (columns, schema) => {\n  return prepareColumnsArray(splitList(columns), schema);\n}\n\nconst prepareColumnsArray = (columns, schema) => {\n  let index = { };\n  columns.forEach(\n    item => {\n      const bits  = item.split(bitSplitter);\n      const name  = bits.shift();\n      index[name] = prepareColumnBits(name, bits, schema);\n    }\n  )\n  return prepareColumnsHash(index, schema);\n}\n\nconst prepareColumnsHash = (columns, schema) => {\n  return objMap(\n    columns,\n    (value, name) => {\n      if (isString(value)) {\n        return prepareColumnBits(name, value.split(bitSplitter), schema)\n      }\n      else if (isObject(value)) {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = name);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = schema.table + '.' + column;\n        return value;\n      }\n      else {\n        fail(`Invalid \"${name}\" columns specified in ${schema.table} table: ${value}`)\n      }\n    }\n  )\n}\n\n/**\n * @ignore\n * Internal function to convert an array of colon delimited parts from a column\n * specification string to an object.\n */\nconst prepareColumnBits = (name, bits, schema) => {\n  return bits.reduce(\n    (result, bit) => {\n      const kv = bit.split('=', 2);\n      const key = kv.shift();\n      result[key] = kv.length ? kv[0] : true;\n      return result\n    },\n    { column: name, tableColumn: schema.table + '.' + name }\n  );\n}\n\n\n/**\n * Function to determine the id and/or keys columns for a table.\n * If the keys are explicitly listed in the schema then they are used.\n * Otherwise it looks for each column that defines the `key` flag.\n * If the `id` column is set in the schema, or as an `id` flag on a\n * column then that is assumed to be both the id and single key.\n * If no keys or id is defined then we assume it's an `id` column.\n * @param {!Object} schema - scheme containing table properties\n * @param {!String} [schema.table] - the database table name\n * @param {Object} columns - the table columns\n * @return {Array} - an array of keys\n */\nexport const prepareKeys = (schema, columns={}) => {\n  let keys  = splitList(schema.keys);\n  const ids = Object.keys(columns).filter( key => columns[key].id );\n  if (ids.length > 1) {\n    return throwColumnValidationError('multipleIds', { table: schema.table });\n  }\n  if (keys.length === 0) {\n    keys = Object.keys(columns).filter( key => columns[key].key );\n  }\n  if (schema.id) {\n    keys.unshift(schema.id);\n  }\n  else if (ids.length) {\n    schema.id = ids[0];\n    keys.unshift(schema.id);\n  }\n  else if (keys.length === 0) {\n    schema.id = defaultIdColumn;\n    keys.unshift(schema.id);\n  }\n  return keys;\n}\n",
@@ -7191,7 +7235,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 331,
+    "__docId__": 333,
     "kind": "function",
     "name": "prepareColumns",
     "memberof": "src/Utils/Columns.js",
@@ -7256,7 +7300,7 @@
     }
   },
   {
-    "__docId__": 332,
+    "__docId__": 334,
     "kind": "function",
     "name": "prepareColumnsString",
     "memberof": "src/Utils/Columns.js",
@@ -7293,7 +7337,7 @@
     "ignore": true
   },
   {
-    "__docId__": 333,
+    "__docId__": 335,
     "kind": "function",
     "name": "prepareColumnsArray",
     "memberof": "src/Utils/Columns.js",
@@ -7330,7 +7374,7 @@
     "ignore": true
   },
   {
-    "__docId__": 334,
+    "__docId__": 336,
     "kind": "function",
     "name": "prepareColumnsHash",
     "memberof": "src/Utils/Columns.js",
@@ -7367,7 +7411,7 @@
     "ignore": true
   },
   {
-    "__docId__": 335,
+    "__docId__": 337,
     "kind": "function",
     "name": "prepareColumnBits",
     "memberof": "src/Utils/Columns.js",
@@ -7409,7 +7453,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 338,
     "kind": "function",
     "name": "prepareKeys",
     "memberof": "src/Utils/Columns.js",
@@ -7465,7 +7509,7 @@
     }
   },
   {
-    "__docId__": 337,
+    "__docId__": 339,
     "kind": "file",
     "name": "src/Utils/Database.js",
     "content": "import { hasValue, isString, remove } from \"@abw/badger-utils\";\nimport { invalid, missing } from \"./Error.js\";\n\n/**\n * @ignore\n * Regex to parse database string.\n */\nexport const databaseStringRegex = /^(\\w+):\\/\\/(?:(?:(\\w+)(?::(\\w+))?@)?(\\w+)(?::(\\d+))?\\/)?(\\w+)/;\n\n/**\n * @ignore\n * Lookup table mapping captures from above regex to configuration option.\n */\nexport const databaseStringElements = {\n  engine:   1,\n  user:     2,\n  password: 3,\n  host:     4,\n  port:     5,\n  database: 6,\n};\n\n/**\n * @ignore\n * Lookup table of aliases for configuration options.\n */\nexport const databaseAliases = {\n  username: 'user',\n  pass:     'password',\n  hostname: 'host',\n  file:     'filename',\n};\n\n/**\n * Function to create and sanitize a database configuration.  If the argument\n * is a string then it is passed to {@link parseDatabaseString}.\n * @param {!(Object|String)} config - database connection string or configuration object\n * @param {!String} [config.engine] - database engine, one of `sqlite`, `mysql` or `postgres`\n * @param {?String} [config.username] - alias for `user` option\n * @param {?String} [config.user] - name of user to connect to database\n * @param {?String} [config.password] - password for user to connect to database\n * @param {?String} [config.pass] - alias for `password` option\n * @param {?String} [config.host] - database host name\n * @param {?String} [config.hostname] - alias for `host` option\n * @param {?String} [config.port] - database port\n * @param {?String} [config.database] - database name\n * @param {?String} [config.filename] - database filename for sqlite databases\n * @param {?String} [config.file] - alias for `filename` option\n * @return {Object} the database config object\n * @example\n * const config = databaseConfig('sqlite://dbfile.db')\n * @example\n * const config = databaseConfig('mysql://user:password@hostname:port//database')\n * @example\n * const config = databaseConfig('postgres://user:password@hostname:port//database')\n * @example\n * const config = databaseConfig({\n *   engine:   'sqlite',\n *   filename: 'dbfile.db'\n * })\n * @example\n * const config = databaseConfig({\n *   engine:   'postgres',\n *   database: 'musicdb',\n *   user:     'bobby',\n *   password: 'secret',\n *   host:     'mydbhost.com',\n *   port:     '5150'\n * })\n */\nexport const databaseConfig = config => {\n  let database = config.database || missing('database');\n\n  if (isString(database)) {\n    // parse connection string\n    config.database = database = parseDatabaseString(database);\n  }\n\n  // extract the engine name to top level config\n  config.engine ||= database.engine || missing('database.engine');\n  delete database.engine;\n\n  // fixup any aliases\n  Object.entries(databaseAliases).map(\n    ([key, value]) => {\n      if (hasValue(database[key])) {\n        database[value] ||= remove(database, key);\n      }\n    }\n  )\n\n  return config;\n}\n\n\n/**\n * Function to parse a database configuration string and return an object of\n * configuration options.\n * @param {!String} string - database connection string\n * @return {Object} a database config object parsed from the string\n * @example\n * config config = parseDatabaseString('postgresql://user:password@host:port/database')\n * @example\n * const config = parseDatabaseString('sqlite://filename.db')\n * @example\n * const config = parseDatabaseString('sqlite://:memory:')\n * @example\n * const config = parseDatabaseString('sqlite:memory')\n * @example\n */\nexport const parseDatabaseString = string => {\n  let config = { };\n  let match;\n\n  if (string.match(/^postgres(ql)?:/)) {\n    // special case for postgres which can handle a connectionString\n    // NOTE: we accept postgresql: or postgres: as prefixes and Do The\n    // Right Thing\n    config.engine = 'postgres';\n    config.connectionString = string.replace(/^postgres:/, 'postgresql:');\n  }\n  else if ((match = string.match(/^sqlite:\\/\\/(.*)/))) {\n    // special case for sqlite which only has a filename (or \":memory:\")\n    config.engine   = 'sqlite';\n    config.filename = match[1];\n  }\n  else if (string === 'sqlite:memory') {\n    // special case for sqlite allowing 'sqlite:memory' as short for 'sqlite://:memory:'\n    config.engine   = 'sqlite';\n    config.filename = ':memory:';\n  }\n  else if ((match = string.match(databaseStringRegex))) {\n    // all other cases (e.g. mysql)\n    Object.entries(databaseStringElements).map(\n      ([key, index]) => {\n        const value = match[index];\n        if (hasValue(value)) {\n          config[key] = value;\n        }\n      }\n    );\n  }\n  else {\n    invalid('database', string);\n  }\n  return config;\n}\n",
@@ -7476,7 +7520,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 338,
+    "__docId__": 340,
     "kind": "variable",
     "name": "databaseStringRegex",
     "memberof": "src/Utils/Database.js",
@@ -7496,7 +7540,7 @@
     }
   },
   {
-    "__docId__": 339,
+    "__docId__": 341,
     "kind": "variable",
     "name": "databaseStringElements",
     "memberof": "src/Utils/Database.js",
@@ -7516,7 +7560,7 @@
     }
   },
   {
-    "__docId__": 340,
+    "__docId__": 342,
     "kind": "variable",
     "name": "databaseAliases",
     "memberof": "src/Utils/Database.js",
@@ -7536,7 +7580,7 @@
     }
   },
   {
-    "__docId__": 341,
+    "__docId__": 343,
     "kind": "function",
     "name": "databaseConfig",
     "memberof": "src/Utils/Database.js",
@@ -7690,7 +7734,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 344,
     "kind": "function",
     "name": "parseDatabaseString",
     "memberof": "src/Utils/Database.js",
@@ -7733,7 +7777,7 @@
     }
   },
   {
-    "__docId__": 343,
+    "__docId__": 345,
     "kind": "file",
     "name": "src/Utils/Debug.js",
     "content": "import { addDebug, ANSIescape, ANSIreset } from \"@abw/badger\";\nimport { doNothing, fail, isBoolean, isObject } from \"@abw/badger-utils\";\n\n/**\n * @ignore\n * Default width for debugging prefix column.\n */\nconst debugWidth = 16;\n\n/**\n * @ignore\n * Default debugging options\n */\nexport let debug = {\n  database: {\n    debug:  false,\n    prefix: 'Database',\n    color:  'bright magenta',\n  },\n  engine: {\n    debug:  false,\n    prefix: 'Engine',\n    color:  'red',\n  },\n  queries: {\n    debug:  false,\n    prefix: 'Queries',\n    color:  'blue',\n  },\n  table: {\n    debug:  false,\n    prefix: 'Table',\n    color:  'bright cyan',\n  },\n  record: {\n    debug:  false,\n    prefix: 'Record',\n    color:  'green',\n  },\n  test: {\n    debug:  false,\n    prefix: 'Test',\n    color:  'green'\n  },\n}\n\n/**\n * @ignore\n * Function to throw an error for an invalid debug option\n */\nconst invalidDebugItem = item =>\n  fail(`Invalid debug item \"${item}\" specified`)\n\n/**\n * Function to set debugging options.  Each key in the `options` should be\n * one of the components that supports debugging: `database`, `engine`, `queries`,\n * `table` or `record`.  The corresponding values should be a boolean value to\n * enable or disable debugging for the option or an object containing a `debug`\n * flag, and optionally, a `prefix` and/or `color`.\n * @param {!Object} options - debugging options\n * @example\n * setDebug({ engine: true })\n * @example\n * setDebug({\n *   engine: {\n *     debug: true,\n *     prefix: 'Choo Choo!',\n *     color: 'green'\n *   }\n * })\n */\nexport const setDebug = options => {\n  Object.entries(options).map(\n    ([key, value]) => {\n      const set = debug[key] || invalidDebugItem(key);\n      if (isBoolean(value)) {\n        set.debug = value;\n      }\n      else if (isObject(value)) {\n        Object.assign(set, value);\n      }\n    }\n  )\n}\n\n/**\n * Function to get debugging options for one of the components that supports debugging:\n * `database`, `engine`, `queries`, `table` or `record`.  One or more additional\n * objects can be passed that contain further configuration options. The returned object\n * will contained a merged set of the defaults and those options.\n * @param {!String} name - debugging options\n * @param {...Object} configs - additional debugging options\n * @example\n * getDebug('engine')\n * @example\n * getDebug('engine', { debug: true })\n * @example\n * getDebug('engine', { debug: true, color: 'green' })\n * @example\n * getDebug('engine', { debug: true }, { color: 'green' })\n */\nexport const getDebug = (name, ...configs) => {\n  const defaults = debug[name] || invalidDebugItem(name);\n  return Object.assign(\n    {},\n    defaults,\n    ...configs\n  );\n}\n\n/**\n * Function to add the `debug()` and `debugData()` methods to an object.\n * `database`, `engine`, `queries`, `table` or `record`.  One or more additional\n * objects can be passed that contain further configuration options. The returned object\n * will contained a merged set of the defaults and those options.\n * @param {!Object} object - object to receive methods\n * @param {!String} name - name of component type\n * @param {...Object} configs - additional debugging options\n * @example\n * addDebugMethod(myObject, 'engine', { debug: true })\n * @example\n * getDebug(myObject, 'engine', { debug: true }, { color: 'green' })\n */\nexport const addDebugMethod = (object, name, ...configs) => {\n  const options = getDebug(name, ...configs);\n  const enabled = options.debug;\n  const prefix  = options.debugPrefix || options.prefix;\n  const color   = options.debugColor  || options.color;\n  const preline = prefix.length > debugWidth - 2\n    ? prefix + \"\\n\" + \"\".padEnd(debugWidth, '-') + '> '\n    : (prefix + ' ').padEnd(debugWidth, '-') + '> ';\n  addDebug(object, enabled, preline, color);\n  object.debugData = DataDebugger(enabled, preline, color);\n}\n\n/**\n * @ignore\n * Function to generate a debugData() method for the above.\n */\nfunction DataDebugger(enabled, prefix, color, length=debugWidth) {\n  return enabled\n    ? (message, data={}) => {\n        console.log(\n          '%s' + prefix + '%s' + message,\n          color ? ANSIescape(color) : '',\n          color ? ANSIreset() : ''\n        );\n        Object.entries(data).map(\n          ([key, value]) => console.log(\n            '%s' + key.padStart(length, ' ') + '%s:',\n            color ? ANSIescape(color) : '',\n            color ? ANSIreset() : '',\n            value\n          )\n        )\n      }\n    : doNothing;\n}\n",
@@ -7744,7 +7788,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 344,
+    "__docId__": 346,
     "kind": "variable",
     "name": "debugWidth",
     "memberof": "src/Utils/Debug.js",
@@ -7764,7 +7808,7 @@
     }
   },
   {
-    "__docId__": 345,
+    "__docId__": 347,
     "kind": "variable",
     "name": "debug",
     "memberof": "src/Utils/Debug.js",
@@ -7784,7 +7828,7 @@
     }
   },
   {
-    "__docId__": 346,
+    "__docId__": 348,
     "kind": "function",
     "name": "invalidDebugItem",
     "memberof": "src/Utils/Debug.js",
@@ -7810,7 +7854,7 @@
     "return": null
   },
   {
-    "__docId__": 347,
+    "__docId__": 349,
     "kind": "function",
     "name": "setDebug",
     "memberof": "src/Utils/Debug.js",
@@ -7843,7 +7887,7 @@
     "return": null
   },
   {
-    "__docId__": 348,
+    "__docId__": 350,
     "kind": "function",
     "name": "getDebug",
     "memberof": "src/Utils/Debug.js",
@@ -7892,7 +7936,7 @@
     }
   },
   {
-    "__docId__": 349,
+    "__docId__": 351,
     "kind": "function",
     "name": "addDebugMethod",
     "memberof": "src/Utils/Debug.js",
@@ -7945,7 +7989,7 @@
     "return": null
   },
   {
-    "__docId__": 350,
+    "__docId__": 352,
     "kind": "function",
     "name": "DataDebugger",
     "memberof": "src/Utils/Debug.js",
@@ -7996,7 +8040,7 @@
     }
   },
   {
-    "__docId__": 351,
+    "__docId__": 353,
     "kind": "file",
     "name": "src/Utils/Error.js",
     "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\n/**\n * Function to throw a generic error used to report a missing configration item.\n * The error message will be of the form `No \"XXX\" specified`.\n * @param {!String} item - the name of the missing item\n * @example\n * missing('badger');   // throws error: No \"badger\" specified\n */\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\n/**\n * Function to throw a generic error used to report an invalid configration item.\n * The error message will be of the form `Invalid \"XXX\" specified: YYY`.\n * @param {!String} item - the name of the invalid item\n * @param value - the value of the invalid item\n * @example\n * invalid('badger', 99);   // throws error: Invalid \"badger\" specified: 99\n */\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\n/**\n * Function to throw a generic error reporting that a method is not implemented.\n * This is used in base classes (e.g. {@link Engine}) where subclasses are\n * required to implement the method.\n * The error message will be of the form `METHOD is not implemented in MODULE`.\n * @param {!String} method - the name of the method\n * @param {!String} module - the name of the module\n * @example\n * notImplemented('wibble', 'FrussetPouch');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\n/**\n * Currying function used to generate a function that calls {@link notImplemented}\n * with the module name pre-defined.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\n/**\n * Wrapper around {@link notImplementedInModule} which provides a\n * more explicit error message for base classes.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in the FrussetPouch base class\n */\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\n/**\n * Error class for generating custom errors.\n */\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\n/**\n * Error class for reporting unexpected number of rows returned by a\n * database query.\n */\nexport class UnexpectedRowCount extends CustomError { }\n\n/**\n * Error class for reporting columns validation errors, e.g. when\n * attempting to update a `readonly` column.\n */\nexport class ColumnValidationError extends CustomError { }\n\n/**\n * Error class for reporting validation errors when inserting a row.\n */\nexport class InsertValidationError extends CustomError { }\n\n/**\n * Error class for reporting attempts to update a deleted record.\n */\nexport class DeletedRecordError extends CustomError { }\n\n/**\n * Function for throwing a {@link UnexpectedRowCount} error when multiple\n * rows were returned or updated when only one was expected.\n * @param {!Integer} n - the number of rows encountered\n * @param {String} [action=returned] - the action that was being performed.\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were returned when one was expected\"\n * unexpectedRowCount(10);\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were updated when one was expected\"\n * unexpectedRowCount(10, 'updated');\n */\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n/**\n * Function to contruct a function for throwing errors of a particular type\n * using message formats.  The function returned expects a format name and\n * an optional object containing values to insert into the message format.\n * @param {!Object} formats - an object mapping short names to message formats\n * @param {Error} [error=Error] - the error type\n * @example\n * const hurl = thrower({ oops => 'Unexpected <animal> encountered });\n * hurl('oops', 'badger');  // throws error: Unexpected badger encountered\n */\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\n/**\n * Error throwing function for column validation errors.\n */\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n\n/**\n * Error throwing function for deleted record errors.\n */\nexport const throwDeletedRecordError = thrower(\n  {\n    action: 'Cannot <action> deleted <table> record #<id>',\n  },\n  DeletedRecordError\n)\n",
@@ -8007,7 +8051,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 352,
+    "__docId__": 354,
     "kind": "function",
     "name": "missing",
     "memberof": "src/Utils/Error.js",
@@ -8039,7 +8083,7 @@
     "return": null
   },
   {
-    "__docId__": 353,
+    "__docId__": 355,
     "kind": "function",
     "name": "invalid",
     "memberof": "src/Utils/Error.js",
@@ -8081,7 +8125,7 @@
     "return": null
   },
   {
-    "__docId__": 354,
+    "__docId__": 356,
     "kind": "function",
     "name": "notImplemented",
     "memberof": "src/Utils/Error.js",
@@ -8123,7 +8167,7 @@
     "return": null
   },
   {
-    "__docId__": 355,
+    "__docId__": 357,
     "kind": "function",
     "name": "notImplementedInModule",
     "memberof": "src/Utils/Error.js",
@@ -8155,7 +8199,7 @@
     "return": null
   },
   {
-    "__docId__": 356,
+    "__docId__": 358,
     "kind": "function",
     "name": "notImplementedInBaseClass",
     "memberof": "src/Utils/Error.js",
@@ -8187,7 +8231,7 @@
     "return": null
   },
   {
-    "__docId__": 357,
+    "__docId__": 359,
     "kind": "class",
     "name": "CustomError",
     "memberof": "src/Utils/Error.js",
@@ -8205,7 +8249,7 @@
     ]
   },
   {
-    "__docId__": 358,
+    "__docId__": 360,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -8219,7 +8263,7 @@
     "undocument": true
   },
   {
-    "__docId__": 359,
+    "__docId__": 361,
     "kind": "member",
     "name": "name",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -8236,7 +8280,7 @@
     }
   },
   {
-    "__docId__": 360,
+    "__docId__": 362,
     "kind": "class",
     "name": "UnexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -8254,7 +8298,7 @@
     ]
   },
   {
-    "__docId__": 361,
+    "__docId__": 363,
     "kind": "class",
     "name": "ColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8272,7 +8316,7 @@
     ]
   },
   {
-    "__docId__": 362,
+    "__docId__": 364,
     "kind": "class",
     "name": "InsertValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8290,7 +8334,7 @@
     ]
   },
   {
-    "__docId__": 363,
+    "__docId__": 365,
     "kind": "class",
     "name": "DeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -8308,7 +8352,7 @@
     ]
   },
   {
-    "__docId__": 364,
+    "__docId__": 366,
     "kind": "function",
     "name": "unexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -8353,7 +8397,7 @@
     "return": null
   },
   {
-    "__docId__": 365,
+    "__docId__": 367,
     "kind": "function",
     "name": "thrower",
     "memberof": "src/Utils/Error.js",
@@ -8397,7 +8441,7 @@
     "return": null
   },
   {
-    "__docId__": 366,
+    "__docId__": 368,
     "kind": "variable",
     "name": "throwColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -8416,7 +8460,7 @@
     }
   },
   {
-    "__docId__": 367,
+    "__docId__": 369,
     "kind": "variable",
     "name": "throwDeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -8435,7 +8479,7 @@
     }
   },
   {
-    "__docId__": 368,
+    "__docId__": 370,
     "kind": "file",
     "name": "src/Utils/Format.js",
     "content": "import { fail, noValue } from \"@abw/badger-utils\";\n\n/**\n * Function to format strings by inserting values into placeholder locations.\n * @param {!String} msg - the source string\n * @param {Object} data - data items to insert into the string\n * @returns {String} - the expanded string\n * @example\n * format('Hello <name>!', { name: 'World'});  // Hello World!\n */\nexport const format = (msg, data) =>\n  msg.replace(\n    /<(\\w+)>/g,\n    (_, key) => {\n      const val = data[key];\n      if (noValue(val)) {\n        fail(`Invalid variable expansion <${key}> in message format: ${msg}`);\n      }\n      return val;\n    }\n  );\n",
@@ -8446,7 +8490,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 369,
+    "__docId__": 371,
     "kind": "function",
     "name": "format",
     "memberof": "src/Utils/Format.js",
@@ -8501,7 +8545,7 @@
     }
   },
   {
-    "__docId__": 370,
+    "__docId__": 372,
     "kind": "file",
     "name": "src/Utils/Relation.js",
     "content": "import { fail, hasValue, isString, noValue, remove } from \"@abw/badger-utils\";\n\nconst relationStringRegex = /^(\\w+)\\s*([-=]>)\\s*(\\w+)\\.(\\w+)$/;\nconst relationType = {\n  '->': 'one',\n  '=>': 'many'\n};\nconst relationAliases = {\n  localKey:   'from',\n  local_key:  'from',\n  remoteKey:  'to',\n  remote_key: 'to',\n  orderBy:    'order',\n  order_by:   'order',\n};\n\n/**\n * Function to prepare a relation definition.\n * @param {!String} table - the table name\n * @param {!String} name - the relation name\n * @param {!String|Object} config - the relation configuration\n * @return {Object} a relation specification object\n * @example\n * const relation = relationConfig(\n *   'artists', 'albums', 'id => albums.artist_id'\n * })\n * @example\n * const relation = relationConfig(\n *   'artists', 'albums',\n *   {\n *     from:  'id',\n *     type:  'many',\n *     table: 'albums',\n *     to:    'artist_id'\n *    }\n * )\n */\nexport const relationConfig = (table, name, config) => {\n  if (isString(config)) {\n    config = parseRelationString(config);\n  }\n\n  // fix up any aliases\n  Object.entries(relationAliases).map(\n    ([key, value]) => {\n      if (hasValue(config[key])) {\n        config[value] ||= remove(config, key);\n      }\n    }\n  );\n\n  // check for missing parameters\n  ['type', 'table', 'to', 'from'].forEach(\n    key => {\n      if (noValue(config[key])) {\n        fail(`Missing \"${key}\" in ${name} relation for ${table} table`);\n      }\n    }\n  )\n\n  // set the name\n  config.name = `${table}.${name}`;\n\n  return config;\n}\n\n/**\n * Function to parse a relation definition string\n * @param {!String} string - the relation definition string\n * @return {Object} a relation specification object\n * @example\n * const relation = parseRelationString(\n *   'id => albums.artist_id'\n * })\n */\nexport const parseRelationString = string => {\n  let match;\n  return ((match = string.match(relationStringRegex)))\n    ? {\n        from:  match[1],\n        type:  relationType[match[2]] || fail('Invalid type \"', match[2], '\" specified in relation: ', string),\n        table: match[3],\n        to:    match[4],\n      }\n    : fail(\"Invalid relation string specified: \", string);\n}",
@@ -8512,7 +8556,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 371,
+    "__docId__": 373,
     "kind": "variable",
     "name": "relationStringRegex",
     "memberof": "src/Utils/Relation.js",
@@ -8533,7 +8577,7 @@
     "ignore": true
   },
   {
-    "__docId__": 372,
+    "__docId__": 374,
     "kind": "variable",
     "name": "relationType",
     "memberof": "src/Utils/Relation.js",
@@ -8554,7 +8598,7 @@
     "ignore": true
   },
   {
-    "__docId__": 373,
+    "__docId__": 375,
     "kind": "variable",
     "name": "relationAliases",
     "memberof": "src/Utils/Relation.js",
@@ -8575,7 +8619,7 @@
     "ignore": true
   },
   {
-    "__docId__": 374,
+    "__docId__": 376,
     "kind": "function",
     "name": "relationConfig",
     "memberof": "src/Utils/Relation.js",
@@ -8636,7 +8680,7 @@
     }
   },
   {
-    "__docId__": 375,
+    "__docId__": 377,
     "kind": "function",
     "name": "parseRelationString",
     "memberof": "src/Utils/Relation.js",
@@ -8684,7 +8728,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.1\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"proxymise\": \"^1.0.2\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.2\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"proxymise\": \"^1.0.2\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-database-js/package.json",
     "name": "package.json",
     "static": true,

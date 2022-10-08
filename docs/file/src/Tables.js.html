@@ -94,12 +94,19 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Tables.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export class Tables {
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { isFunction } from "@abw/badger-utils";
+
+export class Tables {
   constructor(tables={}) {
     this.tables = tables;
   }
   table(name) {
-    return this.tables[name];
+    const config = this.tables[name];
+    if (isFunction(config) &amp;&amp; isFunction(config.constructor)) {
+      // table config can be a class
+      return { tableClass: config };
+    }
+    return config;
   }
 }
 

@@ -1746,6 +1746,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/table.js~table#configure",
+    "class/src/Table.js~Table.html#instance-method-configure",
+    "src/Table.js~Table#configure",
+    "method"
+  ],
+  [
     "src/table.js~table#constructor",
     "class/src/Table.js~Table.html#instance-constructor-constructor",
     "src/Table.js~Table#constructor",
@@ -1954,6 +1960,12 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-run",
     "src/Table.js~Table#run",
     "method"
+  ],
+  [
+    "src/table.js~table#schema",
+    "class/src/Table.js~Table.html#instance-member-schema",
+    "src/Table.js~Table#schema",
+    "member"
   ],
   [
     "src/table.js~table#select",
