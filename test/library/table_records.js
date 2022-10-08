@@ -298,7 +298,7 @@ export function runTableRecordsTests(engine) {
     'insert records',
     async t => {
       const users = await db.table('users');
-      const records = await users.insert(
+      const records = await users.insertRecords(
         [
           {
             name:  'Frank Ferret',
@@ -309,7 +309,7 @@ export function runTableRecordsTests(engine) {
             email: 'simon@badgerpower.com'
           },
         ],
-        { record: true, reload: true }
+        // { record: true, reload: true }
       );
       t.is( records.length, 2 );
       t.is( records[0].name, 'Frank Ferret' );
