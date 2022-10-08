@@ -1,20 +1,21 @@
 import { databaseConfig } from "./Utils/Database.js";
 import { invalid, missing } from "./Utils/Error.js";
+import Mysql from './Engine/Mysql.js'
+import Postgres from './Engine/Postgres.js'
+import Sqlite from './Engine/Sqlite.js'
 
 let Engines = { };
 
 export const registerEngine = (name, module) => {
   Engines[name] = async config => {
-    const engimp = await import(module);
-    const engcls = engimp.default;
-    return new engcls(config);
+    return new module(config);
   }
 }
 
-registerEngine('sqlite',     './Engine/Sqlite.js');
-registerEngine('mysql',      './Engine/Mysql.js');
-registerEngine('postgres',   './Engine/Postgres.js');
-registerEngine('postgresql', './Engine/Postgres.js');
+registerEngine('sqlite',     Sqlite);
+registerEngine('mysql',      Mysql);
+registerEngine('postgres',   Postgres);
+registerEngine('postgresql', Postgres);
 
 //-----------------------------------------------------------------------------
 // Engine constructor
