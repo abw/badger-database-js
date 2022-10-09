@@ -13,7 +13,7 @@ move the database definition into a separate module.
 import connect from '@abw/badger-database'
 
 const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   queries: {
     createUsersTable:`
       CREATE TABLE users (

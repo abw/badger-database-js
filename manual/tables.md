@@ -14,7 +14,7 @@ and assuming that the `users` table has already been created.
 ```js
 // define the users table and the columns it contains
 const db = await connect({
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   tables: {
     users: {
       columns: 'id name email'

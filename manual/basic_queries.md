@@ -11,7 +11,7 @@ import connect from '@abw/badger-database'
 
 async function main() {
   // connect to a Sqlite database
-  const db = await connect({ database: 'sqlite:test.db' });
+  const db = await connect({ database: 'sqlite://test.db' });
 
   // create a table
   await db.run(
@@ -37,7 +37,7 @@ async function main() {
   console.log("Fetched row:", bobby);
 
   // cleanup
-  db.destroy();
+  db.disconnect();
 }
 
 main()
@@ -51,7 +51,7 @@ to complete. You can, of course, use `.then(...)` if you prefer.
 ```js
 import connect from '@abw/badger-database'
 
-connect({ database: 'sqlite:memory' }).then(
+connect({ database: 'sqlite://test.db' }).then(
   db => {
     db.run(
       `CREATE TABLE users (
@@ -74,7 +74,7 @@ connect({ database: 'sqlite:memory' }).then(
     ).then(
       bobby => console.log("Fetched row:", bobby)
     ).then(
-      () => db.destroy()
+      () => db.disconnect()
     )
   }
 );

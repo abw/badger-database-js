@@ -6,7 +6,7 @@ rows using different search terms.  For example, to select a user by
 
 ```js
 const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   queries: {
     selectUserByEmail:
       'SELECT * FROM users WHERE email=?',
@@ -22,7 +22,7 @@ brackets, e.g. `<fragmentName>`.
 
 ```js
 const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   fragments: {
     selectUser:
       'SELECT * FROM users'
@@ -41,7 +41,7 @@ more complex queries, as shown in this somewhat contrived example:
 
 ```js
 const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   fragments: {
     selectUserCompany:
       'SELECT users.*, companies.* FROM users',

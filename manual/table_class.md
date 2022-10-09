@@ -71,6 +71,9 @@ async function main() {
   console.log(badgers.length);    // 2
   console.log(badgers[0].name);   // Bobby Badger
   console.log(badgers[1].name);   // Brian Badger
+
+  // disconnect
+  db.disconnect();
 }
 
 main()

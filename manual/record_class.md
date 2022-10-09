@@ -60,7 +60,7 @@ async function main() {
   })
 
   // now call the custom hello() method on the record
-  console.log(user.hello());    // Hello Brian Badger
+  console.log(user.hello());    // Hello Bobby Badger
 }
 
 main()

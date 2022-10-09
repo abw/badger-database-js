@@ -1,3 +1,4 @@
+// This examples demonstrates pretty much everything
 import connectMusicDb from "./lib/musicdb.js";
 
 async function main() {
