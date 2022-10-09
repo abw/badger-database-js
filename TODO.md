@@ -18,5 +18,3 @@
 * API documentation
 
 * debug documenation - prefix and color
-
-* document env and envPrefix options
