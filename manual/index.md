@@ -23,25 +23,27 @@ This is the manual for the `badger-database` Javascript module.
 * [Extending](manual/extending.html) - extending badger-database to add your own functionality
 * [Limitations](manual/limitations.html) - coping with the limitations of badger-database
 
-## NOTE:
+## Notes on Case Conventions
 
-I'm in the process of rewriting the library to remove Knex.  These
-pages haven't been updated yet and so will be out of date.
+The Javascript convention is to use StudlyCaps for class names (e.g. `Artists`) and
+camelCase for methods, function, variables, etc., (e.g. `albumTracks`).
 
-* [Database](manual/database.html)
-* [Table](manual/table.html)
-* [Record](manual/record.html)
-* [Model](manual/model.html)
-* [Queries](manual/queries.html)
+When it comes to database table and columns names you might want to adopt the same
+convention.  That's fine.  However, be warned that many databases are case insensitive
+by default.  As a result you might find that the database you're using returns the
+data with column names converted to lower case.  Most databases have an option to make
+it case sensitive so you might want to look into that.
 
+I prefer to avoid the problem altogether by defining my database tables and columns using
+snake_case (e.g. `artists`, `artist_id`, `album_tracks`, etc). I typically use a number
+of other programming languages to access the same database in a project and many other
+languages (e.g. Rust, Perl, Python, etc.) use snake_case by convention.
 
-These manual pages describe some of the internal implementation.
-You probably don't need to worry about them too much unless you're
-looking under the hood.
-
-* [Connection](manual/connection.html)
-* [Schema](manual/schema.html)
-* [Tables](manual/tables.html)
+In these examples I've adopted this convention because it's what works for me.  It doesn't
+bother me that I have to think in snake_case when I'm accessing row data, but camelCase
+when using method names.  In fact, I think it probably helps me to differentiate between
+"raw" data from the database and code.  You may disagree, and of course, you are free to
+adopt your own convention that does it differently.
 
 # Author
 

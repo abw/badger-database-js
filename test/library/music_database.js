@@ -40,6 +40,14 @@ export class Artist extends Record {
     }
     return album;
   }
+  async albumTracks() {
+    const artists = this.table;
+    const rows = await artists.all(
+      'album_tracks',
+      [this.row.id]
+    )
+    return artists.records(rows);
+  }
 }
 
 export class Album extends Record {
@@ -166,7 +174,6 @@ export async function connectMusicDatabase(engine='sqlite') {
         order: 'year'
       },
       album_tracks: {
-        type: 'many',
         load: async (record) => {
           const artists = record.table;
           const rows = await artists.all(
@@ -537,6 +544,21 @@ export const runMusicDatabaseTests = async (database, options) => {
       const artists = await musicdb.model.artists;
       const floyd   = await artists.oneRecord({ name: 'Pink Floyd' });
       const tracks  = await artists.all('album_tracks', [floyd.row.id]);
+      t.is( tracks.length, 18 );
+      t.is( tracks[0].title, 'Atom Heart Mother' );
+      t.is( tracks[0].album, 'Atom Heart Mother' );
+      t.is( tracks[0].year, 1970 );
+      t.is( tracks[17].title, 'Shine On You Crazy Diamond (Parts VI-IX)' );
+      t.is( tracks[17].album, 'Wish You Were Here' );
+      t.is( tracks[17].year, 1975 );
+    }
+  )
+  test.serial(
+    'fetch all album tracks via artists record albumTracks method',
+    async t => {
+      const artists = await musicdb.model.artists;
+      const floyd   = await artists.oneRecord({ name: 'Pink Floyd' });
+      const tracks  = await floyd.albumTracks();
       t.is( tracks.length, 18 );
       t.is( tracks[0].title, 'Atom Heart Mother' );
       t.is( tracks[0].album, 'Atom Heart Mother' );

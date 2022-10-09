@@ -331,4 +331,168 @@ albums: 'id => albums.artist_id'
 ```
 
 You can't specify an `order` or additional `where` constraints using this
-syntax so it really is only for simple cases.
+syntax.  If you need to specify those then you can either use the fully
+expanded form:
+
+```js
+// tables.artists.relations...
+albums: {
+  type:  'many',
+  table: 'albums',
+  from:  'id',
+  to:    'artist_id',
+  order: 'year',
+}
+```
+
+Or you can define the shorthand form as the `relation` item and add `order` and/or `where`
+as additional items.
+
+```js
+// tables.artists.relations...
+albums: {
+  relation: 'id => albums.artist_id',
+  order:    'year',
+}
+```
+
+## Custom Queries
+
+If you want to define a more complex relation then you can provide your own
+`load` function to take care of it.
+
+For example, suppose we want to fetch all the album tracks for a particular
+artist, ordered by the album year and then the track number.
+
+We can define a custom query in the `queries` section of the `artists` table
+definition to load the relevant rows:
+
+```js
+// tables.artists...
+queries: {
+  album_tracks: `
+    SELECT    tracks.*, albums.title as album, albums.year
+    FROM      albums
+    JOIN      tracks
+    ON        tracks.album_id=albums.id
+    WHERE     albums.artist_id=$1
+    ORDER BY  albums.year,tracks.track_no
+  `
+}
+```
+
+Then we can add an `album_tracks` relation in the `relations` section of the same
+`artists` table that looks something like this:
+
+```js
+// tables.artists...
+relations: {
+  album_tracks: {
+    load: async (record) => {
+      const artists = record.table;
+      const rows = await artists.all(
+        'album_tracks',
+        [record.row.id]
+      )
+      return artists.records(rows);
+    }
+  }
+}
+```
+
+The `load` function is passed a reference to the current record (an artist
+in this case).  Each record has a reference to the `table` object that it
+came from.  Through that we can fetch all the relevant rows using the
+`album_tracks` query, passing the current artist id as the value for the
+placeholder variable.
+
+You can return the `rows` as they are, but in this example we'll convert them
+to records by calling the `records()` method on the table.  This ensures
+they're returned as record object in case we want to perform any further
+record-based operations on them.
+
+Here's the complete definition for the `artists` table:
+
+```js
+// tables...
+artists: {
+  columns: 'id name',
+  queries: {
+    album_tracks: `
+      SELECT    tracks.*, albums.title as album, albums.year
+      FROM      albums
+      JOIN      tracks
+      ON        tracks.album_id=albums.id
+      WHERE     albums.artist_id=$1
+      ORDER BY  albums.year,tracks.track_no
+    `
+  },
+  relations: {
+    albums: 'id => albums.artist_id',
+    album_tracks: {
+      load: async (record) => {
+        const artists = record.table;
+        const rows = await artists.all(
+          'album_tracks',
+          [record.row.id]
+        )
+        return artists.records(rows);
+      }
+    }
+  }
+```
+
+And here's how we can use it.
+
+```js
+const artists = await musicdb.table('artists');
+const artist  = await artists.oneRecord({ name: 'Pink Floyd' });
+const tracks  = await artist.album_tracks;
+
+// we should now have all the tracks from The Dark Side of the Moon
+// followed by all those from Wish You Were Here
+console.log(tracks[0].album);  // The Dark Side of the Moon
+console.log(tracks[0].year);   // 1973
+console.log(tracks[0].title);  // Speak to Me / Breathe
+
+console.log(tracks[1].album);  // The Dark Side of the Moon
+console.log(tracks[1].year);   // 1973
+console.log(tracks[1].title);  // On the Run
+
+// ...etc...
+
+console.log(tracks[13].album);  // Wish You Were Here
+console.log(tracks[13].year);   // 1975
+console.log(tracks[13].title);  // Shine On You Crazy Diamond (Parts I-V)
+```
+
+There are other ways to achieve a similar result.  For example, you could define
+your own [record class](manual/record_class.html) for the artists table and add
+an `albumTracks` method:
+
+```js
+export class Artist extends Record {
+  async albumTracks() {
+    const artists = this.table;
+    const rows = await artists.all(
+      'album_tracks',
+      [this.row.id]
+    )
+    return artists.records(rows);
+  }
+}
+```
+
+The usage would be almost identical:
+
+```js
+const artists = await musicdb.table('artists');
+const artist  = await artists.oneRecord({ name: 'Pink Floyd' });
+const tracks  = await artist.albumTracks();
+// ...as before
+```
+
+If you've already defined a record class for a table then this might be the
+easier approach.  On the other hand, if you don't already have a record
+class then it might be slightly easier to define a custom relation with a
+`load` method to achieve the same effect.
