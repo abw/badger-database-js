@@ -196,7 +196,7 @@ insert a row and then fetch it out again.</p>
 
 async function main() {
   // connect to a Sqlite database
-  const db = await connect({ database: 'sqlite:test.db' });
+  const db = await connect({ database: 'sqlite://test.db' });
 
   // create a table
   await db.run(
@@ -222,7 +222,7 @@ async function main() {
   console.log("Fetched row:", bobby);
 
   // cleanup
-  db.destroy();
+  db.disconnect();
 }
 
 main()</code></code></pre>
@@ -232,7 +232,7 @@ called <code>main()</code> so that we can use the <code>await</code> keyword to 
 to complete. You can, of course, use <code>.then(...)</code> if you prefer.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
 
-connect({ database: 'sqlite:memory' }).then(
+connect({ database: 'sqlite://test.db' }).then(
   db =&gt; {
     db.run(
       `CREATE TABLE users (
@@ -255,7 +255,7 @@ connect({ database: 'sqlite:memory' }).then(
     ).then(
       bobby =&gt; console.log("Fetched row:", bobby)
     ).then(
-      () =&gt; db.destroy()
+      () =&gt; db.disconnect()
     )
   }
 );</code></code></pre>

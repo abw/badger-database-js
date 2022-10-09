@@ -1,4 +1,5 @@
-// This examples demonstrates pretty much everything
+// This example demonstrates pretty much everything, including custom table
+// and record classes, pre-defined queries and the use of relations.
 import connectMusicDb from "./lib/musicdb.js";
 
 async function main() {

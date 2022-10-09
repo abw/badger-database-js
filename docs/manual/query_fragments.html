@@ -192,7 +192,7 @@
 rows using different search terms.  For example, to select a user by
 <code>email</code> or <code>name</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   queries: {
     selectUserByEmail:
       'SELECT * FROM users WHERE email=?',
@@ -204,7 +204,7 @@ rows using different search terms.  For example, to select a user by
 into other queries.  Named fragments can be embedded into queries inside angle
 brackets, e.g. <code>&lt;fragmentName&gt;</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   fragments: {
     selectUser:
       'SELECT * FROM users'
@@ -219,7 +219,7 @@ brackets, e.g. <code>&lt;fragmentName&gt;</code>.</p>
 <p>Fragments can reference other fragments.  This can be useful when you're building
 more complex queries, as shown in this somewhat contrived example:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
-  database: 'sqlite:test.db',
+  database: 'sqlite://test.db',
   fragments: {
     selectUserCompany:
       'SELECT users.*, companies.* FROM users',
