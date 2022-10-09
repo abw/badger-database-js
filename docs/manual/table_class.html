@@ -144,6 +144,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#custom-queries" data-ice="link">Custom Queries</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -176,6 +177,12 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/limitations.html"><a href="manual/limitations.html" data-ice="link">Limitations</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/examples.html"><a href="manual/examples.html" data-ice="link">Examples</a></li>
 </ul>
   </div>
 </div>
@@ -257,11 +264,14 @@ to provide the configuration options.  It will be passed an
 object containing any configuration options from the main
 configuration for the table.  You can then add in any other
 configuration options.</p>
-<p>Don't forget to return the <code>schema</code> at the end of the method.</p>
+<p>You can either update the <code>config</code> passed in as an argument,
+or create a new configuration based on it.  In the latter case
+you need to make sure you return the new configuration options
+at the end of the method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">export class Users extends Table {
-  configure(schema) {
-    schema.columns = 'id:readonly name:required email:required animal:required',
-    scheme.queries = {
+  configure(config) {
+    config.columns = 'id:readonly name:required email:required animal:required',
+    config.queries = {
       create: `
         CREATE TABLE users (
           id     INTEGER PRIMARY KEY ASC,
@@ -270,7 +280,6 @@ configuration options.</p>
           animal TEXT
         )`
     }
-    return schema;
   }
   badgers() {
     // custom method to fetch all badgers
@@ -289,7 +298,7 @@ to specify the <code>tableClass</code>.</p>
 });</code></code></pre>
 <p>If you don't have any other table configuration options that you
 want to specify then you can use a shortcut and point the <code>users</code>
-tables directly at your class.</p>
+table directly at your class.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
   database: 'sqlite:memory',
   tables: {

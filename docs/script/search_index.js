@@ -1530,6 +1530,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/queries.js~queries#config",
+    "class/src/Queries.js~Queries.html#instance-member-config",
+    "src/Queries.js~Queries#config",
+    "member"
+  ],
+  [
     "src/queries.js~queries#constructor",
     "class/src/Queries.js~Queries.html#instance-constructor-constructor",
     "src/Queries.js~Queries#constructor",
@@ -1743,6 +1749,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#columns",
     "class/src/Table.js~Table.html#instance-member-columns",
     "src/Table.js~Table#columns",
+    "member"
+  ],
+  [
+    "src/table.js~table#config",
+    "class/src/Table.js~Table.html#instance-member-config",
+    "src/Table.js~Table#config",
     "member"
   ],
   [
@@ -1960,12 +1972,6 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-run",
     "src/Table.js~Table#run",
     "method"
-  ],
-  [
-    "src/table.js~table#schema",
-    "class/src/Table.js~Table.html#instance-member-schema",
-    "src/Table.js~Table#schema",
-    "member"
   ],
   [
     "src/table.js~table#select",

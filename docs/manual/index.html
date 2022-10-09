@@ -144,6 +144,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#custom-queries" data-ice="link">Custom Queries</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -178,6 +179,12 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/limitations.html"><a href="manual/limitations.html" data-ice="link">Limitations</a></li>
 </ul>
   </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/examples.html"><a href="manual/examples.html" data-ice="link">Examples</a></li>
+</ul>
+  </div>
 </div>
 </nav>
 
@@ -204,24 +211,24 @@
 <li><a href="manual/debugging.html">Debugging</a> - enabling debugging messages</li>
 <li><a href="manual/extending.html">Extending</a> - extending badger-database to add your own functionality</li>
 <li><a href="manual/limitations.html">Limitations</a> - coping with the limitations of badger-database</li>
+<li><a href="manual/examples.html">Examples</a> - working examples using badger-database</li>
 </ul>
-<h2 id="note-">NOTE:</h2><p>I'm in the process of rewriting the library to remove Knex.  These
-pages haven't been updated yet and so will be out of date.</p>
-<ul>
-<li><a href="manual/database.html">Database</a></li>
-<li><a href="manual/table.html">Table</a></li>
-<li><a href="manual/record.html">Record</a></li>
-<li><a href="manual/model.html">Model</a></li>
-<li><a href="manual/queries.html">Queries</a></li>
-</ul>
-<p>These manual pages describe some of the internal implementation.
-You probably don't need to worry about them too much unless you're
-looking under the hood.</p>
-<ul>
-<li><a href="manual/connection.html">Connection</a></li>
-<li><a href="manual/schema.html">Schema</a></li>
-<li><a href="manual/tables.html">Tables</a></li>
-</ul>
+<h2 id="notes-on-case-conventions">Notes on Case Conventions</h2><p>The Javascript convention is to use StudlyCaps for class names (e.g. <code>Artists</code>) and
+camelCase for methods, function, variables, etc., (e.g. <code>albumTracks</code>).</p>
+<p>When it comes to database table and columns names you might want to adopt the same
+convention.  That's fine.  However, be warned that many databases are case insensitive
+by default.  As a result you might find that the database you're using returns the
+data with column names converted to lower case.  Most databases have an option to make
+it case sensitive so you might want to look into that.</p>
+<p>I prefer to avoid the problem altogether by defining my database tables and columns using
+snake_case (e.g. <code>artists</code>, <code>artist_id</code>, <code>album_tracks</code>, etc). I typically use a number
+of other programming languages to access the same database in a project and many other
+languages (e.g. Rust, Perl, Python, etc.) use snake_case by convention.</p>
+<p>In these examples I've adopted this convention because it's what works for me.  It doesn't
+bother me that I have to think in snake_case when I'm accessing row data, but camelCase
+when using method names.  In fact, I think it probably helps me to differentiate between
+"raw" data from the database and code.  You may disagree, and of course, you are free to
+adopt your own convention that does it differently.</p>
 <h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
 </div>
 
@@ -335,6 +342,12 @@ looking under the hood.</p>
       <div class="manual-card">
         <div data-ice="card"><h1></h1></div>
         <a data-ice="link" href="manual/limitations.html"></a>
+      </div>
+    </div>
+<div class="manual-card-wrap" data-ice="cards">
+      <div class="manual-card">
+        <div data-ice="card"><h1></h1></div>
+        <a data-ice="link" href="manual/examples.html"></a>
       </div>
     </div>
 </div>

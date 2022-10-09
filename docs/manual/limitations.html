@@ -144,6 +144,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#custom-queries" data-ice="link">Custom Queries</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -178,6 +179,12 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/limitations.html"><a href="manual/limitations.html" data-ice="link">Limitations</a></li>
 </ul>
   </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/examples.html"><a href="manual/examples.html" data-ice="link">Examples</a></li>
+</ul>
+  </div>
 </div>
 </nav>
 
@@ -192,8 +199,7 @@ temporary tables.  Aliases for selecting columns aren't support at
 the time of writing (although they might be by the time you read this).</p>
 <p>Similarly, the support for relations has some shortcomings.  For example,
 you can't define many-to-many relations that use intermediate link
-tables (although that might also be something that appears in a later
-version),</p>
+tables (although you can define your own load method to do that).</p>
 <p>These are all deliberate design decision.  Supporting everything that
 is possible in SQL would require a full-blown ORM or SQL query generator
 with all the problems that they bring.</p>

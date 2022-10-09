@@ -135,6 +135,12 @@ export const relationConfig = (table, name, config) =&gt; {
   if (isString(config)) {
     config = parseRelationString(config);
   }
+  else if (isString(config.relation)) {
+    config = {
+      ...parseRelationString(config.relation),
+      ...config
+    }
+  }
 
   // fix up any aliases
   Object.entries(relationAliases).map(
@@ -146,13 +152,15 @@ export const relationConfig = (table, name, config) =&gt; {
   );
 
   // check for missing parameters
-  ['type', 'table', 'to', 'from'].forEach(
-    key =&gt; {
-      if (noValue(config[key])) {
-        fail(`Missing "${key}" in ${name} relation for ${table} table`);
+  if (! config.load) {
+    ['type', 'table', 'to', 'from'].forEach(
+      key =&gt; {
+        if (noValue(config[key])) {
+          fail(`Missing "${key}" in ${name} relation for ${table} table`);
+        }
       }
-    }
-  )
+    );
+  }
 
   // set the name
   config.name = `${table}.${name}`;
