@@ -76,6 +76,12 @@ async function main() {
   // call the Album record trackListing() method
   await ahm.trackListing();
 
+  // now list all Pink Floyd albums - Atom Heart Mother should be first
+  await floyd.albumList();
+
+  // now list all album tracks
+  await floyd.trackList();
+
   // disconnect
   musicdb.disconnect();
 }
