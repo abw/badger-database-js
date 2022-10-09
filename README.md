@@ -85,7 +85,7 @@ justify its existence.  Nor do I want to spend excessive amounts of
 time promoting it, supporting it, updating it, or adding features
 that aren't immediately useful to me.  Pull requests for bug fixes
 are always welcome.  Bug reports are also welcome, but if it doesn't
-come with a pull request that fixes the bug them it's less likely to
+come with a pull request that fixes the bug then it's less likely to
 make it to the top of my TODO list.  Iif you're looking to add a new
 feature then please [discuss it with me](mailto:abw@wardley.org) first.
 
