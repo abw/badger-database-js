@@ -39,6 +39,12 @@ export const relationConfig = (table, name, config) => {
   if (isString(config)) {
     config = parseRelationString(config);
   }
+  else if (isString(config.relation)) {
+    config = {
+      ...parseRelationString(config.relation),
+      ...config
+    }
+  }
 
   // fix up any aliases
   Object.entries(relationAliases).map(

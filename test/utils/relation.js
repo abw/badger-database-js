@@ -61,6 +61,35 @@ test(
   }
 );
 test(
+  'relation config string',
+  t => {
+    const config = relationConfig('foo', 'bar', 'a -> b.c');
+    t.is( config.from, 'a' );
+    t.is( config.table, 'b' );
+    t.is( config.to, 'c' );
+    t.is( config.type, 'one' );
+    t.is( config.name, 'foo.bar' );
+  }
+);
+test(
+  'relation config relation string',
+  t => {
+    const config = relationConfig(
+      'foo', 'bar',
+      {
+        relation: 'a -> b.c',
+        order: 'd'
+      }
+    );
+    t.is( config.from, 'a' );
+    t.is( config.table, 'b' );
+    t.is( config.to, 'c' );
+    t.is( config.type, 'one' );
+    t.is( config.name, 'foo.bar' );
+    t.is( config.order, 'd' );
+  }
+);
+test(
   'relation with missing "from"',
   t => {
     const error = t.throws(
