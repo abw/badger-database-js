@@ -31,7 +31,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
@@ -40,7 +39,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
@@ -72,6 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-configEnv">configEnv</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
@@ -94,8 +93,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Database.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Config from './Config.js'
-import modelProxy from './Proxy/Model.js';
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
 import Queries from './Queries.js';
@@ -110,7 +108,7 @@ const defaults = {
 
 export class Database {
   constructor(engine, params={ }) {
-    const config = { ...defaults, ...Config, ...params };
+    const config = { ...defaults, ...params };
     this.engine  = engine || missing('engine');
     this.queries = new Queries(config);
     this.tables  = config.tablesObject || new config.tablesClass(config.tables);

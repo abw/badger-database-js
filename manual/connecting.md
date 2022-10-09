@@ -185,6 +185,89 @@ const db = await connect({
 })
 ```
 
+You can also use `name` as an alias for `database`:
+
+```js
+const db = await connect({
+  database: {
+    engine:   'postgres',
+    name:     'animals',
+  }
+})
+```
+
+## Environment Variables
+
+You can configure the database using environment variables.
+A database connection string should be defined as the `DATABASE`
+environment variable.
+
+For example, you could define `DATABASE` in a `.env` file:
+
+```bash
+DATABASE=sqlite:memory:
+```
+
+You can load the environment variables from the `.env` file
+using [dotenv](https://www.npmjs.com/package/dotenv) or a similar
+module. The environment variables will then be defined in `process.env`.
+Pass these to the `connect` function as `env`.
+
+```js
+import dotenv from 'dotenv'
+import process from 'node:process'
+import connect from '@abw/badger-database'
+
+// load the .env file
+dotenv.config();
+
+const db = await connect({
+  env: process.env
+});
+```
+
+You can also define different database parameters using the `DATABASE_`
+prefix.  For example, for a Sqlite in-memory database:
+
+```bash
+DATABASE_ENGINE=sqlite
+DATABASE_FILENAME=:memory:
+```
+
+Or for a Mysql database:
+
+```bash
+DATABASE_ENGINE=mysql
+DATABASE_NAME=animals
+DATABASE_USER=badger
+DATABASE_PASSWORD=s3cr3t
+```
+
+If you want to use a different environment variable name or prefix, then
+define it using the `envPrefix` option.
+
+```js
+const db = await connect({
+  env: process.env
+  envPrefix: 'MY_DB'
+});
+```
+
+Then you can define the database connection string like so:
+
+```
+MY_DB=sqlite:memory:
+```
+
+Or using separate environment variables like this:
+
+```bash
+MY_DB_ENGINE=mysql
+MY_DB_NAME=animals
+MY_DB_USER=badger
+MY_DB_PASSWORD=s3cr3t
+```
+
 ## Pool Options
 
 The Postgres and Mysql database engines use a connection pool for efficiency.

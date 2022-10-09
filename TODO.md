@@ -1,5 +1,3 @@
-* Configuration from env
-
 * Connection string options: `sqlite:memory?debug&debugPrefix=SQL> &blahblah`
 
 * should table insert() have option to return data (with id added) instead of

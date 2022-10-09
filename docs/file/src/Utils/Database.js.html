@@ -31,7 +31,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
@@ -40,7 +39,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
@@ -72,6 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-configEnv">configEnv</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
@@ -94,7 +93,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Utils/Database.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { hasValue, isString, remove } from "@abw/badger-utils";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { extract, hasValue, isString, remove } from "@abw/badger-utils";
 import { invalid, missing } from "./Error.js";
 
 /**
@@ -125,6 +124,7 @@ export const databaseAliases = {
   pass:     'password',
   hostname: 'host',
   file:     'filename',
+  name:     'database',
 };
 
 /**
@@ -165,6 +165,9 @@ export const databaseAliases = {
  * })
  */
 export const databaseConfig = config =&gt; {
+  if (config.env) {
+    Object.assign(config, configEnv(config.env, { prefix: config.envPrefix }))
+  }
   let database = config.database || missing('database');
 
   if (isString(database)) {
@@ -186,6 +189,26 @@ export const databaseConfig = config =&gt; {
   )
 
   return config;
+}
+
+export const configEnv = (env, options={}) =&gt; {
+  const prefix   = options.prefix || 'DATABASE'
+  const uscore   = prefix.match(/_$/) ? '' : '_';
+  const regex    = new RegExp(`^${prefix}${uscore}`);
+
+  // if there's an environment variable that exactly matches the prefix,
+  // e.g. DATABASE or MY_DATABASE then it's assumed to be a connection
+  // string.  Otherwise we extract all the environment variables that
+  // start with the prefix (and an underscore if there isn't already one)
+  // on the prefix), e.g. DATABASE_ENGINE, DATABASE_HOST, etc., and put
+  // them in an object
+  const database = env[prefix]
+    || extract(
+      env, regex,
+      { key: key =&gt; key.replace(regex, '').toLowerCase() }
+    );
+
+  return { database };
 }
 
 

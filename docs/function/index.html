@@ -31,7 +31,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Operator.js~Operator.html">Operator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
@@ -40,7 +39,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-factory">factory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Config">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allColumns">allColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-bitSplitter">bitSplitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
@@ -72,6 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareColumns">prepareColumns</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-prepareKeys">prepareKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-configEnv">configEnv</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseConfig">databaseConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDatabaseString">parseDatabaseString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebugMethod">addDebugMethod</a></span></span></li>
@@ -120,6 +119,34 @@
         
         <div data-ice="description"><p>Function to add the <code>debug()</code> and <code>debugData()</code> methods to an object.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-configEnv">configEnv</a></span></span><span class="code" data-ice="signature">(env: <span>*</span>, options: {}): {"database": <span>*</span>}</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -972,6 +999,84 @@ will contained a merged set of the defaults and those options.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-configEnv">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">configEnv</span><span class="code" data-ice="signature">(env: <span>*</span>, options: {}): {"database": <span>*</span>}</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Utils/Database.js.html#lineNumber99">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {configEnv} from '<span><a href="file/src/Utils/Database.js.html#lineNumber99">@abw/badger-database</a></span>'</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">env</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">options</td>
+      <td data-ice="type" class="code">{}</td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: {}</li></ul></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType">{"database": <span>*</span>}</td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-function-connect">
     <span class="access" data-ice="access">public</span>
     
@@ -983,11 +1088,11 @@ will contained a merged set of the defaults and those options.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Database.js.html#lineNumber84">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Database.js.html#lineNumber83">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {connect} from '<span><a href="file/src/Database.js.html#lineNumber84">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {connect} from '<span><a href="file/src/Database.js.html#lineNumber83">@abw/badger-database</a></span>'</code></pre></div>
   
   
   
@@ -1054,11 +1159,11 @@ will contained a merged set of the defaults and those options.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Database.js.html#lineNumber71">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Database.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {databaseConfig} from '<span><a href="file/src/Utils/Database.js.html#lineNumber71">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {databaseConfig} from '<span><a href="file/src/Utils/Database.js.html#lineNumber72">@abw/badger-database</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to create and sanitize a database configuration.  If the argument
@@ -2255,11 +2360,11 @@ throws('wibble');  // throws error: wibble is not implemented in FrussetPouch</c
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Database.js.html#lineNumber111">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Database.js.html#lineNumber135">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseDatabaseString} from '<span><a href="file/src/Utils/Database.js.html#lineNumber111">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseDatabaseString} from '<span><a href="file/src/Utils/Database.js.html#lineNumber135">@abw/badger-database</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to parse a database configuration string and return an object of

@@ -18,12 +18,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-database~config",
-    "variable/index.html#static-variable-Config",
-    "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
     "@abw/badger-database~customerror",
     "class/src/Utils/Error.js~CustomError.html",
     "<span>CustomError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -120,12 +114,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-database~query",
-    "class/src/Query.js~Query.html",
-    "<span>Query</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "class"
-  ],
-  [
     "@abw/badger-database~record",
     "class/src/Record.js~Record.html",
     "<span>Record</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -184,6 +172,12 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-bitSplitter",
     "<span>bitSplitter</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
+  ],
+  [
+    "@abw/badger-database~configenv",
+    "function/index.html#static-function-configEnv",
+    "<span>configEnv</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
   ],
   [
     "@abw/badger-database~connect",
@@ -652,12 +646,6 @@ window.esdocSearchIndex = [
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
     "src/.external-ecmascript.js~undefined",
     "external"
-  ],
-  [
-    "src/config.js",
-    "file/src/Config.js.html",
-    "src/Config.js",
-    "file"
   ],
   [
     "src/constants.js",
@@ -1551,36 +1539,6 @@ window.esdocSearchIndex = [
     "src/queries.js~queries#query",
     "class/src/Queries.js~Queries.html#instance-method-query",
     "src/Queries.js~Queries#query",
-    "method"
-  ],
-  [
-    "src/query.js",
-    "file/src/Query.js.html",
-    "src/Query.js",
-    "file"
-  ],
-  [
-    "src/query.js~query#all",
-    "class/src/Query.js~Query.html#instance-method-all",
-    "src/Query.js~Query#all",
-    "method"
-  ],
-  [
-    "src/query.js~query#any",
-    "class/src/Query.js~Query.html#instance-method-any",
-    "src/Query.js~Query#any",
-    "method"
-  ],
-  [
-    "src/query.js~query#execute",
-    "class/src/Query.js~Query.html#instance-method-execute",
-    "src/Query.js~Query#execute",
-    "method"
-  ],
-  [
-    "src/query.js~query#one",
-    "class/src/Query.js~Query.html#instance-method-one",
-    "src/Query.js~Query#one",
     "method"
   ],
   [
