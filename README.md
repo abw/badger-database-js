@@ -66,8 +66,9 @@ provides a guided walk-through of the features of the library.
 The [API documentation](https://abw.github.io/badger-database-js/docs/identifiers.html)
 contains information about the class, methods and other functions provided.
 
-The [github repository](https://github.com/abw/badger-database-js) includes an
-example project demonstrating a simple [music database](https://github.com/abw/badger-database-js/tree/master/examples/musicdb).
+The [github repository](https://github.com/abw/badger-database-js) includes a
+number of [examples](https://github.com/abw/badger-database-js/tree/master/examples/)
+taken from the manual that demonstrate the functionality.
 
 ## Caveat
 
@@ -77,17 +78,35 @@ It is being written to help migrate a number of old Perl projects
 to Javascript.
 
 Feel free to use it for your own projects but be warned that
-I wrote it to help me get my own job done.  I don't plan to spend
-too much time supporting it, updating it, or adding features that
-aren't immediately useful to me.
+I wrote it to help me get my own job done.  I don't plan for it to
+be the next big thing, especially if that involves endless discussion
+about why *this* library is better than *that* library and having to
+justify its existence.  Nor do I want to spend excessive amounts of
+time promoting it, supporting it, updating it, or adding features
+that aren't immediately useful to me.  Pull requests for bug fixes
+are always welcome.  Bug reports are also welcome, but if it doesn't
+come with a pull request that fixes the bug them it's less likely to
+make it to the top of my TODO list.  Iif you're looking to add a new
+feature then please [discuss it with me](mailto:abw@wardley.org) first.
 
-That said, it's a simple project totalling around 1,500 lines
-of code.  An experienced Javascript programmer with knowledge of
+All that said, it's a relatively simple project totalling around 1,500
+lines of code.  An experienced Javascript programmer with knowledge of
 SQL should be able to grok the code in an hour or two.  If you're
 happy to use the source, Luke, then it may be the droids you're looking
 for.  But if you're looking for a fully-featured, production-ready
-solution then it might not be for you - there are *plenty* of other
-Javascript ORMs that might be a better place to start.
+solution with VC funding to pay for commercial support then it might
+not be for you - there are *plenty* of other Javascript ORMs that might
+be a better place to start.
+
+If you are using it to develop an application and want to hire me for
+some paid consultancy work, or if you need someone to help with systems
+analysis, database design, application development, etc., then feel to
+[contact me](mailto:abw@wardley.org) to discuss your requirements - it's
+what I do professionally.  That isn't supposed to be an advert, though.
+I'm not actively seeking work, at least, not *full-time* work, as I've
+already got plenty on for a number of different clients. But if you need
+me, and depending on how big a project it is, then I may be able to fit
+you in or recommend someone who can.
 
 ## Installation
 
