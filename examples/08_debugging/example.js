@@ -1,5 +1,5 @@
-import { connect } from '../src/Database.js';
-import { setDebug } from '../src/Utils/Debug.js';
+// This example shows debugging messages
+import { connect, setDebug } from '@abw/badger-database';
 
 setDebug({
   database: true,
@@ -12,14 +12,9 @@ setDebug({
 async function main() {
   const db = await connect({
     database: 'sqlite:memory',
-    // debug: true,
     tables: {
       users: {
         columns: 'id name email',
-        // debug: true,
-        recordConfig: {
-          // debug: true
-        },
         queries: {
           selectByName: `
             SELECT <columns> FROM <table> WHERE name=?
@@ -28,6 +23,7 @@ async function main() {
       }
     }
   })
+  console.log('Creating users table');
   await db.run(
     `CREATE TABLE users (
       id    INTEGER PRIMARY KEY ASC,
@@ -35,12 +31,17 @@ async function main() {
       email TEXT
     )`
   );
+  console.log('Created users table');
+
+  console.log('Inserting user');
   const insert = await db.run(
     'INSERT INTO users (name, email) VALUES (?, ?)',
-    ['Bobby Badger', 'bobby@badgerpower.com']
+    ['Bobby Badger', 'bobby@badgerpower.com'],
+    { sanitizeResult: true }
   )
   console.log('Inserted user #', insert.id);
 
+  console.log('Fetching user');
   const user = await db.one(
     'SELECT * FROM users WHERE email=?',
     ['bobby@badgerpower.com']
@@ -48,17 +49,27 @@ async function main() {
   console.log('Fetched user:', user);
 
   const users = await db.table('users');
+
+  console.log('Fetching user record');
   const bobby = await users.oneRecord({
     email: 'bobby@badgerpower.com'
   });
+  console.log('Fetched user record:', bobby.row);
+
+  console.log('Updating user record');
   await bobby.update({
     name: 'Robert Badger'
   })
+  console.log('Updated user record:', bobby.row);
+
+  console.log('Fetching user record');
   const rob = await users.one(
     'selectByName',
     ['Robert Badger']
   );
-  console.log('Fetched user:', rob);
+  console.log('Fetched user record:', rob);
+
+  console.log('Disconnecting');
   db.disconnect();
 }
 

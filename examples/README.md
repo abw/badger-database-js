@@ -23,5 +23,6 @@ $ node 03_query_fragments/example.js
 $ node 04_tables/example.js
 $ node 05_table_class/example.js
 $ node 06_records/example.js
-$ node 10_musicdb/example.js
+$ node 07_musicdb/example.js
+$ node 08_debugging/example.js
 ```

@@ -22,7 +22,7 @@ $ bin/create_mysql_test
 $ bin/create_postgres_test
 ```
 
-If for some reason you can run those scripts, you can manually create
+If for some reason you can't run those scripts, you can manually create
 a MySQL database by running these commands in a MySQL shell:
 
 ```sql

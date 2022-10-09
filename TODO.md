@@ -20,3 +20,5 @@
 * API documentation
 
 * debug documenation - prefix and color
+
+* delete hacks directory
