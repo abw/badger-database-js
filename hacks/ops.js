@@ -1,3 +1,4 @@
+// this is a work in progress, trying out some basic query builder ideas
 import Operator from '../src/Operator.js'
 import factory from '../src/Operators.js'
 import operatorProxy from '../src/Proxy/Operator.js';
