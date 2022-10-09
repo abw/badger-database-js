@@ -22,9 +22,9 @@ Defining a custom table class with additional application-specific methods.
 * [06_records](https://github.com/abw/badger-database-js/tree/master/examples/06_records)
 Using records and defining a custom record class with additional application-specific methods.
 
-* [07_musicdb](https://github.com/abw/badger-database-js/tree/master/examples/10_musicdb).
+* [07_musicdb](https://github.com/abw/badger-database-js/tree/master/examples/07_musicdb).
 A more complete example of a music database demonstrating custom table and records classes, and the
 use of relations.
 
-* [08_debugging](https://github.com/abw/badger-database-js/tree/master/examples/09_debugging)
+* [08_debugging](https://github.com/abw/badger-database-js/tree/master/examples/08_debugging)
 Enabling debugging to see what's going on behind the scenes.
