@@ -22,6 +22,7 @@ This is the manual for the `badger-database` Javascript module.
 * [Debugging](manual/debugging.html) - enabling debugging messages
 * [Extending](manual/extending.html) - extending badger-database to add your own functionality
 * [Limitations](manual/limitations.html) - coping with the limitations of badger-database
+* [Examples](manual/examples.html) - working examples using badger-database
 
 ## Notes on Case Conventions
 

@@ -14,8 +14,7 @@ the time of writing (although they might be by the time you read this).
 
 Similarly, the support for relations has some shortcomings.  For example,
 you can't define many-to-many relations that use intermediate link
-tables (although that might also be something that appears in a later
-version),
+tables (although you can define your own load method to do that).
 
 These are all deliberate design decision.  Supporting everything that
 is possible in SQL would require a full-blown ORM or SQL query generator

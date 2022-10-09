@@ -64,11 +64,11 @@ async function main() {
     title: 'Atom Heart Mother',
     year:  1970,
     tracks: [
-      { track_no: 1, title: 'Atom Heart Mother' },
-      { track_no: 2, title: 'If' },
-      { track_no: 3, title: "Summer '68" },
-      { track_no: 4, title: 'Fat Old Sun' },
-      { track_no: 5, title: "Alan's Psychedelic Breakfast" },
+      { title: 'Atom Heart Mother' },
+      { title: 'If' },
+      { title: "Summer '68" },
+      { title: 'Fat Old Sun' },
+      { title: "Alan's Psychedelic Breakfast" },
     ]
   });
   console.log("\nAdded Atom Heart Mother as album #%s", ahm.id);

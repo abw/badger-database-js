@@ -17,9 +17,6 @@
 
 * search component / query builder (operations)
 
-* music database example, complete with custom `tables, records, etc.
-
 * API documentation
 
 * debug documenation - prefix and color
-
