@@ -84,13 +84,16 @@ object containing any configuration options from the main
 configuration for the table.  You can then add in any other
 configuration options.
 
-Don't forget to return the `schema` at the end of the method.
+You can either update the `config` passed in as an argument,
+or create a new configuration based on it.  In the latter case
+you need to make sure you return the new configuration options
+at the end of the method.
 
 ```js
 export class Users extends Table {
-  configure(schema) {
-    schema.columns = 'id:readonly name:required email:required animal:required',
-    scheme.queries = {
+  configure(config) {
+    config.columns = 'id:readonly name:required email:required animal:required',
+    config.queries = {
       create: `
         CREATE TABLE users (
           id     INTEGER PRIMARY KEY ASC,
@@ -99,7 +102,6 @@ export class Users extends Table {
           animal TEXT
         )`
     }
-    return schema;
   }
   badgers() {
     // custom method to fetch all badgers
@@ -124,7 +126,7 @@ const db = await connect({
 
 If you don't have any other table configuration options that you
 want to specify then you can use a shortcut and point the `users`
-tables directly at your class.
+table directly at your class.
 
 ```js
 const db = await connect({

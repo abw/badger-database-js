@@ -7,7 +7,6 @@ let db;
 class Users extends Table {
   configure(schema) {
     schema.columns = 'id name email'
-    return schema;
   }
 }
 
