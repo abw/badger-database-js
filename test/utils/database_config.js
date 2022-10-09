@@ -1,5 +1,5 @@
 import test from 'ava';
-import { databaseConfig, parseDatabaseString } from "../../src/Utils/Database.js";
+import { databaseConfig, parseDatabaseString, configEnv } from "../../src/Utils/Database.js";
 
 
 //-----------------------------------------------------------------------------
@@ -211,3 +211,106 @@ test(
   }
 );
 
+test(
+  "configEnv({ DATABASE: '...' })",
+  t => {
+    const config = configEnv({ DATABASE: 'sqlite:memory' });
+    t.deepEqual(config, { database: 'sqlite:memory' });
+  }
+);
+
+test(
+  "configEnv({ DATABASE_ENGINE: '...', DATABASE_HOST: '...' })",
+  t => {
+    const config = configEnv({ DATABASE_ENGINE: 'sqlite', DATABASE_FILENAME: ':memory:' });
+    t.deepEqual(config, { database: { engine: 'sqlite', filename: ':memory:' } });
+  }
+);
+
+test(
+  "databaseConfig({ env: { DATABASE: ... }})",
+  t => {
+    const config = databaseConfig({
+      env: { DATABASE: 'sqlite:memory' }
+    });
+    t.deepEqual(
+      config,
+      {
+        database: { filename: ':memory:' },
+        engine: 'sqlite',
+        env: {
+          DATABASE: 'sqlite:memory'
+        }
+      }
+    );
+  }
+);
+
+test(
+  "databaseConfig({ env: { DATABASE_ENGINE, etc., }})",
+  t => {
+    const config = databaseConfig({
+      env: {
+        DATABASE_ENGINE: 'sqlite',
+        DATABASE_FILENAME: ':memory:'
+      }
+    });
+    t.deepEqual(
+      config,
+      {
+        database: { filename: ':memory:' },
+        engine: 'sqlite',
+        env: {
+          DATABASE_ENGINE: 'sqlite',
+          DATABASE_FILENAME: ':memory:',
+        }
+      }
+    );
+  }
+);
+
+test(
+  "databaseConfig({ env: { MY_DB: ... }, envPrefix: 'MY_DB', })",
+  t => {
+    const config = databaseConfig({
+      env: { MY_DB: 'sqlite:memory' },
+      envPrefix: 'MY_DB',
+    });
+    t.deepEqual(
+      config,
+      {
+        database: { filename: ':memory:' },
+        engine: 'sqlite',
+        env: {
+          MY_DB: 'sqlite:memory'
+        },
+        envPrefix: 'MY_DB'
+      }
+    );
+  }
+);
+
+test(
+  "databaseConfig({ env: { MY_DB_ENGINE, etc., }, envPrefix: 'MY_DB' })",
+  t => {
+    const config = databaseConfig({
+      env: {
+        MY_DB_ENGINE: 'sqlite',
+        MY_DB_FILENAME: ':memory:'
+      },
+      envPrefix: 'MY_DB',
+    });
+    t.deepEqual(
+      config,
+      {
+        database: { filename: ':memory:' },
+        engine: 'sqlite',
+        env: {
+          MY_DB_ENGINE: 'sqlite',
+          MY_DB_FILENAME: ':memory:',
+        },
+        envPrefix: 'MY_DB',
+      }
+    );
+  }
+);

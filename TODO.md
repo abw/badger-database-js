@@ -21,4 +21,4 @@
 
 * debug documenation - prefix and color
 
-* delete hacks directory
+* document env and envPrefix options

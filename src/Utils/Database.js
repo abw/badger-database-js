@@ -1,4 +1,4 @@
-import { hasValue, isString, remove } from "@abw/badger-utils";
+import { extract, hasValue, isString, remove } from "@abw/badger-utils";
 import { invalid, missing } from "./Error.js";
 
 /**
@@ -29,6 +29,7 @@ export const databaseAliases = {
   pass:     'password',
   hostname: 'host',
   file:     'filename',
+  name:     'database',
 };
 
 /**
@@ -69,6 +70,9 @@ export const databaseAliases = {
  * })
  */
 export const databaseConfig = config => {
+  if (config.env) {
+    Object.assign(config, configEnv(config.env, { prefix: config.envPrefix }))
+  }
   let database = config.database || missing('database');
 
   if (isString(database)) {
@@ -90,6 +94,26 @@ export const databaseConfig = config => {
   )
 
   return config;
+}
+
+export const configEnv = (env, options={}) => {
+  const prefix   = options.prefix || 'DATABASE'
+  const uscore   = prefix.match(/_$/) ? '' : '_';
+  const regex    = new RegExp(`^${prefix}${uscore}`);
+
+  // if there's an environment variable that exactly matches the prefix,
+  // e.g. DATABASE or MY_DATABASE then it's assumed to be a connection
+  // string.  Otherwise we extract all the environment variables that
+  // start with the prefix (and an underscore if there isn't already one)
+  // on the prefix), e.g. DATABASE_ENGINE, DATABASE_HOST, etc., and put
+  // them in an object
+  const database = env[prefix]
+    || extract(
+      env, regex,
+      { key: key => key.replace(regex, '').toLowerCase() }
+    );
+
+  return { database };
 }
 
 
