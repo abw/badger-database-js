@@ -1,4 +1,3 @@
-import Config from './Config.js'
 import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
@@ -14,7 +13,7 @@ const defaults = {
 
 export class Database {
   constructor(engine, params={ }) {
-    const config = { ...defaults, ...Config, ...params };
+    const config = { ...defaults, ...params };
     this.engine  = engine || missing('engine');
     this.queries = new Queries(config);
     this.tables  = config.tablesObject || new config.tablesClass(config.tables);
