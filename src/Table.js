@@ -7,21 +7,21 @@ import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js
 import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Table {
-  constructor(database, schema) {
-    this.schema        = this.configure(schema);
+  constructor(database, config) {
+    this.config        = this.configure(config) || config;
     this.database      = database || fail("No database specified");
     this.engine        = database.engine;
-    this.table         = schema.table;
-    this.columns       = prepareColumns(schema);
+    this.table         = config.table;
+    this.columns       = prepareColumns(config);
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
     this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );
-    this.keys          = prepareKeys(schema, this.columns);
-    this.id            = schema.id;
-    this.recordClass   = schema.recordClass || Record;
-    this.recordConfig  = schema.recordConfig;
-    this.fragments     = this.prepareFragments(schema);
-    this.relations     = schema.relations || { };
-    this.queries       = new Queries({ ...schema, debugPrefix: `Queries:${this.table}` });
+    this.keys          = prepareKeys(config, this.columns);
+    this.id            = config.id;
+    this.recordClass   = config.recordClass || Record;
+    this.recordConfig  = config.recordConfig;
+    this.fragments     = this.prepareFragments(config);
+    this.relations     = config.relations || { };
+    this.queries       = new Queries({ ...config, debugPrefix: `Queries:${this.table}` });
 
     // method aliases
     this.insertRow     = this.insertOneRow;
@@ -30,14 +30,14 @@ export class Table {
     this.insertRecords = this.insertAllRecords;
     this.updateRow     = this.updateOneRow;
     this.updateRows    = this.updateAllRows;
-    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, schema);
+    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
   }
-  configure(schema) {
-    return schema;
+  configure(config) {
+    return config;
   }
-  prepareFragments(schema) {
+  prepareFragments(config) {
     const quote       = this.database.quote.bind(this.database);
-    const fragments   = schema.fragments ||= { };
+    const fragments   = config.fragments ||= { };
     fragments.table   = quote(this.table);
     fragments.columns = Object.values(this.columns).map(
       spec => quote(spec.tableColumn)

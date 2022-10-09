@@ -8,12 +8,12 @@ const defaults = {
 };
 
 export class Queries {
-  constructor(schema) {
-    const config = this.config = { ...defaults, ...schema };
+  constructor(config) {
+    this.config = { ...defaults, ...config };
     //this.fragments = schema.fragments || { };
     //this.queries = schema.queries || { };
     //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;
-    addDebugMethod(this, 'queries', config);
+    addDebugMethod(this, 'queries', this.config);
   }
   query(name) {
     // if the name is a single word then it must be a named query, otherwise
