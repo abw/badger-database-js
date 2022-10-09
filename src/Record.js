@@ -54,6 +54,9 @@ export class Record {
       this.table.relations[name]
         || fail(`Invalid "${name}" relation specified for ${table} table`)
     )
+    if (relation.load) {
+      return await relation.load(this);
+    }
     const rfunc = relations[relation.type]
       || fail(`Invalid "${relation.type}" relation type specified for ${name} relation in ${table} table`);
     return await rfunc(this, relation);

@@ -56,13 +56,15 @@ export const relationConfig = (table, name, config) => {
   );
 
   // check for missing parameters
-  ['type', 'table', 'to', 'from'].forEach(
-    key => {
-      if (noValue(config[key])) {
-        fail(`Missing "${key}" in ${name} relation for ${table} table`);
+  if (! config.load) {
+    ['type', 'table', 'to', 'from'].forEach(
+      key => {
+        if (noValue(config[key])) {
+          fail(`Missing "${key}" in ${name} relation for ${table} table`);
+        }
       }
-    }
-  )
+    );
+  }
 
   // set the name
   config.name = `${table}.${name}`;

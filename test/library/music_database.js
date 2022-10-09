@@ -4,6 +4,7 @@ import Table from "../../src/Table.js";
 import { connect } from "../../src/Database.js";
 import { databaseConfig } from './database.js';
 import { setDebug } from '../../src/Utils/Debug.js';
+import { remove } from '@abw/badger-utils';
 
 //-----------------------------------------------------------------------------
 // debugging
@@ -12,7 +13,7 @@ const debugArtists = false;
 const debugAlbums  = false;
 const debugTracks  = false;
 setDebug({
-  // record: true
+  record: false,
 })
 
 //-----------------------------------------------------------------------------
@@ -28,9 +29,29 @@ export class Tracks extends Table {
 }
 
 export class Artist extends Record {
+  async addAlbum(config) {
+    const albums = await this.database.table('albums');
+    const tracks = remove(config, 'tracks');
+    const album  = await albums.insertRecord({
+      ...config, artist_id: this.row.id
+    })
+    if (tracks) {
+      await album.insertTracks(tracks);
+    }
+    return album;
+  }
 }
 
 export class Album extends Record {
+  async insertTracks(tracks) {
+    const table = await this.database.table('tracks');
+    let track_no = 1;
+    await table.insert(
+      tracks.map(
+        track => ({ album_id: this.row.id, track_no: track_no++, ...track,  })
+      )
+    );
+  }
 }
 
 export class Track extends Record {
@@ -41,10 +62,11 @@ export class Track extends Record {
 //-----------------------------------------------------------------------------
 export async function connectMusicDatabase(engine='sqlite') {
   const database = databaseConfig(engine);
-  const sqlite  = engine === 'sqlite';
-  const mysql   = engine === 'mysql';
-  const serial  = sqlite ? 'INTEGER PRIMARY KEY ASC' : 'SERIAL';
-  const reftype = mysql ? 'BIGINT UNSIGNED NOT NULL' : 'INTEGER';
+  const sqlite   = engine === 'sqlite';
+  const mysql    = engine === 'mysql';
+  const postgres = engine === 'postgres';
+  const serial   = sqlite ? 'INTEGER PRIMARY KEY ASC' : 'SERIAL';
+  const reftype  = mysql ? 'BIGINT UNSIGNED NOT NULL' : 'INTEGER';
 
   const fragments = {
     selectAlbumsWithTrackCount: `
@@ -128,8 +150,32 @@ export async function connectMusicDatabase(engine='sqlite') {
     tableClass:   Artists,
     recordClass:  Artist,
     debug:        debugArtists,
+    queries: {
+      album_tracks: `
+        SELECT    tracks.*, albums.title as album, albums.year
+        FROM      albums
+        JOIN      tracks
+        ON        tracks.album_id=albums.id
+        WHERE     albums.artist_id=${postgres ? '$1' : '?'}
+        ORDER BY  albums.year,tracks.track_no
+      `
+    },
     relations: {
-      albums: 'id => albums.artist_id'
+      albums: {
+        relation: 'id => albums.artist_id',
+        order: 'year'
+      },
+      album_tracks: {
+        type: 'many',
+        load: async (record) => {
+          const artists = record.table;
+          const rows = await artists.all(
+            'album_tracks',
+            [record.row.id]
+          )
+          return artists.records(rows);
+        }
+      }
     }
   };
 
@@ -442,6 +488,78 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  return musicdb;
+  test.serial(
+    'add album via artist addAlbum() method',
+    async t => {
+      const artists = await musicdb.model.artists;
+      const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
+      const ahm = await floyd.addAlbum({
+        title: 'Atom Heart Mother',
+        year:  1970,
+        tracks: [
+          { track_no: 1, title: 'Atom Heart Mother' },
+          { track_no: 2, title: 'If' },
+          { track_no: 3, title: "Summer '68" },
+          { track_no: 4, title: 'Fat Old Sun' },
+          { track_no: 5, title: "Alan's Psychedelic Breakfast" },
+        ]
+      });
+      t.is( ahm.title, 'Atom Heart Mother' );
+      const tracks = await ahm.tracks;
+      t.is( tracks.length, 5 );
+      t.is( tracks[0].track_no, 1 );
+      t.is( tracks[0].title, 'Atom Heart Mother' );
+      t.is( tracks[1].track_no, 2 );
+      t.is( tracks[1].title, 'If' );
+      t.is( tracks[2].track_no, 3 );
+      t.is( tracks[2].title, "Summer '68" );
+      t.is( tracks[3].track_no, 4 );
+      t.is( tracks[3].title, 'Fat Old Sun' );
+      t.is( tracks[4].track_no, 5 );
+      t.is( tracks[4].title, "Alan's Psychedelic Breakfast" );
+    }
+  )
+  test.serial(
+    'fetch albums via artist.albums relation',
+    async t => {
+      const artists = await musicdb.model.artists;
+      const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
+      const albums = await floyd.albums;
+      t.is( albums.length, 3 );
+      t.is( albums[0].title, 'Atom Heart Mother' );
+      t.is( albums[1].title, 'The Dark Side of the Moon' );
+      t.is( albums[2].title, 'Wish You Were Here' );
+    }
+  )
+  test.serial(
+    'fetch all album tracks via artists table album_tracks query',
+    async t => {
+      const artists = await musicdb.model.artists;
+      const floyd   = await artists.oneRecord({ name: 'Pink Floyd' });
+      const tracks  = await artists.all('album_tracks', [floyd.row.id]);
+      t.is( tracks.length, 18 );
+      t.is( tracks[0].title, 'Atom Heart Mother' );
+      t.is( tracks[0].album, 'Atom Heart Mother' );
+      t.is( tracks[0].year, 1970 );
+      t.is( tracks[17].title, 'Shine On You Crazy Diamond (Parts VI-IX)' );
+      t.is( tracks[17].album, 'Wish You Were Here' );
+      t.is( tracks[17].year, 1975 );
+    }
+  )
+  test.serial(
+    'fetch all album tracks via artist.album_tracks relation',
+    async t => {
+      const artists = await musicdb.model.artists;
+      const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
+      const tracks = await floyd.album_tracks;
+      t.is( tracks.length, 18 );
+      t.is( tracks.length, 18 );
+      t.is( tracks[0].title, 'Atom Heart Mother' );
+      t.is( tracks[0].album, 'Atom Heart Mother' );
+      t.is( tracks[0].year, 1970 );
+      t.is( tracks[17].title, 'Shine On You Crazy Diamond (Parts VI-IX)' );
+      t.is( tracks[17].album, 'Wish You Were Here' );
+      t.is( tracks[17].year, 1975 );
+    }
+  )
 }
-
