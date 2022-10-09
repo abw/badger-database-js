@@ -58,6 +58,17 @@ Similarly, every entity type can have its own record module where you can
 add methods for performing operations on an individual entity instance.  This
 is a lightweight variant of the Active Record pattern.
 
+## Documentation and Examples
+
+The [manual pages](https://abw.github.io/badger-database-js/docs/manual/index.html)
+provides a guided walk-through of the features of the library.
+
+The [API documentation](https://abw.github.io/badger-database-js/docs/identifiers.html)
+contains information about the class, methods and other functions provided.
+
+The [github repository](https://github.com/abw/badger-database-js) includes an
+example project demonstrating a simple [music database](https://github.com/abw/badger-database-js/tree/master/examples/musicdb).
+
 ## Caveat
 
 This is currently a work in progress loosely based on the Perl
@@ -72,14 +83,11 @@ aren't immediately useful to me.
 
 That said, it's a simple project totalling around 1,500 lines
 of code.  An experienced Javascript programmer with knowledge of
-SQL should be able to grok the code in an hour or so.  If you're
+SQL should be able to grok the code in an hour or two.  If you're
 happy to use the source, Luke, then it may be the droids you're looking
 for.  But if you're looking for a fully-featured, production-ready
 solution then it might not be for you - there are *plenty* of other
 Javascript ORMs that might be a better place to start.
-
-For further information please read the
-[manual](https://abw.github.io/badger-database-js/docs/manual/index.html).
 
 ## Installation
 
