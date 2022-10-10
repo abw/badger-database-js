@@ -6,6 +6,7 @@ import { engine } from './Engines.js';
 import { invalid, missing } from './Utils/Error.js';
 import proxymise from 'proxymise';
 import { addDebugMethod } from './Utils/Debug.js';
+import { databaseOperator } from './Operators.js';
 
 const defaults = {
   tablesClass: Tables
@@ -70,6 +71,12 @@ export class Database {
   }
   quote(name) {
     return this.engine.quote(name);
+  }
+  operator() {
+    return databaseOperator(this);
+  }
+  from(...args) {
+    return this.operator().from(...args);
   }
   disconnect() {
     return this.engine.destroy();

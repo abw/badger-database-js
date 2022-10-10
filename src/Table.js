@@ -65,6 +65,7 @@ export class Table {
         if (options.writable && spec.readonly) {
           throwColumnValidationError('readonly', { column, table });
         }
+        // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
         cols.push(spec.column);
         vals.push(data[column])
       }
@@ -257,15 +258,11 @@ export class Table {
     return this.allRows(where, { ...options, record: true });
   }
 
-  // select() is the old name for fetchAll() which I'm in the process of
-  // reworking.
-  async select(where, options={}) {
-    this.debug("select: ", where, options);
-    if (options.columns) {
-      this.checkColumnNames(options.columns);
-    }
-    const [wcols, wvals] = this.checkColumns(where);
-    return this.engine.select(this.table, wcols, wvals, options);
+  operator() {
+    return this.database.operator();
+  }
+  select(...args) {
+    return this.operator().from(this.table).select(...args);
   }
 
   tableFragments() {

@@ -12,7 +12,7 @@ export const operatorProxy = parent =>
           ).bind(target);
         }
         else {
-          return target[prop];
+          return Reflect.get(target, prop);
         }
       }
     }

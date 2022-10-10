@@ -37,6 +37,11 @@ export let debug = {
     prefix: 'Record',
     color:  'green',
   },
+  operator: {
+    debug:  false,
+    prefix: 'Operator',
+    color:  'yellow',
+  },
   test: {
     debug:  false,
     prefix: 'Test',
