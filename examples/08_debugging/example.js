@@ -69,6 +69,19 @@ async function main() {
   );
   console.log('Fetched user record:', rob);
 
+  console.log("Inserting table row");
+  const brian = await users.insert({
+    name: 'Brian Badger',
+    email: 'brian@badgerpower.com'
+  });
+  console.log('Inserted user row', brian);
+
+  console.log("Fetching table row");
+  const brian2 = await users.oneRow({
+    email: 'brian@badgerpower.com'
+  });
+  console.log('Fetched table row', brian2);
+
   console.log('Disconnecting');
   db.disconnect();
 }
