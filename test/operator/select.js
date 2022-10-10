@@ -118,6 +118,38 @@ test.serial(
   }
 )
 
+test.serial(
+  'select column with table name and alias in object',
+  async t => {
+    const op = db.from('a').select('b', 'c d', ['e', 'f'], { column: 'y', table: 'x', as: 'z'});
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c", "a"."d", "a"."e", "a"."f", "x"."y" AS "z"\nFROM "a"' );
+  }
+)
+
+test.serial(
+  'select columns with table name and prefix in object',
+  async t => {
+    const op = db
+      .from('users companies')
+      .select(
+        { table: 'users', columns: 'id name' },
+        { table: 'companies', columns: 'id name', prefix: 'company_'}
+      );
+    t.is(
+      op.sql(),
+      'SELECT "users"."id", "users"."name", "companies"."id" AS "company_id", "companies"."name" AS "company_name"\nFROM "users", "companies"'
+    );
+  }
+)
+
+test.serial(
+  'select column with table name in object',
+  async t => {
+    const op = db.from('a').select('b', 'c d', ['e', 'f'], { column: 'y', table: 'x' });
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c", "a"."d", "a"."e", "a"."f", "x"."y"\nFROM "a"' );
+  }
+)
+
 test.after(
   'disconnect',
   async t => {

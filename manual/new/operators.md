@@ -315,7 +315,36 @@ SELECT "users"."id", "users"."email", "companies"."name"
 FROM "users", "companies"
 ```
 
-You can create an alias for a column:
+You can also connect columns to a different table by passing an
+object with `table` and either `columns` or `column` properties.
+
+```js
+const query = db
+  .from('users companies')
+  .select({ table: 'users',     columns: 'id email'})
+  .select({ table: 'companies', column: 'name' })
+```
+
+You can also do it using a single call to `select()`, like so:
+
+```js
+const query = db
+  .from('users companies')
+  .select(
+    { table: 'users',     columns: 'id email'},
+    { table: 'companies', column: 'name' }
+  )
+```
+
+The SQL generated looks like this:
+
+```sql
+SELECT "users"."id", "users"."email", "companies"."name"
+FROM "users", "companies"
+```
+
+You can include the `as` property to define an alias for a column,
+either for the current table or one explicitly named using `table`.
 
 ```js
 const query = db
@@ -328,6 +357,26 @@ This generates SQL that looks like this:
 ```sql
 SELECT "users"."name" AS "user_name"
 FROM "users"
+```
+
+You can include the `prefix` property to add a prefix to all columns.
+This can be useful when you have columns with the same name in different
+tables.
+
+```js
+const op = db
+  .from('users companies')
+  .select(
+    { table: 'users',     columns: 'id name' },
+    { table: 'companies', columns: 'id name', prefix: 'company_'}
+  );
+```
+
+The generated SQL looks like this:
+
+```sql
+SELECT "users"."id", "users"."name", "companies"."id" AS "company_id", "companies"."name" AS "company_name"
+FROM "users", "companies"
 ```
 
 You can use raw SQL if you need to, using either the object format with
@@ -357,10 +406,8 @@ const query = db
 
 ### where(criteria)
 
-Specify the criteria for matching rows.  You can specify one or more
-columns that you want to match against.  Like the [select()](#select-columns-)
-method, this will automatically be scoped to the most recent table specified
-by the [from()](#from-table-) method.
+This method can be used to specify the criteria for matching rows.
+You can specify one or more columns that you want to match against.
 
 ```js
 const query = db
@@ -369,7 +416,13 @@ const query = db
   .where('id')
 ```
 
-This will generate a SQL query with a placeholder for the `id` value:
+Like the [select()](#select-columns-) method, the columns will automatically
+be scoped to the most recent table specified by the [from()](#from-table-)
+method.  You can explicitly specify the table with each column if you prefer,
+or if you want to include a column from a different table, e.g. `users.name`
+or `company.name`.  The table and column names will both be quoted automatically.
+
+The generated SQL query will contain a placeholder for the `id` value:
 
 ```sql
 SELECT "users"."name", "users"."email"
@@ -381,7 +434,7 @@ Values for placeholders should be passed as an array to the `one()`, `any()`
 or `all()` methods.
 
 ```js
-const row = query.one([123]);
+const row = await query.one([123]);
 ```
 
 You can also provide an object mapping column names to their values if you know
@@ -397,6 +450,19 @@ const row = await db
 
 The query chain will collect all these values and automatically provide them to
 the `one()`, `any()` or `all()` methods.
+
+## join(table)
+
+This method can be used to join tables.
+
+```js
+const query = db
+  .from('users')
+  .select('name email')
+  .where('id')
+  .join({ table: 'companies', from: 'company_id', to: 'id' })
+  .select({ column: 'name', as: 'company_name' })
+```
 
 
 ## Chainability

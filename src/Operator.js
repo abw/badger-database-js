@@ -195,10 +195,11 @@ export class Operator {
       this.tableColumn(column, table)
     )
   }
-  NFGlookupTable(context={}) {
-    const from  = context.from || this.lookup('from');
-    const table = from.at(-1) || fail('No tables have been defined to select from');
-    return table;
+  quoteTableColumnAs(column, table=this.lookupTable(), as) {
+    return [
+      this.quoteTableColumn(column, table),
+      this.quote(as)
+    ].join(' AS ')
   }
 }
 

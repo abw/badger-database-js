@@ -1,5 +1,5 @@
 import Operator from '../Operator.js';
-import { splitList } from '@abw/badger-utils';
+import { isArray, splitList } from '@abw/badger-utils';
 
 export class Where extends Operator {
   initOperator() {
@@ -25,7 +25,14 @@ export class Where extends Operator {
     const database = this.lookupDatabase(context);
     return Object.entries(criteria).map(
       ([column, value]) => {
-        context.values.push(value);
+        if (isArray(value)) {
+          if (value.length > 1) {
+            context.values.push(value[1]);
+          }
+        }
+        else {
+          context.values.push(value);
+        }
         return database.engine.formatWherePlaceholder(
           this.tableColumn(column, table),
           value,

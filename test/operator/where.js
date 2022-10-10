@@ -91,6 +91,25 @@ test.serial(
   }
 )
 
+test.serial(
+  'where column with comparison',
+  t => {
+    const query = db.from('users').select('email').where({ id: ['>', 99] });
+    t.is( query.sql(), 'SELECT "users"."email"\nFROM "users"\nWHERE "users"."id">?' );
+    t.is( query.values().length, 1 );
+    t.is( query.values()[0], 99 );
+  }
+)
+
+test.serial(
+  'where column with comparison operator',
+  t => {
+    const query = db.from('users').select('email').where({ id: ['>'] });
+    t.is( query.sql(), 'SELECT "users"."email"\nFROM "users"\nWHERE "users"."id">?' );
+    t.is( query.values().length, 0 );
+  }
+)
+
 test.after(
   'disconnect',
   async t => {
