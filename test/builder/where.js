@@ -1,9 +1,10 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js'
+import { QueryBuilderError } from '../../src/Utils/Error.js';
 
 let db;
 
-test.serial(
+test.before(
   'connect',
   async t => {
     db = await connect({ database: 'sqlite:memory' });
@@ -11,46 +12,8 @@ test.serial(
   }
 )
 
-test.serial(
-  'create users',
-  async t => {
-    await db.run(`
-      CREATE TABLE users (
-        id      INTEGER PRIMARY KEY ASC,
-        name    TEXT,
-        email   TEXT
-      )
-    `);
-    t.pass();
-  }
-)
-
-test.serial(
-  'insert a user',
-  async t => {
-    const result = await db.run(
-      'INSERT INTO users (name, email) VALUES (?, ?)',
-      ['Bobby Badger', 'bobby@badgerpower.com'],
-      { sanitizeResult: true }
-    );
-    t.is( result.changes, 1 );
-  }
-)
-
-test.serial(
-  'insert another user',
-  async t => {
-    const result = await db.run(
-      'INSERT INTO users (name, email) VALUES (?, ?)',
-      ['Brian Badger', 'brian@badgerpower.com'],
-      { sanitizeResult: true }
-    );
-    t.is( result.changes, 1 );
-  }
-)
-
-test.serial(
-  'where column',
+test(
+  'column',
   t => {
     const query = db.from('users').select('id name email').where('name');
     t.is( query.sql(), 'SELECT "id", "name", "email"\nFROM "users"\nWHERE "name"=?' );
@@ -58,42 +21,55 @@ test.serial(
 )
 
 
-test.serial(
-  'where columns',
+test(
+  'columns string',
   t => {
     const query = db.from('users').select('id email').where('name email');
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=? AND "email"=?' );
   }
 )
 
-/*
-test.serial(
-  'where columns with table',
+test(
+  'array with two elements',
   t => {
-    const query = db.from('users').select('id email').where({ table: 'users', columns: 'name email' });
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name"=? AND "users"."email"=?' );
-  }
-)
-*/
-
-test.serial(
-  'where columns array',
-  t => {
-    const query = db.from('users').select('id email').where(['name', 'email']);
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=? AND "email"=?' );
+    const query = db.from('users').select('id email').where(['name', 'Bobby Badger']);
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=?' );
+    t.is( query.values().length, 1 );
+    t.is( query.values()[0], 'Bobby Badger' );
   }
 )
 
-test.serial(
-  'where with table name',
+test(
+  'array with three elements',
+  t => {
+    const query = db.from('users').select('id email').where(['name', '!=', 'Bobby Badger']);
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"!=?' );
+    t.is( query.values().length, 1 );
+    t.is( query.values()[0], 'Bobby Badger' );
+  }
+)
+
+test(
+  'array with four elements',
+  t => {
+    const error = t.throws(
+      () => db.from('a').where(['users', 'email', 'email_address', 'oops']).sql()
+    );
+    t.true( error instanceof QueryBuilderError );
+    t.is( error.message, 'Invalid array with 4 items specified for query builder "where" component. Expected [column, value] or [column, operator, value].' );
+  }
+)
+
+test(
+  'table name',
   t => {
     const query = db.from('users').select('id email').where('users.name', 'u.email');
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name"=? AND "u"."email"=?' );
   }
 )
 
-test.serial(
-  'where column with value',
+test(
+  'column with value',
   t => {
     const query = db.from('users').select('id email').where({ name: 'Brian Badger' });
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=?' );
@@ -102,8 +78,8 @@ test.serial(
   }
 )
 
-test.serial(
-  'where column with comparison',
+test(
+  'column with comparison',
   t => {
     const query = db.from('users').select('email').where({ id: ['>', 99] });
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id">?' );
@@ -112,8 +88,8 @@ test.serial(
   }
 )
 
-test.serial(
-  'where column with comparison operator',
+test(
+  'column with comparison operator',
   t => {
     const query = db.from('users').select('email').where({ id: ['>'] });
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id">?' );
@@ -121,9 +97,21 @@ test.serial(
   }
 )
 
+test(
+  'object with value array with three elements',
+  t => {
+    const error = t.throws(
+      () => db.from('a').where({ id: ['id', '>', 123] }).sql()
+    );
+    t.true( error instanceof QueryBuilderError );
+    t.is( error.message, 'Invalid value array with 3 items specified for query builder "where" component. Expected [value] or [operator, value].' );
+  }
+)
+
+
 test.after(
   'disconnect',
-  async t => {
+  t => {
     db.disconnect();
     t.pass();
   }

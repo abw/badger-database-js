@@ -263,61 +263,195 @@ db.from(['users', 'people'], 'companies', { table: 'employees' })
 // -> FROM "users" AS "people", "companies", "employees"
 ```
 
-
-
 ## where(criteria)
 
 This method can be used to specify the criteria for matching rows.
 You can specify one or more columns that you want to match against.
 
 ```js
-const query = db
+db
   .from('users')
   .select('name email')
   .where('id')
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"=?
 ```
 
-Like the [select()](#select-columns-) method, the columns will automatically
-be scoped to the most recent table specified by the [from()](#from-table-)
-method.  You can explicitly specify the table with each column if you prefer,
-or if you want to include a column from a different table, e.g. `users.name`
-or `company.name`.  The table and column names will both be quoted automatically.
+The query will be constructed with placeholders matching the specified
+column or columns.
 
-The generated SQL query will contain a placeholder for the `id` value:
-
-```sql
-SELECT "users"."name", "users"."email"
-FROM "users"
-WHERE "users"."id"=?
-```
-
-Values for placeholders should be passed as an array to the `one()`, `any()`
-or `all()` methods.
-
-```js
-const row = await query.one([123]);
-```
-
-You can also provide an object mapping column names to their values if you know
-them when constructing the query:
+Values for placeholders should be passed as an array to the
+[one()](#one-values-), [any()](#any-values-) or [all()](#all-values-) methods.
 
 ```js
 const row = await db
   .from('users')
+  .select('name email')
+  .where('id')
+  .one([12345])
+```
+
+You can specify multiple columns using the shorthand syntax as a
+string of whitespace delimited table names.
+
+```js
+db
+  .select('name email')
+  .from('users')
+  .where('id name')
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"=? AND "name"=?
+```
+
+Commas (with optional whitespace following) can also be used to
+delimit column names.
+
+```js
+db
+  .select('name email')
+  .from('users')
+  .where('id, name')
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"=? AND "name"=?
+```
+
+Columns can have the table name included in them.  Both the table
+and columns names will be automatically quoted.
+
+```js
+db
+  .select('name email')
+  .from('users')
+  .where('users.id')
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "users"."id"=?
+```
+
+You can pass an object to the method mapping column names to their respective values.
+
+```js
+const row = await db
   .select('id name email')
-  .where({ id: 123 })
+  .from('users')
+  .where({ id: 12345 })
   .one()
 ```
 
-The query chain will collect all these values and automatically provide them to
-the `one()`, `any()` or `all()` methods.
+The query will still be constructed with placeholder values but all the values
+will be collected and automatically provided to the
+[one()](#one-values-), [any()](#any-values-) or [all()](#all-values-) methods.
+
+You can pass additional values to those method to provide any additional values.
+Be warned that they will always be added *after* values specified in the query.
+
+This will work as intended:
+
+```js
+const row = await db
+  .select('id name email')
+  .from('users')
+  .where({ id: 12345 })     // placeholder for id
+  .where('name')            // placeholder for name
+  .one(['Bobby Badger'])    // values are [12345, 'Bobby Badger']
+```
+
+But this won't:
+
+```js
+// DON'T DO THIS!
+const row = await db
+  .select('id name email')
+  .from('users')
+  .where('name')            // placeholder for name
+  .where({ id: 12345 })     // placeholder for id
+  .one(['Bobby Badger'])    // ERROR! values are [12345, 'Bobby Badger']
+```
+
+You can also provide values as an array of `[column, value]`.
+
+```js
+const row = await db
+  .select('id name email')
+  .from('users')
+  .where(['id', '12345'])
+  .one()
+```
+
+By default the comparison operator is `=`.  You can provide an array of three
+values to set a different comparison operator: `[column, operator, value]`.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where(['id', '>', '12345'])
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id">?
+```
+
+You can also set a comparison operator using an object by setting the value
+to a two element array: `[operator, value]`.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where({ id: ['>', '12345']})
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id">?
+```
+
+Or if you want to provide the value later then use a single element array: `[operator]`.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where({ id: ['>']})
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id">?
+```
+
+You can call the method multiple times.  The criteria will all be
+collected after the `WHERE` keyword and combined with `AND`.
+
+```js
+db
+  .select('name email')
+  .from('users')
+  .where(['id', '>', 12345])
+  .where('name')
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id">? AND "name"=?
+```
+
+Or you can pass multiple arguments to a single method call.  Each argument
+can be any of the values described above.
+
+```js
+db
+  .select('name email')
+  .from('users')
+  .where(['id', '>', 12345], 'name')
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id">? AND "name"=?
+```
 
 ## join(table)
 
 This method can be used to join tables.
 
 ```js
-const query = db
+db
   .from('users')
   .select('name email')
   .where('id')
@@ -406,3 +540,14 @@ const query = db
 You can clear the current prefix by calling `prefix()` without any arguments.
 
 
+## one(values)
+
+TODO
+
+## any(values)
+
+TODO
+
+## all(values)
+
+TODO

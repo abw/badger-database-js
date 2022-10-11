@@ -82,6 +82,9 @@ export class Builder {
       ...values, ...extra
     ]
   }
+  addValues(...values) {
+    this.context.values.push(...values)
+  }
 
   // generate SQL
   sql() {
@@ -170,9 +173,6 @@ export class Builder {
   }
 
   // utility methods
-  quote(item) {
-    return this.lookupDatabase().quote(item)
-  }
   lookup(key, error) {
     return this[key] ||
       (this.parent
@@ -184,6 +184,9 @@ export class Builder {
   }
   lookupTable() {
     return this.context.table || this.lookup('table');
+  }
+  quote(item) {
+    return this.lookupDatabase().quote(item)
   }
   tableColumn(table, column) {
     return column.match(/\./)
