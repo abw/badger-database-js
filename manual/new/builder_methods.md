@@ -559,7 +559,35 @@ db
 //    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
 ```
 
-You can call the method multiple times.
+You know the drill, right?  If the method doesn't do what you need then you
+can use raw SQL to define the joins, either with an object containing a
+`sql` property:
+
+```js
+db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join({ sql: 'JOIN employees ON user.id=employees.user_id' })
+// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN employees ON user.id=employees.user_id
+```
+
+Or using the `sql` function to create a tagged template literal.
+
+```js
+db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join(sql`JOIN employees ON user.id=employees.user_id`)
+// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN employees ON user.id=employees.user_id
+```
+
+And just like the other methods, you can call the method multiple times.
 
 ```js
 db
@@ -589,6 +617,204 @@ db
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"
 ```
 
+## order(columns)
+
+This method can be used to create an `ORDER BY` clause.  There's also an
+`orderBy()` alias for the method if you prefer something a little closer
+in name to the SQL it generates.
+
+A string can be passed containing one or more columns.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order('name')
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "name"
+```
+
+Columns can be delimited by whitespace or commas, as usual.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order('name, email')
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email"
+```
+
+Columns can include the table name for disambiguation.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order('users.name users.email')
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "users"."name", "users"."email"
+```
+
+The default order is `ASC` for "ascending".  To set a different sort
+order (e.g. `DESC` for "descending"), pass a two element array with the
+columns as the first element and `DESC` as the second.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order(['name email', 'DESC'])
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email" DESC
+```
+
+You can also pass an objecting containing the `column` or `columns` property.
+The `column` is assumed to be a single column whereas `columns` can contain
+multiple columns separated by whitespace or commas in the usual way.  In addition
+you can specify either `asc` or `desc` as a boolean flag to set the sort direction
+to be ascending or descending, respectively.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order({ columns: 'name email', desc: true })
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email" DESC
+```
+
+Or use `direction` (or `dir` for short) set to either `ASC` or `DESC` if you prefer.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order({ columns: 'name email', dir: `DESC` })
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email" DESC
+```
+
+Of course it also supports raw SQL, either using a `sql` property in an object.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order({ sql: 'name DESC, email' })
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY name DESC, email
+```
+
+Or using a tagged template literal.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order(sql`name DESC, email`)
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY name DESC, email
+```
+
+You can call the method multiple times or pass multiple arguments to it.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order(['name', 'DESC'], 'email')
+// -> SELECT *
+//    FROM "users"
+//    ORDER BY "name" DESC, "email" DESC
+```
+## group(columns)
+
+This method can be used to create a `GROUP BY` clause.  There's also a
+`groupBy()` alias for it.
+
+A string can be passed containing one or more columns.
+
+```js
+db
+  .select(sql`company_id, COUNT(id) AS employees`)
+  .from('users')
+  .group('company_id')
+// -> SELECT company_id, COUNT(id) AS employees
+//    FROM "users"
+//    GROUP BY "company_id"
+```
+
+Multiple columns can be delimited by whitespace or commas and can contain
+a table name.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .group('users.company_id, users.start_year')
+// -> SELECT *
+//    FROM "users"
+//    GROUP BY "users"."company_id", "users"."start_year"
+```
+
+You can also pass an objecting containing the `column` or `columns` property.
+The `column` is assumed to be a single column whereas `columns` can contain
+multiple columns separated by whitespace or commas in the usual way.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .group({ columns: 'company_id, year' })
+// -> SELECT *
+//    FROM "users"
+//    GROUP BY "company_id", "year"
+```
+
+As you might expect it also supports raw SQL, either using a `sql` property in an object.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .group({ sql: 'company_id' })
+// -> SELECT *
+//    FROM "users"
+//    GROUP BY company_id
+```
+
+Or using a tagged template literal.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .group(sql`company_id`)
+// -> SELECT *
+//    FROM "users"
+//    GROUP BY company_id
+```
+
+You can call the method multiple times or pass multiple arguments to it.
+
+```js
+db
+  .select('*')
+  .from('users')
+  .order('company_id', 'start_year')
+// -> SELECT *
+//    FROM "users"
+//    GROUP BY "company_id", "start_year"
+```
 
 ## columns(columns)
 
