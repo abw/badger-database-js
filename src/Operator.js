@@ -201,6 +201,12 @@ export class Operator {
       this.quote(as)
     ].join(' AS ')
   }
+  quoteColumnAs(column, as) {
+    return [
+      this.quote(column),
+      this.quote(as)
+    ].join(' AS ')
+  }
 }
 
 export default Operator

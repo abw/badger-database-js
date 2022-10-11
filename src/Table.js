@@ -264,6 +264,9 @@ export class Table {
   select(...args) {
     return this.operator().from(this.table).select(...args);
   }
+  //columns(...args) {
+  //  return this.operator().from(this.table).columns(...args);
+  //}
 
   tableFragments() {
     return this.tableFragments

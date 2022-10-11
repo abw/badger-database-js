@@ -1,5 +1,5 @@
 import test from 'ava';
-import Select from '../../src/Operator/Select.js';
+import Columns from '../../src/Operator/Columns.js';
 import { connect } from '../../src/Database.js'
 import { sql } from '../../src/Utils/Tags.js';
 
@@ -16,48 +16,48 @@ test.serial(
 test.serial(
   'select',
   async t => {
-    const op = db.from('a').select('b');
-    t.true( op instanceof Select )
-    t.is( op.sql(), 'SELECT "b"\nFROM "a"' );
+    const op = db.from('a').columns('b');
+    t.true( op instanceof Columns )
+    t.is( op.sql(), 'SELECT "a"."b"\nFROM "a"' );
   }
 )
 
 test.serial(
   'select multiple columns',
   async t => {
-    const op = db.from('a').select('b c');
-    t.is( op.sql(), 'SELECT "b", "c"\nFROM "a"' );
+    const op = db.from('a').columns('b c');
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c"\nFROM "a"' );
   }
 )
 
 test.serial(
   'select multiple tables with commas',
   async t => {
-    const op = db.from('a').select('b,c, d');
-    t.is( op.sql(), 'SELECT "b", "c", "d"\nFROM "a"' );
+    const op = db.from('a').columns('b,c, d');
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c", "a"."d"\nFROM "a"' );
   }
 )
 
 test.serial(
   'select array of columns',
   async t => {
-    const op = db.from('a').select(['b', 'c']);
-    t.is( op.sql(), 'SELECT "b", "c"\nFROM "a"' );
+    const op = db.from('a').columns(['b', 'c']);
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c"\nFROM "a"' );
   }
 )
 
 test.serial(
   'select columns with table name',
   async t => {
-    const op = db.from('a').select('x.b c');
-    t.is( op.sql(), 'SELECT "x"."b", "c"\nFROM "a"' );
+    const op = db.from('a').columns('x.b c');
+    t.is( op.sql(), 'SELECT "x"."b", "a"."c"\nFROM "a"' );
   }
 )
 
 test.serial(
   'select sql in object',
   async t => {
-    const op = db.from('a').select({ sql: 'b as bravo' });
+    const op = db.from('a').columns({ sql: 'b as bravo' });
     t.is( op.sql(), 'SELECT b as bravo\nFROM "a"' );
   }
 )
@@ -65,7 +65,7 @@ test.serial(
 test.serial(
   'select tagged sql',
   async t => {
-    const op = db.from('a').select(sql`b as bravo`);
+    const op = db.from('a').columns(sql`b as bravo`);
     t.is( op.sql(), 'SELECT b as bravo\nFROM "a"' );
   }
 )
@@ -73,56 +73,56 @@ test.serial(
 test.serial(
   'select from last table in string',
   async t => {
-    const op = db.from('a b').select('x y');
-    t.is( op.sql(), 'SELECT "x", "y"\nFROM "a", "b"' );
+    const op = db.from('a b').columns('x y');
+    t.is( op.sql(), 'SELECT "b"."x", "b"."y"\nFROM "a", "b"' );
   }
 )
 
 test.serial(
   'select from last table in array',
   async t => {
-    const op = db.from(['a', 'b']).select('x y');
-    t.is( op.sql(), 'SELECT "x", "y"\nFROM "a", "b"' );
+    const op = db.from(['a', 'b']).columns('x y');
+    t.is( op.sql(), 'SELECT "b"."x", "b"."y"\nFROM "a", "b"' );
   }
 )
 
 test.serial(
   'select from last table in multiple tables',
   async t => {
-    const op = db.from('a', 'b').select('x y');
-    t.is( op.sql(), 'SELECT "x", "y"\nFROM "a", "b"' );
+    const op = db.from('a', 'b').columns('x y');
+    t.is( op.sql(), 'SELECT "b"."x", "b"."y"\nFROM "a", "b"' );
   }
 )
 
 test.serial(
   'select from table with alias',
   async t => {
-    const op = db.from({ table: 'a', as: 'b' }).select('x y');
-    t.is( op.sql(), 'SELECT "x", "y"\nFROM "a" AS "b"' );
+    const op = db.from({ table: 'a', as: 'b' }).columns('x y');
+    t.is( op.sql(), 'SELECT "b"."x", "b"."y"\nFROM "a" AS "b"' );
   }
 )
 
 test.serial(
   'select column with alias from table',
   async t => {
-    const op = db.from({ table: 'a', as: 'b' }).select({ column: 'x', as: 'y' });
-    t.is( op.sql(), 'SELECT "x" AS "y"\nFROM "a" AS "b"' );
+    const op = db.from({ table: 'a', as: 'b' }).columns({ column: 'x', as: 'y' });
+    t.is( op.sql(), 'SELECT "b"."x" AS "y"\nFROM "a" AS "b"' );
   }
 )
 
 test.serial(
   'select multiple items',
   async t => {
-    const op = db.from('a').select('b', 'c d', ['e', 'f'], { column: 'x', as: 'y' });
-    t.is( op.sql(), 'SELECT "b", "c", "d", "e", "f", "x" AS "y"\nFROM "a"' );
+    const op = db.from('a').columns('b', 'c d', ['e', 'f'], { column: 'x', as: 'y' });
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c", "a"."d", "a"."e", "a"."f", "a"."x" AS "y"\nFROM "a"' );
   }
 )
 
 test.serial(
   'select column with table name and alias in object',
   async t => {
-    const op = db.from('a').select('b', 'c d', ['e', 'f'], { column: 'y', table: 'x', as: 'z'});
-    t.is( op.sql(), 'SELECT "b", "c", "d", "e", "f", "x"."y" AS "z"\nFROM "a"' );
+    const op = db.from('a').columns('b', 'c d', ['e', 'f'], { column: 'y', table: 'x', as: 'z'});
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c", "a"."d", "a"."e", "a"."f", "x"."y" AS "z"\nFROM "a"' );
   }
 )
 
@@ -131,7 +131,7 @@ test.serial(
   async t => {
     const op = db
       .from('users companies')
-      .select(
+      .columns(
         { table: 'users', columns: 'id name' },
         { table: 'companies', columns: 'id name', prefix: 'company_'}
       );
@@ -145,8 +145,8 @@ test.serial(
 test.serial(
   'select column with table name in object',
   async t => {
-    const op = db.from('a').select('b', 'c d', ['e', 'f'], { column: 'y', table: 'x' });
-    t.is( op.sql(), 'SELECT "b", "c", "d", "e", "f", "x"."y"\nFROM "a"' );
+    const op = db.from('a').columns('b', 'c d', ['e', 'f'], { column: 'y', table: 'x' });
+    t.is( op.sql(), 'SELECT "a"."b", "a"."c", "a"."d", "a"."e", "a"."f", "x"."y"\nFROM "a"' );
   }
 )
 

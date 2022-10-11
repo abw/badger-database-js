@@ -46,12 +46,22 @@ test.serial(
   }
 )
 
+/*
+test.serial(
+  'users table columns',
+  async t => {
+    const sql = users.operator().columns('a, b, c').sql();
+    t.is( sql, 'SELECT "users"."a", "users"."b", "users"."c"\nFROM "users"')
+  }
+)
+*/
+
 test.serial(
   'users table select',
   async t => {
     const select = users.select('a, b, c');
     const sql = select.sql();
-    t.is( sql, 'SELECT "users"."a", "users"."b", "users"."c"\nFROM "users"')
+    t.is( sql, 'SELECT "a", "b", "c"\nFROM "users"')
   }
 )
 

@@ -10,18 +10,19 @@ export class Where extends Operator {
     return this.resolveLinkArray(splitList(columns), context)
   }
   resolveLinkArray(columns, context) {
-    const table    = this.lookupTable(context);
+    // const table    = this.lookupTable(context);
     const database = this.lookupDatabase(context);
     return columns.map(
       column => database.engine.formatWherePlaceholder(
-        this.tableColumn(column, table),
+        // this.tableColumn(column, table),
+        column,
         undefined,
         context.placeholder++
       )
     )
   }
   resolveLinkObject(criteria, context) {
-    const table    = this.lookupTable(context);
+    // const table    = this.lookupTable(context);
     const database = this.lookupDatabase(context);
     return Object.entries(criteria).map(
       ([column, value]) => {
@@ -34,7 +35,8 @@ export class Where extends Operator {
           context.values.push(value);
         }
         return database.engine.formatWherePlaceholder(
-          this.tableColumn(column, table),
+          // this.tableColumn(column, criteria.table)
+          column,
           value,
           context.placeholder++
         )
