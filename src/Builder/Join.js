@@ -1,8 +1,8 @@
-import { fail } from '@abw/badger-utils';
 import Builder from '../Builder.js';
 import { QueryBuilderError, thrower } from '../Utils/Error.js';
 
-const joinRegex = /^(.*?)=(\w+)\.(\w+)/;
+const tableColumnRegex = /^(\w+)\.(\w+)$/;
+const joinRegex = /^(.*?)=(\w+)\.(\w+)$/;
 const joinElements = {
   from:  1,
   table: 2,
@@ -21,16 +21,16 @@ export const throwJoinError = thrower(
     type:   'Invalid join type "<type>" specified for query builder "join" component.  Valid types are "left", "right", "inner" and "full".',
     string: 'Invalid join string "<join>" specified for query builder "join" component.  Expected "from=table.to".',
     object: 'Invalid object with "<keys>" properties specified for query builder "join" component.  Valid properties are "type", "table", "from" and "to".',
-    //array:  'Invalid array with <n> items specified for query builder "select" component. Expected [column, alias] or [table, column, alias].',
+    array:  'Invalid array with <n> items specified for query builder "join" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
   },
   QueryBuilderError
 )
 
 export class Join extends Builder {
-  initBuilder(...joins) {
+  initBuilder() {
     this.key = 'join';
     // TODO: grok the table for columns() to use
-    const join = joins.at(-1);
+    // const join = joins.at(-1);
   }
 
   resolveLinkString(join) {
@@ -49,7 +49,24 @@ export class Join extends Builder {
     // return this.resolveLinkArray(splitList(columns), context);
   }
 
-  TODOresolveLinkArray(join) {
+  resolveLinkArray(join) {
+    if (join.length === 4) {
+      const [type, from, table, to] = join;
+      return this.resolveLinkObject({ type, from, table, to });
+    }
+    else if (join.length === 3) {
+      const [from, table, to] = join;
+      return this.resolveLinkObject({ from, table, to });
+    }
+    else if (join.length === 2) {
+      const match = join[1].match(tableColumnRegex);
+      if (match) {
+        const from = join[0];
+        const [ , table, to] = match;
+        return this.resolveLinkObject({ from, table, to });
+      }
+    }
+    throwJoinError('array', { n: join.length });
   }
 
   resolveLinkObject(join) {
@@ -57,18 +74,18 @@ export class Join extends Builder {
       const type = joinTypes[join.type || 'default']
         || throwJoinError('type', { type: join.type });
       return this.constructJoin(
-        type, join.table, join.from, this.tableColumn(join.table, join.to)
+        type, join.from, join.table, this.tableColumn(join.table, join.to)
       );
     }
     throwJoinError('object', { keys: Object.keys(join).sort().join(', ') });
   }
 
-  constructJoin(type, table, from, to) {
+  constructJoin(type, from, table, to) {
     return type
       + this.quote(table)
       + ' ON '
       + this.quote(from)
-      + '='
+      + ' = '
       + this.quote(to);
   }
 }

@@ -19,7 +19,7 @@ test(
   t => {
     const op = db.builder().join({ table: 'a', from: 'b', to: 'c' });
     t.true( op instanceof Join )
-    t.is( op.sql(), 'JOIN "a" ON "b"="a"."c"' );
+    t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
   }
 )
 
@@ -27,8 +27,7 @@ test(
   'join string',
   t => {
     const op = db.builder().join("b=a.c");
-    t.true( op instanceof Join )
-    t.is( op.sql(), 'JOIN "a" ON "b"="a"."c"' );
+    t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
   }
 )
 
@@ -36,8 +35,31 @@ test(
   'join string with table name',
   t => {
     const op = db.builder().join("a.b=c.d");
-    t.true( op instanceof Join )
-    t.is( op.sql(), 'JOIN "c" ON "a"."b"="c"."d"' );
+    t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'join array with four elements',
+  t => {
+    const op = db.builder().join(['left', 'a.b', 'c', 'd']);
+    t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'join array with three elements',
+  t => {
+    const op = db.builder().join(['a.b', 'c', 'd']);
+    t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'join array with two elements',
+  t => {
+    const op = db.builder().join(['a.b', 'c.d']);
+    t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
@@ -79,6 +101,20 @@ test(
     t.is(
       error.message,
       'Invalid join string "wibble=wobble" specified for query builder "join" component.  Expected "from=table.to".',
+    );
+  }
+)
+
+test(
+  'invalid join array',
+  t => {
+    const error = t.throws(
+      () => db.builder().join(['wibble', 'wobble']).sql()
+    );
+    t.true( error instanceof QueryBuilderError );
+    t.is(
+      error.message,
+      'Invalid array with 2 items specified for query builder "join" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
     );
   }
 )
