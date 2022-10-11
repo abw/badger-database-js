@@ -24,6 +24,9 @@ TODO: select() and columns() have changed.  select() is no longer
 "magical" in automatically scoping columns to the latest table.
 But columns() is.
 
+NOTE: code has been updated since this was written so it will be
+wrong in places
+
 ## Starting a Query Chain
 
 The main database object has a `from()` method which allows you to

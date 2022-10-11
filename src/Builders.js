@@ -1,4 +1,3 @@
-// work in progress / experiment
 import After    from './Builder/After.js';
 import Before   from './Builder/Before.js';
 import Columns  from './Builder/Columns.js';
@@ -8,7 +7,7 @@ import Group    from './Builder/Group.js';
 import Having   from './Builder/Having.js';
 import Join     from './Builder/Join.js';
 import Order    from './Builder/Order.js';
-import Prefix from './Builder/Prefix.js';
+import Prefix   from './Builder/Prefix.js';
 import Select   from './Builder/Select.js';
 import Table    from './Builder/Table.js';
 import Where    from './Builder/Where.js';
@@ -32,7 +31,6 @@ export const builders = {
 }
 
 export const factory = (parent, type, ...args) => {
-  // console.log('factory [%s] => ', type);
   return new builders[type](factory, parent, ...args);
 }
 
