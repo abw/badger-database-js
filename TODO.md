@@ -30,3 +30,8 @@
   a hash? e.g. select("users", "id name email", { prefix: "user_" }).  I'm not sure about
   that.  Feels better to allow columns to be listed out, e.g. select(["users", "id", "name", "email"])
   although that does then make it less obvious that the "users" 0th item is the table name.
+  SOLUTION: select() and where() should NOT be magical, add columns() (and table(), prefix())
+  which is.
+
+* standardise arguments to builders, e.g. use Array for something other than repeating
+  arguments

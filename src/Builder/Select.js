@@ -14,8 +14,8 @@ export class Columns extends Builder {
     return table
       ? columns.map(
         column => prefix
-          ? this.quoteTableColumnAs(column, table, `${prefix}${column}`)
-          : this.quoteTableColumn(column, table)
+          ? this.quoteTableColumnAs(table, column, `${prefix}${column}`)
+          : this.quoteTableColumn(table, column)
       )
       : columns.map(
         column => prefix
@@ -27,8 +27,8 @@ export class Columns extends Builder {
     if (column.column && column.as) {
       return column.table
         ? this.quoteTableColumnAs(
-          column.column,
           column.table,
+          column.column,
           column.as
         )
         : this.quoteColumnAs(

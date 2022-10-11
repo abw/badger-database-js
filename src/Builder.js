@@ -185,19 +185,19 @@ export class Builder {
   lookupTable(context={}) {
     return context.table || this.lookup('table');
   }
-  tableColumn(column, table=this.lookupTable()) {
+  tableColumn(table, column) {
     return column.match(/\./)
       ? column
       : `${table}.${column}`;
   }
-  quoteTableColumn(column, table=this.lookupTable()) {
+  quoteTableColumn(table, column) {
     return this.quote(
-      this.tableColumn(column, table)
+      this.tableColumn(table, column)
     )
   }
-  quoteTableColumnAs(column, table=this.lookupTable(), as) {
+  quoteTableColumnAs(table, column, as) {
     return [
-      this.quoteTableColumn(column, table),
+      this.quoteTableColumn(table, column),
       this.quote(as)
     ].join(' AS ')
   }

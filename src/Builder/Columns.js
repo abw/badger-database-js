@@ -13,15 +13,15 @@ export class Select extends Builder {
   resolveLinkArray(columns, context, table=this.lookupTable(context), prefix) {
     return columns.map(
       column => prefix
-        ? this.quoteTableColumnAs(column, table, `${prefix}${column}`)
-        : this.quoteTableColumn(column, table)
+        ? this.quoteTableColumnAs(table, column, `${prefix}${column}`)
+        : this.quoteTableColumn(table, column)
     )
   }
   resolveLinkObject(column, context) {
     if (column.column && column.as) {
       return this.quoteTableColumnAs(
-        column.column,
         column.table || this.lookupTable(context),
+        column.column,
         column.as
       )
     }

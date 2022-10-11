@@ -21,7 +21,13 @@ export class From extends Builder {
     }
   }
   resolve(context) {
-    return super.resolve(context, { table: this.table });
+    return super.resolve(
+      context,
+      // if we've got a table defined then add it to the context
+      this.table
+        ? { table: this.table }
+        : undefined
+    )
   }
   resolveLinkString(tables, context) {
     return this.resolveLinkArray(splitList(tables), context);
