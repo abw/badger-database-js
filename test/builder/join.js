@@ -15,11 +15,29 @@ test.before(
 )
 
 test(
-  'join',
+  'join object',
   t => {
     const op = db.builder().join({ table: 'a', from: 'b', to: 'c' });
     t.true( op instanceof Join )
     t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
+  }
+)
+
+test(
+  'join object with combined to',
+  t => {
+    const op = db.builder().join({ from: 'a.b', to: 'c.d' });
+    t.true( op instanceof Join )
+    t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'join object with combined to and type',
+  t => {
+    const op = db.builder().join({ from: 'a.b', to: 'c.d', type: 'inner' });
+    t.true( op instanceof Join )
+    t.is( op.sql(), 'INNER JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
@@ -60,6 +78,14 @@ test(
   t => {
     const op = db.builder().join(['a.b', 'c.d']);
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'multiple joins',
+  t => {
+    const op = db.builder().join('users.id=employees.user_id', 'employees.company_id=companies.id');
+    t.is( op.sql(), 'JOIN "employees" ON "users"."id" = "employees"."user_id"\nJOIN "companies" ON "employees"."company_id" = "companies"."id"' );
   }
 )
 

@@ -70,12 +70,21 @@ export class Join extends Builder {
   }
 
   resolveLinkObject(join) {
+    const type = joinTypes[join.type || 'default']
+      || throwJoinError('type', { type: join.type });
+
     if (join.table && join.from && join.to) {
-      const type = joinTypes[join.type || 'default']
-        || throwJoinError('type', { type: join.type });
       return this.constructJoin(
         type, join.from, join.table, this.tableColumn(join.table, join.to)
       );
+    }
+    else if (join.from && join.to) {
+      const match = join.to.match(tableColumnRegex);
+      if (match) {
+        return this.constructJoin(
+          type, join.from, match[1], this.tableColumn(match[1], match[2])
+        )
+      }
     }
     throwJoinError('object', { keys: Object.keys(join).sort().join(', ') });
   }

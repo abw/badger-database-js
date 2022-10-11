@@ -419,6 +419,31 @@ db
 //    WHERE "id">?
 ```
 
+You can use raw SQL to define the criteria columns.  The explicit way is to
+pass an object with a `sql` property.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where({ sql: 'id > ?' })
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE id > ?
+```
+
+Or you can use the `sql` function to create a tagged template literal.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where(sql`id > ?`)
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE id > ?
+```
+
 You can call the method multiple times.  The criteria will all be
 collected after the `WHERE` keyword and combined with `AND`.
 
@@ -448,16 +473,122 @@ db
 
 ## join(table)
 
-This method can be used to join tables.
+This method can be used to join tables.  A string can be passed as
+a shorthand syntax of the form `from=table.to`, where `from` is the
+column you're joining from, `table` is the table you're joining onto
+and `to` is the column in the joined table that should match the value
+in the `from` column.
 
 ```js
 db
   .from('users')
   .select('name email')
-  .where('id')
-  .join({ table: 'companies', from: 'company_id', to: 'id' })
-  .select({ column: 'name', as: 'company_name' })
+  .select(['companies.name', 'company_name'])
+  .join('user.company_id=companies.id')
+// -> SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "companies" ON "user"."company_id" = "companies"."id"
 ```
+
+You can pass an array to the method containing 2, 3, or 4 elements.
+When using two element, the first should be the column you're joining
+from and the second should be the table column you're joining to.
+
+```js
+db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join(['user.company_id', 'companies.id'])
+// -> SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "companies" ON "user"."company_id" = "companies"."id"
+```
+
+The three element version has the destination table and column separated.
+
+```js
+db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join(['user.company_id', 'companies', 'id'])
+// -> SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "companies" ON "user"."company_id" = "companies"."id"
+```
+
+The four element version allows you to specify the join type at the
+beginning.  Valid types are `left`, `right`, `inner` and `full`.
+
+```js
+db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join(['left', 'user.company_id', 'companies', 'id'])
+// -> SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
+```
+
+You can pass an object to the method containing the `from`, `table`
+and `to` properties, and optionally the `type`.
+
+```js
+db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join({ type: 'left', from: 'user.company_id', table: 'companies', to: 'id' })
+// -> SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
+```
+
+Or you can combine the table name and column in the `to` property.
+
+```js
+db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join({ type: 'left', from: 'user.company_id', to: 'companies.id' })
+// -> SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
+```
+
+You can call the method multiple times.
+
+```js
+db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join('user.id=employees.user_id')
+  .join('employees.company_id=companies.id')
+// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "companies" ON "employees"."company_id" = "companies"."id"
+```
+
+Or you can pass multiple arguments to a single method call.  Each argument
+can be any of the values described above.
+
+```js
+db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join('user.id=employees.user_id', 'employees.company_id=companies.id')
+// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "companies" ON "employees"."company_id" = "companies"."id"
+```
+
 
 ## columns(columns)
 
