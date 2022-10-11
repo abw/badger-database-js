@@ -40,6 +40,14 @@ test(
 )
 
 test(
+  'orderBy string with table name',
+  t => {
+    const op = db.builder().orderBy('a.b');
+    t.is( op.sql(), 'ORDER BY "a"."b"' );
+  }
+)
+
+test(
   'order array with two elements',
   t => {
     const op = db.builder().order(['a.b', 'DESC']);

@@ -32,6 +32,14 @@ test(
 )
 
 test(
+  'groupBy string with table name',
+  t => {
+    const op = db.builder().groupBy('a.b');
+    t.is( op.sql(), 'GROUP BY "a"."b"' );
+  }
+)
+
+test(
   'group string with multiple columns',
   t => {
     const op = db.builder().group('a b c');
