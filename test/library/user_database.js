@@ -285,6 +285,37 @@ export const runUserDatabaseTests = async (database, options) => {
     }
   )
 
+  test.serial(
+    'select with join onto employees',
+    async t => {
+      const row = await userdb
+        .select('users.name, employees.job_title')
+        .from('users')
+        .join('users.id=employees.user_id')
+        .where({ 'users.id': Bobby.id })
+        .one();
+      t.is( row.name,      Bobby.name );
+      t.is( row.job_title, 'Chief Badger');
+    }
+  )
+
+  test.serial(
+    'select with join onto employees and company',
+    async t => {
+      const row = await userdb
+        .select('users.name, employees.job_title')
+        .select(['companies.name', 'company_name'])
+        .from('users')
+        .join('users.id=employees.user_id')
+        .join('employees.company_id=companies.id')
+        .where('users.id')
+        .one([Bobby.id]);
+      t.is( row.name,         Bobby.name );
+      t.is( row.job_title,    'Chief Badger');
+      t.is( row.company_name, 'Badgers Inc.');
+    }
+  )
+
   test.after(
     'disconnect',
     async t => {

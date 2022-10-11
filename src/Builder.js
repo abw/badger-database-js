@@ -27,7 +27,7 @@ const parts = {
   before:  ['',          "\n"     ],
   select:  ['SELECT ',   ', '     ],
   from:    ['FROM ',     ', '     ],
-  join:    ['JOIN ',     "\nJOIN "],
+  join:    ['',          "\n"     ],
   where:   ['WHERE ',    ' AND '  ],
   group:   ['GROUP BY ', ', '     ],
   having:  ['HAVING ',   ' AND '  ],
