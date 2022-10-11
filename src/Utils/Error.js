@@ -96,6 +96,11 @@ export class InsertValidationError extends CustomError { }
 export class DeletedRecordError extends CustomError { }
 
 /**
+ * Error class for reporting query builder errors
+ */
+export class QueryBuilderError extends CustomError { }
+
+/**
  * Function for throwing a {@link UnexpectedRowCount} error when multiple
  * rows were returned or updated when only one was expected.
  * @param {!Integer} n - the number of rows encountered

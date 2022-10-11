@@ -1,11 +1,12 @@
 import test from 'ava';
 import From from '../../src/Builder/From.js';
 import { connect } from '../../src/Database.js'
+import { QueryBuilderError } from '../../src/Utils/Error.js';
 import { sql } from '../../src/Utils/Tags.js';
 
 let db;
 
-test.serial(
+test.before(
   'connect',
   async t => {
     db = await connect({ database: 'sqlite:memory' });
@@ -13,68 +14,118 @@ test.serial(
   }
 )
 
-test.serial(
-  'from table',
-  async t => {
+test(
+  'table',
+  t => {
     const op = db.from('a');
     t.true( op instanceof From )
     t.is( op.sql(), 'FROM "a"' );
   }
 )
 
-test.serial(
-  'from tables',
-  async t => {
+test(
+  'tables string',
+  t => {
     const op = db.from('a, b c');
     t.is( op.sql(), 'FROM "a", "b", "c"' );
   }
 )
 
-test.serial(
-  'from multiple tables',
-  async t => {
+test(
+  'multiple tables as arguments',
+  t => {
     const op = db.from('a', 'b', 'c');
     t.is( op.sql(), 'FROM "a", "b", "c"' );
   }
 )
 
-test.serial(
-  'from array of tables',
-  async t => {
-    const op = db.from(['a', 'b', 'c']);
-    t.is( op.sql(), 'FROM "a", "b", "c"' );
+test(
+  'table with alias',
+  t => {
+    const op = db.from(['a', 'b']);
+    t.is( op.sql(), 'FROM "a" AS "b"' );
   }
 )
 
-test.serial(
+test(
+  'three element array',
+  t => {
+    const error = t.throws(
+      () => db.from(['users', 'email', 'email_address']).sql()
+    );
+    t.true( error instanceof QueryBuilderError );
+    t.is( error.message, 'Invalid array with 3 items specified for query builder "from" component. Expected [table, alias].' );
+  }
+)
+
+
+test(
   'from sql in object',
-  async t => {
+  t => {
     const op = db.from({ sql: 'a as alpha' });
     t.is( op.sql(), 'FROM a as alpha' );
   }
 )
 
-test.serial(
+test(
   'from tagged sql',
-  async t => {
+  t => {
     const op = db.from(sql`a as alpha`);
     t.is( op.sql(), 'FROM a as alpha' );
   }
 )
 
-test.serial(
+test(
   'from multiple items',
-  async t => {
+  t => {
     const op = db.from('a', ['b', 'c'], { sql: 'd as delta'});
-    t.is( op.sql(), 'FROM "a", "b", "c", d as delta' );
+    t.is( op.sql(), 'FROM "a", "b" AS "c", d as delta' );
   }
 )
 
-test.serial(
+test(
+  'from table in object',
+  t => {
+    const op = db.from({ table: 'a' });
+    t.is( op.sql(), 'FROM "a"' );
+  }
+)
+
+test(
+  'from tables in object',
+  t => {
+    const op = db.from({ tables: 'a b c' });
+    t.is( op.sql(), 'FROM "a", "b", "c"' );
+  }
+)
+
+test(
   'from aliased table',
-  async t => {
+  t => {
     const op = db.from({ table: 'a', as: 'b' });
     t.is( op.sql(), 'FROM "a" AS "b"' );
   }
 )
 
+test(
+  'invalid object',
+  t => {
+    const error = t.throws(
+      () => db.from({ users: 'email email_address', oops: 'This is wrong' }).sql()
+    );
+    t.true( error instanceof QueryBuilderError );
+    t.is(
+      error.message,
+      'Invalid object with "oops, users" properties specified for query builder "from" component.  Valid properties are "tables", "table" and "as".'
+    );
+  }
+)
+
+
+test.after(
+  'disconnect',
+  t => {
+    db.disconnect();
+    t.pass();
+  }
+)

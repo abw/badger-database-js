@@ -75,6 +75,9 @@ export class Database {
   builder() {
     return databaseBuilder(this);
   }
+  select(...args) {
+    return this.builder().select(...args);
+  }
   from(...args) {
     return this.builder().from(...args);
   }

@@ -107,7 +107,7 @@ export class Builder {
 
   // resolve the complete chain from top to bottom
   resolveChain() {
-    return this.context ||= this.resolve(
+    return this.context || this.resolve(
       this.parent
         ? this.parent.resolveChain()
         : defaultContext()
@@ -117,13 +117,13 @@ export class Builder {
   // resolve a link in the chain and merge into parent context
   resolve(context, args={}) {
     const key = this.key;
-    const newContext = {
+    this.context = {
       ...context,
       ...args
     }
-    const values = this.resolveLink(context);
-    newContext[key] = [...(context[key] || []), ...values];
-    return newContext;
+    const values = this.resolveLink();
+    this.context[key] = [...(this.context[key] || []), ...values];
+    return this.context;
     /*
     return {
       ...context,
@@ -134,27 +134,27 @@ export class Builder {
   }
 
   // resolve a link in the chain
-  resolveLink(context) {
+  resolveLink() {
     return this.args.map(
       item => (isObject(item) && item.sql)
         ? item.sql
-        : this.resolveLinkItem(item, context)
+        : this.resolveLinkItem(item)
     ).flat()
   }
 
   // resolve an individual argument for a link in the chain
-  resolveLinkItem(item, context) {
+  resolveLinkItem(item) {
     if (isString(item)) {
-      return this.resolveLinkString(item, context);
+      return this.resolveLinkString(item);
     }
     else if (isArray(item)) {
-      return this.resolveLinkArray(item, context);
+      return this.resolveLinkArray(item);
     }
     else if (isFunction(item)) {
-      return item(context);
+      return item(this);
     }
     else if (isObject(item)) {
-      return this.resolveLinkObject(item, context);
+      return this.resolveLinkObject(item);
     }
     fail("Invalid link item: ", item);
   }
@@ -170,8 +170,8 @@ export class Builder {
   }
 
   // utility methods
-  quote(item, context={}) {
-    return this.lookupDatabase(context).quote(item)
+  quote(item) {
+    return this.lookupDatabase().quote(item)
   }
   lookup(key, error) {
     return this[key] ||
@@ -179,11 +179,11 @@ export class Builder {
         ? this.parent.lookup(key)
         : fail(error || `Missing item in query chain: ${key}`))
   }
-  lookupDatabase(context={}) {
-    return context.database || this.lookup('database');
+  lookupDatabase() {
+    return this.context.database || this.lookup('database');
   }
-  lookupTable(context={}) {
-    return context.table || this.lookup('table');
+  lookupTable() {
+    return this.context.table || this.lookup('table');
   }
   tableColumn(table, column) {
     return column.match(/\./)
@@ -194,6 +194,12 @@ export class Builder {
     return this.quote(
       this.tableColumn(table, column)
     )
+  }
+  quoteTableAs(table, as) {
+    return [
+      this.quote(table),
+      this.quote(as)
+    ].join(' AS ');
   }
   quoteTableColumnAs(table, column, as) {
     return [

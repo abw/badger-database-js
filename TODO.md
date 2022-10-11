@@ -35,3 +35,9 @@
 
 * standardise arguments to builders, e.g. use Array for something other than repeating
   arguments
+
+* Check builder placeholder variables are correct in Postgres
+
+* Don't quote "*"
+
+* Proper error reporting (custom Error class and messages) in builders

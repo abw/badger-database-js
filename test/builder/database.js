@@ -1,10 +1,12 @@
 import test from 'ava';
 import Database from '../../src/Builder/Database.js';
+import From from '../../src/Builder/From.js';
+import Select from '../../src/Builder/Select.js';
 import { connect } from '../../src/Database.js'
 
 let db;
 
-test.serial(
+test.before(
   'connect',
   async t => {
     db = await connect({ database: 'sqlite:memory' });
@@ -12,10 +14,34 @@ test.serial(
   }
 )
 
-test.serial(
+test(
   'builder',
-  async t => {
+  t => {
     const op = db.builder();
     t.true( op instanceof Database );
+  }
+)
+
+test(
+  'from',
+  t => {
+    const op = db.from();
+    t.true( op instanceof From );
+  }
+)
+
+test(
+  'select',
+  t => {
+    const op = db.select();
+    t.true( op instanceof Select );
+  }
+)
+
+test.after(
+  'disconnect',
+  t => {
+    db.disconnect();
+    t.pass();
   }
 )

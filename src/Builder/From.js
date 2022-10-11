@@ -1,25 +1,34 @@
-import { fail, isArray, isObject, isString, splitList } from '@abw/badger-utils';
 import Builder from '../Builder.js';
+import { QueryBuilderError, thrower } from '../Utils/Error.js';
+import { isArray, isObject, isString, splitList } from '@abw/badger-utils';
+
+const throwFromError = thrower(
+  {
+    array:  'Invalid array with <n> items specified for query builder "from" component. Expected [table, alias].',
+    object: 'Invalid object with "<keys>" properties specified for query builder "from" component.  Valid properties are "tables", "table" and "as".',
+  },
+  QueryBuilderError
+)
 
 export class From extends Builder {
   initBuilder(...tables) {
     this.key = 'from';
-    // console.log('FROM: ', table);
-    // store the table name for subsequent select() calls to use, but
+    // store the table name for subsequent columns() calls to use, but
     // we need to be careful to only handle the valid cases, e.g. where
-    // it's a string (which might contain multiple table names) or an
-    // array
+    // it's a string (which might contain multiple table names), an
+    // array of [table, alias], or an object containing 'table'
     const table = tables.at(-1);
     if (isString(table)) {
       this.table = splitList(table).at(-1);
     }
-    else if (isArray(table)) {
-      this.table = table.at(-1);
+    else if (isArray(table) && table.length === 2) {
+      this.table = table[1];
     }
     else if (isObject(table) && table.as) {
       this.table = table.as;
     }
   }
+
   resolve(context) {
     return super.resolve(
       context,
@@ -29,22 +38,33 @@ export class From extends Builder {
         : undefined
     )
   }
-  resolveLinkString(tables, context) {
-    return this.resolveLinkArray(splitList(tables), context);
+
+  resolveLinkString(tables) {
+    // split a string of table names and quote each one
+    return splitList(tables).map(
+      table => this.quote(table)
+    );
   }
-  resolveLinkArray(tables, context) {
-    return tables.map(
-      table => this.quote(table, context)
-    )
+
+  resolveLinkArray(table) {
+    // a two-element array is [table, alias]
+    return table.length === 2
+      ? this.quoteTableAs(...table)
+      : throwFromError('array', { n: table.length });
   }
-  resolveLinkObject(table, context) {
-    if (table.table && table.as) {
-      return [
-        this.quote(table.table, context),
-        this.quote(table.as, context)
-      ].join(' AS ');
+
+  resolveLinkObject(table) {
+    if (table.table) {
+      // if it's an object then it should have a table and optionally an 'as' for an alias
+      return table.as
+        ? this.quoteTableAs(table.table, table.as)
+        : this.quote(table.table)
     }
-    return fail('Invalid table specified in "from": ', table);
+    else if (table.tables) {
+      // or it can have tables
+      return this.resolveLinkString(table.tables);
+    }
+    throwFromError('object', { keys: Object.keys(table).sort().join(', ') });
   }
 }
 

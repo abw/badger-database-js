@@ -1,30 +1,49 @@
-import { fail, splitList } from '@abw/badger-utils';
 import Builder from '../Builder.js';
+import { QueryBuilderError, thrower } from '../Utils/Error.js';
+import { splitList } from '@abw/badger-utils';
 
-export class Columns extends Builder {
+export const throwSelectError = thrower(
+  {
+    array:  'Invalid array with <n> items specified for query builder "select" component. Expected [column, alias] or [table, column, alias].',
+    object: 'Invalid object with "<keys>" properties specified for query builder "select" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
+  },
+  QueryBuilderError
+)
+
+export class Select extends Builder {
   initBuilder() {
     this.key = 'select';
   }
-  resolveLinkString(columns, context, table, prefix) {
-    return this.resolveLinkArray(
-      splitList(columns), context, table, prefix
-    );
+
+  resolveLinkString(columns, table, prefix) {
+    // function to map columns to depends on table and/or prefix being defined
+    const func = table
+      ? prefix
+        ? column => this.quoteTableColumnAs(table, column, `${prefix}${column}`)
+        : column => this.quoteTableColumn(table, column)
+      : prefix
+        ? column => this.quoteColumnAs(column, `${prefix}${column}`)
+        : column => this.quote(column)
+    ;
+    // split string into items and apply function
+    return splitList(columns).map(func);
   }
-  resolveLinkArray(columns, context, table, prefix) {
-    return table
-      ? columns.map(
-        column => prefix
-          ? this.quoteTableColumnAs(table, column, `${prefix}${column}`)
-          : this.quoteTableColumn(table, column)
-      )
-      : columns.map(
-        column => prefix
-          ? this.quoteColumnAs(column, `${prefix}${column}`)
-          : this.quote(column)
-      )
+
+  resolveLinkArray(columns) {
+    if (columns.length === 2) {
+      // a two-element array is [column, alias]
+      return this.quoteColumnAs(...columns);
+    }
+    else if (columns.length === 3) {
+      // a three-element array is [table, column, alias]
+      return this.quoteTableColumnAs(...columns)
+    }
+    throwSelectError('array', { n: columns.length });
   }
-  resolveLinkObject(column, context) {
+
+  resolveLinkObject(column) {
     if (column.column && column.as) {
+      // object can contain "column", "as" and optional "table"
       return column.table
         ? this.quoteTableColumnAs(
           column.table,
@@ -36,12 +55,13 @@ export class Columns extends Builder {
           column.as
         )
     }
+    // otherwise it should define "column" or "columns"
     const cols = column.column || column.columns;
     if (cols) {
-      return this.resolveLinkString(cols, context, column.table, column.prefix)
+      return this.resolveLinkString(cols, column.table, column.prefix)
     }
-    return fail('Invalid column specified in "columns": ', column);
+    throwSelectError('object', { keys: Object.keys(column).sort().join(', ') });
   }
 }
 
-export default Columns
+export default Select

@@ -198,7 +198,9 @@ export class Engine {
     return name
       .split(/\./)
       .map(
-        part => this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
+        part => part === allColumns
+          ? part
+          : this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
       .join('.');
   }
   quoteTableColumn(table, column) {

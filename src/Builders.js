@@ -8,6 +8,7 @@ import Group    from './Builder/Group.js';
 import Having   from './Builder/Having.js';
 import Join     from './Builder/Join.js';
 import Order    from './Builder/Order.js';
+import Prefix from './Builder/Prefix.js';
 import Select   from './Builder/Select.js';
 import Table    from './Builder/Table.js';
 import Where    from './Builder/Where.js';
@@ -24,7 +25,9 @@ export const builders = {
   join:      Join,
   order:     Order,
   orderBy:   Order,
+  prefix:    Prefix,
   select:    Select,
+  table:     Table,
   where:     Where,
 }
 

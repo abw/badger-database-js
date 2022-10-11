@@ -1,15 +1,16 @@
 import Builder from '../Builder.js';
 
-// this is *probably* deprecated
-
 export class Table extends Builder {
   initBuilder(table) {
-    this.key      = 'table';
-    this.table    = table;
-    this.database = table.database;
+    this.key   = 'table';
+    this.table = table;
   }
   resolve(context) {
-    return super.resolve(context, { database: this.database });
+    this.context = {
+      ...context,
+      table: this.table
+    }
+    return this.context;
   }
 }
 

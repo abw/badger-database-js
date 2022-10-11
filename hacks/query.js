@@ -5,8 +5,22 @@ async function main() {
   console.log(
     db
       .from('users companies')
-      .select({ table: 'users',     columns: 'id email'})
-      .select({ table: 'companies', column: 'name' })
+      .table('users').prefix('user_').columns('id name')
+      .table('companies').prefix('company_').columns('name')
+
+      //.from('users companies')
+      //.table('users').columns('id name')
+      //.table('companies').columns(['name', 'company_name'])
+
+      //.select('id email')
+      //.select({ table: 'companies', column: 'name', as: 'company_name' })
+
+// -> SELECT "id", "email", "companies"."name" AS "company_name"
+
+      //.from('users companies')
+      //.select({ table: 'users',     columns: 'id email'})
+      //.select({ table: 'companies', column: 'name' })
+
       // .from('users')
       // .select('name email')
       // .where('id')
