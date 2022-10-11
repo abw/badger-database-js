@@ -5,7 +5,7 @@
 
 * table fetch columns with aliases: { alias: column } ???
 
-* document query() method to view generated SQL
+* document query() method to view generated SQL (rename sql())
 
 * additional 'where' criteria for relations (check names get properly quoted)
 
@@ -13,22 +13,12 @@
 
 * database inspection to grok tables automagically?
 
-* search component / query builder (operations)
-
 * API documentation
 
-* debug documenation - prefix and color
-
-* standardise arguments to builders, e.g. use Array for something other than repeating
-  arguments
-
-* Check builder placeholder variables are correct in Postgres
+* debug documentation - prefix and color
 
 * Proper error reporting (custom Error class and messages) in builders
 
 * Builder values() is currently a method but we probably need to create a builder
   component for adding values.
 
-* Where should calls addValues();
-
-* Where array
