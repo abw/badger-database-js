@@ -1,4 +1,4 @@
-# Sketching out some ideas for operators aka query generators
+# Query Builder
 
 The philosophy of the badger-database library is that ORMs and
 SQL query generators are considered *Mostly Harmful*, especially
@@ -11,6 +11,16 @@ queries, taking care of things like automatically quoting column
 and table names, and allowing you to construct queries "out of
 sequence".  There are also liberal sprinklings of syntactic sugar
 to simplify the code that you need to write to get the job done.
+
+Before we get into too much detail, let's look at some examples.
+
+## Examples
+
+TODO: setup DB, define some tables, examples
+
+TODO: select() and columns() have changed.  select() is no longer
+"magical" in automatically scoping columns to the latest table.
+But columns() is.
 
 ## Starting a Query Chain
 

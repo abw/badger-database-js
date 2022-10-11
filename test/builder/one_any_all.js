@@ -4,7 +4,7 @@ import { setDebug } from '../../src/Utils/Debug.js';
 
 let db;
 
-setDebug({ operator: false })
+setDebug({ builder: false })
 
 test.serial(
   'connect',

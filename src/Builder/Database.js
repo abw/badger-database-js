@@ -1,7 +1,7 @@
-import Operator from '../Operator.js';
+import Builder from '../Builder.js';
 
-export class Database extends Operator {
-  initOperator(database) {
+export class Database extends Builder {
+  initBuilder(database) {
     this.database = database;
   }
   resolve(context) {

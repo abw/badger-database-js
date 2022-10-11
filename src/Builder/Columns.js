@@ -1,8 +1,8 @@
 import { fail, splitList } from '@abw/badger-utils';
-import Operator from '../Operator.js';
+import Builder from '../Builder.js';
 
-export class Select extends Operator {
-  initOperator() {
+export class Select extends Builder {
+  initBuilder() {
     this.key = 'select';
   }
   resolveLinkString(columns, context, table=this.lookupTable(context), prefix) {

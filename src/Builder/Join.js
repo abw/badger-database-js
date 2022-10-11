@@ -1,8 +1,8 @@
 import { fail } from '@abw/badger-utils';
-import Operator from '../Operator.js';
+import Builder from '../Builder.js';
 
-export class Join extends Operator {
-  initOperator() {
+export class Join extends Builder {
+  initBuilder() {
     this.key = 'join';
   }
   TODOresolveLinkString(columns, context) {

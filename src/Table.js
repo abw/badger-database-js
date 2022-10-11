@@ -258,14 +258,15 @@ export class Table {
     return this.allRows(where, { ...options, record: true });
   }
 
-  operator() {
-    return this.database.operator();
+  builder() {
+    return this.database.builder();
   }
   select(...args) {
-    return this.operator().from(this.table).select(...args);
+    return this.builder().from(this.table).select(...args);
   }
+  // EEK!  this.columns() is already defined
   //columns(...args) {
-  //  return this.operator().from(this.table).columns(...args);
+  //  return this.builder().from(this.table).columns(...args);
   //}
 
   tableFragments() {

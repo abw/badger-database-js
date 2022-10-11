@@ -1,12 +1,12 @@
-import modelProxy from './Proxy/Model.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
 import Queries from './Queries.js';
+import proxymise from 'proxymise';
+import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
 import { invalid, missing } from './Utils/Error.js';
-import proxymise from 'proxymise';
 import { addDebugMethod } from './Utils/Debug.js';
-import { databaseOperator } from './Operators.js';
+import { databaseBuilder } from './Builders.js';
 
 const defaults = {
   tablesClass: Tables
@@ -72,11 +72,11 @@ export class Database {
   quote(name) {
     return this.engine.quote(name);
   }
-  operator() {
-    return databaseOperator(this);
+  builder() {
+    return databaseBuilder(this);
   }
   from(...args) {
-    return this.operator().from(...args);
+    return this.builder().from(...args);
   }
   disconnect() {
     return this.engine.destroy();

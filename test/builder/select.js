@@ -1,5 +1,5 @@
 import test from 'ava';
-import Select from '../../src/Operator/Select.js';
+import Select from '../../src/Builder/Select.js';
 import { connect } from '../../src/Database.js'
 import { sql } from '../../src/Utils/Tags.js';
 

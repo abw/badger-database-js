@@ -1,6 +1,6 @@
 import test from 'ava';
+import From from '../../src/Builder/From.js';
 import { connect } from '../../src/Database.js'
-import From from '../../src/Operator/From.js';
 import { sql } from '../../src/Utils/Tags.js';
 
 let db;

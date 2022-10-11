@@ -1,8 +1,8 @@
 import { fail, isArray, isObject, isString, splitList } from '@abw/badger-utils';
-import Operator from '../Operator.js';
+import Builder from '../Builder.js';
 
-export class From extends Operator {
-  initOperator(...tables) {
+export class From extends Builder {
+  initBuilder(...tables) {
     this.key = 'from';
     // console.log('FROM: ', table);
     // store the table name for subsequent select() calls to use, but

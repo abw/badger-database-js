@@ -1,5 +1,5 @@
 import test from 'ava';
-import Columns from '../../src/Operator/Columns.js';
+import Columns from '../../src/Builder/Columns.js';
 import { connect } from '../../src/Database.js'
 import { sql } from '../../src/Utils/Tags.js';
 

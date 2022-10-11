@@ -1,8 +1,8 @@
-import Operator from '../Operator.js';
+import Builder from '../Builder.js';
 import { isArray, splitList } from '@abw/badger-utils';
 
-export class Where extends Operator {
-  initOperator() {
+export class Where extends Builder {
+  initBuilder() {
     this.key = 'where';
   }
   // TODO: check that placeholders are being counted correctly

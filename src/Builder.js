@@ -35,18 +35,18 @@ const parts = {
   after:   ['',          "\n"     ],
 };
 
-const notImplemented = notImplementedInBaseClass('Operator');
+const notImplemented = notImplementedInBaseClass('Builder');
 
-export class Operator {
+export class Builder {
   constructor(factory, parent, ...args) {
     this.factory = factory;
     this.parent  = parent;
     this.args    = args;
     // this.key     = 'unknown';
-    this.initOperator(...args);
-    addDebugMethod(this, 'operator', { debugPrefix: this.key && `Operator:${this.key}` });
+    this.initBuilder(...args);
+    addDebugMethod(this, 'builder', { debugPrefix: this.key && `Builder:${this.key}` });
   }
-  initOperator() {
+  initBuilder() {
     // stub for subclasses
   }
 
@@ -209,4 +209,4 @@ export class Operator {
   }
 }
 
-export default Operator
+export default Builder

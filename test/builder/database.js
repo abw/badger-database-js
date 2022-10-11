@@ -1,5 +1,5 @@
 import test from 'ava';
-import Database from '../../src/Operator/Database.js';
+import Database from '../../src/Builder/Database.js';
 import { connect } from '../../src/Database.js'
 
 let db;
@@ -13,9 +13,9 @@ test.serial(
 )
 
 test.serial(
-  'operator',
+  'builder',
   async t => {
-    const op = db.operator();
+    const op = db.builder();
     t.true( op instanceof Database );
   }
 )

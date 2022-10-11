@@ -1,9 +1,9 @@
-import Operator from '../Operator.js';
+import Builder from '../Builder.js';
 
 // this is *probably* deprecated
 
-export class Table extends Operator {
-  initOperator(table) {
+export class Table extends Builder {
+  initBuilder(table) {
     this.key      = 'table';
     this.table    = table;
     this.database = table.database;

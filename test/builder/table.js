@@ -1,8 +1,8 @@
 import test from 'ava';
+import Database from '../../src/Builder/Database.js';
+import From from '../../src/Builder/From.js';
 import { connect } from '../../src/Database.js'
-import Database from '../../src/Operator/Database.js';
-import From from '../../src/Operator/From.js';
-// import Table from '../../src/Operator/Table.js';
+// import Table from '../../src/builder/Table.js';
 
 let db, users;
 
@@ -30,18 +30,18 @@ test.serial(
 )
 
 test.serial(
-  'users table operator',
+  'users table builder',
   async t => {
-    const operator = users.operator();
-    t.true( operator instanceof Database )
-    t.is( operator.database.engine.engine, 'sqlite' );
+    const builder = users.builder();
+    t.true( builder instanceof Database )
+    t.is( builder.database.engine.engine, 'sqlite' );
   }
 )
 
 test.serial(
-  'users operator from',
+  'users builder from',
   async t => {
-    const from = users.operator().from('wibble');
+    const from = users.builder().from('wibble');
     t.true( from instanceof From )
   }
 )
@@ -50,7 +50,7 @@ test.serial(
 test.serial(
   'users table columns',
   async t => {
-    const sql = users.operator().columns('a, b, c').sql();
+    const sql = users.builder().columns('a, b, c').sql();
     t.is( sql, 'SELECT "users"."a", "users"."b", "users"."c"\nFROM "users"')
   }
 )
