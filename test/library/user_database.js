@@ -256,6 +256,18 @@ export const runUserDatabaseTests = async (database, options) => {
   )
 
   test.serial(
+    'select one user by id and name provided as values',
+    async t => {
+      const row = await userdb
+        .select('name')
+        .from('users')
+        .where('id name')
+        .one([Bobby.id, Bobby.name]);
+      t.is( row.name, Bobby.name );
+    }
+  )
+
+  test.serial(
     'select all users with id above Bobby',
     async t => {
       const rows = await userdb

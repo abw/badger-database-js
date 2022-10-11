@@ -24,6 +24,14 @@ test(
 )
 
 test(
+  'order string with multiple columns',
+  t => {
+    const op = db.builder().order('a b c.d');
+    t.is( op.sql(), 'ORDER BY "a", "b", "c"."d"' );
+  }
+)
+
+test(
   'order string with table name',
   t => {
     const op = db.builder().order('a.b');
