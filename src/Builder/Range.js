@@ -1,14 +1,17 @@
 import { isInteger, isObject } from '@abw/badger-utils';
 import Builder from '../Builder.js';
 
+const messages = {
+  arg:    'Invalid argument specified for query builder "<type>" component. Expected (from, to), (from) or object.',
+  args:   'Invalid arguments with <n> items specified for query builder "<type>" component. Expected (from, to), (from) or object.',
+  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "from", "to", "limit" and "offset".',
+}
+
 export class Range extends Builder {
   initBuilder(...args) {
     this.key = 'range';
-    this.messages = {
-      arg:    'Invalid argument specified for query builder "<type>" component. Expected (from, to), (from) or object.',
-      args:   'Invalid arguments with <n> items specified for query builder "<type>" component. Expected (from, to), (from) or object.',
-      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "from", "to", "limit" and "offset".',
-    }
+    this.messages = messages;
+
     if (args.length === 2) {
       this.args = this.twoNumberArgs(...args);
     }

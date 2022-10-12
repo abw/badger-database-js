@@ -1,13 +1,15 @@
 import Builder from '../Builder.js';
 import { isArray, splitList } from '@abw/badger-utils';
 
+const messages = {
+  array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, value] or [column, operator, value].',
+  object: 'Invalid value array with <n> items specified for query builder "<type>" component. Expected [value] or [operator, value].',
+};
+
 export class Where extends Builder {
   initBuilder() {
     this.key = 'where';
-    this.messages = {
-      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, value] or [column, operator, value].',
-      object: 'Invalid value array with <n> items specified for query builder "<type>" component. Expected [value] or [operator, value].',
-    };
+    this.messages = messages;
   }
 
   resolveLinkString(columns) {

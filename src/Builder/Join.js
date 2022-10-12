@@ -14,17 +14,19 @@ const joinTypes = {
   full:    'FULL JOIN ',
   default: 'JOIN ',
 };
+const messages = {
+  type:   'Invalid join type "<joinType>" specified for query builder "<type>" component.  Valid types are "left", "right", "inner" and "full".',
+  string: 'Invalid join string "<join>" specified for query builder "<type>" component.  Expected "from=table.to".',
+  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "type", "table", "from" and "to".',
+  array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
+};
 
 
 export class Join extends Builder {
   initBuilder() {
     this.key = 'join';
-    this.messages = {
-      type:   'Invalid join type "<joinType>" specified for query builder "<type>" component.  Valid types are "left", "right", "inner" and "full".',
-      string: 'Invalid join string "<join>" specified for query builder "<type>" component.  Expected "from=table.to".',
-      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "type", "table", "from" and "to".',
-      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
-    };
+    this.messages = messages;
+
     // TODO: grok the table for columns() to use
     // const join = joins.at(-1);
   }

@@ -1,13 +1,15 @@
 import Builder from '../Builder.js';
 import { isArray, isObject, isString, splitList } from '@abw/badger-utils';
 
+const messages = {
+  array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [table, alias].',
+  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "tables", "table" and "as".',
+};
+
 export class From extends Builder {
   initBuilder(...tables) {
     this.key = 'from';
-    this.messages = {
-      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [table, alias].',
-      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "tables", "table" and "as".',
-    };
+    this.messages = messages;
 
     // store the table name for subsequent columns() calls to use, but
     // we need to be careful to only handle the valid cases, e.g. where
