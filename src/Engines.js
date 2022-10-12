@@ -12,10 +12,17 @@ export const registerEngine = (name, module) => {
   }
 }
 
-registerEngine('sqlite',     Sqlite);
-registerEngine('mysql',      Mysql);
-registerEngine('postgres',   Postgres);
-registerEngine('postgresql', Postgres);
+export const registerEngines = (engines) =>
+  Object.entries(engines).forEach(
+    engine => registerEngine(...engine)
+  )
+
+registerEngines({
+  sqlite:     Sqlite,
+  mysql:      Mysql,
+  postgres:   Postgres,
+  postgresql: Postgres,
+});
 
 //-----------------------------------------------------------------------------
 // Engine constructor
