@@ -846,6 +846,152 @@ db
 //    GROUP BY "company_id", "start_year"
 ```
 
+## limit(n)
+
+This method can be used to set a `LIMIT` for the number of rows returned.
+
+An integer should be passed to it.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .limit(10)
+// -> SELECT "id", "name"
+//    FROM "users"
+//    LIMIT 10
+```
+
+If you call the method multiple times the previously set value will be overwritten.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .limit(10)
+  .limit(20)
+// -> SELECT "id", "name"
+//    FROM "users"
+//    LIMIT 20
+```
+
+## offset(n)
+
+This method can be used to set an `OFFSET` for the number of rows returned.
+
+An integer should be passed to it.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .offset(10)
+// -> SELECT "id", "name"
+//    FROM "users"
+//    OFFSET 10
+```
+
+If you call the method multiple times the previously set value will be overwritten.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .offset(10)
+  .offset(20)
+// -> SELECT "id", "name"
+//    FROM "users"
+//    OFFSET 20
+```
+
+## range(from, to)
+
+This method allows you to set both the `LIMIT` and `OFFSET` at once.
+
+It expects two integers representing the first row you want returned and
+the last row.  Note that the numbers start at 0 and the range is *inclusive*.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range(50, 59)
+// -> SELECT "id", "name"
+//    FROM "users"
+//    LIMIT 10
+//    OFFSET 50
+```
+
+If you pass one integer then it is assumed to be the first row you want returned
+and there will be no `LIMIT` to the number of rows returned.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range(50)
+// -> SELECT "id", "name"
+//    FROM "users"
+//    OFFSET 50
+```
+
+You can also provide an object containing `from` and/or `to`.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range({ from: 50, to: 59 })
+// -> SELECT "id", "name"
+//    FROM "users"
+//    LIMIT 10
+//    OFFSET 50
+```
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range({ from: 50 })
+// -> SELECT "id", "name"
+//    FROM "users"
+//    OFFSET 50
+```
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range({ to: 49 })
+// -> SELECT "id", "name"
+//    FROM "users"
+//    LIMIT 50
+```
+
+You can also use it to explicitly set the `limit` and/or `offset`.
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range({ limit: 10, offset: 50 })
+// -> SELECT "id", "name"
+//    FROM "users"
+//    LIMIT 10
+//    OFFSET: 50
+```
+
+```js
+db
+  .select('id name')
+  .from('users')
+  .range({ offset: 50 })
+// -> SELECT "id", "name"
+//    FROM "users"
+//    OFFSET 50
+```
+
+
 ## columns(columns)
 
 This is just like [select()](#select-columns-) with one important

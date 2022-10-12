@@ -1,25 +1,14 @@
 // work in progress / experiment
-import { fail, hasValue, isArray, isFunction, isObject, isString, objMap } from "@abw/badger-utils";
+import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, objMap } from "@abw/badger-utils";
 import { unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
 import { format } from "./Utils/Format.js";
 
 const defaultContext = () => ({
-  /*
-  after:   [ ],
-  before:  [ ],
-  from:    [ ],
-  group:   [ ],
-  having:  [ ],
-  join:    [ ],
-  order:   [ ],
-  select:  [ ],
-  where:   [ ],
-  */
-  whereValues:   [ ],
-  havingValues:  [ ],
-  placeholder: 1,
+  whereValues:  [ ],
+  havingValues: [ ],
+  placeholder:  1,
 });
 
 // Each of the parts of a select query in order.  The first entry
@@ -37,6 +26,8 @@ const parts = {
   group:   ['GROUP BY ', ', '     ],
   having:  ['HAVING ',   ' AND '  ],
   order:   ['ORDER BY ', ', '     ],
+  limit:   ['LIMIT ',    ' '      ],
+  offset:  ['OFFSET ',   ' '      ],
   after:   ['',          "\n"     ],
 };
 
@@ -113,9 +104,13 @@ export class Builder {
       context,
       (value, key) => {
         const part = parts[key];
-        return part && value.length
-          ? part[0] + value.join(part[1])
-          : null;
+        if (noValue(part) || noValue(value)) {
+          return null;
+        }
+        if (isArray(value) && value.length) {
+          return part[0] + value.join(part[1]);
+        }
+        return part[0] + value;
       }
     )
   }
