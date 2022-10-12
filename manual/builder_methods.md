@@ -304,13 +304,13 @@ db
   .where('id')
 // -> SELECT "name", "email"
 //    FROM "users"
-//    WHERE "id"=?
+//    WHERE "id" = ?
 ```
 
 The query will be constructed with placeholders matching the specified
 column or columns.
 
-Values for placeholders should be passed as an array to the
+Values for placeholders can be passed as an array to the
 [one()](#one-values-), [any()](#any-values-) or [all()](#all-values-) methods.
 
 ```js
@@ -331,7 +331,7 @@ db
   .where('id name')
 // -> SELECT "name", "email"
 //    FROM "users"
-//    WHERE "id"=? AND "name"=?
+//    WHERE "id" = ? AND "name" = ?
 ```
 
 Commas (with optional whitespace following) can also be used to
@@ -344,7 +344,7 @@ db
   .where('id, name')
 // -> SELECT "name", "email"
 //    FROM "users"
-//    WHERE "id"=? AND "name"=?
+//    WHERE "id" = ? AND "name" = ?
 ```
 
 Columns can have the table name included in them.  Both the table
@@ -357,7 +357,7 @@ db
   .where('users.id')
 // -> SELECT "name", "email"
 //    FROM "users"
-//    WHERE "users"."id"=?
+//    WHERE "users"."id" = ?
 ```
 
 You can pass an object to the method mapping column names to their respective values.
@@ -367,17 +367,21 @@ const row = await db
   .select('id name email')
   .from('users')
   .where({ id: 12345 })
-  .one()
+  .one()      // automatically uses placeholder values: [12345]
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" = ?
 ```
 
 The query will still be constructed with placeholder values but all the values
 will be collected and automatically provided to the
 [one()](#one-values-), [any()](#any-values-) or [all()](#all-values-) methods.
+In this case the values would be `[12345]`.
 
 You can pass additional values to those method to provide any additional values.
 Be warned that they will always be added *after* values specified in the query.
 
-This will work as intended:
+To illustrate, this will work as intended:
 
 ```js
 const row = await db
@@ -385,7 +389,11 @@ const row = await db
   .from('users')
   .where({ id: 12345 })     // placeholder for id
   .where('name')            // placeholder for name
-  .one(['Bobby Badger'])    // values are [12345, 'Bobby Badger']
+  .one(['Bobby Badger'])    // placeholder values are [12345, 'Bobby Badger']
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" = ?
+//    AND "name" = ?
 ```
 
 But this won't:
@@ -397,8 +405,15 @@ const row = await db
   .from('users')
   .where('name')            // placeholder for name
   .where({ id: 12345 })     // placeholder for id
-  .one(['Bobby Badger'])    // ERROR! values are [12345, 'Bobby Badger']
+  .one(['Bobby Badger'])    // WRONG! placeholder values are [12345, 'Bobby Badger']
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "name" = ?
+//    AND "id" = ?
 ```
+
+For this reason it is usually best if you *either* specify all of the values in
+the `where()` clauses, *or* pass them all into the `one()`, `any()` or `all()` methods.
 
 You can also provide values as an array of `[column, value]`.
 
@@ -407,7 +422,25 @@ const row = await db
   .select('id name email')
   .from('users')
   .where(['id', '12345'])
-  .one()
+  .one()            // automatically uses placeholder values: [12345]
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" = ?
+```
+
+The column can be raw SQL if necessary.  Either use the
+`sql` function to create a tagged template literal or
+pass it as an object with a single `sql` property.
+
+```js
+const row = await db
+  .select('id name email')
+  .from('users')
+  .where([sql`id + 100`, '102'])
+  .one()            // automatically uses placeholder values: [12345]
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE id + 100 = ?
 ```
 
 By default the comparison operator is `=`.  You can provide an array of three
@@ -420,7 +453,42 @@ db
   .where(['id', '>', '12345'])
 // -> SELECT "id", "name", "email"
 //    FROM "users"
-//    WHERE "id">?
+//    WHERE "id" > ?
+```
+
+If you want to provide a comparison operator but define the value later then
+set the third item to `undefined`.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where(['id', '>', undefined])
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" > ?
+```
+
+Or you can define the operator in an array, either with or without a value.
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where(['id', ['>', 12345]])
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" > ?
+```
+
+```js
+db
+  .select('id name email')
+  .from('users')
+  .where(['id', ['>']])
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" > ?
 ```
 
 You can also set a comparison operator using an object by setting the value
@@ -433,7 +501,7 @@ db
   .where({ id: ['>', '12345']})
 // -> SELECT "id", "name", "email"
 //    FROM "users"
-//    WHERE "id">?
+//    WHERE "id" > ?
 ```
 
 Or if you want to provide the value later then use a single element array: `[operator]`.
@@ -445,10 +513,10 @@ db
   .where({ id: ['>']})
 // -> SELECT "id", "name", "email"
 //    FROM "users"
-//    WHERE "id">?
+//    WHERE "id" > ?
 ```
 
-You can use raw SQL to define the criteria columns.  The explicit way is to
+You can use raw SQL to define the criteria.  The explicit way is to
 pass an object with a `sql` property.
 
 ```js
@@ -484,7 +552,7 @@ db
   .where('name')
 // -> SELECT "name", "email"
 //    FROM "users"
-//    WHERE "id">? AND "name"=?
+//    WHERE "id" > ? AND "name" = ?
 ```
 
 Or you can pass multiple arguments to a single method call.  Each argument
@@ -497,7 +565,7 @@ db
   .where(['id', '>', 12345], 'name')
 // -> SELECT "name", "email"
 //    FROM "users"
-//    WHERE "id">? AND "name"=?
+//    WHERE "id" > ? AND "name" = ?
 ```
 
 ## join(table)
@@ -846,6 +914,50 @@ db
 //    GROUP BY "company_id", "start_year"
 ```
 
+## having(criteria)
+
+This method works exactly like [where()](#where-criteria-) but is used to specify the
+criteria for matching rows with the `HAVING` keyword.
+
+One important thing to note is that the `HAVING` clause always appears near the end
+of the generated query, coming after the `WHERE` clause.  When you are providing
+values for placeholders you should always put the `WHERE` values first followed
+by the `HAVING` values.
+
+The query builder allows you to call methods in any order and will automatically
+arrange them correctly when building the SQL query.  For example, it is perfectly
+valid to call `having()` before `where()`, but you MUST provide the values for the
+`where()` claused before those for the `having()` clauses.
+
+```js
+db
+  .select(...)
+  .from(...)
+  .having('x')
+  .where('y')
+  .all([yValue, xValue])
+// -> SELECT ...
+//    FROM ...
+//    WHERE "y" = ?
+//    HAVING "x" = ?
+```
+
+For this reason it is recommended that you put all `where()` clauses before any
+`having()` clauses so that you don't confuse yourself.
+
+If you provide values in the `where()` or `having()` clauses then you don't need
+to worry.  The query builder automatically collects all `where()` values separately
+from `having()` values and passed them to the database engine in the correct order.
+
+```js
+db
+  .select(...)
+  .from(...)
+  .having(['x', xValue])
+  .where(['y', yValue)
+  .all()            // placeholder values will be [yValue, xValue]
+```
+
 ## limit(n)
 
 This method can be used to set a `LIMIT` for the number of rows returned.
@@ -1075,12 +1187,53 @@ You can clear the current prefix by calling `prefix()` without any arguments.
 
 ## one(values)
 
-TODO
+This method will execute the query and return exactly one row.  If the query
+returns more than one row or no rows then an error will be throws.
+
+If you have any placeholders in the query that you haven't already defined
+values for then you should provide them as an array.
+
+In this query the value for `id` is specified in the `where()` method so
+you don't need to pass anything to the `one()` method.
+
+```js
+const row = await db
+  .select('name email')
+  .from('users')
+  .where({ id: 12345 })
+  .one()            // automatically receives placeholder values: [12345]
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id" = ?
+```
+
+In this query it isn't so you need to provide it to the `one()` method.
+
+```js
+const row = await db
+  .select('name email')
+  .from('users')
+  .where('id')
+  .one([12345])     // manually provider placeholder values
+// -> SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id" = ?
+```
+
+Although it generally isn't recommended you can mix and match the two approaches.
+However you should note that all placeholder values that have been specified
+in `where()` clauses will be provided first, followed by any in `having()` clauses,
+and any that you provide to the `one()` method will come last.  It is your responsibility
+to ensure that these are in the correct order for your query.
 
 ## any(values)
 
-TODO
+This method will execute the query and return one row if it exists or `undefined`
+if it doesn't.  In all other respects it works exactly like [one()](#one-values-).
 
 ## all(values)
 
-TODO
+This method will execute the query and return an array of all matching rows.
+The array may be empty if no rows are matched.  In all other respects it works
+exactly like [one()](#one-values-).
+
