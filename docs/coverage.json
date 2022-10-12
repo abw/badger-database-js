@@ -1,6 +1,6 @@
 {
-  "coverage": "9.04%",
-  "expectCount": 365,
+  "coverage": "8.16%",
+  "expectCount": 404,
   "actualCount": 33,
   "files": {
     "src/Builder/After.js": {
@@ -22,16 +22,15 @@
       ]
     },
     "src/Builder/Columns.js": {
-      "expectCount": 7,
+      "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
+        3,
         4,
-        12,
-        13,
-        14,
+        8,
+        11,
         17,
-        23,
-        38
+        32
       ]
     },
     "src/Builder/Database.js": {
@@ -45,74 +44,99 @@
       ]
     },
     "src/Builder/From.js": {
-      "expectCount": 9,
+      "expectCount": 10,
       "actualCount": 0,
       "undocumentLines": [
-        5,
-        13,
-        14,
-        15,
-        22,
-        32,
-        42,
-        49,
-        56
+        4,
+        9,
+        10,
+        11,
+        12,
+        20,
+        30,
+        40,
+        47,
+        54
       ]
     },
     "src/Builder/Group.js": {
-      "expectCount": 7,
+      "expectCount": 8,
       "actualCount": 0,
       "undocumentLines": [
-        5,
-        13,
-        14,
+        4,
+        9,
+        10,
+        11,
+        12,
         15,
-        17,
-        22,
-        29
+        21,
+        28
       ]
     },
     "src/Builder/Having.js": {
-      "expectCount": 3,
+      "expectCount": 4,
       "actualCount": 0,
       "undocumentLines": [
         3,
         4,
-        5
+        6,
+        17
       ]
     },
     "src/Builder/Join.js": {
-      "expectCount": 12,
+      "expectCount": 13,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4,
+        5,
+        10,
+        17,
+        25,
+        26,
+        27,
+        28,
+        34,
+        50,
+        70,
+        90
+      ]
+    },
+    "src/Builder/Limit.js": {
+      "expectCount": 4,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "src/Builder/Offset.js": {
+      "expectCount": 4,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "src/Builder/Order.js": {
+      "expectCount": 11,
       "actualCount": 0,
       "undocumentLines": [
         4,
         5,
         6,
         11,
-        19,
-        29,
-        30,
-        31,
-        36,
-        52,
-        72,
-        92
-      ]
-    },
-    "src/Builder/Order.js": {
-      "expectCount": 10,
-      "actualCount": 0,
-      "undocumentLines": [
-        5,
-        6,
-        8,
-        16,
+        12,
+        13,
+        14,
         17,
-        18,
-        21,
-        27,
-        34,
-        47
+        23,
+        30,
+        43
       ]
     },
     "src/Builder/Prefix.js": {
@@ -127,17 +151,47 @@
         9
       ]
     },
-    "src/Builder/Select.js": {
-      "expectCount": 7,
+    "src/Builder/Range.js": {
+      "expectCount": 11,
       "actualCount": 0,
       "undocumentLines": [
-        5,
+        4,
+        10,
+        11,
+        12,
         13,
-        14,
+        16,
+        34,
+        40,
+        45,
+        68,
+        69
+      ]
+    },
+    "src/Builder/Select.js": {
+      "expectCount": 8,
+      "actualCount": 0,
+      "undocumentLines": [
+        4,
+        9,
+        10,
+        11,
+        12,
         15,
-        18,
-        32,
-        44
+        29,
+        41
+      ]
+    },
+    "src/Builder/Simple.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        9
       ]
     },
     "src/Builder/Table.js": {
@@ -153,75 +207,83 @@
       ]
     },
     "src/Builder/Where.js": {
-      "expectCount": 7,
+      "expectCount": 9,
       "actualCount": 0,
       "undocumentLines": [
-        5,
-        13,
-        14,
+        4,
+        9,
+        10,
+        11,
+        12,
         15,
-        19,
-        31,
-        56
+        27,
+        63,
+        90
       ]
     },
     "src/Builder.js": {
-      "expectCount": 33,
+      "expectCount": 36,
       "actualCount": 0,
       "undocumentLines": [
-        6,
-        26,
+        8,
+        20,
+        34,
+        36,
+        37,
         38,
+        39,
         40,
-        41,
-        42,
-        43,
-        44,
+        45,
         49,
-        53,
-        60,
-        67,
-        75,
-        85,
-        90,
-        99,
-        112,
-        121,
+        56,
+        63,
+        71,
+        83,
+        89,
+        97,
+        106,
         123,
-        140,
-        149,
-        165,
-        168,
-        171,
-        176,
-        182,
-        185,
-        188,
-        191,
-        196,
-        201,
-        207,
-        213
+        132,
+        134,
+        144,
+        153,
+        169,
+        172,
+        175,
+        180,
+        186,
+        189,
+        192,
+        195,
+        200,
+        205,
+        211,
+        217,
+        223,
+        232
       ]
     },
     "src/Builders.js": {
-      "expectCount": 4,
+      "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
-        16,
-        33,
-        37,
-        40
+        19,
+        21,
+        25,
+        50,
+        54,
+        57
       ]
     },
     "src/Constants.js": {
-      "expectCount": 4,
+      "expectCount": 5,
       "actualCount": 0,
       "undocumentLines": [
         2,
         3,
         4,
-        5
+        5,
+        6
       ]
     },
     "src/Database.js": {
@@ -344,26 +406,27 @@
         187,
         194,
         197,
-        206,
-        213,
+        209,
         216,
         219,
-        225,
-        230,
-        235,
-        241,
-        250,
+        222,
+        228,
+        233,
+        238,
+        244,
         253,
-        258,
-        272
+        256,
+        261,
+        275
       ]
     },
     "src/Engines.js": {
-      "expectCount": 3,
+      "expectCount": 4,
       "actualCount": 0,
       "undocumentLines": [
         9,
-        23,
+        15,
+        30,
         7
       ]
     },

@@ -73,10 +73,12 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/query_builder.html"><a href="manual/query_builder.html" data-ice="link">Query Builder</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#examples" data-ice="link">Examples</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#starting-a-query-chain" data-ice="link">Starting a Query Chain</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#getting-started" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#selecting-columns-from-tables" data-ice="link">Selecting Columns From Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#embedding-raw-sql" data-ice="link">Embedding Raw SQL</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#chainability" data-ice="link">Chainability</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -89,6 +91,10 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#join-table-" data-ice="link">join(table)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#order-columns-" data-ice="link">order(columns)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#group-columns-" data-ice="link">group(columns)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#having-criteria-" data-ice="link">having(criteria)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#limit-n-" data-ice="link">limit(n)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#offset-n-" data-ice="link">offset(n)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#range-from--to-" data-ice="link">range(from, to)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#columns-columns-" data-ice="link">columns(columns)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#table-name-" data-ice="link">table(name)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#prefix-prefix-" data-ice="link">prefix(prefix)</a></li>
@@ -200,6 +206,8 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/extending.html"><a href="manual/extending.html" data-ice="link">Extending</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-class" data-ice="link">Custom Tables Class</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-query-builder-methods" data-ice="link">Adding Query Builder Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-a-new-database-engine" data-ice="link">Adding a New Database Engine</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -272,8 +280,83 @@ manage then you should pass them as constructor parameters.</p>
     },
     // any other configuration options for YourTable
   })
-});
-</code></code></pre>
+});</code></code></pre>
+<h2 id="adding-query-builder-methods">Adding Query Builder Methods</h2><p>In theory it's possible to write your own modules which can be linked into the
+query builder chain.  In practice there are limitations about the extent to which
+they can affect the SQL query generated.  This may improve in the future if there
+is any demand for it.</p>
+<p>If you do want to experiment then you should create a subclass of the <code>Builder</code>
+module.  There currently isn't any documentation on how to write a builder module,
+but you can browse the source code of the existing
+<a href="https://github.com/abw/badger-database-js/tree/master/src/Engine">builder modules</a> for
+inspiration.  You should also familiarise yourself with how the
+<a href="https://github.com/abw/badger-database-js/tree/master/src/Builder.js">base class Builder</a>
+works.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">export class MyCoolBuilder extends Builder {
+  initBuilder(args) {
+    this.key = 'cool';
+    console.log("My cool builder:", args);
+  }
+}</code></code></pre>
+<p>You should then register it using the <code>registerBuilder()</code> function.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { registerBuilder } from '@abw/badger-database'
+
+registerBuilder('cool', MyCoolBuilder);</code></code></pre>
+<p>It should then be callable as a link in a query builder chain.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name').from('users').cool('Hello World!')</code></code></pre>
+<p>As mentioned above, you might not be able to generate the SQL that you
+want without hacking on the base class <code>Builder.js</code> module itself.
+If there is any demand for this then I might look into ways in which
+this can be improved.</p>
+<h2 id="adding-a-new-database-engine">Adding a New Database Engine</h2><p>If you want to add support for a new database engine then you can.
+There currently isn't any documentation about how the engines work but
+you can browse the existing
+<a href="https://github.com/abw/badger-database-js/tree/master/src/Engine">Engine</a>
+modules to get an idea.  They're all less than 100 lines long so there
+isn't much to it.</p>
+<p>Your engine module should be a subclass of the <code>Engine</code> base class.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Engine } from '@abw/badger-database'
+
+export class MyCoolEngine extends Engine {
+  configure(config) {
+    console.log('got BadgerEngine config:', config);
+    return config;
+  }
+  async connect() {
+    // your code to connect to the database
+  }
+  async disconnect(db) {
+    // your code to disconnect from the database
+  }
+  async run(sql, params=[], options) {
+    // your code to run a query
+  }
+  async any(sql, params=[], options) {
+    // your code to run a query and return any row
+  }
+  async all(sql, params=[], options) {
+    // your code to run a query and return all rows
+  }
+}</code></code></pre>
+<p>You should then register it using the <code>registerBuilder()</code> function.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { registerEngine } from '@abw/badger-database'
+
+registerEngine('cool', MyCoolEngine);</code></code></pre>
+<p>Then you can connect to it using the <code>cool</code> protocol:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect } from '@abw/badger-database'
+
+async function main() {
+  const db = connect({ database: 'cool://user:password@host:port/database' });
+  // your code here
+}
+
+main()</code></code></pre>
+<p>If you implement support for a database engine that we don't currently
+support then please consider raising a pull request so we can add it
+for other people to use.  Or if you prefer you can release it as a
+stand-alone module.  End users would still need to call the
+<code>registerEngine()</code> module to plug it in, but that's only a line or
+two of code.</p>
 </div>
 </div>
 

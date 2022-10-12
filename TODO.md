@@ -5,7 +5,7 @@
 
 * table fetch columns with aliases: { alias: column } ???
 
-* document query() method to view generated SQL (rename sql())
+* document query() method to view generated SQL (rename sql()?)
 
 * additional 'where' criteria for relations (check names get properly quoted)
 
@@ -17,8 +17,19 @@
 
 * debug documentation - prefix and color
 
-* Proper error reporting (custom Error class and messages) in builders
-
 * Builder values() is currently a method but we probably need to create a builder
-  component for adding values.
+  component for adding values.  NOTE: changed to whereValues() and havingValues()
+  TODO: test
 
+* document where() and having() - in particular mention placeholder values
+
+* Defining builders in database/table queries - might require separate query class
+  so we can capture whereValues and havingValues (or more generally, the context)
+
+* Extending documentation - adding engines, adding builders
+
+* Builder join() string - use different arrows for LEFT/RIGHT/INNER/FULL
+  a=b    # INNER
+  a=>b   # LEFT
+  a<=b   # RIGHT
+  a<=>b  # FULL

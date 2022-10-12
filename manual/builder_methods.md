@@ -14,8 +14,7 @@ All the methods can generate raw SQL.  This can be specified by
 passing an object with a single `sql` property:
 
 ```js
-db
-  .select({ sql: 'COUNT(id) AS n' })
+db.select({ sql: 'COUNT(id) AS n' })
 ```
 
 Or using the `sql` function to create a tagged template literal:
@@ -23,8 +22,7 @@ Or using the `sql` function to create a tagged template literal:
 ```js
 import { sql } from '@abw/badger-database'
 
-db
-  .select(sql`COUNT(id) AS n`)
+db.select(sql`COUNT(id) AS n`)
 ```
 
 All of the methods can be called multiple time, or passed multiple
@@ -298,8 +296,7 @@ This method can be used to specify the criteria for matching rows.
 You can specify one or more columns that you want to match against.
 
 ```js
-db
-  .select('name email')
+db.select('name email')
   .from('users')
   .where('id')
 // -> SELECT "name", "email"
@@ -325,8 +322,7 @@ You can specify multiple columns using the shorthand syntax as a
 string of whitespace delimited table names.
 
 ```js
-db
-  .select('name email')
+db.select('name email')
   .from('users')
   .where('id name')
 // -> SELECT "name", "email"
@@ -338,8 +334,7 @@ Commas (with optional whitespace following) can also be used to
 delimit column names.
 
 ```js
-db
-  .select('name email')
+db.select('name email')
   .from('users')
   .where('id, name')
 // -> SELECT "name", "email"
@@ -351,8 +346,7 @@ Columns can have the table name included in them.  Both the table
 and columns names will be automatically quoted.
 
 ```js
-db
-  .select('name email')
+db.select('name email')
   .from('users')
   .where('users.id')
 // -> SELECT "name", "email"
@@ -447,8 +441,7 @@ By default the comparison operator is `=`.  You can provide an array of three
 values to set a different comparison operator: `[column, operator, value]`.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where(['id', '>', '12345'])
 // -> SELECT "id", "name", "email"
@@ -460,8 +453,7 @@ If you want to provide a comparison operator but define the value later then
 set the third item to `undefined`.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where(['id', '>', undefined])
 // -> SELECT "id", "name", "email"
@@ -472,8 +464,7 @@ db
 Or you can define the operator in an array, either with or without a value.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where(['id', ['>', 12345]])
 // -> SELECT "id", "name", "email"
@@ -482,8 +473,7 @@ db
 ```
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where(['id', ['>']])
 // -> SELECT "id", "name", "email"
@@ -495,8 +485,7 @@ You can also set a comparison operator using an object by setting the value
 to a two element array: `[operator, value]`.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where({ id: ['>', '12345']})
 // -> SELECT "id", "name", "email"
@@ -507,8 +496,7 @@ db
 Or if you want to provide the value later then use a single element array: `[operator]`.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where({ id: ['>']})
 // -> SELECT "id", "name", "email"
@@ -520,8 +508,7 @@ You can use raw SQL to define the criteria.  The explicit way is to
 pass an object with a `sql` property.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where({ sql: 'id > ?' })
 // -> SELECT "id", "name", "email"
@@ -532,8 +519,7 @@ db
 Or you can use the `sql` function to create a tagged template literal.
 
 ```js
-db
-  .select('id name email')
+db.select('id name email')
   .from('users')
   .where(sql`id > ?`)
 // -> SELECT "id", "name", "email"
@@ -545,8 +531,7 @@ You can call the method multiple times.  The criteria will all be
 collected after the `WHERE` keyword and combined with `AND`.
 
 ```js
-db
-  .select('name email')
+db.select('name email')
   .from('users')
   .where(['id', '>', 12345])
   .where('name')
@@ -559,8 +544,7 @@ Or you can pass multiple arguments to a single method call.  Each argument
 can be any of the values described above.
 
 ```js
-db
-  .select('name email')
+db.select('name email')
   .from('users')
   .where(['id', '>', 12345], 'name')
 // -> SELECT "name", "email"
@@ -577,9 +561,8 @@ and `to` is the column in the joined table that should match the value
 in the `from` column.
 
 ```js
-db
+db.select('name email')
   .from('users')
-  .select('name email')
   .select(['companies.name', 'company_name'])
   .join('user.company_id=companies.id')
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
@@ -592,9 +575,8 @@ When using two elements, the first should be the table column you're
 joining from and the second should be the table column you're joining to.
 
 ```js
-db
+db.select('name email')
   .from('users')
-  .select('name email')
   .select(['companies.name', 'company_name'])
   .join(['user.company_id', 'companies.id'])
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
@@ -605,9 +587,8 @@ db
 The three element version has the destination table and column separated.
 
 ```js
-db
+db.select('name email')
   .from('users')
-  .select('name email')
   .select(['companies.name', 'company_name'])
   .join(['user.company_id', 'companies', 'id'])
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
@@ -619,9 +600,8 @@ The four element version allows you to specify the join type at the
 beginning.  Valid types are `left`, `right`, `inner` and `full`.
 
 ```js
-db
+db.select('name email')
   .from('users')
-  .select('name email')
   .select(['companies.name', 'company_name'])
   .join(['left', 'user.company_id', 'companies', 'id'])
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
@@ -633,9 +613,8 @@ You can pass an object to the method containing the `from`, `table`
 and `to` properties, and optionally the `type`.
 
 ```js
-db
+db.select('name email')
   .from('users')
-  .select('name email')
   .select(['companies.name', 'company_name'])
   .join({ type: 'left', from: 'user.company_id', table: 'companies', to: 'id' })
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
@@ -646,9 +625,8 @@ db
 Or you can combine the table name and column in the `to` property.
 
 ```js
-db
+db.select('name email')
   .from('users')
-  .select('name email')
   .select(['companies.name', 'company_name'])
   .join({ type: 'left', from: 'user.company_id', to: 'companies.id' })
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
@@ -661,10 +639,9 @@ can use raw SQL to define the joins, either with an object containing a
 `sql` property:
 
 ```js
-db
-  .from('users')
-  .select('name email employee.job_title')
+db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
+  .from('users')
   .join({ sql: 'JOIN employees ON user.id=employees.user_id' })
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
@@ -674,10 +651,9 @@ db
 Or using the `sql` function to create a tagged template literal.
 
 ```js
-db
-  .from('users')
-  .select('name email employee.job_title')
+db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
+  .from('users')
   .join(sql`JOIN employees ON user.id=employees.user_id`)
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
@@ -687,10 +663,9 @@ db
 And just like the other methods, you can call the method multiple times.
 
 ```js
-db
-  .from('users')
-  .select('name email employee.job_title')
+db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
+  .from('users')
   .join('user.id=employees.user_id')
   .join('employees.company_id=companies.id')
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
@@ -703,10 +678,9 @@ Or you can pass multiple arguments to a single method call.  Each argument
 can be any of the values described above.
 
 ```js
-db
-  .from('users')
-  .select('name email employee.job_title')
+db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
+  .from('users')
   .join('user.id=employees.user_id', 'employees.company_id=companies.id')
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
@@ -723,8 +697,7 @@ in name to the SQL it generates.
 A string can be passed containing one or more columns.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order('name')
 // -> SELECT *
@@ -735,8 +708,7 @@ db
 Columns can be delimited by whitespace or commas, as usual.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order('name, email')
 // -> SELECT *
@@ -747,8 +719,7 @@ db
 Columns can include the table name for disambiguation.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order('users.name users.email')
 // -> SELECT *
@@ -761,8 +732,7 @@ order (e.g. `DESC` for "descending"), pass a two element array with the
 columns as the first element and `DESC` as the second.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order(['name email', 'DESC'])
 // -> SELECT *
@@ -777,8 +747,7 @@ you can specify either `asc` or `desc` as a boolean flag to set the sort directi
 to be ascending or descending, respectively.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order({ columns: 'name email', desc: true })
 // -> SELECT *
@@ -789,8 +758,7 @@ db
 Or use `direction` (or `dir` for short) set to either `ASC` or `DESC` if you prefer.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order({ columns: 'name email', dir: 'DESC' })
 // -> SELECT *
@@ -801,8 +769,7 @@ db
 Of course it also supports raw SQL, either using a `sql` property in an object.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order({ sql: 'name DESC, email' })
 // -> SELECT *
@@ -813,8 +780,7 @@ db
 Or using a tagged template literal.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order(sql`name DESC, email`)
 // -> SELECT *
@@ -825,8 +791,7 @@ db
 You can call the method multiple times or pass multiple arguments to it.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order(['name', 'DESC'], 'email')
 // -> SELECT *
@@ -842,8 +807,7 @@ This method can be used to create a `GROUP BY` clause.  There's also a
 A string can be passed containing one or more columns.
 
 ```js
-db
-  .select(sql`company_id, COUNT(id) AS employees`)
+db.select(sql`company_id, COUNT(id) AS employees`)
   .from('users')
   .group('company_id')
 // -> SELECT company_id, COUNT(id) AS employees
@@ -855,8 +819,7 @@ Multiple columns can be delimited by whitespace or commas and can contain
 a table name.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .group('users.company_id, users.start_year')
 // -> SELECT *
@@ -869,8 +832,7 @@ The `column` is assumed to be a single column whereas `columns` can contain
 multiple columns separated by whitespace or commas in the usual way.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .group({ columns: 'company_id, year' })
 // -> SELECT *
@@ -881,8 +843,7 @@ db
 As you might expect it also supports raw SQL, either using a `sql` property in an object.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .group({ sql: 'company_id' })
 // -> SELECT *
@@ -893,8 +854,7 @@ db
 Or using a tagged template literal.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .group(sql`company_id`)
 // -> SELECT *
@@ -905,8 +865,7 @@ db
 You can call the method multiple times or pass multiple arguments to it.
 
 ```js
-db
-  .select('*')
+db.select('*')
   .from('users')
   .order('company_id', 'start_year')
 // -> SELECT *
@@ -930,8 +889,7 @@ valid to call `having()` before `where()`, but you MUST provide the values for t
 `where()` claused before those for the `having()` clauses.
 
 ```js
-db
-  .select(...)
+db.select(...)
   .from(...)
   .having('x')
   .where('y')
@@ -950,8 +908,7 @@ to worry.  The query builder automatically collects all `where()` values separat
 from `having()` values and passed them to the database engine in the correct order.
 
 ```js
-db
-  .select(...)
+db.select(...)
   .from(...)
   .having(['x', xValue])
   .where(['y', yValue)
@@ -965,8 +922,7 @@ This method can be used to set a `LIMIT` for the number of rows returned.
 An integer should be passed to it.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .limit(10)
 // -> SELECT "id", "name"
@@ -977,8 +933,7 @@ db
 If you call the method multiple times the previously set value will be overwritten.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .limit(10)
   .limit(20)
@@ -994,8 +949,7 @@ This method can be used to set an `OFFSET` for the number of rows returned.
 An integer should be passed to it.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .offset(10)
 // -> SELECT "id", "name"
@@ -1006,8 +960,7 @@ db
 If you call the method multiple times the previously set value will be overwritten.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .offset(10)
   .offset(20)
@@ -1024,8 +977,7 @@ It expects two integers representing the first row you want returned and
 the last row.  Note that the numbers start at 0 and the range is *inclusive*.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range(50, 59)
 // -> SELECT "id", "name"
@@ -1038,8 +990,7 @@ If you pass one integer then it is assumed to be the first row you want returned
 and there will be no `LIMIT` to the number of rows returned.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range(50)
 // -> SELECT "id", "name"
@@ -1050,8 +1001,7 @@ db
 You can also provide an object containing `from` and/or `to`.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range({ from: 50, to: 59 })
 // -> SELECT "id", "name"
@@ -1061,8 +1011,7 @@ db
 ```
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range({ from: 50 })
 // -> SELECT "id", "name"
@@ -1071,8 +1020,7 @@ db
 ```
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range({ to: 49 })
 // -> SELECT "id", "name"
@@ -1083,8 +1031,7 @@ db
 You can also use it to explicitly set the `limit` and/or `offset`.
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range({ limit: 10, offset: 50 })
 // -> SELECT "id", "name"
@@ -1094,8 +1041,7 @@ db
 ```
 
 ```js
-db
-  .select('id name')
+db.select('id name')
   .from('users')
   .range({ offset: 50 })
 // -> SELECT "id", "name"
@@ -1112,8 +1058,7 @@ will automatically attach the column names to the most recently
 specified table.
 
 ```js
-const query = db
-  .from('users')
+db.from('users')
   .columns('id email');
 // -> SELECT "users"."id", "users"."email"
 //    FROM "users"
@@ -1123,8 +1068,7 @@ You can interleave it with multiple calls to [from()](#from-table-)
 to access columns from different tables.
 
 ```js
-const query = db
-  .from('users')
+db.from('users')
   .columns('id email');
   .from('companies')
   .columns('name');
@@ -1136,8 +1080,7 @@ If you specify multiple table names in [from()](#from-table-) then the
 last one will be used.
 
 ```js
-const query = db
-  .from('companies users')
+db.from('companies users')
   .columns('id name');
 // -> SELECT "users"."id", "users"."name"
 //    FROM "companies", "users"
@@ -1146,8 +1089,7 @@ const query = db
 If you specify a table with an alias then the alias will be used.
 
 ```js
-const query = db
-  .from({ table: "users", as: "people" })
+db.from({ table: "users", as: "people" })
   .columns('id name');
 // -> SELECT "people"."id", "people"."name"
 //    FROM "users" AS "people"
@@ -1160,8 +1102,7 @@ a table to attach columns to.  The table should previously have been specified
 using [from()](#from-table-).
 
 ```js
-const query = db
-  .from('users companies')
+db.from('users companies')
   .table('users').columns('id name')
   .table('companies').columns(['name', 'company_name'])
 // -> SELECT "users"."id", "users"."name", "companies"."name" AS "company_name"
@@ -1174,8 +1115,7 @@ This can be used in conjuction with [columns()](#columns-columns-) to define
 a prefix for subsequent columns.
 
 ```js
-const query = db
-  .from('users companies')
+db.from('users companies')
   .table('users').prefix('user_').columns('id name')
   .table('companies').prefix('company_').columns('name')
 // -> SELECT "users"."id" AS "user_id", "users"."name" AS "user_name", "companies"."name" AS "company_name"
@@ -1184,11 +1124,10 @@ const query = db
 
 You can clear the current prefix by calling `prefix()` without any arguments.
 
-
 ## one(values)
 
 This method will execute the query and return exactly one row.  If the query
-returns more than one row or no rows then an error will be throws.
+returns more than one row or no rows then an error will be thrown.
 
 If you have any placeholders in the query that you haven't already defined
 values for then you should provide them as an array.
@@ -1222,9 +1161,57 @@ const row = await db
 
 Although it generally isn't recommended you can mix and match the two approaches.
 However you should note that all placeholder values that have been specified
-in `where()` clauses will be provided first, followed by any in `having()` clauses,
-and any that you provide to the `one()` method will come last.  It is your responsibility
-to ensure that these are in the correct order for your query.
+in `where()` clauses will be provided first, followed by any in `having()` clauses.
+Any additional values that you provide to the `one()` method will come last.  It
+is your responsibility to ensure that these are in the correct order for your query!
+
+If you have a mixture of `where()` and `having()` calls, then you might find yourself
+in a tight spot if you've mixed and matched.
+
+Consider this somewhat contrived example:
+
+```js
+db.select(...)
+  .from(...)
+  .where({ a: 10 })
+  .where('b')
+  .having({ c: 30 })
+  .having('d');
+// -> SELECT ...
+//    FROM ...
+//    WHERE "a" = ?
+//    AND "b" = ?
+//    HAVING "c" = ?
+//    AND "d" = ?
+```
+
+Now you've got a problem.  When you call the `one()` (or `any()`/`all()`) method
+you need to provide values for `b` and `d`.  But the query has already got a list
+of values for `where()` clauses set to `[10]` (for `a`) and a list for `having()`
+clauses set to `[30]` (for `c`).  If you pass the values for `b` and `c` as `[20, 40]`
+then you'll end up with a complete list of values set to `[10, 30, 20, 40]` which isn't
+in the correct order for the query.
+
+At this point we could refer you back to the bit where we said that mixing up different
+approaches isn't recommended.  But you already know that.
+
+If you need to jiggle around with the order of values then you can pass a function
+to the `any()` method.  This will received two lists of placeholder values: those
+that have been collected from `where()` clauses and those that have been collected
+from `having()` clauses.  The function should return a new array containing the
+values in the right order.
+
+```js
+db.select(...)
+  .from(...)
+  .where({ a: 10 })
+  .where('b')
+  .having({ c: 30 })
+  .having('d')
+  .one((where, having) => [...where, 20, ...having, 40])
+```
+
+Now the order of placeholder values will be correctly set to `[10, 20, 30, 40]`.
 
 ## any(values)
 

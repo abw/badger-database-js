@@ -147,7 +147,7 @@ For example, the `select()` method allows you to pass an array of
 two element.  The first is the column name, the second is an alias.
 
 ```js
-db.select(['name', 'user_name').from('users')
+db.select(['name', 'user_name']).from('users')
 // -> SELECT "name" AS "user_name" FROM "users"
 ```
 
@@ -186,7 +186,7 @@ db.select('id', { table: 'users', columns: 'name email', prefix: 'user_' }).from
 The query builder tries to hit the sweet spot by allowing you to generate
 *most* of the simpler queries you might need.  But it doesn't supporting
 everything that SQL has to offer because that would greatly increase the
-complexity and make it much harder to reason about.
+complexity and make it harder to reason about.
 
 As a fallback plan, every method allows you to provide it with raw SQL.
 You can pass an object with a single `sql` property:
@@ -218,9 +218,8 @@ included.
 For example, this query:
 
 ```js
-const row = db
+db.select('id name')
   .from('users')
-  .select('id name')
   .where('id')
 ```
 
@@ -239,6 +238,7 @@ const row = db
   .from('users')
   .select('id name')
   .where({ id: 12345 })
+  .one();     // automatically uses placeholder values: [12345]
 ```
 
 The query generated will still use placeholders.  It will also
@@ -276,31 +276,78 @@ If you're expecting to get one and only one row returned then use the
 `one()` method instead.  This will throw an error if the row isn't
 found or if the query returns multiple rows.
 
-TODO: providing placeholder values at the end.
-
-
-TODO: see [where()](#where-criteria-) for information about other ways to
-define values.
-
-#The `all()`, `any()` and `one()` methods will automatically provide the values
-#for the placeholders (`123` in this case) when the query is run.
-
-
-## Chainability
-
-One important benefit of this implementation over some others is
-that each step creates a new link in the chain that "points back"
-to the previous link that it was created from.  This allows you to
-create multiple different queries from links in a chain without
-affecting them.
+You can provider values for placeholders in `where()` clauses as shown
+above, or you can save them all up and pass them as an array to the
+`one()`, `any()` or `all()` methods.
 
 ```js
-const query0 = db.from('users');
-const query1 = query0.select('id name');
-const query2 = query0.select('name email');
+const row = await db
+  .from('users')
+  .select('id name')
+  .where('id')
+  .any([12345]);
 ```
 
-Here `query0`, `query1` and `query2` are all separate query chains.
+## The Importance of Being Idempotent
 
+One benefit of this implementation over some others is that the query
+builder chains are *idempotent*.  That's a fancy way of saying that
+adding new links in the chain doesn't affect any of the previous links.
 
+What this means in practice is that you can create a "base" query that
+you can use to build other queries from.  Each query exists in its own
+independent world and doesn't affect any other.
 
+Consider this query to fetch employees of a company by joining from the
+`users` table to the `employees` table and then onto the `companies` table.
+
+```js
+const employees = db
+  .select(
+    'users.name employees.job_title',
+    ['companies.name', 'company_name']  // alias company.name to company_name
+  )
+  .from('users')
+  .join('users.id=employees.user_id')
+  .join('employees.company_id=companies.id')
+```
+
+We can then use that as the basis to construct a number of other queries.
+For example, to fetch an employee by user id:
+
+```js
+const row = await employees
+  .where('users.id')
+  .one([12345])
+```
+
+Or to fetch all employees for a company:
+
+```js
+const rows = await employees
+  .where('companies.id')
+  .one([98765])
+```
+
+Or to fetch all employees with a particular job title:
+
+```js
+const rows = await employees
+  .where('employees.job_title')
+  .all(['Chief Badger'])
+```
+
+Each query is entirely independent from the others.
+
+Furthermore, the fact that the query builder allows you to call methods
+out of sequence means that you're not limited to tagging new method calls
+onto the end of the base query.  For example, you can `select()` additional
+columns in one of the new queries if there's something extra you need that
+isn't in the base query.
+
+```js
+const rows = await employees
+  .select('user.id')
+  .where('employees.job_title')
+  .all(['Chief Badger'])
+```

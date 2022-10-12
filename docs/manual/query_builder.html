@@ -73,10 +73,12 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/query_builder.html"><a href="manual/query_builder.html" data-ice="link">Query Builder</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#examples" data-ice="link">Examples</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#starting-a-query-chain" data-ice="link">Starting a Query Chain</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#getting-started" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#selecting-columns-from-tables" data-ice="link">Selecting Columns From Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#embedding-raw-sql" data-ice="link">Embedding Raw SQL</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#chainability" data-ice="link">Chainability</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -89,6 +91,10 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#join-table-" data-ice="link">join(table)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#order-columns-" data-ice="link">order(columns)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#group-columns-" data-ice="link">group(columns)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#having-criteria-" data-ice="link">having(criteria)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#limit-n-" data-ice="link">limit(n)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#offset-n-" data-ice="link">offset(n)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#range-from--to-" data-ice="link">range(from, to)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#columns-columns-" data-ice="link">columns(columns)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#table-name-" data-ice="link">table(name)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#prefix-prefix-" data-ice="link">prefix(prefix)</a></li>
@@ -200,6 +206,8 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/extending.html"><a href="manual/extending.html" data-ice="link">Extending</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-class" data-ice="link">Custom Tables Class</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-query-builder-methods" data-ice="link">Adding Query Builder Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-a-new-database-engine" data-ice="link">Adding a New Database Engine</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -217,98 +225,157 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="query-builder">Query Builder</h1><p>The philosophy of the badger-database library is that ORMs and
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="query-builder">Query Builder</h1><p>NOTE: this documentation is a work in progress.</p>
+<p>The philosophy of the badger-database library is that ORMs and
 SQL query generators are considered <em>Mostly Harmful</em>, especially
 if they're employed as an alternative to using SQL.  But that's
 not to say that they don't have some benefits.</p>
 <ul>
-<li><p>Correctness - automatically quoting table and column names</p>
+<li><p>Correctness - table and column names are automatically quoted to
+avoid any conflict with reserved words.</p>
 </li>
-<li><p>Flexibility - constructing queries out of sequence</p>
+<li><p>Syntactic sugar - you can specify multiple tables, columns, etc.,
+using a single string for conciseness. You don't need to worry about
+defining them as an array, quoting every word or putting commas between
+each item.  As long as there's no ambiguity then we take care of that
+for you.</p>
 </li>
-<li><p>Reusability - unlike some query builders, these are idempotent.
-You can create a "base" query and then build new queries off it.</p>
+<li><p>Flexibility - queries can be constructed out of sequence, or you
+can call the same methods multiple times.  The query builder makes
+sure everything ends up in the right order.  Placeholders are
+automatically inserted for user-supplied values to prevent SQL injection
+attacks, and in the case of Postgres that uses numbered
+placeholders (<code>$1</code>, <code>$2</code>, <code>$3</code>, etc), the query builder takes care
+of generating them for you so you don't have to worry about getting
+them in the wrong order, repeating a number or skipping one.</p>
 </li>
-<li><p>Syntactic sugar -</p>
+<li><p>Reusability - unlike some query builders we could mention, these
+queries are idempotent.  That is, they generate the same SQL query
+each time they are run (although they won't necessarily return the
+same rows from the database if you provide different values for
+placeholders or your database has been updated in the interim).
+Calling a method on a query builder chain doesn't change any of the
+elements that precede it.  This means that you can create partial
+queries which you can then use to build multiple different queries
+that are variations of it.</p>
 </li>
 </ul>
 <p>Before we get into too much detail, let's look at some examples.</p>
-<h2 id="examples">Examples</h2><p>TODO: setup DB, define some tables, examples</p>
-<p>TODO: select() and columns() have changed.  select() is no longer
-"magical" in automatically scoping columns to the latest table.
-But columns() is.</p>
-<p>NOTE: code has been updated since this was written so it will be
-wrong in places</p>
-<h2 id="starting-a-query-chain">Starting a Query Chain</h2><p>The main database object has a <code>from()</code> method which allows you to
-start a query by specifying a table you want to select from.  You can
-then chain further operations like <code>select()</code> to specify the columns
-that you want to select from the table.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
-  .from('users')
-  .select('id name');</code></code></pre>
-<p>You can generate SQL for a query by calling the <code>sql()</code> method.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const sql = query.sql()</code></code></pre>
-<p>For this query it generates the following SQL:</p>
-<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "users"."id", "users"."name"
-FROM "users"</code></code></pre>
-<p>Note how all the column and table names are correctly quoted to
-avoid any potential conflicts with reserved words.</p>
-<p>The <code>select()</code> method can take a string of whitespace delimited column
-names and will "Do The Right Thing" to split them up into individual
-column names.  These are then combined with the table name to avoid
-conflicts between the same column name in multiple tables.</p>
-<p>This is an example of the syntactic sugar designed to make your life
-that little bit easier when writing code.</p>
-<p>Specifying the columns as <code>id name</code> is shorthand for either this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
-  .from('users')
-  .select('id', 'name');</code></code></pre>
-<p>Or this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
-  .from('users')
-  .select(['id', 'name']);</code></code></pre>
-<p>They all do the same thing.  You can also put commas and optional whitespace
-between the items in one of these shorthand strings, e.g. <code>id,name</code> and
-<code>id, name</code> are both treated the same as <code>id name</code>.</p>
-<p>If you want to include raw SQL in your query then you can define
-an object with a <code>sql</code> property:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
-  .from('users')
-  .select({ sql: 'id, name as user_name' });</code></code></pre>
-<p>There's a shorthand syntax for this, too.  Import the <code>sql</code> function and
-use it to create a tagged template literal.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
+<h2 id="getting-started">Getting Started</h2><p>We'll start off by importing the <code>connect</code> and <code>sql</code> functions
+and connecting to a database.  The wrapper code would look something
+like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect, sql } from '@abw/badger-database'
 
-const query = db
+async function main() {
+  const db = connect({ database: 'sqlite:memory' });
+
+  // examples go here
+}</code></code></pre>
+<p>When you create a query, or part of a query, you can call the
+<code>sql()</code> method to see what the generated SQL looks like.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log(
+  db.select('hello').from('world').sql()
+);  // -&gt; SELECT "hello" FROM "world"</code></code></pre>
+<p>In these examples we'll omit the <code>console.log()</code> and <code>sql()</code> call
+for brevity.</p>
+<h2 id="selecting-columns-from-tables">Selecting Columns From Tables</h2><p>The main database object has a <code>select()</code> method which allows you to
+start a query by specifying the columns you want to select.  You can
+then chain further methods onto it, e.g. <code>from()</code> to specify one or
+more tables that you want to select from.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('hello').from('world')
+// -&gt; SELECT "hello" FROM "world"</code></code></pre>
+<p>Table and column names are both automatically quoted to avoid conflict
+with reserved words.  Even if they're not reserved words <em>now</em>, there's
+always the possibility that they could be in the <em>future</em> (this happened
+to me on a project where we updated MySQL and discovered that <code>rank</code> had
+become a reserved word - we had numerous tables with a <code>rank</code> column and
+it took several hours to go through all the various queries we used to
+quote the column).</p>
+<p>When you pass a string to either of these methods (and many others),
+the string will be split into individual table or columns names.  These
+will then be quoted and put back together.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name').from('users')
+// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>You can put commas between items (with optional trailing whitespace)
+and it works the same, e.g <code>id,name</code> and <code>id, name</code> are both treated
+the same as <code>id name</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id, name').from('users')
+// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>You can add table names to columns.  Both will be automatically quoted.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('users.id users.name').from('users')
+// -&gt; SELECT "users"."id", "users"."name" FROM "users"</code></code></pre>
+<p>You can also start with the <code>from()</code> method if you like.  Generally
+speaking, it doesn't matter which order you call methods in.  The query
+builder will construct the SQL query in the correct order.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from('users').select('id name')
+// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>You can call methods multiple times.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id').select('name').from('users')
+// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>You can also call methods out of order.  The query builder takes
+care of putting everyting back in the right order.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id').from('users').select('name')
+// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>You can also pass multiple arguments to a method.  Each is processed
+in turn as if you had called the method multiple times.  We'll see how
+this can be useful with more complex parameters.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id', 'name').from('users')
+// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>For example, the <code>select()</code> method allows you to pass an array of
+two element.  The first is the column name, the second is an alias.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select(['name', 'user_name']).from('users')
+// -&gt; SELECT "name" AS "user_name" FROM "users"</code></code></pre>
+<p>The <code>from()</code> method supports the same syntax for creating a table alias.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('name').from(['users', 'people'])
+// -&gt; SELECT "name" FROM "users" AS "people"</code></code></pre>
+<p>You can also pass objects to the methods to provide named parameters.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ column: 'name', as: 'user_name' }).from('users')
+// -&gt; SELECT "name" AS "user_name" FROM "users"</code></code></pre>
+<p>Here's an example showing how you can automatically add the table name to
+columns and add a prefix to the returned values.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ table: 'users', columns: 'id name', prefix: 'user_' }).from('users')
+// -&gt; SELECT "users"."id" AS "user_id", "users"."name" AS "user_name" FROM "users"</code></code></pre>
+<p>You can use any of the argument types for a method and you can mix and match them
+in a single call.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id', { table: 'users', columns: 'name email', prefix: 'user_' }).from('users')
+// -&gt; SELECT "id", "users"."name" AS "user_name", "users.email" as "user_email" FROM "users"</code></code></pre>
+<h2 id="embedding-raw-sql">Embedding Raw SQL</h2><p>The query builder tries to hit the sweet spot by allowing you to generate
+<em>most</em> of the simpler queries you might need.  But it doesn't supporting
+everything that SQL has to offer because that would greatly increase the
+complexity and make it harder to reason about.</p>
+<p>As a fallback plan, every method allows you to provide it with raw SQL.
+You can pass an object with a single <code>sql</code> property:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ sql: 'COUNT(user.id) AS n_users' }).from('users')
+// -&gt; SELECT COUNT(user.id) AS n_users FROM "users"</code></code></pre>
+<p>Or you can use the <code>sql</code> function to generate a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select(sql`COUNT(user.id) AS n_users`).from('users')
+// -&gt; SELECT COUNT(user.id) AS n_users FROM "users"</code></code></pre>
+<p>The benefit here is that you can use SQL for some parts of a query when you
+need it, but still rely on the convenience of automatic generation for
+other parts that don't.</p>
+<h2 id="placeholder-values">Placeholder Values</h2><p>The <code>where()</code> method is used to specify selection criteria.  Any user
+supplied values are embedded into the query using placeholders.</p>
+<p>The SQL query generated will use placeholders for any <code>where()</code> clauses
+included.</p>
+<p>For example, this query:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name')
   .from('users')
-  .select(sql`id, name as user_name`);</code></code></pre>
-<p>You can specify multiple tables and select columns from each.  The
-<code>select()</code> method assumes that the columns belong to the table defined
-by the most recent <code>from()</code> method in the chain.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .where('id')</code></code></pre>
+<p>Will generate a SQL query that looks like this:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "users"."id", "users"."name"
+FROM "users"
+WHERE "users"."id"=?</code></code></pre>
+<p>You can also defined values in the <code>where()</code> clause.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = db
   .from('users')
-  .select('id name');
-  .from('posts')
-  .select('title');</code></code></pre>
-<p>This will generate the following SQL:</p>
-<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "users"."id", "users"."name", "posts"."title"
-FROM "users", "posts"</code></code></pre>
-<p>Note that we probably need to add some more to this query (e.g. a
-<code>JOIN</code> or <code>WHERE</code> clause) to make it useful but it demonstrates the
-point about how columns are scoped to the most recently defined table.</p>
-<p>You can specify multiple tables in a <code>from()</code> method, but be warned that
-it will be the <em>last</em> one that the <code>select()</code> method uses to attach columns
-to.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
-  .from('users posts')
-  .select('title');</code></code></pre>
-<p>This generates SQL that binds the <code>title</code> column to the <code>posts</code> table, because
-<code>posts</code> is the last table defined.</p>
-<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "posts"."title"
-FROM "users", "posts"</code></code></pre>
-<h2 id="running-queries">Running Queries</h2><p>Call the <code>all()</code> method to fetch all rows matching a query.  It's an
-asynchronous method so you'll need to <code>await</code> the response (or use <code>.then(...)</code>
-if you prefer).</p>
+  .select('id name')
+  .where({ id: 12345 })
+  .one();     // automatically uses placeholder values: [12345]</code></code></pre>
+<p>The query generated will still use placeholders.  It will also
+automatically keep track of the values that go with each placeholder.</p>
+<h2 id="running-queries">Running Queries</h2><p>When you've constructed a query you can add the <code>all()</code> method to the end to
+fetch all rows matching the query.  It's an asynchronous method so you'll need
+to <code>await</code> the response (or use <code>.then(...)</code> if you prefer).</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = await db
   .from('users')
   .select('id name')
@@ -318,39 +385,60 @@ if you prefer).</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .from('users')
   .select('id name')
-  .where('id')
-  .any([123]);</code></code></pre>
+  .where({ id: 12345 })
+  .any();</code></code></pre>
 <p>The method will return a single row or <code>undefined</code> if it doesn't
 match a row.</p>
 <p>If you're expecting to get one and only one row returned then use the
 <code>one()</code> method instead.  This will throw an error if the row isn't
 found or if the query returns multiple rows.</p>
-<p>The SQL query generated will use placeholders for any <code>where()</code> clauses
-included.</p>
-<p>For example, this query:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = db
+<p>You can provider values for placeholders in <code>where()</code> clauses as shown
+above, or you can save them all up and pass them as an array to the
+<code>one()</code>, <code>any()</code> or <code>all()</code> methods.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .from('users')
   .select('id name')
-  .where('id')</code></code></pre>
-<p>Will generate a SQL query that looks like this:</p>
-<pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "users"."id", "users"."name"
-FROM "users"
-WHERE "users"."id"=?</code></code></pre>
-<p>The values for placeholders should be passed as an array to the <code>all()</code>, <code>any()</code>
-and <code>one()</code> methods.</p>
-<p>TODO: see <a href="#where-criteria-">where()</a> for information about other ways to
-define values.</p>
-<p>#The <code>all()</code>, <code>any()</code> and <code>one()</code> methods will automatically provide the values
-#for the placeholders (<code>123</code> in this case) when the query is run.</p>
-<h2 id="chainability">Chainability</h2><p>One important benefit of this implementation over some others is
-that each step creates a new link in the chain that "points back"
-to the previous link that it was created from.  This allows you to
-create multiple different queries from links in a chain without
-affecting them.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const query0 = db.from('users');
-const query1 = query0.select('id name');
-const query2 = query0.select('name email');</code></code></pre>
-<p>Here <code>query0</code>, <code>query1</code> and <code>query2</code> are all separate query chains.</p>
+  .where('id')
+  .any([12345]);</code></code></pre>
+<h2 id="the-importance-of-being-idempotent">The Importance of Being Idempotent</h2><p>One benefit of this implementation over some others is that the query
+builder chains are <em>idempotent</em>.  That's a fancy way of saying that
+adding new links in the chain doesn't affect any of the previous links.</p>
+<p>What this means in practice is that you can create a "base" query that
+you can use to build other queries from.  Each query exists in its own
+independent world and doesn't affect any other.</p>
+<p>Consider this query to fetch employees of a company by joining from the
+<code>users</code> table to the <code>employees</code> table and then onto the <code>companies</code> table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const employees = db
+  .select(
+    'users.name employees.job_title',
+    ['companies.name', 'company_name']  // alias company.name to company_name
+  )
+  .from('users')
+  .join('users.id=employees.user_id')
+  .join('employees.company_id=companies.id')</code></code></pre>
+<p>We can then use that as the basis to construct a number of other queries.
+For example, to fetch an employee by user id:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await employees
+  .where('users.id')
+  .one([12345])</code></code></pre>
+<p>Or to fetch all employees for a company:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await employees
+  .where('companies.id')
+  .one([98765])</code></code></pre>
+<p>Or to fetch all employees with a particular job title:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await employees
+  .where('employees.job_title')
+  .all(['Chief Badger'])</code></code></pre>
+<p>Each query is entirely independent from the others.</p>
+<p>Furthermore, the fact that the query builder allows you to call methods
+out of sequence means that you're not limited to tagging new method calls
+onto the end of the base query.  For example, you can <code>select()</code> additional
+columns in one of the new queries if there's something extra you need that
+isn't in the base query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await employees
+  .select('user.id')
+  .where('employees.job_title')
+  .all(['Chief Badger'])</code></code></pre>
 </div>
 </div>
 
