@@ -17,7 +17,7 @@ const defaultContext = () => ({
   select:  [ ],
   where:   [ ],
   */
-  values:        [ ],
+  whereValues:   [ ],
   havingValues:  [ ],
   placeholder: 1,
 });
@@ -79,29 +79,23 @@ export class Builder {
 
   allValues(extra=[]) {
     const context = this.resolveChain();
-    const values  = context.values;
+    const wvalues = context.whereValues;
     const hvalues = context.havingValues;
-    // console.log('context values: ', values);
-    // console.log('extra values: ', extra);
-    // TODO: havingValues
     return [
-      ...values, ...hvalues, ...extra
+      ...wvalues, ...hvalues, ...extra
     ]
   }
-  values(extra=[]) {
-    console.log('values() is deprecated');
-
-    const context = this.resolveChain();
-    const values  = context.values;
-    // console.log('context values: ', values);
-    // console.log('extra values: ', extra);
-    // TODO: havingValues
-    return [
-      ...values, ...extra
-    ]
+  whereValues(...values) {
+    if (values.length) {
+      this.context.whereValues.push(...values);
+    }
+    return this.context.whereValues;
   }
-  addValues(...values) {
-    this.context.values.push(...values)
+  havingValues(...values) {
+    if (values.length) {
+      this.context.havingValues.push(...values);
+    }
+    return this.context.havingValues;
   }
 
   // generate SQL

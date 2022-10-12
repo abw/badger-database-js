@@ -62,20 +62,19 @@ test(
   }
 )
 
-/*
 test(
   'table name',
   t => {
-    const query = db.from('users').select('id email').where('users.name', 'u.email');
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name"=? AND "u"."email"=?' );
+    const query = db.builder().having('users.name', 'u.email');
+    t.is( query.sql(), 'HAVING "users"."name"=? AND "u"."email"=?' );
   }
 )
 
 test(
   'column with value',
   t => {
-    const query = db.from('users').select('id email').where({ name: 'Brian Badger' });
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=?' );
+    const query = db.builder().having({ name: 'Brian Badger' });
+    t.is( query.sql(), 'HAVING "name"=?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Brian Badger' );
   }
@@ -84,8 +83,8 @@ test(
 test(
   'column with comparison',
   t => {
-    const query = db.from('users').select('email').where({ id: ['>', 99] });
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id">?' );
+    const query = db.builder().having({ id: ['>', 99] });
+    t.is( query.sql(), 'HAVING "id">?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 99 );
   }
@@ -94,8 +93,8 @@ test(
 test(
   'column with comparison operator',
   t => {
-    const query = db.from('users').select('email').where({ id: ['>'] });
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id">?' );
+    const query = db.builder().having({ id: ['>'] });
+    t.is( query.sql(), 'HAVING "id">?' );
     t.is( query.allValues().length, 0 );
   }
 )
@@ -104,13 +103,12 @@ test(
   'object with value array with three elements',
   t => {
     const error = t.throws(
-      () => db.from('a').where({ id: ['id', '>', 123] }).sql()
+      () => db.builder().having({ id: ['id', '>', 123] }).sql()
     );
     t.true( error instanceof QueryBuilderError );
-    t.is( error.message, 'Invalid value array with 3 items specified for query builder "where" component. Expected [value] or [operator, value].' );
+    t.is( error.message, 'Invalid value array with 3 items specified for query builder "having" component. Expected [value] or [operator, value].' );
   }
 )
-*/
 
 test.after(
   'disconnect',

@@ -15,7 +15,7 @@ export class Having extends Where {
   // The where() values for a and b (10, 20) must come before the having()
   // value for b (30)
   addValues(...values) {
-    this.context.havingValues.push(...values)
+    this.havingValues(...values)
   }
 }
 

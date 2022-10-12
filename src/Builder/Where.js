@@ -74,6 +74,9 @@ export class Where extends Builder {
       }
     )
   }
+  addValues(...values) {
+    this.whereValues(...values)
+  }
 }
 
 export default Where
