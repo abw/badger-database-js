@@ -16,7 +16,7 @@ test(
   'having string',
   t => {
     const query = db.builder().having('name');
-    t.is( query.sql(), 'HAVING "name"=?' );
+    t.is( query.sql(), 'HAVING "name" = ?' );
   }
 )
 
@@ -25,7 +25,7 @@ test(
   'having multiple columns as string',
   t => {
     const query = db.builder().having('name email');
-    t.is( query.sql(), 'HAVING "name"=? AND "email"=?' );
+    t.is( query.sql(), 'HAVING "name" = ? AND "email" = ?' );
   }
 )
 
@@ -33,7 +33,7 @@ test(
   'array with two elements',
   t => {
     const query = db.builder().having(['name', 'Bobby Badger']);
-    t.is( query.sql(), 'HAVING "name"=?' );
+    t.is( query.sql(), 'HAVING "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
     t.is( query.allValues().length, 1 );
@@ -45,7 +45,7 @@ test(
   'array with three elements',
   t => {
     const query = db.builder().having(['name', '!=', 'Bobby Badger']);
-    t.is( query.sql(), 'HAVING "name"!=?' );
+    t.is( query.sql(), 'HAVING "name" != ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
   }
@@ -66,7 +66,7 @@ test(
   'table name',
   t => {
     const query = db.builder().having('users.name', 'u.email');
-    t.is( query.sql(), 'HAVING "users"."name"=? AND "u"."email"=?' );
+    t.is( query.sql(), 'HAVING "users"."name" = ? AND "u"."email" = ?' );
   }
 )
 
@@ -74,7 +74,7 @@ test(
   'column with value',
   t => {
     const query = db.builder().having({ name: 'Brian Badger' });
-    t.is( query.sql(), 'HAVING "name"=?' );
+    t.is( query.sql(), 'HAVING "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Brian Badger' );
   }
@@ -84,7 +84,7 @@ test(
   'column with comparison',
   t => {
     const query = db.builder().having({ id: ['>', 99] });
-    t.is( query.sql(), 'HAVING "id">?' );
+    t.is( query.sql(), 'HAVING "id" > ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 99 );
   }
@@ -94,7 +94,7 @@ test(
   'column with comparison operator',
   t => {
     const query = db.builder().having({ id: ['>'] });
-    t.is( query.sql(), 'HAVING "id">?' );
+    t.is( query.sql(), 'HAVING "id" > ?' );
     t.is( query.allValues().length, 0 );
   }
 )

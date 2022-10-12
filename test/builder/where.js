@@ -1,5 +1,6 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js'
+import { sql } from '../../src/index.js';
 import { QueryBuilderError } from '../../src/Utils/Error.js';
 
 let db;
@@ -16,7 +17,7 @@ test(
   'column',
   t => {
     const query = db.from('users').select('id name email').where('name');
-    t.is( query.sql(), 'SELECT "id", "name", "email"\nFROM "users"\nWHERE "name"=?' );
+    t.is( query.sql(), 'SELECT "id", "name", "email"\nFROM "users"\nWHERE "name" = ?' );
   }
 )
 
@@ -25,7 +26,7 @@ test(
   'columns string',
   t => {
     const query = db.from('users').select('id email').where('name email');
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=? AND "email"=?' );
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ? AND "email" = ?' );
   }
 )
 
@@ -33,7 +34,7 @@ test(
   'array with two elements',
   t => {
     const query = db.from('users').select('id email').where(['name', 'Bobby Badger']);
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=?' );
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
   }
@@ -43,7 +44,35 @@ test(
   'array with three elements',
   t => {
     const query = db.from('users').select('id email').where(['name', '!=', 'Bobby Badger']);
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"!=?' );
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
+    t.is( query.allValues().length, 1 );
+    t.is( query.allValues()[0], 'Bobby Badger' );
+  }
+)
+
+test(
+  'array with three elements, last one undefined',
+  t => {
+    const query = db.from('users').select('id email').where(['name', '!=', undefined]);
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
+    t.is( query.allValues().length, 0 );
+  }
+)
+
+test(
+  'array with two elements, second one is a comparison',
+  t => {
+    const query = db.from('users').select('id email').where(['name', ['!=']]);
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
+    t.is( query.allValues().length, 0 );
+  }
+)
+
+test(
+  'array with two elements, second one is an array of comparison and value',
+  t => {
+    const query = db.from('users').select('id email').where(['name', ['!=', 'Bobby Badger']]);
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
   }
@@ -64,7 +93,7 @@ test(
   'table name',
   t => {
     const query = db.from('users').select('id email').where('users.name', 'u.email');
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name"=? AND "u"."email"=?' );
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name" = ? AND "u"."email" = ?' );
   }
 )
 
@@ -72,7 +101,7 @@ test(
   'column with value',
   t => {
     const query = db.from('users').select('id email').where({ name: 'Brian Badger' });
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=?' );
+    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Brian Badger' );
   }
@@ -82,7 +111,7 @@ test(
   'column with comparison',
   t => {
     const query = db.from('users').select('email').where({ id: ['>', 99] });
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id">?' );
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" > ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 99 );
   }
@@ -92,7 +121,16 @@ test(
   'column with comparison operator',
   t => {
     const query = db.from('users').select('email').where({ id: ['>'] });
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id">?' );
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" > ?' );
+    t.is( query.allValues().length, 0 );
+  }
+)
+
+test(
+  'where sql clause',
+  t => {
+    const query = db.from('users').select('email').where([sql`COUNT(product_id)`, '>', undefined]);
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE COUNT(product_id) > ?' );
     t.is( query.allValues().length, 0 );
   }
 )
