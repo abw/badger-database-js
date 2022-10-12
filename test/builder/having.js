@@ -100,6 +100,32 @@ test(
 )
 
 test(
+  'where() and having()',
+  t => {
+    const query = db.builder().having({ b: 20 }).where({ a: 10 });
+    t.is( query.sql(), 'WHERE "a" = ?\nHAVING "b" = ?' );
+    const values = query.allValues();
+    t.is( values.length, 2 );
+    t.is( values[0], 10 );
+    t.is( values[1], 20 );
+  }
+)
+
+test(
+  'where() and having() with interleaved values',
+  t => {
+    const query = db.builder().where({ a: 10 }).where('b').having({ c: 30 }).having('d');
+    t.is( query.sql(), 'WHERE "a" = ? AND "b" = ?\nHAVING "c" = ? AND "d" = ?' );
+    const values = query.allValues((w, h) => [...w, 20, ...h, 40]);
+    t.is( values.length, 4 );
+    t.is( values[0], 10 );
+    t.is( values[1], 20 );
+    t.is( values[2], 30 );
+    t.is( values[3], 40 );
+  }
+)
+
+test(
   'object with value array with three elements',
   t => {
     const error = t.throws(

@@ -68,13 +68,17 @@ export class Builder {
     return db.all(sql, values);
   }
 
-  allValues(extra=[]) {
+  allValues(where=[]) {
     const context = this.resolveChain();
     const wvalues = context.whereValues;
     const hvalues = context.havingValues;
-    return [
-      ...wvalues, ...hvalues, ...extra
-    ]
+    // In the usual case we just get one set of extra args and they
+    // go at the end.  But if there's some need to jiggle the parameters
+    // more then a function can be provided.
+    if (isFunction(where)) {
+      return where(wvalues, hvalues);
+    }
+    return [...wvalues, ...hvalues, ...where]
   }
   whereValues(...values) {
     if (values.length) {
@@ -134,13 +138,6 @@ export class Builder {
     const values = this.resolveLink();
     this.context[key] = [...(this.context[key] || []), ...values];
     return this.context;
-    /*
-    return {
-      ...context,
-      [key]: [...(context[key] || []), ...this.resolveLink(context)],
-      ...args
-    }
-    */
   }
 
   // resolve a link in the chain

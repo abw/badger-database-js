@@ -339,6 +339,49 @@ export const runUserDatabaseTests = async (engine, options) => {
   )
 
   test.serial(
+    'select with queries built on a base',
+    async t => {
+      const employees = userdb
+        .select(
+          'users.name employees.job_title',
+          ['companies.name', 'company_name']  // alias company.name to company_name
+        )
+        .from('users')
+        .join('users.id=employees.user_id')
+        .join('employees.company_id=companies.id')
+
+      // fetch a single row by user id
+      const row = await employees
+        .where('users.id')
+        .one([Bobby.id])
+      t.is( row.name,         Bobby.name );
+      t.is( row.job_title,    'Chief Badger');
+      t.is( row.company_name, 'Badgers Inc.');
+
+      // fetch all employees of a company
+      const rows = await employees
+        .where('companies.id')
+        .all([BadgersInc.id])
+      t.is( rows.length, 2 );
+      t.is( rows[0].name,         Bobby.name );
+      t.is( rows[0].job_title,    'Chief Badger');
+      t.is( rows[0].company_name, 'Badgers Inc.');
+      t.is( rows[1].name,         Brian.name );
+      t.is( rows[1].job_title,    'Assistant Badger');
+      t.is( rows[1].company_name, 'Badgers Inc.');
+
+      const badger = await employees
+        .select('users.id')
+        .where('employees.job_title')
+        .one(['Chief Badger'])
+      t.is( badger.id,           Bobby.id );
+      t.is( badger.name,         Bobby.name );
+      t.is( badger.job_title,    'Chief Badger');
+      t.is( badger.company_name, 'Badgers Inc.');
+    }
+  )
+
+  test.serial(
     'select range of products for a company',
     async t => {
       const rows = await userdb
