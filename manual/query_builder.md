@@ -1,11 +1,11 @@
 # Query Builder
 
-NOTE: this documentation is a work in progress.
-
 The philosophy of the badger-database library is that ORMs and
 SQL query generators are considered *Mostly Harmful*, especially
 if they're employed as an alternative to using SQL.  But that's
-not to say that they don't have some benefits.
+not to say that they don't have some benefits.  We like to think
+that this implementation has some of those best bits and not too
+many of the not-so-good bits.
 
 * Correctness - table and column names are automatically quoted to
 avoid any conflict with reserved words.
@@ -47,7 +47,7 @@ like this:
 import { connect, sql } from '@abw/badger-database'
 
 async function main() {
-  const db = connect({ database: 'sqlite:memory' });
+  const db = await connect({ database: 'sqlite:memory' });
 
   // examples go here
 }
@@ -79,11 +79,11 @@ db.select('hello').from('world')
 
 Table and column names are both automatically quoted to avoid conflict
 with reserved words.  Even if they're not reserved words *now*, there's
-always the possibility that they could be in the *future* (this happened
-to me on a project where we updated MySQL and discovered that `rank` had
-become a reserved word - we had numerous tables with a `rank` column and
-it took several hours to go through all the various queries we used to
-quote the column).
+always the possibility that they could be in the *future*.  In fact this
+happened to me on a project where we updated MySQL and discovered that
+`rank` had become a reserved word - we had numerous tables with a `rank`
+column and it took several hours to go through all the various queries
+we used to quote the column.  Lesson learned.
 
 When you pass a string to either of these methods (and many others),
 the string will be split into individual table or columns names.  These
@@ -226,12 +226,12 @@ db.select('id name')
 Will generate a SQL query that looks like this:
 
 ```sql
-SELECT "users"."id", "users"."name"
+SELECT "id", "name"
 FROM "users"
-WHERE "users"."id"=?
+WHERE "id"=?
 ```
 
-You can also defined values in the `where()` clause.
+You can also define values in the `where()` clause.
 
 ```js
 const row = db
@@ -252,8 +252,8 @@ to `await` the response (or use `.then(...)` if you prefer).
 
 ```js
 const rows = await db
-  .from('users')
   .select('id name')
+  .from('users')
   .all();
 ```
 
@@ -263,8 +263,8 @@ The `any()` method can be used to return a single row.
 
 ```js
 const row = await db
-  .from('users')
   .select('id name')
+  .from('users')
   .where({ id: 12345 })
   .any();
 ```
@@ -276,14 +276,14 @@ If you're expecting to get one and only one row returned then use the
 `one()` method instead.  This will throw an error if the row isn't
 found or if the query returns multiple rows.
 
-You can provider values for placeholders in `where()` clauses as shown
+You can provide values for placeholders in `where()` clauses as shown
 above, or you can save them all up and pass them as an array to the
 `one()`, `any()` or `all()` methods.
 
 ```js
 const row = await db
-  .from('users')
   .select('id name')
+  .from('users')
   .where('id')
   .any([12345]);
 ```

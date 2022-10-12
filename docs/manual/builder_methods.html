@@ -257,7 +257,7 @@ async function main() {
 not complete queries and we've omitted the final <code>.sql()</code> method call
 which is called internally to generate the SQL.</p>
 <p>In these example we're assuming that the database is Sqlite which
-quotes table and columns names using double quotes, e.g. <code>"user"."id"</code>.
+quotes table and columns names using double quotes, e.g. <code>"users"."id"</code>.
 For Mysql the names will be quoted using backticks.  Examples that
 show placeholders also assume Sqlite (and Mysql) which uses question
 marks, e.g. <code>?</code>.  For Postgress the placeholders are of the form <code>$1</code>,
@@ -267,7 +267,7 @@ select.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id');
 // -&gt; SELECT "id"</code></code></pre>
 <p>You can specify multiple columns using the shorthand syntax as a
-string of whitespace delimited table names.</p>
+string of whitespace delimited column names.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id email');
 // -&gt; SELECT "id", "email"</code></code></pre>
 <p>Commas (with optional whitespace following) can also be used to
@@ -276,8 +276,8 @@ delimit column names.</p>
 // -&gt; SELECT "id", "email"</code></code></pre>
 <p>Columns can have the table name included in them.  Both the table
 and columns names will be automatically quoted.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">db.select('user.id user.email');
-// -&gt; SELECT "user"."id", "user"."email"</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('users.id users.email');
+// -&gt; SELECT "users"."id", "users"."email"</code></code></pre>
 <p>You can specify <code>*</code> to select all columns.  This will not be quoted.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('*');
 // -&gt; SELECT *</code></code></pre>
@@ -303,7 +303,7 @@ The prefix will be attached to the front of each column name.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select({ table: 'users', columns: 'id email', prefix: 'user_' });
 // -&gt; SELECT "users"."id" AS "user_id", "users"."email" AS "user_email"</code></code></pre>
 <p>An object can also contain a <code>column</code> item.  In this case it is assumed to
-be a single column name is not split into separate columns.  The optional
+be a single column name which is not split into separate columns.  The optional
 <code>as</code> property can be provided to create an alias for the column.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select({ column: 'email', as: 'email_address' });
 // -&gt; SELECT "email" AS "email_address"</code></code></pre>
@@ -313,7 +313,7 @@ be a single column name is not split into separate columns.  The optional
 <p>Or you can include the table name in the column.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select({ column: 'users.email', as: 'email_address' });
 // -&gt; SELECT "users"."email" AS "email_address"</code></code></pre>
-<p>The shorthand format for creating a column alias is to pass an Array of
+<p>The shorthand format for creating a column alias is to pass an array of
 either two elements (the column name and alias) or three (the table name,
 column name and alias).</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select(['email', 'email_address' });
@@ -359,7 +359,7 @@ be a single table name is not split into separate table names.  The optional
 <code>as</code> property can be provided to create an alias for the table.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.from({ table: 'users', as: 'people' });
 // -&gt; FROM "users" AS "people"</code></code></pre>
-<p>The shorthand format for creating a table alias is to pass an Array of two
+<p>The shorthand format for creating a table alias is to pass an array of two
 elements: the table name and alias.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.from(['users', 'people']);
 // -&gt; FROM "users" AS "people"</code></code></pre>
@@ -475,8 +475,8 @@ pass it as an object with a single <code>sql</code> property.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .select('id name email')
   .from('users')
-  .where([sql`id + 100`, '102'])
-  .one()            // automatically uses placeholder values: [12345]
+  .where([sql`id + 100`, 102])
+  .one()            // automatically uses placeholder values: [102]
 // -&gt; SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE id + 100 = ?</code></code></pre>
@@ -564,91 +564,91 @@ in the <code>from</code> column.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join('user.company_id=companies.id')
+  .join('users.company_id=companies.id')
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+//    JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
 <p>You can pass an array to the method containing 2, 3, or 4 elements.
 When using two elements, the first should be the table column you're
 joining from and the second should be the table column you're joining to.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join(['user.company_id', 'companies.id'])
+  .join(['users.company_id', 'companies.id'])
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+//    JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
 <p>The three element version has the destination table and column separated.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join(['user.company_id', 'companies', 'id'])
+  .join(['users.company_id', 'companies', 'id'])
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+//    JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
 <p>The four element version allows you to specify the join type at the
 beginning.  Valid types are <code>left</code>, <code>right</code>, <code>inner</code> and <code>full</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join(['left', 'user.company_id', 'companies', 'id'])
+  .join(['left', 'users.company_id', 'companies', 'id'])
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+//    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
 <p>You can pass an object to the method containing the <code>from</code>, <code>table</code>
 and <code>to</code> properties, and optionally the <code>type</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join({ type: 'left', from: 'user.company_id', table: 'companies', to: 'id' })
+  .join({ type: 'left', from: 'users.company_id', table: 'companies', to: 'id' })
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+//    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
 <p>Or you can combine the table name and column in the <code>to</code> property.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join({ type: 'left', from: 'user.company_id', to: 'companies.id' })
+  .join({ type: 'left', from: 'users.company_id', to: 'companies.id' })
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+//    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
 <p>You know the drill, right?  If the method doesn't do what you need then you
 can use raw SQL to define the joins, either with an object containing a
 <code>sql</code> property:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join({ sql: 'JOIN employees ON user.id=employees.user_id' })
+  .join({ sql: 'JOIN employees ON users.id=employees.user_id' })
 // -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN employees ON user.id=employees.user_id</code></code></pre>
+//    JOIN employees ON users.id=employees.user_id</code></code></pre>
 <p>Or using the <code>sql</code> function to create a tagged template literal.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join(sql`JOIN employees ON user.id=employees.user_id`)
+  .join(sql`JOIN employees ON users.id=employees.user_id`)
 // -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN employees ON user.id=employees.user_id</code></code></pre>
+//    JOIN employees ON users.id=employees.user_id</code></code></pre>
 <p>And just like the other methods, you can call the method multiple times.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('user.id=employees.user_id')
+  .join('users.id=employees.user_id')
   .join('employees.company_id=companies.id')
 // -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "employees" ON "users"."id" = "employees"."user_id"
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"</code></code></pre>
 <p>Or you can pass multiple arguments to a single method call.  Each argument
 can be any of the values described above.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('user.id=employees.user_id', 'employees.company_id=companies.id')
+  .join('users.id=employees.user_id', 'employees.company_id=companies.id')
 // -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "employees" ON "users"."id" = "employees"."user_id"
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"</code></code></pre>
 <h2 id="order-columns-">order(columns)</h2><p>This method can be used to create an <code>ORDER BY</code> clause.  There's also an
 <code>orderBy()</code> alias for the method if you prefer something a little closer
@@ -778,7 +778,7 @@ by the <code>HAVING</code> values.</p>
 <p>The query builder allows you to call methods in any order and will automatically
 arrange them correctly when building the SQL query.  For example, it is perfectly
 valid to call <code>having()</code> before <code>where()</code>, but you MUST provide the values for the
-<code>where()</code> claused before those for the <code>having()</code> clauses.</p>
+<code>where()</code> clauses before those for the <code>having()</code> clauses.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select(...)
   .from(...)
   .having('x')
@@ -795,8 +795,8 @@ to worry.  The query builder automatically collects all <code>where()</code> val
 from <code>having()</code> values and passed them to the database engine in the correct order.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select(...)
   .from(...)
-  .having(['x', xValue])
-  .where(['y', yValue)
+  .having({ x: xValue })
+  .where({ y: yValue })
   .all()            // placeholder values will be [yValue, xValue]</code></code></pre>
 <h2 id="limit-n-">limit(n)</h2><p>This method can be used to set a <code>LIMIT</code> for the number of rows returned.</p>
 <p>An integer should be passed to it.</p>

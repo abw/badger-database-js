@@ -9,7 +9,7 @@ This is the manual for the `badger-database` Javascript module.
 * [Basic Queries](manual/basic_queries.html) - performing basic SQL queries
 * [Named Queries](manual/named_queries.html) - defining named SQL queries for abstraction and reusability
 * [Query Fragments](manual/query_fragments.html) - defining named SQL fragments for embedding into queries
-* [Query Building](manual/query_builder.html) - building SQL queries programmatically
+* [Query Builder](manual/query_builder.html) - building SQL queries programmatically
 * [Builder Method](manual/builder_method.html) - methods for building SQL queries
 * [Tables](manual/tables.html) - using tables to automatically generate basic queries
 * [Table Columns](manual/table_columns.html) - defining table columns

@@ -48,7 +48,7 @@ not complete queries and we've omitted the final `.sql()` method call
 which is called internally to generate the SQL.
 
 In these example we're assuming that the database is Sqlite which
-quotes table and columns names using double quotes, e.g. `"user"."id"`.
+quotes table and columns names using double quotes, e.g. `"users"."id"`.
 For Mysql the names will be quoted using backticks.  Examples that
 show placeholders also assume Sqlite (and Mysql) which uses question
 marks, e.g. `?`.  For Postgress the placeholders are of the form `$1`,
@@ -65,7 +65,7 @@ db.select('id');
 ```
 
 You can specify multiple columns using the shorthand syntax as a
-string of whitespace delimited table names.
+string of whitespace delimited column names.
 
 ```js
 db.select('id email');
@@ -84,8 +84,8 @@ Columns can have the table name included in them.  Both the table
 and columns names will be automatically quoted.
 
 ```js
-db.select('user.id user.email');
-// -> SELECT "user"."id", "user"."email"
+db.select('users.id users.email');
+// -> SELECT "users"."id", "users"."email"
 ```
 
 You can specify `*` to select all columns.  This will not be quoted.
@@ -137,7 +137,7 @@ db.select({ table: 'users', columns: 'id email', prefix: 'user_' });
 ```
 
 An object can also contain a `column` item.  In this case it is assumed to
-be a single column name is not split into separate columns.  The optional
+be a single column name which is not split into separate columns.  The optional
 `as` property can be provided to create an alias for the column.
 
 ```js
@@ -159,7 +159,7 @@ db.select({ column: 'users.email', as: 'email_address' });
 // -> SELECT "users"."email" AS "email_address"
 ```
 
-The shorthand format for creating a column alias is to pass an Array of
+The shorthand format for creating a column alias is to pass an array of
 either two elements (the column name and alias) or three (the table name,
 column name and alias).
 
@@ -250,7 +250,7 @@ db.from({ table: 'users', as: 'people' });
 // -> FROM "users" AS "people"
 ```
 
-The shorthand format for creating a table alias is to pass an Array of two
+The shorthand format for creating a table alias is to pass an array of two
 elements: the table name and alias.
 
 ```js
@@ -430,8 +430,8 @@ pass it as an object with a single `sql` property.
 const row = await db
   .select('id name email')
   .from('users')
-  .where([sql`id + 100`, '102'])
-  .one()            // automatically uses placeholder values: [12345]
+  .where([sql`id + 100`, 102])
+  .one()            // automatically uses placeholder values: [102]
 // -> SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE id + 100 = ?
@@ -564,10 +564,10 @@ in the `from` column.
 db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join('user.company_id=companies.id')
+  .join('users.company_id=companies.id')
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "companies" ON "user"."company_id" = "companies"."id"
+//    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
 You can pass an array to the method containing 2, 3, or 4 elements.
@@ -578,10 +578,10 @@ joining from and the second should be the table column you're joining to.
 db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join(['user.company_id', 'companies.id'])
+  .join(['users.company_id', 'companies.id'])
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "companies" ON "user"."company_id" = "companies"."id"
+//    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
 The three element version has the destination table and column separated.
@@ -590,10 +590,10 @@ The three element version has the destination table and column separated.
 db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join(['user.company_id', 'companies', 'id'])
+  .join(['users.company_id', 'companies', 'id'])
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "companies" ON "user"."company_id" = "companies"."id"
+//    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
 The four element version allows you to specify the join type at the
@@ -603,10 +603,10 @@ beginning.  Valid types are `left`, `right`, `inner` and `full`.
 db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join(['left', 'user.company_id', 'companies', 'id'])
+  .join(['left', 'users.company_id', 'companies', 'id'])
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
+//    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
 You can pass an object to the method containing the `from`, `table`
@@ -616,10 +616,10 @@ and `to` properties, and optionally the `type`.
 db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join({ type: 'left', from: 'user.company_id', table: 'companies', to: 'id' })
+  .join({ type: 'left', from: 'users.company_id', table: 'companies', to: 'id' })
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
+//    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
 Or you can combine the table name and column in the `to` property.
@@ -628,10 +628,10 @@ Or you can combine the table name and column in the `to` property.
 db.select('name email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join({ type: 'left', from: 'user.company_id', to: 'companies.id' })
+  .join({ type: 'left', from: 'users.company_id', to: 'companies.id' })
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
-//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"
+//    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
 You know the drill, right?  If the method doesn't do what you need then you
@@ -642,10 +642,10 @@ can use raw SQL to define the joins, either with an object containing a
 db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join({ sql: 'JOIN employees ON user.id=employees.user_id' })
+  .join({ sql: 'JOIN employees ON users.id=employees.user_id' })
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN employees ON user.id=employees.user_id
+//    JOIN employees ON users.id=employees.user_id
 ```
 
 Or using the `sql` function to create a tagged template literal.
@@ -654,10 +654,10 @@ Or using the `sql` function to create a tagged template literal.
 db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join(sql`JOIN employees ON user.id=employees.user_id`)
+  .join(sql`JOIN employees ON users.id=employees.user_id`)
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN employees ON user.id=employees.user_id
+//    JOIN employees ON users.id=employees.user_id
 ```
 
 And just like the other methods, you can call the method multiple times.
@@ -666,11 +666,11 @@ And just like the other methods, you can call the method multiple times.
 db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('user.id=employees.user_id')
+  .join('users.id=employees.user_id')
   .join('employees.company_id=companies.id')
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "employees" ON "users"."id" = "employees"."user_id"
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"
 ```
 
@@ -681,10 +681,10 @@ can be any of the values described above.
 db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('user.id=employees.user_id', 'employees.company_id=companies.id')
+  .join('users.id=employees.user_id', 'employees.company_id=companies.id')
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
-//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "employees" ON "users"."id" = "employees"."user_id"
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"
 ```
 
@@ -886,7 +886,7 @@ by the `HAVING` values.
 The query builder allows you to call methods in any order and will automatically
 arrange them correctly when building the SQL query.  For example, it is perfectly
 valid to call `having()` before `where()`, but you MUST provide the values for the
-`where()` claused before those for the `having()` clauses.
+`where()` clauses before those for the `having()` clauses.
 
 ```js
 db.select(...)
@@ -910,8 +910,8 @@ from `having()` values and passed them to the database engine in the correct ord
 ```js
 db.select(...)
   .from(...)
-  .having(['x', xValue])
-  .where(['y', yValue)
+  .having({ x: xValue })
+  .where({ y: yValue })
   .all()            // placeholder values will be [yValue, xValue]
 ```
 

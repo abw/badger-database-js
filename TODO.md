@@ -17,16 +17,13 @@
 
 * debug documentation - prefix and color
 
-* Builder values() is currently a method but we probably need to create a builder
-  component for adding values.  NOTE: changed to whereValues() and havingValues()
-  TODO: test
-
-* document where() and having() - in particular mention placeholder values
-
-* Defining builders in database/table queries - might require separate query class
-  so we can capture whereValues and havingValues (or more generally, the context)
-
 * Extending documentation - adding engines, adding builders
+
+* Documentation for query builder - mention that we only support select at this
+time.  Also mention the db.builder() function if you want to start a query with
+anything other than select() or from()
+
+* Query builder - add support for with()
 
 * Builder join() string - use different arrows for LEFT/RIGHT/INNER/FULL
   a=b    # INNER
