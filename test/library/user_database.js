@@ -18,7 +18,6 @@ export async function connectUserDatabase(engine='sqlite') {
   const database = databaseConfig(engine);
   const sqlite   = engine === 'sqlite';
   const mysql    = engine === 'mysql';
-  // const postgres = engine === 'postgres';
   const serial   = sqlite ? 'INTEGER PRIMARY KEY ASC'  : 'SERIAL';
   const reftype  = mysql  ? 'BIGINT UNSIGNED NOT NULL' : 'INTEGER';
 
@@ -84,8 +83,9 @@ export async function connectUserDatabase(engine='sqlite') {
 //-----------------------------------------------------------------------------
 // Run numerous tests
 //-----------------------------------------------------------------------------
-export const runUserDatabaseTests = async (database, options) => {
-  const userdb    = await connectUserDatabase(database, options);
+export const runUserDatabaseTests = async (engine, options) => {
+  const postgres  = engine === 'postgres';
+  const userdb    = await connectUserDatabase(engine, options);
   const users     = await userdb.table('users');
   const companies = await userdb.table('companies');
   const employees = await userdb.table('employees');
@@ -366,10 +366,32 @@ export const runUserDatabaseTests = async (database, options) => {
       t.is( rows.length, 2 );
       t.is( rows[0].id, 100 )
       t.is( rows[0].name, 'Badgers Inc.' )
-      t.is( rows[0].n_products, 42 )
+      t.is( parseInt(rows[0].n_products), 42 )
       t.is( rows[1].id, 200 )
       t.is( rows[1].name, 'Ferrets Ltd.' )
-      t.is( rows[1].n_products, 52 )
+      t.is( parseInt(rows[1].n_products), 52 )
+    }
+  );
+
+  test.serial(
+    'count products by company having > 50 products',
+    async t => {
+      const rows = await userdb
+        .select('companies.id companies.name', sql`COUNT(products.id) AS n_products`)
+        .from('companies')
+        .join('companies.id=products.company_id')
+        .group('companies.id')
+        .order('companies.id')
+        .having(
+          postgres
+            ? [ sql`COUNT(products.id)`, '>', undefined]
+            : [ 'n_products', '>', undefined ]
+        )
+        .all([50]);
+      t.is( rows.length, 1 );
+      t.is( rows[0].id, 200 )
+      t.is( rows[0].name, 'Ferrets Ltd.' )
+      t.is( parseInt(rows[0].n_products), 52 )
     }
   );
 
