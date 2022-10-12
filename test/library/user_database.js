@@ -1,14 +1,12 @@
 import test from 'ava';
-import { connect } from "../../src/Database.js";
+import { connect, sql } from "../../src/index.js";
 import { databaseConfig } from './database.js';
 import { setDebug } from '../../src/Utils/Debug.js';
+import { range } from '@abw/badger-utils';
 
 //-----------------------------------------------------------------------------
 // debugging
 //-----------------------------------------------------------------------------
-const debugUsers     = false;
-const debugCompanies = false;
-const debugEmployees = false;
 setDebug({
   // engine: true,
 })
@@ -28,6 +26,7 @@ export async function connectUserDatabase(engine='sqlite') {
     dropUsersTable:     'DROP TABLE IF EXISTS users',
     dropCompaniesTable: 'DROP TABLE IF EXISTS companies',
     dropEmployeesTable: 'DROP TABLE IF EXISTS employees',
+    dropProductsTable:  'DROP TABLE IF EXISTS products',
     createUsersTable: `
       CREATE TABLE users (
         id        ${serial},
@@ -51,25 +50,30 @@ export async function connectUserDatabase(engine='sqlite') {
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (company_id) REFERENCES companies(id)
       )`,
-  };
-
-  const users = {
-    columns:      'id name email',
-    debug:        debugUsers,
-  };
-
-  const companies = {
-    columns:      'id name',
-    debug:        debugCompanies,
-  };
-
-  const employees = {
-    columns:      'id user_id company_id job_title',
-    debug:        debugEmployees,
+    createProductsTable: `
+      CREATE TABLE products (
+        id          ${serial},
+        company_id  ${reftype},
+        name        TEXT,
+        ${sqlite ? '' : 'PRIMARY KEY (id),'}
+        FOREIGN KEY (company_id) REFERENCES companies(id)
+      )`,
   };
 
   const tables = {
-    users, companies, employees
+    users: {
+      columns: 'id name email',
+    },
+    companies: {
+      columns: 'id name',
+    },
+    employees: {
+      columns: 'id user_id company_id job_title',
+
+    },
+    products: {
+      columns: 'id company_id name',
+    }
   };
 
   return await connect({
@@ -85,12 +89,14 @@ export const runUserDatabaseTests = async (database, options) => {
   const users     = await userdb.table('users');
   const companies = await userdb.table('companies');
   const employees = await userdb.table('employees');
+  const products  = await userdb.table('products');
   let Bobby, Brian, Franky, Felicity;
   let BadgersInc, FerretsLtd;
 
   test.serial(
     'drop existing tables',
     async t => {
+      await userdb.run('dropProductsTable');
       await userdb.run('dropEmployeesTable');
       await userdb.run('dropCompaniesTable');
       await userdb.run('dropUsersTable');
@@ -99,25 +105,12 @@ export const runUserDatabaseTests = async (database, options) => {
   )
 
   test.serial(
-    'create users',
+    'create tables',
     async t => {
       await userdb.run('createUsersTable');
-      t.pass();
-    }
-  )
-
-  test.serial(
-    'create companies',
-    async t => {
       await userdb.run('createCompaniesTable');
-      t.pass();
-    }
-  )
-
-  test.serial(
-    'create employees',
-    async t => {
       await userdb.run('createEmployeesTable');
+      await userdb.run('createProductsTable');
       t.pass();
     }
   )
@@ -186,6 +179,23 @@ export const runUserDatabaseTests = async (database, options) => {
       t.is(d.user_id, Felicity.id);
       t.is(d.company_id, FerretsLtd.id);
       t.is(d.job_title, 'Junior Ferret');
+    }
+  )
+
+  test.serial(
+    'insert products',
+    async t => {
+      const nProducts = {
+        100: 42,  // 42 products for BadgersInc
+        200: 52   // 52 products for FerretsLtd
+      }
+      const productList = [BadgersInc.id, FerretsLtd.id].map(
+        company_id => range(company_id, company_id + nProducts[company_id] - 1).map(
+          id => ({ id, company_id, name: `Product #${id}` })
+        )
+      ).flat();
+      await products.insert(productList, { sanitizeResult: true });
+      t.pass();
     }
   )
 
@@ -328,9 +338,45 @@ export const runUserDatabaseTests = async (database, options) => {
     }
   )
 
+  test.serial(
+    'select range of products for a company',
+    async t => {
+      const rows = await userdb
+        .select('id name')
+        .from('products')
+        .where({ company_id: BadgersInc.id })
+        .range(10, 19)
+        .all();
+      t.is( rows.length, 10 );
+      t.is( rows[0].name, `Product #110` );
+      t.is( rows[9].name, `Product #119` );
+    }
+  );
+
+  test.serial(
+    'count products by company',
+    async t => {
+      const rows = await userdb
+        .select('companies.id companies.name', sql`COUNT(products.id) AS n_products`)
+        .from('companies')
+        .join('companies.id=products.company_id')
+        .group('companies.id')
+        .order('companies.id')
+        .all();
+      t.is( rows.length, 2 );
+      t.is( rows[0].id, 100 )
+      t.is( rows[0].name, 'Badgers Inc.' )
+      t.is( rows[0].n_products, 42 )
+      t.is( rows[1].id, 200 )
+      t.is( rows[1].name, 'Ferrets Ltd.' )
+      t.is( rows[1].n_products, 52 )
+    }
+  );
+
   test.after(
     'disconnect',
     async t => {
+      await userdb.run('dropProductsTable');
       await userdb.run('dropEmployeesTable');
       await userdb.run('dropCompaniesTable');
       await userdb.run('dropUsersTable');
