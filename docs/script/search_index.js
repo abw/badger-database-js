@@ -1,20 +1,32 @@
 window.esdocSearchIndex = [
   [
     "@abw/badger-database~after",
-    "class/src/Operator/After.js~After.html",
+    "class/src/Builder/After.js~After.html",
     "<span>After</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
     "@abw/badger-database~before",
-    "class/src/Operator/Before.js~Before.html",
+    "class/src/Builder/Before.js~Before.html",
     "<span>Before</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~builder",
+    "class/src/Builder.js~Builder.html",
+    "<span>Builder</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
     "@abw/badger-database~columnvalidationerror",
     "class/src/Utils/Error.js~ColumnValidationError.html",
     "<span>ColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~columns",
+    "class/src/Builder/Columns.js~Columns.html",
+    "<span>Columns</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
@@ -25,13 +37,13 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~database",
-    "class/src/Database.js~Database.html",
+    "class/src/Builder/Database.js~Database.html",
     "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
     "@abw/badger-database~database",
-    "class/src/Operator/Database.js~Database.html",
+    "class/src/Database.js~Database.html",
     "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
@@ -55,19 +67,19 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~from",
-    "class/src/Operator/From.js~From.html",
+    "class/src/Builder/From.js~From.html",
     "<span>From</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
     "@abw/badger-database~group",
-    "class/src/Operator/Group.js~Group.html",
+    "class/src/Builder/Group.js~Group.html",
     "<span>Group</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
     "@abw/badger-database~having",
-    "class/src/Operator/Having.js~Having.html",
+    "class/src/Builder/Having.js~Having.html",
     "<span>Having</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
@@ -79,7 +91,7 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~join",
-    "class/src/Operator/Join.js~Join.html",
+    "class/src/Builder/Join.js~Join.html",
     "<span>Join</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
@@ -90,14 +102,8 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-database~operator",
-    "class/src/Operator.js~Operator.html",
-    "<span>Operator</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "class"
-  ],
-  [
     "@abw/badger-database~order",
-    "class/src/Operator/Order.js~Order.html",
+    "class/src/Builder/Order.js~Order.html",
     "<span>Order</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
@@ -108,9 +114,21 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~prefix",
+    "class/src/Builder/Prefix.js~Prefix.html",
+    "<span>Prefix</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
     "@abw/badger-database~queries",
     "class/src/Queries.js~Queries.html",
     "<span>Queries</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~querybuildererror",
+    "class/src/Utils/Error.js~QueryBuilderError.html",
+    "<span>QueryBuilderError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
@@ -121,7 +139,7 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~select",
-    "class/src/Operator/Select.js~Select.html",
+    "class/src/Builder/Select.js~Select.html",
     "<span>Select</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
@@ -129,6 +147,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~sqliteengine",
     "class/src/Engine/Sqlite.js~SqliteEngine.html",
     "<span>SqliteEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~table",
+    "class/src/Builder/Table.js~Table.html",
+    "<span>Table</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
@@ -151,7 +175,7 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~where",
-    "class/src/Operator/Where.js~Where.html",
+    "class/src/Builder/Where.js~Where.html",
     "<span>Where</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
@@ -174,6 +198,18 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-database~builderproxy",
+    "function/index.html#static-function-builderProxy",
+    "<span>builderProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~builders",
+    "variable/index.html#static-variable-builders",
+    "<span>builders</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~configenv",
     "function/index.html#static-function-configEnv",
     "<span>configEnv</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -183,6 +219,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~connect",
     "function/index.html#static-function-connect",
     "<span>connect</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~databasebuilder",
+    "function/index.html#static-function-databaseBuilder",
+    "<span>databaseBuilder</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
@@ -270,18 +312,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger-database~operatorproxy",
-    "function/index.html#static-function-operatorProxy",
-    "<span>operatorProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-database~operators",
-    "variable/index.html#static-variable-operators",
-    "<span>operators</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "variable"
-  ],
-  [
     "@abw/badger-database~parsedatabasestring",
     "function/index.html#static-function-parseDatabaseString",
     "<span>parseDatabaseString</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -336,15 +366,63 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-database~sql",
+    "function/index.html#static-function-sql",
+    "<span>sql</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~tablebuilder",
+    "function/index.html#static-function-tableBuilder",
+    "<span>tableBuilder</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~throwcolumnvalidationerror",
     "variable/index.html#static-variable-throwColumnValidationError",
     "<span>throwColumnValidationError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
+    "@abw/badger-database~throwcolumnserror",
+    "variable/index.html#static-variable-throwColumnsError",
+    "<span>throwColumnsError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~throwdeletedrecorderror",
     "variable/index.html#static-variable-throwDeletedRecordError",
     "<span>throwDeletedRecordError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~throwgrouperror",
+    "variable/index.html#static-variable-throwGroupError",
+    "<span>throwGroupError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~throwjoinerror",
+    "variable/index.html#static-variable-throwJoinError",
+    "<span>throwJoinError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~throwordererror",
+    "variable/index.html#static-variable-throwOrderError",
+    "<span>throwOrderError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~throwselecterror",
+    "variable/index.html#static-variable-throwSelectError",
+    "<span>throwSelectError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~throwwhereerror",
+    "variable/index.html#static-variable-throwWhereError",
+    "<span>throwWhereError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -648,6 +726,618 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "src/builder.js",
+    "file/src/Builder.js.html",
+    "src/Builder.js",
+    "file"
+  ],
+  [
+    "src/builder.js~builder#addvalues",
+    "class/src/Builder.js~Builder.html#instance-method-addValues",
+    "src/Builder.js~Builder#addValues",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#all",
+    "class/src/Builder.js~Builder.html#instance-method-all",
+    "src/Builder.js~Builder#all",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#any",
+    "class/src/Builder.js~Builder.html#instance-method-any",
+    "src/Builder.js~Builder#any",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#args",
+    "class/src/Builder.js~Builder.html#instance-member-args",
+    "src/Builder.js~Builder#args",
+    "member"
+  ],
+  [
+    "src/builder.js~builder#constructor",
+    "class/src/Builder.js~Builder.html#instance-constructor-constructor",
+    "src/Builder.js~Builder#constructor",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#context",
+    "class/src/Builder.js~Builder.html#instance-member-context",
+    "src/Builder.js~Builder#context",
+    "member"
+  ],
+  [
+    "src/builder.js~builder#factory",
+    "class/src/Builder.js~Builder.html#instance-member-factory",
+    "src/Builder.js~Builder#factory",
+    "member"
+  ],
+  [
+    "src/builder.js~builder#initbuilder",
+    "class/src/Builder.js~Builder.html#instance-method-initBuilder",
+    "src/Builder.js~Builder#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#lookup",
+    "class/src/Builder.js~Builder.html#instance-method-lookup",
+    "src/Builder.js~Builder#lookup",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#lookupdatabase",
+    "class/src/Builder.js~Builder.html#instance-method-lookupDatabase",
+    "src/Builder.js~Builder#lookupDatabase",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#lookuptable",
+    "class/src/Builder.js~Builder.html#instance-method-lookupTable",
+    "src/Builder.js~Builder#lookupTable",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#one",
+    "class/src/Builder.js~Builder.html#instance-method-one",
+    "src/Builder.js~Builder#one",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#parent",
+    "class/src/Builder.js~Builder.html#instance-member-parent",
+    "src/Builder.js~Builder#parent",
+    "member"
+  ],
+  [
+    "src/builder.js~builder#quote",
+    "class/src/Builder.js~Builder.html#instance-method-quote",
+    "src/Builder.js~Builder#quote",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#quotecolumnas",
+    "class/src/Builder.js~Builder.html#instance-method-quoteColumnAs",
+    "src/Builder.js~Builder#quoteColumnAs",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#quotetableas",
+    "class/src/Builder.js~Builder.html#instance-method-quoteTableAs",
+    "src/Builder.js~Builder#quoteTableAs",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#quotetablecolumn",
+    "class/src/Builder.js~Builder.html#instance-method-quoteTableColumn",
+    "src/Builder.js~Builder#quoteTableColumn",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#quotetablecolumnas",
+    "class/src/Builder.js~Builder.html#instance-method-quoteTableColumnAs",
+    "src/Builder.js~Builder#quoteTableColumnAs",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolve",
+    "class/src/Builder.js~Builder.html#instance-method-resolve",
+    "src/Builder.js~Builder#resolve",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolvechain",
+    "class/src/Builder.js~Builder.html#instance-method-resolveChain",
+    "src/Builder.js~Builder#resolveChain",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolvelink",
+    "class/src/Builder.js~Builder.html#instance-method-resolveLink",
+    "src/Builder.js~Builder#resolveLink",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolvelinkarray",
+    "class/src/Builder.js~Builder.html#instance-method-resolveLinkArray",
+    "src/Builder.js~Builder#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolvelinkitem",
+    "class/src/Builder.js~Builder.html#instance-method-resolveLinkItem",
+    "src/Builder.js~Builder#resolveLinkItem",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolvelinkobject",
+    "class/src/Builder.js~Builder.html#instance-method-resolveLinkObject",
+    "src/Builder.js~Builder#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#resolvelinkstring",
+    "class/src/Builder.js~Builder.html#instance-method-resolveLinkString",
+    "src/Builder.js~Builder#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#sql",
+    "class/src/Builder.js~Builder.html#instance-method-sql",
+    "src/Builder.js~Builder#sql",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#sqlfragments",
+    "class/src/Builder.js~Builder.html#instance-method-sqlFragments",
+    "src/Builder.js~Builder#sqlFragments",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#tablecolumn",
+    "class/src/Builder.js~Builder.html#instance-method-tableColumn",
+    "src/Builder.js~Builder#tableColumn",
+    "method"
+  ],
+  [
+    "src/builder.js~builder#values",
+    "class/src/Builder.js~Builder.html#instance-method-values",
+    "src/Builder.js~Builder#values",
+    "method"
+  ],
+  [
+    "src/builder/after.js",
+    "file/src/Builder/After.js.html",
+    "src/Builder/After.js",
+    "file"
+  ],
+  [
+    "src/builder/after.js~after#initbuilder",
+    "class/src/Builder/After.js~After.html#instance-method-initBuilder",
+    "src/Builder/After.js~After#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/after.js~after#key",
+    "class/src/Builder/After.js~After.html#instance-member-key",
+    "src/Builder/After.js~After#key",
+    "member"
+  ],
+  [
+    "src/builder/before.js",
+    "file/src/Builder/Before.js.html",
+    "src/Builder/Before.js",
+    "file"
+  ],
+  [
+    "src/builder/before.js~before#initbuilder",
+    "class/src/Builder/Before.js~Before.html#instance-method-initBuilder",
+    "src/Builder/Before.js~Before#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/before.js~before#key",
+    "class/src/Builder/Before.js~Before.html#instance-member-key",
+    "src/Builder/Before.js~Before#key",
+    "member"
+  ],
+  [
+    "src/builder/columns.js",
+    "file/src/Builder/Columns.js.html",
+    "src/Builder/Columns.js",
+    "file"
+  ],
+  [
+    "src/builder/columns.js~columns#initbuilder",
+    "class/src/Builder/Columns.js~Columns.html#instance-method-initBuilder",
+    "src/Builder/Columns.js~Columns#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/columns.js~columns#key",
+    "class/src/Builder/Columns.js~Columns.html#instance-member-key",
+    "src/Builder/Columns.js~Columns#key",
+    "member"
+  ],
+  [
+    "src/builder/columns.js~columns#resolvelinkarray",
+    "class/src/Builder/Columns.js~Columns.html#instance-method-resolveLinkArray",
+    "src/Builder/Columns.js~Columns#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/columns.js~columns#resolvelinkobject",
+    "class/src/Builder/Columns.js~Columns.html#instance-method-resolveLinkObject",
+    "src/Builder/Columns.js~Columns#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/columns.js~columns#resolvelinkstring",
+    "class/src/Builder/Columns.js~Columns.html#instance-method-resolveLinkString",
+    "src/Builder/Columns.js~Columns#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder/database.js",
+    "file/src/Builder/Database.js.html",
+    "src/Builder/Database.js",
+    "file"
+  ],
+  [
+    "src/builder/database.js~database#database",
+    "class/src/Builder/Database.js~Database.html#instance-member-database",
+    "src/Builder/Database.js~Database#database",
+    "member"
+  ],
+  [
+    "src/builder/database.js~database#initbuilder",
+    "class/src/Builder/Database.js~Database.html#instance-method-initBuilder",
+    "src/Builder/Database.js~Database#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/database.js~database#resolve",
+    "class/src/Builder/Database.js~Database.html#instance-method-resolve",
+    "src/Builder/Database.js~Database#resolve",
+    "method"
+  ],
+  [
+    "src/builder/from.js",
+    "file/src/Builder/From.js.html",
+    "src/Builder/From.js",
+    "file"
+  ],
+  [
+    "src/builder/from.js~from#initbuilder",
+    "class/src/Builder/From.js~From.html#instance-method-initBuilder",
+    "src/Builder/From.js~From#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/from.js~from#key",
+    "class/src/Builder/From.js~From.html#instance-member-key",
+    "src/Builder/From.js~From#key",
+    "member"
+  ],
+  [
+    "src/builder/from.js~from#resolve",
+    "class/src/Builder/From.js~From.html#instance-method-resolve",
+    "src/Builder/From.js~From#resolve",
+    "method"
+  ],
+  [
+    "src/builder/from.js~from#resolvelinkarray",
+    "class/src/Builder/From.js~From.html#instance-method-resolveLinkArray",
+    "src/Builder/From.js~From#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/from.js~from#resolvelinkobject",
+    "class/src/Builder/From.js~From.html#instance-method-resolveLinkObject",
+    "src/Builder/From.js~From#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/from.js~from#resolvelinkstring",
+    "class/src/Builder/From.js~From.html#instance-method-resolveLinkString",
+    "src/Builder/From.js~From#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder/from.js~from#table",
+    "class/src/Builder/From.js~From.html#instance-member-table",
+    "src/Builder/From.js~From#table",
+    "member"
+  ],
+  [
+    "src/builder/group.js",
+    "file/src/Builder/Group.js.html",
+    "src/Builder/Group.js",
+    "file"
+  ],
+  [
+    "src/builder/group.js~group#initbuilder",
+    "class/src/Builder/Group.js~Group.html#instance-method-initBuilder",
+    "src/Builder/Group.js~Group#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/group.js~group#key",
+    "class/src/Builder/Group.js~Group.html#instance-member-key",
+    "src/Builder/Group.js~Group#key",
+    "member"
+  ],
+  [
+    "src/builder/group.js~group#resolvelinkarray",
+    "class/src/Builder/Group.js~Group.html#instance-method-resolveLinkArray",
+    "src/Builder/Group.js~Group#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/group.js~group#resolvelinkobject",
+    "class/src/Builder/Group.js~Group.html#instance-method-resolveLinkObject",
+    "src/Builder/Group.js~Group#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/group.js~group#resolvelinkstring",
+    "class/src/Builder/Group.js~Group.html#instance-method-resolveLinkString",
+    "src/Builder/Group.js~Group#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder/having.js",
+    "file/src/Builder/Having.js.html",
+    "src/Builder/Having.js",
+    "file"
+  ],
+  [
+    "src/builder/having.js~having#initbuilder",
+    "class/src/Builder/Having.js~Having.html#instance-method-initBuilder",
+    "src/Builder/Having.js~Having#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/having.js~having#key",
+    "class/src/Builder/Having.js~Having.html#instance-member-key",
+    "src/Builder/Having.js~Having#key",
+    "member"
+  ],
+  [
+    "src/builder/join.js",
+    "file/src/Builder/Join.js.html",
+    "src/Builder/Join.js",
+    "file"
+  ],
+  [
+    "src/builder/join.js~join#constructjoin",
+    "class/src/Builder/Join.js~Join.html#instance-method-constructJoin",
+    "src/Builder/Join.js~Join#constructJoin",
+    "method"
+  ],
+  [
+    "src/builder/join.js~join#initbuilder",
+    "class/src/Builder/Join.js~Join.html#instance-method-initBuilder",
+    "src/Builder/Join.js~Join#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/join.js~join#key",
+    "class/src/Builder/Join.js~Join.html#instance-member-key",
+    "src/Builder/Join.js~Join#key",
+    "member"
+  ],
+  [
+    "src/builder/join.js~join#resolvelinkarray",
+    "class/src/Builder/Join.js~Join.html#instance-method-resolveLinkArray",
+    "src/Builder/Join.js~Join#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/join.js~join#resolvelinkobject",
+    "class/src/Builder/Join.js~Join.html#instance-method-resolveLinkObject",
+    "src/Builder/Join.js~Join#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/join.js~join#resolvelinkstring",
+    "class/src/Builder/Join.js~Join.html#instance-method-resolveLinkString",
+    "src/Builder/Join.js~Join#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder/order.js",
+    "file/src/Builder/Order.js.html",
+    "src/Builder/Order.js",
+    "file"
+  ],
+  [
+    "src/builder/order.js~order#constructorder",
+    "class/src/Builder/Order.js~Order.html#instance-method-constructOrder",
+    "src/Builder/Order.js~Order#constructOrder",
+    "method"
+  ],
+  [
+    "src/builder/order.js~order#initbuilder",
+    "class/src/Builder/Order.js~Order.html#instance-method-initBuilder",
+    "src/Builder/Order.js~Order#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/order.js~order#key",
+    "class/src/Builder/Order.js~Order.html#instance-member-key",
+    "src/Builder/Order.js~Order#key",
+    "member"
+  ],
+  [
+    "src/builder/order.js~order#resolvelinkarray",
+    "class/src/Builder/Order.js~Order.html#instance-method-resolveLinkArray",
+    "src/Builder/Order.js~Order#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/order.js~order#resolvelinkobject",
+    "class/src/Builder/Order.js~Order.html#instance-method-resolveLinkObject",
+    "src/Builder/Order.js~Order#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/order.js~order#resolvelinkstring",
+    "class/src/Builder/Order.js~Order.html#instance-method-resolveLinkString",
+    "src/Builder/Order.js~Order#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder/prefix.js",
+    "file/src/Builder/Prefix.js.html",
+    "src/Builder/Prefix.js",
+    "file"
+  ],
+  [
+    "src/builder/prefix.js~prefix#context",
+    "class/src/Builder/Prefix.js~Prefix.html#instance-member-context",
+    "src/Builder/Prefix.js~Prefix#context",
+    "member"
+  ],
+  [
+    "src/builder/prefix.js~prefix#initbuilder",
+    "class/src/Builder/Prefix.js~Prefix.html#instance-method-initBuilder",
+    "src/Builder/Prefix.js~Prefix#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/prefix.js~prefix#key",
+    "class/src/Builder/Prefix.js~Prefix.html#instance-member-key",
+    "src/Builder/Prefix.js~Prefix#key",
+    "member"
+  ],
+  [
+    "src/builder/prefix.js~prefix#prefix",
+    "class/src/Builder/Prefix.js~Prefix.html#instance-member-prefix",
+    "src/Builder/Prefix.js~Prefix#prefix",
+    "member"
+  ],
+  [
+    "src/builder/prefix.js~prefix#resolve",
+    "class/src/Builder/Prefix.js~Prefix.html#instance-method-resolve",
+    "src/Builder/Prefix.js~Prefix#resolve",
+    "method"
+  ],
+  [
+    "src/builder/select.js",
+    "file/src/Builder/Select.js.html",
+    "src/Builder/Select.js",
+    "file"
+  ],
+  [
+    "src/builder/select.js~select#initbuilder",
+    "class/src/Builder/Select.js~Select.html#instance-method-initBuilder",
+    "src/Builder/Select.js~Select#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/select.js~select#key",
+    "class/src/Builder/Select.js~Select.html#instance-member-key",
+    "src/Builder/Select.js~Select#key",
+    "member"
+  ],
+  [
+    "src/builder/select.js~select#resolvelinkarray",
+    "class/src/Builder/Select.js~Select.html#instance-method-resolveLinkArray",
+    "src/Builder/Select.js~Select#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/select.js~select#resolvelinkobject",
+    "class/src/Builder/Select.js~Select.html#instance-method-resolveLinkObject",
+    "src/Builder/Select.js~Select#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/select.js~select#resolvelinkstring",
+    "class/src/Builder/Select.js~Select.html#instance-method-resolveLinkString",
+    "src/Builder/Select.js~Select#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builder/table.js",
+    "file/src/Builder/Table.js.html",
+    "src/Builder/Table.js",
+    "file"
+  ],
+  [
+    "src/builder/table.js~table#context",
+    "class/src/Builder/Table.js~Table.html#instance-member-context",
+    "src/Builder/Table.js~Table#context",
+    "member"
+  ],
+  [
+    "src/builder/table.js~table#initbuilder",
+    "class/src/Builder/Table.js~Table.html#instance-method-initBuilder",
+    "src/Builder/Table.js~Table#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/table.js~table#key",
+    "class/src/Builder/Table.js~Table.html#instance-member-key",
+    "src/Builder/Table.js~Table#key",
+    "member"
+  ],
+  [
+    "src/builder/table.js~table#resolve",
+    "class/src/Builder/Table.js~Table.html#instance-method-resolve",
+    "src/Builder/Table.js~Table#resolve",
+    "method"
+  ],
+  [
+    "src/builder/table.js~table#table",
+    "class/src/Builder/Table.js~Table.html#instance-member-table",
+    "src/Builder/Table.js~Table#table",
+    "member"
+  ],
+  [
+    "src/builder/where.js",
+    "file/src/Builder/Where.js.html",
+    "src/Builder/Where.js",
+    "file"
+  ],
+  [
+    "src/builder/where.js~where#initbuilder",
+    "class/src/Builder/Where.js~Where.html#instance-method-initBuilder",
+    "src/Builder/Where.js~Where#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/where.js~where#key",
+    "class/src/Builder/Where.js~Where.html#instance-member-key",
+    "src/Builder/Where.js~Where#key",
+    "member"
+  ],
+  [
+    "src/builder/where.js~where#resolvelinkarray",
+    "class/src/Builder/Where.js~Where.html#instance-method-resolveLinkArray",
+    "src/Builder/Where.js~Where#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/where.js~where#resolvelinkobject",
+    "class/src/Builder/Where.js~Where.html#instance-method-resolveLinkObject",
+    "src/Builder/Where.js~Where#resolveLinkObject",
+    "method"
+  ],
+  [
+    "src/builder/where.js~where#resolvelinkstring",
+    "class/src/Builder/Where.js~Where.html#instance-method-resolveLinkString",
+    "src/Builder/Where.js~Where#resolveLinkString",
+    "method"
+  ],
+  [
+    "src/builders.js",
+    "file/src/Builders.js.html",
+    "src/Builders.js",
+    "file"
+  ],
+  [
     "src/constants.js",
     "file/src/Constants.js.html",
     "src/Constants.js",
@@ -678,6 +1368,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/database.js~database#builder",
+    "class/src/Database.js~Database.html#instance-method-builder",
+    "src/Database.js~Database#builder",
+    "method"
+  ],
+  [
     "src/database.js~database#constructor",
     "class/src/Database.js~Database.html#instance-constructor-constructor",
     "src/Database.js~Database#constructor",
@@ -700,6 +1396,12 @@ window.esdocSearchIndex = [
     "class/src/Database.js~Database.html#instance-member-engine",
     "src/Database.js~Database#engine",
     "member"
+  ],
+  [
+    "src/database.js~database#from",
+    "class/src/Database.js~Database.html#instance-method-from",
+    "src/Database.js~Database#from",
+    "method"
   ],
   [
     "src/database.js~database#hastable",
@@ -753,6 +1455,12 @@ window.esdocSearchIndex = [
     "src/database.js~database#run",
     "class/src/Database.js~Database.html#instance-method-run",
     "src/Database.js~Database#run",
+    "method"
+  ],
+  [
+    "src/database.js~database#select",
+    "class/src/Database.js~Database.html#instance-method-select",
+    "src/Database.js~Database#select",
     "method"
   ],
   [
@@ -1230,279 +1938,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/operator.js",
-    "file/src/Operator.js.html",
-    "src/Operator.js",
-    "file"
-  ],
-  [
-    "src/operator.js~operator#args",
-    "class/src/Operator.js~Operator.html#instance-member-args",
-    "src/Operator.js~Operator#args",
-    "member"
-  ],
-  [
-    "src/operator.js~operator#constructor",
-    "class/src/Operator.js~Operator.html#instance-constructor-constructor",
-    "src/Operator.js~Operator#constructor",
-    "method"
-  ],
-  [
-    "src/operator.js~operator#factory",
-    "class/src/Operator.js~Operator.html#instance-member-factory",
-    "src/Operator.js~Operator#factory",
-    "member"
-  ],
-  [
-    "src/operator.js~operator#initoperator",
-    "class/src/Operator.js~Operator.html#instance-method-initOperator",
-    "src/Operator.js~Operator#initOperator",
-    "method"
-  ],
-  [
-    "src/operator.js~operator#key",
-    "class/src/Operator.js~Operator.html#instance-member-key",
-    "src/Operator.js~Operator#key",
-    "member"
-  ],
-  [
-    "src/operator.js~operator#parent",
-    "class/src/Operator.js~Operator.html#instance-member-parent",
-    "src/Operator.js~Operator#parent",
-    "member"
-  ],
-  [
-    "src/operator.js~operator#resolve",
-    "class/src/Operator.js~Operator.html#instance-method-resolve",
-    "src/Operator.js~Operator#resolve",
-    "method"
-  ],
-  [
-    "src/operator.js~operator#resolvechain",
-    "class/src/Operator.js~Operator.html#instance-method-resolveChain",
-    "src/Operator.js~Operator#resolveChain",
-    "method"
-  ],
-  [
-    "src/operator.js~operator#sql",
-    "class/src/Operator.js~Operator.html#instance-method-sql",
-    "src/Operator.js~Operator#sql",
-    "method"
-  ],
-  [
-    "src/operator.js~operator#sqlfragments",
-    "class/src/Operator.js~Operator.html#instance-method-sqlFragments",
-    "src/Operator.js~Operator#sqlFragments",
-    "method"
-  ],
-  [
-    "src/operator/after.js",
-    "file/src/Operator/After.js.html",
-    "src/Operator/After.js",
-    "file"
-  ],
-  [
-    "src/operator/after.js~after#initoperator",
-    "class/src/Operator/After.js~After.html#instance-method-initOperator",
-    "src/Operator/After.js~After#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/after.js~after#key",
-    "class/src/Operator/After.js~After.html#instance-member-key",
-    "src/Operator/After.js~After#key",
-    "member"
-  ],
-  [
-    "src/operator/before.js",
-    "file/src/Operator/Before.js.html",
-    "src/Operator/Before.js",
-    "file"
-  ],
-  [
-    "src/operator/before.js~before#initoperator",
-    "class/src/Operator/Before.js~Before.html#instance-method-initOperator",
-    "src/Operator/Before.js~Before#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/before.js~before#key",
-    "class/src/Operator/Before.js~Before.html#instance-member-key",
-    "src/Operator/Before.js~Before#key",
-    "member"
-  ],
-  [
-    "src/operator/database.js",
-    "file/src/Operator/Database.js.html",
-    "src/Operator/Database.js",
-    "file"
-  ],
-  [
-    "src/operator/database.js~database#database",
-    "class/src/Operator/Database.js~Database.html#instance-member-database",
-    "src/Operator/Database.js~Database#database",
-    "member"
-  ],
-  [
-    "src/operator/database.js~database#dump",
-    "class/src/Operator/Database.js~Database.html#instance-method-dump",
-    "src/Operator/Database.js~Database#dump",
-    "method"
-  ],
-  [
-    "src/operator/database.js~database#initoperator",
-    "class/src/Operator/Database.js~Database.html#instance-method-initOperator",
-    "src/Operator/Database.js~Database#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/database.js~database#resolve",
-    "class/src/Operator/Database.js~Database.html#instance-method-resolve",
-    "src/Operator/Database.js~Database#resolve",
-    "method"
-  ],
-  [
-    "src/operator/from.js",
-    "file/src/Operator/From.js.html",
-    "src/Operator/From.js",
-    "file"
-  ],
-  [
-    "src/operator/from.js~from#initoperator",
-    "class/src/Operator/From.js~From.html#instance-method-initOperator",
-    "src/Operator/From.js~From#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/from.js~from#key",
-    "class/src/Operator/From.js~From.html#instance-member-key",
-    "src/Operator/From.js~From#key",
-    "member"
-  ],
-  [
-    "src/operator/group.js",
-    "file/src/Operator/Group.js.html",
-    "src/Operator/Group.js",
-    "file"
-  ],
-  [
-    "src/operator/group.js~group#initoperator",
-    "class/src/Operator/Group.js~Group.html#instance-method-initOperator",
-    "src/Operator/Group.js~Group#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/group.js~group#key",
-    "class/src/Operator/Group.js~Group.html#instance-member-key",
-    "src/Operator/Group.js~Group#key",
-    "member"
-  ],
-  [
-    "src/operator/having.js",
-    "file/src/Operator/Having.js.html",
-    "src/Operator/Having.js",
-    "file"
-  ],
-  [
-    "src/operator/having.js~having#initoperator",
-    "class/src/Operator/Having.js~Having.html#instance-method-initOperator",
-    "src/Operator/Having.js~Having#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/having.js~having#key",
-    "class/src/Operator/Having.js~Having.html#instance-member-key",
-    "src/Operator/Having.js~Having#key",
-    "member"
-  ],
-  [
-    "src/operator/join.js",
-    "file/src/Operator/Join.js.html",
-    "src/Operator/Join.js",
-    "file"
-  ],
-  [
-    "src/operator/join.js~join#initoperator",
-    "class/src/Operator/Join.js~Join.html#instance-method-initOperator",
-    "src/Operator/Join.js~Join#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/join.js~join#key",
-    "class/src/Operator/Join.js~Join.html#instance-member-key",
-    "src/Operator/Join.js~Join#key",
-    "member"
-  ],
-  [
-    "src/operator/order.js",
-    "file/src/Operator/Order.js.html",
-    "src/Operator/Order.js",
-    "file"
-  ],
-  [
-    "src/operator/order.js~order#initoperator",
-    "class/src/Operator/Order.js~Order.html#instance-method-initOperator",
-    "src/Operator/Order.js~Order#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/order.js~order#key",
-    "class/src/Operator/Order.js~Order.html#instance-member-key",
-    "src/Operator/Order.js~Order#key",
-    "member"
-  ],
-  [
-    "src/operator/select.js",
-    "file/src/Operator/Select.js.html",
-    "src/Operator/Select.js",
-    "file"
-  ],
-  [
-    "src/operator/select.js~select#initoperator",
-    "class/src/Operator/Select.js~Select.html#instance-method-initOperator",
-    "src/Operator/Select.js~Select#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/select.js~select#key",
-    "class/src/Operator/Select.js~Select.html#instance-member-key",
-    "src/Operator/Select.js~Select#key",
-    "member"
-  ],
-  [
-    "src/operator/where.js",
-    "file/src/Operator/Where.js.html",
-    "src/Operator/Where.js",
-    "file"
-  ],
-  [
-    "src/operator/where.js~where#initoperator",
-    "class/src/Operator/Where.js~Where.html#instance-method-initOperator",
-    "src/Operator/Where.js~Where#initOperator",
-    "method"
-  ],
-  [
-    "src/operator/where.js~where#key",
-    "class/src/Operator/Where.js~Where.html#instance-member-key",
-    "src/Operator/Where.js~Where#key",
-    "member"
-  ],
-  [
-    "src/operators.js",
-    "file/src/Operators.js.html",
-    "src/Operators.js",
+    "src/proxy/builder.js",
+    "file/src/Proxy/Builder.js.html",
+    "src/Proxy/Builder.js",
     "file"
   ],
   [
     "src/proxy/model.js",
     "file/src/Proxy/Model.js.html",
     "src/Proxy/Model.js",
-    "file"
-  ],
-  [
-    "src/proxy/operator.js",
-    "file/src/Proxy/Operator.js.html",
-    "src/Proxy/Operator.js",
     "file"
   ],
   [
@@ -1671,6 +2115,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#anyrow",
     "class/src/Table.js~Table.html#instance-method-anyRow",
     "src/Table.js~Table#anyRow",
+    "method"
+  ],
+  [
+    "src/table.js~table#builder",
+    "class/src/Table.js~Table.html#instance-method-builder",
+    "src/Table.js~Table#builder",
     "method"
   ],
   [
@@ -2061,6 +2511,12 @@ window.esdocSearchIndex = [
     "src/utils/relation.js",
     "file/src/Utils/Relation.js.html",
     "src/Utils/Relation.js",
+    "file"
+  ],
+  [
+    "src/utils/tags.js",
+    "file/src/Utils/Tags.js.html",
+    "src/Utils/Tags.js",
     "file"
   ]
 ]

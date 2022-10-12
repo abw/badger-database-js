@@ -1,0 +1,821 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | Badger Database</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Javascript database abstraction layer"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger Database"><meta property="twitter:description" content="Javascript database abstraction layer"></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-database-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/installation.html"><a href="manual/installation.html" data-ice="link">Installation</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#npm" data-ice="link">npm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#pnpm" data-ice="link">pnpm</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/installation.html"><a href="manual/installation.html#yarn" data-ice="link">yarn</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/connecting.html"><a href="manual/connecting.html" data-ice="link">Connecting</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-string" data-ice="link">Connection String</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameters" data-ice="link">Connection Parameters</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#connection-parameter-aliases" data-ice="link">Connection Parameter Aliases</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#environment-variables" data-ice="link">Environment Variables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#pool-options" data-ice="link">Pool Options</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/connecting.html"><a href="manual/connecting.html#disconnecting" data-ice="link">Disconnecting</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/basic_queries.html"><a href="manual/basic_queries.html" data-ice="link">Basic Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/basic_queries.html"><a href="manual/basic_queries.html#run-query--values--options-" data-ice="link">run(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/basic_queries.html"><a href="manual/basic_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/basic_queries.html"><a href="manual/basic_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/basic_queries.html"><a href="manual/basic_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/named_queries.html"><a href="manual/named_queries.html" data-ice="link">Named Queries</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/query_fragments.html"><a href="manual/query_fragments.html" data-ice="link">Query Fragments</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/query_builder.html"><a href="manual/query_builder.html" data-ice="link">Query Builder</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#examples" data-ice="link">Examples</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#starting-a-query-chain" data-ice="link">Starting a Query Chain</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#chainability" data-ice="link">Chainability</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html" data-ice="link">Query Builder Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#select-columns-" data-ice="link">select(columns)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#from-table-" data-ice="link">from(table)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#where-criteria-" data-ice="link">where(criteria)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#join-table-" data-ice="link">join(table)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#order-columns-" data-ice="link">order(columns)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#group-columns-" data-ice="link">group(columns)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#columns-columns-" data-ice="link">columns(columns)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#table-name-" data-ice="link">table(name)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#prefix-prefix-" data-ice="link">prefix(prefix)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#one-values-" data-ice="link">one(values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#any-values-" data-ice="link">any(values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#all-values-" data-ice="link">all(values)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_columns.html"><a href="manual/table_columns.html" data-ice="link">Table Columns</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_methods.html"><a href="manual/table_methods.html" data-ice="link">Table Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows-set--where--options-" data-ice="link">updateAllRows(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerow-where--options-" data-ice="link">oneRow(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrow-where--options-" data-ice="link">anyRow(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#allrows-where--options-" data-ice="link">allRows(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerecord-where--options-" data-ice="link">oneRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrecord-where--options-" data-ice="link">anyRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#allrecords-where--options-" data-ice="link">allRecords(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_class.html"><a href="manual/table_class.html" data-ice="link">Table Class</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_class.html"><a href="manual/table_class.html#table-configuration" data-ice="link">Table Configuration</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/records.html"><a href="manual/records.html" data-ice="link">Records</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/record_methods.html"><a href="manual/record_methods.html" data-ice="link">Record Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#update-set-" data-ice="link">update(set)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#delete--" data-ice="link">delete()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_methods.html"><a href="manual/record_methods.html#relation-name-" data-ice="link">relation(name)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/record_class.html"><a href="manual/record_class.html" data-ice="link">Record Class</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/record_class.html"><a href="manual/record_class.html#record-configuration-options" data-ice="link">Record Configuration Options</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/relations.html"><a href="manual/relations.html" data-ice="link">Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#relation-types" data-ice="link">Relation Types</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#defining-table-relations" data-ice="link">Defining Table Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#custom-queries" data-ice="link">Custom Queries</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/model.html"><a href="manual/model.html" data-ice="link">Model</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/waiter.html"><a href="manual/waiter.html" data-ice="link">Waiter</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/extending.html"><a href="manual/extending.html" data-ice="link">Extending</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-class" data-ice="link">Custom Tables Class</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/limitations.html"><a href="manual/limitations.html" data-ice="link">Limitations</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/examples.html"><a href="manual/examples.html" data-ice="link">Examples</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="query-builder-methods">Query Builder Methods</h1><p>This page describes all the query builder methods.</p>
+<p>They all work in a similar way with respect to the arguments
+they accept.  The short form is to pass a string which may have
+some additional processing applied to it (typically splitting
+a whitespace delimited string into multiple tokens).  Where there
+are two, three or four possible arguments, an array can be passed.
+Or an object can be passed with explicit properties for the different
+parameters.</p>
+<p>All the methods can generate raw SQL.  This can be specified by
+passing an object with a single <code>sql</code> property:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select({ sql: 'COUNT(id) AS n' })</code></code></pre>
+<p>Or using the <code>sql</code> function to create a tagged template literal:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
+
+db
+  .select(sql`COUNT(id) AS n`)</code></code></pre>
+<p>All of the methods can be called multiple time, or passed multiple
+arguments.  They both have the same effect.  Generally speaking,
+you can call the methods in any order and the query builder will
+generate the SQL query with them in the correct order.</p>
+<p>For the sake of brevity these examples assume that you've already
+connected to a database and stored the connection in the <code>db</code> variable.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
+
+async function main() {
+  const db = connect({ database: 'sqlite:memory' });
+
+  // ...examples would go here
+}</code></code></pre>
+<p>The examples show the SQL generated by the fragment.  In many cases they're
+not complete queries and we've omitted the final <code>.sql()</code> method call
+which is called internally to generate the SQL.</p>
+<p>In these example we're assuming that the database is Sqlite which
+quotes table and columns names using double quotes, e.g. <code>"user"."id"</code>.
+For Mysql the names will be quoted using backticks.  Examples that
+show placeholders also assume Sqlite (and Mysql) which uses question
+marks, e.g. <code>?</code>.  For Postgress the placeholders are of the form <code>$1</code>,
+<code>$2</code>, <code>$3</code>, etc.</p>
+<h2 id="select-columns-">select(columns)</h2><p>This method is used to specify one or more columns that you want to
+select.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id');
+// -&gt; SELECT "id"</code></code></pre>
+<p>You can specify multiple columns using the shorthand syntax as a
+string of whitespace delimited table names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id email');
+// -&gt; SELECT "id", "email"</code></code></pre>
+<p>Commas (with optional whitespace following) can also be used to
+delimit column names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id, email');
+// -&gt; SELECT "id", "email"</code></code></pre>
+<p>Columns can have the table name included in them.  Both the table
+and columns names will be automatically quoted.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('user.id user.email');
+// -&gt; SELECT "user"."id", "user"."email"</code></code></pre>
+<p>You can specify <code>*</code> to select all columns.  This will not be quoted.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('*');
+// -&gt; SELECT *</code></code></pre>
+<p>You can also use <code>*</code> to select all columns from a table.  The table name
+will be automatically quoted but the asterisk will not.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('users.*');
+// -&gt; SELECT "users".*</code></code></pre>
+<p>You can pass an object to the method containing the <code>columns</code> property.
+The format for the value is either a single column name or multiple columns
+delimited with whitespace or commas/whitespace, as shown in the previous
+examples.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ columns: 'id email company.*' });
+// -&gt; SELECT "id", "email", "company".*</code></code></pre>
+<p>You can also define the <code>table</code> as a property to have the table name automatically
+added to the column names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ table: 'users', columns: 'id email' });
+// -&gt; SELECT "users"."id", "users"."email"</code></code></pre>
+<p>The <code>prefix</code> property can be used to automatically create aliases for the columns.
+The prefix will be attached to the front of each column name.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ columns: 'id email', prefix: 'user_' });
+// -&gt; SELECT "id" AS "user_id", "email" AS "user_email"</code></code></pre>
+<p>This also works in conjunction with the <code>table</code> property.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ table: 'users', columns: 'id email', prefix: 'user_' });
+// -&gt; SELECT "users"."id" AS "user_id", "users"."email" AS "user_email"</code></code></pre>
+<p>An object can also contain a <code>column</code> item.  In this case it is assumed to
+be a single column name is not split into separate columns.  The optional
+<code>as</code> property can be provided to create an alias for the column.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ column: 'email', as: 'email_address' });
+// -&gt; SELECT "email" AS "email_address"</code></code></pre>
+<p>The <code>table</code> property can also be provided in this case.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ table: 'users', column: 'email', as: 'email_address' });
+// -&gt; SELECT "users"."email" AS "email_address"</code></code></pre>
+<p>Or you can include the table name in the column.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ column: 'users.email', as: 'email_address' });
+// -&gt; SELECT "users"."email" AS "email_address"</code></code></pre>
+<p>The shorthand format for creating a column alias is to pass an Array of
+either two elements (the column name and alias) or three (the table name,
+column name and alias).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select(['email', 'email_address' });
+// -&gt; SELECT "email" AS "email_address"</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select(['users', 'email', 'email_address' });
+// -&gt; SELECT "users"."email" AS "email_address"</code></code></pre>
+<p>You can use raw SQL to define the table columns.  The explicit way is to
+pass an object with a <code>sql</code> property.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select({ sql: '"email" AS "email_address"' });
+// -&gt; SELECT "email" AS "email_address"</code></code></pre>
+<p>Or you can use the <code>sql</code> function to create a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
+db.select(sql`"email" AS "email_address"`);
+// -&gt; SELECT "email" AS "email_address"</code></code></pre>
+<p>You can call the method multiple times.  The column names will all be
+collected after the <code>SELECT</code> keyword.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id email').select({ table: 'companies', column: 'name', as: 'company_name' });
+// -&gt; SELECT "id", "email", "companies"."name" AS "company_name"</code></code></pre>
+<p>Or you can pass multiple arguments to a single method call.  Each argument
+can be any of the values described above.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id email', { table: 'companies', column: 'name', as: 'company_name' });
+// -&gt; SELECT "id", "email", "companies"."name" AS "company_name"</code></code></pre>
+<h2 id="from-table-">from(table)</h2><p>This method is used to specify one or more tables that you want to
+select from.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from('users');
+// -&gt; FROM "users"</code></code></pre>
+<p>You can specify multiple tables using the shorthand syntax as a
+string of whitespace delimited table names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from('users companies');
+// -&gt; FROM "users", "companies"</code></code></pre>
+<p>Commas (with optional whitespace following) can also be used to
+delimit table names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from('users, companies');
+// -&gt; FROM "users", "companies"</code></code></pre>
+<p>You can pass an object to the method containing the <code>tables</code> property.
+The format for the value is either a single table name or multiple tables
+delimited with either whitespace or commas, as shown in the previous
+examples.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from({ tables: 'users, companies' });
+// -&gt; FROM "users", "companies"</code></code></pre>
+<p>An object can also contain a <code>table</code> item.  In this case it is assumed to
+be a single table name is not split into separate table names.  The optional
+<code>as</code> property can be provided to create an alias for the table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from({ table: 'users', as: 'people' });
+// -&gt; FROM "users" AS "people"</code></code></pre>
+<p>The shorthand format for creating a table alias is to pass an Array of two
+elements: the table name and alias.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from(['users', 'people']);
+// -&gt; FROM "users" AS "people"</code></code></pre>
+<p>You can use raw SQL to define the table name.  The explicit way is to
+pass an object with a <code>sql</code> property.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from({ sql: '"users" AS "people"' });
+// -&gt; FROM "users" AS "people"</code></code></pre>
+<p>Or you can use the <code>sql</code> function to create a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
+db.from(sql`"users" AS "people"`);
+// -&gt; FROM "users" AS "people"</code></code></pre>
+<p>You can call the method multiple times.  The tables names will all be
+collected after the <code>FROM</code> keyword.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from(['users', 'people']).from('companies').from({ table: 'employees' })
+// -&gt; FROM "users" AS "people", "companies", "employees"</code></code></pre>
+<p>Or you can pass multiple arguments to a single method call.  Each argument
+can be any of the values described above.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.from(['users', 'people'], 'companies', { table: 'employees' })
+// -&gt; FROM "users" AS "people", "companies", "employees"</code></code></pre>
+<h2 id="where-criteria-">where(criteria)</h2><p>This method can be used to specify the criteria for matching rows.
+You can specify one or more columns that you want to match against.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('name email')
+  .from('users')
+  .where('id')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"=?</code></code></pre>
+<p>The query will be constructed with placeholders matching the specified
+column or columns.</p>
+<p>Values for placeholders should be passed as an array to the
+<a href="#one-values-">one()</a>, <a href="#any-values-">any()</a> or <a href="#all-values-">all()</a> methods.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
+  .select('name email')
+  .from('users')
+  .where('id')
+  .one([12345])</code></code></pre>
+<p>You can specify multiple columns using the shorthand syntax as a
+string of whitespace delimited table names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('name email')
+  .from('users')
+  .where('id name')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"=? AND "name"=?</code></code></pre>
+<p>Commas (with optional whitespace following) can also be used to
+delimit column names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('name email')
+  .from('users')
+  .where('id, name')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"=? AND "name"=?</code></code></pre>
+<p>Columns can have the table name included in them.  Both the table
+and columns names will be automatically quoted.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('name email')
+  .from('users')
+  .where('users.id')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "users"."id"=?</code></code></pre>
+<p>You can pass an object to the method mapping column names to their respective values.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
+  .select('id name email')
+  .from('users')
+  .where({ id: 12345 })
+  .one()</code></code></pre>
+<p>The query will still be constructed with placeholder values but all the values
+will be collected and automatically provided to the
+<a href="#one-values-">one()</a>, <a href="#any-values-">any()</a> or <a href="#all-values-">all()</a> methods.</p>
+<p>You can pass additional values to those method to provide any additional values.
+Be warned that they will always be added <em>after</em> values specified in the query.</p>
+<p>This will work as intended:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
+  .select('id name email')
+  .from('users')
+  .where({ id: 12345 })     // placeholder for id
+  .where('name')            // placeholder for name
+  .one(['Bobby Badger'])    // values are [12345, 'Bobby Badger']</code></code></pre>
+<p>But this won't:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// DON'T DO THIS!
+const row = await db
+  .select('id name email')
+  .from('users')
+  .where('name')            // placeholder for name
+  .where({ id: 12345 })     // placeholder for id
+  .one(['Bobby Badger'])    // ERROR! values are [12345, 'Bobby Badger']</code></code></pre>
+<p>You can also provide values as an array of <code>[column, value]</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
+  .select('id name email')
+  .from('users')
+  .where(['id', '12345'])
+  .one()</code></code></pre>
+<p>By default the comparison operator is <code>=</code>.  You can provide an array of three
+values to set a different comparison operator: <code>[column, operator, value]</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('id name email')
+  .from('users')
+  .where(['id', '&gt;', '12345'])
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id"&gt;?</code></code></pre>
+<p>You can also set a comparison operator using an object by setting the value
+to a two element array: <code>[operator, value]</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('id name email')
+  .from('users')
+  .where({ id: ['&gt;', '12345']})
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id"&gt;?</code></code></pre>
+<p>Or if you want to provide the value later then use a single element array: <code>[operator]</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('id name email')
+  .from('users')
+  .where({ id: ['&gt;']})
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id"&gt;?</code></code></pre>
+<p>You can use raw SQL to define the criteria columns.  The explicit way is to
+pass an object with a <code>sql</code> property.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('id name email')
+  .from('users')
+  .where({ sql: 'id &gt; ?' })
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE id &gt; ?</code></code></pre>
+<p>Or you can use the <code>sql</code> function to create a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('id name email')
+  .from('users')
+  .where(sql`id &gt; ?`)
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE id &gt; ?</code></code></pre>
+<p>You can call the method multiple times.  The criteria will all be
+collected after the <code>WHERE</code> keyword and combined with <code>AND</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('name email')
+  .from('users')
+  .where(['id', '&gt;', 12345])
+  .where('name')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"&gt;? AND "name"=?</code></code></pre>
+<p>Or you can pass multiple arguments to a single method call.  Each argument
+can be any of the values described above.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('name email')
+  .from('users')
+  .where(['id', '&gt;', 12345], 'name')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "id"&gt;? AND "name"=?</code></code></pre>
+<h2 id="join-table-">join(table)</h2><p>This method can be used to join tables.  A string can be passed as
+a shorthand syntax of the form <code>from=table.to</code>, where <code>from</code> is the
+column you're joining from, <code>table</code> is the table you're joining onto
+and <code>to</code> is the column in the joined table that should match the value
+in the <code>from</code> column.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join('user.company_id=companies.id')
+// -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+<p>You can pass an array to the method containing 2, 3, or 4 elements.
+When using two elements, the first should be the table column you're
+joining from and the second should be the table column you're joining to.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join(['user.company_id', 'companies.id'])
+// -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+<p>The three element version has the destination table and column separated.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join(['user.company_id', 'companies', 'id'])
+// -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+<p>The four element version allows you to specify the join type at the
+beginning.  Valid types are <code>left</code>, <code>right</code>, <code>inner</code> and <code>full</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join(['left', 'user.company_id', 'companies', 'id'])
+// -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+<p>You can pass an object to the method containing the <code>from</code>, <code>table</code>
+and <code>to</code> properties, and optionally the <code>type</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join({ type: 'left', from: 'user.company_id', table: 'companies', to: 'id' })
+// -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+<p>Or you can combine the table name and column in the <code>to</code> property.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email')
+  .select(['companies.name', 'company_name'])
+  .join({ type: 'left', from: 'user.company_id', to: 'companies.id' })
+// -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
+//    FROM "users"
+//    LEFT JOIN "companies" ON "user"."company_id" = "companies"."id"</code></code></pre>
+<p>You know the drill, right?  If the method doesn't do what you need then you
+can use raw SQL to define the joins, either with an object containing a
+<code>sql</code> property:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join({ sql: 'JOIN employees ON user.id=employees.user_id' })
+// -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN employees ON user.id=employees.user_id</code></code></pre>
+<p>Or using the <code>sql</code> function to create a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join(sql`JOIN employees ON user.id=employees.user_id`)
+// -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN employees ON user.id=employees.user_id</code></code></pre>
+<p>And just like the other methods, you can call the method multiple times.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join('user.id=employees.user_id')
+  .join('employees.company_id=companies.id')
+// -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "companies" ON "employees"."company_id" = "companies"."id"</code></code></pre>
+<p>Or you can pass multiple arguments to a single method call.  Each argument
+can be any of the values described above.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .from('users')
+  .select('name email employee.job_title')
+  .select(['companies.name', 'company_name'])
+  .join('user.id=employees.user_id', 'employees.company_id=companies.id')
+// -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+//    FROM "users"
+//    JOIN "employees" ON "user"."id" = "employees"."user_id"
+//    JOIN "companies" ON "employees"."company_id" = "companies"."id"</code></code></pre>
+<h2 id="order-columns-">order(columns)</h2><p>This method can be used to create an <code>ORDER BY</code> clause.  There's also an
+<code>orderBy()</code> alias for the method if you prefer something a little closer
+in name to the SQL it generates.</p>
+<p>A string can be passed containing one or more columns.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order('name')
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "name"</code></code></pre>
+<p>Columns can be delimited by whitespace or commas, as usual.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order('name, email')
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email"</code></code></pre>
+<p>Columns can include the table name for disambiguation.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order('users.name users.email')
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "users"."name", "users"."email"</code></code></pre>
+<p>The default order is <code>ASC</code> for "ascending".  To set a different sort
+order (e.g. <code>DESC</code> for "descending"), pass a two element array with the
+columns as the first element and <code>DESC</code> as the second.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order(['name email', 'DESC'])
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email" DESC</code></code></pre>
+<p>You can also pass an objecting containing the <code>column</code> or <code>columns</code> property.
+The <code>column</code> is assumed to be a single column whereas <code>columns</code> can contain
+multiple columns separated by whitespace or commas in the usual way.  In addition
+you can specify either <code>asc</code> or <code>desc</code> as a boolean flag to set the sort direction
+to be ascending or descending, respectively.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order({ columns: 'name email', desc: true })
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email" DESC</code></code></pre>
+<p>Or use <code>direction</code> (or <code>dir</code> for short) set to either <code>ASC</code> or <code>DESC</code> if you prefer.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order({ columns: 'name email', dir: 'DESC' })
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "name", "email" DESC</code></code></pre>
+<p>Of course it also supports raw SQL, either using a <code>sql</code> property in an object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order({ sql: 'name DESC, email' })
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY name DESC, email</code></code></pre>
+<p>Or using a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order(sql`name DESC, email`)
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY name DESC, email</code></code></pre>
+<p>You can call the method multiple times or pass multiple arguments to it.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order(['name', 'DESC'], 'email')
+// -&gt; SELECT *
+//    FROM "users"
+//    ORDER BY "name" DESC, "email"</code></code></pre>
+<h2 id="group-columns-">group(columns)</h2><p>This method can be used to create a <code>GROUP BY</code> clause.  There's also a
+<code>groupBy()</code> alias for it.</p>
+<p>A string can be passed containing one or more columns.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select(sql`company_id, COUNT(id) AS employees`)
+  .from('users')
+  .group('company_id')
+// -&gt; SELECT company_id, COUNT(id) AS employees
+//    FROM "users"
+//    GROUP BY "company_id"</code></code></pre>
+<p>Multiple columns can be delimited by whitespace or commas and can contain
+a table name.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .group('users.company_id, users.start_year')
+// -&gt; SELECT *
+//    FROM "users"
+//    GROUP BY "users"."company_id", "users"."start_year"</code></code></pre>
+<p>You can also pass an objecting containing the <code>column</code> or <code>columns</code> property.
+The <code>column</code> is assumed to be a single column whereas <code>columns</code> can contain
+multiple columns separated by whitespace or commas in the usual way.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .group({ columns: 'company_id, year' })
+// -&gt; SELECT *
+//    FROM "users"
+//    GROUP BY "company_id", "year"</code></code></pre>
+<p>As you might expect it also supports raw SQL, either using a <code>sql</code> property in an object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .group({ sql: 'company_id' })
+// -&gt; SELECT *
+//    FROM "users"
+//    GROUP BY company_id</code></code></pre>
+<p>Or using a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .group(sql`company_id`)
+// -&gt; SELECT *
+//    FROM "users"
+//    GROUP BY company_id</code></code></pre>
+<p>You can call the method multiple times or pass multiple arguments to it.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db
+  .select('*')
+  .from('users')
+  .order('company_id', 'start_year')
+// -&gt; SELECT *
+//    FROM "users"
+//    GROUP BY "company_id", "start_year"</code></code></pre>
+<h2 id="columns-columns-">columns(columns)</h2><p>This is just like <a href="#select-columns-">select()</a> with one important
+distinction.  If you don't explicitly specify a table name then it
+will automatically attach the column names to the most recently
+specified table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .from('users')
+  .columns('id email');
+// -&gt; SELECT "users"."id", "users"."email"
+//    FROM "users"</code></code></pre>
+<p>You can interleave it with multiple calls to <a href="#from-table-">from()</a>
+to access columns from different tables.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .from('users')
+  .columns('id email');
+  .from('companies')
+  .columns('name');
+// -&gt; SELECT "users"."id", "users"."email", "companies"."name"
+//    FROM "users"</code></code></pre>
+<p>If you specify multiple table names in <a href="#from-table-">from()</a> then the
+last one will be used.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .from('companies users')
+  .columns('id name');
+// -&gt; SELECT "users"."id", "users"."name"
+//    FROM "companies", "users"</code></code></pre>
+<p>If you specify a table with an alias then the alias will be used.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .from({ table: "users", as: "people" })
+  .columns('id name');
+// -&gt; SELECT "people"."id", "people"."name"
+//    FROM "users" AS "people"</code></code></pre>
+<h2 id="table-name-">table(name)</h2><p>This can be used in conjuction with <a href="#columns-columns-">columns()</a> to select
+a table to attach columns to.  The table should previously have been specified
+using <a href="#from-table-">from()</a>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .from('users companies')
+  .table('users').columns('id name')
+  .table('companies').columns(['name', 'company_name'])
+// -&gt; SELECT "users"."id", "users"."name", "companies"."name" AS "company_name"
+//    FROM "users", "companies"</code></code></pre>
+<h2 id="prefix-prefix-">prefix(prefix)</h2><p>This can be used in conjuction with <a href="#columns-columns-">columns()</a> to define
+a prefix for subsequent columns.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .from('users companies')
+  .table('users').prefix('user_').columns('id name')
+  .table('companies').prefix('company_').columns('name')
+// -&gt; SELECT "users"."id" AS "user_id", "users"."name" AS "user_name", "companies"."name" AS "company_name"
+//    FROM "users", "companies"</code></code></pre>
+<p>You can clear the current prefix by calling <code>prefix()</code> without any arguments.</p>
+<h2 id="one-values-">one(values)</h2><p>TODO</p>
+<h2 id="any-values-">any(values)</h2><p>TODO</p>
+<h2 id="all-values-">all(values)</h2><p>TODO</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>
