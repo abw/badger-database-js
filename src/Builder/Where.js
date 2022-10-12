@@ -1,5 +1,5 @@
 import Builder from '../Builder.js';
-import { isArray, splitList } from '@abw/badger-utils';
+import { hasValue, isArray, splitList } from '@abw/badger-utils';
 
 const messages = {
   array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, value] or [column, operator, value].',
@@ -27,17 +27,28 @@ export class Where extends Builder {
   resolveLinkArray(criteria) {
     const database = this.lookupDatabase();
     if (criteria.length === 2) {
-      // a two-element array is [column, value]
-      this.addValues(criteria[1]);
+      let match;
+      // a two-element array can be [column, [operator]] or [column, [operator, value]]
+      if (isArray(criteria[1])) {
+        if (hasValue(criteria[1][1])) {
+          this.addValues(criteria[1][1]);
+        }
+        match = [criteria[1][0], undefined];
+      }
+      else {
+        this.addValues(criteria[1]);
+      }
       return database.engine.formatWherePlaceholder(
         criteria[0],
-        undefined,
+        match,
         this.context.placeholder++
       )
     }
     else if (criteria.length === 3) {
       // a two-element array is [column, operator, value]
-      this.addValues(criteria[2]);
+      if (hasValue(criteria[2])) {
+        this.addValues(criteria[2]);
+      }
       return database.engine.formatWherePlaceholder(
         criteria[0],
         [criteria[1], undefined],
