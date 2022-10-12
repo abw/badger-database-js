@@ -1,18 +1,13 @@
 import Builder from '../Builder.js';
-import { QueryBuilderError, thrower } from '../Utils/Error.js';
 import { splitList } from '@abw/badger-utils';
-
-export const throwSelectError = thrower(
-  {
-    array:  'Invalid array with <n> items specified for query builder "select" component. Expected [column, alias] or [table, column, alias].',
-    object: 'Invalid object with "<keys>" properties specified for query builder "select" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
-  },
-  QueryBuilderError
-)
 
 export class Select extends Builder {
   initBuilder() {
     this.key = 'select';
+    this.messages = {
+      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, alias] or [table, column, alias].',
+      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
+    }
   }
 
   resolveLinkString(columns, table, prefix) {
@@ -38,7 +33,7 @@ export class Select extends Builder {
       // a three-element array is [table, column, alias]
       return this.quoteTableColumnAs(...columns)
     }
-    throwSelectError('array', { n: columns.length });
+    this.errorMsg('array', { n: columns.length });
   }
 
   resolveLinkObject(column) {
@@ -60,7 +55,7 @@ export class Select extends Builder {
     if (cols) {
       return this.resolveLinkString(cols, column.table, column.prefix)
     }
-    throwSelectError('object', { keys: Object.keys(column).sort().join(', ') });
+    this.errorMsg('object', { keys: Object.keys(column).sort().join(', ') });
   }
 }
 

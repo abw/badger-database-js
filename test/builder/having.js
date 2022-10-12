@@ -13,27 +13,29 @@ test.before(
 )
 
 test(
-  'column',
+  'having string',
   t => {
-    const query = db.from('users').select('id name email').where('name');
-    t.is( query.sql(), 'SELECT "id", "name", "email"\nFROM "users"\nWHERE "name"=?' );
+    const query = db.builder().having('name');
+    t.is( query.sql(), 'HAVING "name"=?' );
   }
 )
 
 
 test(
-  'columns string',
+  'having multiple columns as string',
   t => {
-    const query = db.from('users').select('id email').where('name email');
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=? AND "email"=?' );
+    const query = db.builder().having('name email');
+    t.is( query.sql(), 'HAVING "name"=? AND "email"=?' );
   }
 )
 
 test(
   'array with two elements',
   t => {
-    const query = db.from('users').select('id email').where(['name', 'Bobby Badger']);
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"=?' );
+    const query = db.builder().having(['name', 'Bobby Badger']);
+    t.is( query.sql(), 'HAVING "name"=?' );
+    t.is( query.allValues().length, 1 );
+    t.is( query.allValues()[0], 'Bobby Badger' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
   }
@@ -42,8 +44,8 @@ test(
 test(
   'array with three elements',
   t => {
-    const query = db.from('users').select('id email').where(['name', '!=', 'Bobby Badger']);
-    t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name"!=?' );
+    const query = db.builder().having(['name', '!=', 'Bobby Badger']);
+    t.is( query.sql(), 'HAVING "name"!=?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
   }
@@ -53,13 +55,14 @@ test(
   'array with four elements',
   t => {
     const error = t.throws(
-      () => db.from('a').where(['users', 'email', 'email_address', 'oops']).sql()
+      () => db.builder().having(['users', 'email', 'email_address', 'oops']).sql()
     );
     t.true( error instanceof QueryBuilderError );
-    t.is( error.message, 'Invalid array with 4 items specified for query builder "where" component. Expected [column, value] or [column, operator, value].' );
+    t.is( error.message, 'Invalid array with 4 items specified for query builder "having" component. Expected [column, value] or [column, operator, value].' );
   }
 )
 
+/*
 test(
   'table name',
   t => {
@@ -107,7 +110,7 @@ test(
     t.is( error.message, 'Invalid value array with 3 items specified for query builder "where" component. Expected [value] or [operator, value].' );
   }
 )
-
+*/
 
 test.after(
   'disconnect',

@@ -2,7 +2,7 @@ import test from 'ava';
 import Group from '../../src/Builder/Group.js';
 import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js';
-//import { sql } from '../../src/Utils/Tags.js';
+import { sql } from '../../src/Utils/Tags.js';
 
 let db;
 
@@ -71,6 +71,21 @@ test(
   }
 )
 
+test(
+  'group object with sql',
+  t => {
+    const op = db.builder().group({ sql: 'height' });
+    t.is( op.sql(), 'GROUP BY height' );
+  }
+)
+
+test(
+  'group with sql tagged template literal',
+  t => {
+    const op = db.builder().group(sql`width`);
+    t.is( op.sql(), 'GROUP BY width' );
+  }
+)
 test(
   'invalid group array',
   t => {

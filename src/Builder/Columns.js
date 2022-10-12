@@ -1,17 +1,11 @@
-import { QueryBuilderError, thrower } from '../Utils/Error.js';
 import Select from './Select.js';
-
-export const throwColumnsError = thrower(
-  {
-    array:  'Invalid array with <n> items specified for query builder "columns" component. Expected [column, alias] or [table, column, alias].',
-    object: 'Invalid object with "<keys>" properties specified for query builder "columns" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
-  },
-  QueryBuilderError
-)
 
 export class Columns extends Select {
   initBuilder() {
-    this.key = 'select';
+    // generated fragments get stored in with those from select(),
+    // but we set a different type for error messages
+    super.initBuilder();
+    this.type = 'columns';
   }
 
   resolveLinkString(columns, table=this.lookupTable(), prefix=this.context.prefix) {
@@ -32,7 +26,7 @@ export class Columns extends Select {
       // three-element array is [table, column, alias]
       return this.quoteTableColumnAs(...columns)
     }
-    throwColumnsError('array', { n: columns.length });
+    this.errorMsg('array', { n: columns.length });
   }
 
   resolveLinkObject(column) {
@@ -51,7 +45,7 @@ export class Columns extends Select {
     if (cols) {
       return this.resolveLinkString(cols, column.table || table, column.prefix || this.context.prefix)
     }
-    throwColumnsError('object', { keys: Object.keys(column).sort().join(', ') });
+    this.errorMsg('object', { keys: Object.keys(column).sort().join(', ') });
   }
 }
 

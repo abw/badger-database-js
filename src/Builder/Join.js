@@ -1,5 +1,4 @@
 import Builder from '../Builder.js';
-import { QueryBuilderError, thrower } from '../Utils/Error.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
 const joinRegex = /^(.*?)=(\w+)\.(\w+)$/;
@@ -16,19 +15,16 @@ const joinTypes = {
   default: 'JOIN ',
 };
 
-export const throwJoinError = thrower(
-  {
-    type:   'Invalid join type "<type>" specified for query builder "join" component.  Valid types are "left", "right", "inner" and "full".',
-    string: 'Invalid join string "<join>" specified for query builder "join" component.  Expected "from=table.to".',
-    object: 'Invalid object with "<keys>" properties specified for query builder "join" component.  Valid properties are "type", "table", "from" and "to".',
-    array:  'Invalid array with <n> items specified for query builder "join" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
-  },
-  QueryBuilderError
-)
 
 export class Join extends Builder {
   initBuilder() {
     this.key = 'join';
+    this.messages = {
+      type:   'Invalid join type "<joinType>" specified for query builder "<type>" component.  Valid types are "left", "right", "inner" and "full".',
+      string: 'Invalid join string "<join>" specified for query builder "<type>" component.  Expected "from=table.to".',
+      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "type", "table", "from" and "to".',
+      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
+    };
     // TODO: grok the table for columns() to use
     // const join = joins.at(-1);
   }
@@ -45,7 +41,7 @@ export class Join extends Builder {
       // console.log('parsed join string [%s]:', config);
       return this.resolveLinkObject(config);
     }
-    throwJoinError('string', { join });
+    this.errorMsg('string', { join });
     // return this.resolveLinkArray(splitList(columns), context);
   }
 
@@ -66,12 +62,12 @@ export class Join extends Builder {
         return this.resolveLinkObject({ from, table, to });
       }
     }
-    throwJoinError('array', { n: join.length });
+    this.errorMsg('array', { n: join.length });
   }
 
   resolveLinkObject(join) {
     const type = joinTypes[join.type || 'default']
-      || throwJoinError('type', { type: join.type });
+      || this.errorMsg('type', { joinType: join.type });
 
     if (join.table && join.from && join.to) {
       return this.constructJoin(
@@ -86,7 +82,7 @@ export class Join extends Builder {
         )
       }
     }
-    throwJoinError('object', { keys: Object.keys(join).sort().join(', ') });
+    this.errorMsg('object', { keys: Object.keys(join).sort().join(', ') });
   }
 
   constructJoin(type, from, table, to) {

@@ -2,7 +2,7 @@ import test from 'ava';
 import Order from '../../src/Builder/Order.js';
 import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js';
-//import { sql } from '../../src/Utils/Tags.js';
+import { sql } from '../../src/Utils/Tags.js';
 
 let db;
 
@@ -124,6 +124,22 @@ test(
   t => {
     const op = db.builder().order({ columns: 'a b c', desc: true });
     t.is( op.sql(), 'ORDER BY "a", "b", "c" DESC' );
+  }
+)
+
+test(
+  'order object with sql',
+  t => {
+    const op = db.builder().order({ sql: 'Next Tuesday' });
+    t.is( op.sql(), 'ORDER BY Next Tuesday' );
+  }
+)
+
+test(
+  'order with sql tagged template literal',
+  t => {
+    const op = db.builder().order(sql`Next Tuesday`);
+    t.is( op.sql(), 'ORDER BY Next Tuesday' );
   }
 )
 

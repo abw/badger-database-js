@@ -1,9 +1,12 @@
 // work in progress / experiment
 import { fail, hasValue, isArray, isFunction, isObject, isString, objMap } from "@abw/badger-utils";
+import { unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
-import { notImplementedInBaseClass } from "./Utils/Error.js";
+import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
+import { format } from "./Utils/Format.js";
 
 const defaultContext = () => ({
+  /*
   after:   [ ],
   before:  [ ],
   from:    [ ],
@@ -13,7 +16,9 @@ const defaultContext = () => ({
   order:   [ ],
   select:  [ ],
   where:   [ ],
-  values:  [ ],
+  */
+  values:        [ ],
+  havingValues:  [ ],
   placeholder: 1,
 });
 
@@ -53,26 +58,39 @@ export class Builder {
   async one(args) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.values(args);
+    const values = this.allValues(args);
     this.debugData("one()", { sql, values });
     return db.one(sql, values);
   }
   async any(args) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.values(args);
+    const values = this.allValues(args);
     this.debugData("any()", { sql, values });
     return db.any(sql, values);
   }
   async all(args) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.values(args);
+    const values = this.allValues(args);
     this.debugData("all()", { sql, values });
     return db.all(sql, values);
   }
 
+  allValues(extra=[]) {
+    const context = this.resolveChain();
+    const values  = context.values;
+    const hvalues = context.havingValues;
+    // console.log('context values: ', values);
+    // console.log('extra values: ', extra);
+    // TODO: havingValues
+    return [
+      ...values, ...hvalues, ...extra
+    ]
+  }
   values(extra=[]) {
+    console.log('values() is deprecated');
+
     const context = this.resolveChain();
     const values  = context.values;
     // console.log('context values: ', values);
@@ -215,6 +233,19 @@ export class Builder {
       this.quote(column),
       this.quote(as)
     ].join(' AS ')
+  }
+  errorMsg(msgFormat, args) {
+    const type = this.type || this.key || unknown;
+    return this.error(
+      format(
+        this.messages?.[msgFormat] || fail("Invalid message format: ", msgFormat),
+        { type, ...args }
+      )
+    )
+  }
+  error(...args) {
+    const etype   = this.errorType || QueryBuilderError;
+    throw new etype(args.join(''))
   }
 }
 

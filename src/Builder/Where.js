@@ -1,21 +1,15 @@
 import Builder from '../Builder.js';
 import { isArray, splitList } from '@abw/badger-utils';
-import { QueryBuilderError, thrower } from '../Utils/Error.js';
-
-export const throwWhereError = thrower(
-  {
-    array:  'Invalid array with <n> items specified for query builder "where" component. Expected [column, value] or [column, operator, value].',
-    object: 'Invalid value array with <n> items specified for query builder "where" component. Expected [value] or [operator, value].',
-  },
-  QueryBuilderError
-)
 
 export class Where extends Builder {
   initBuilder() {
     this.key = 'where';
+    this.messages = {
+      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, value] or [column, operator, value].',
+      object: 'Invalid value array with <n> items specified for query builder "<type>" component. Expected [value] or [operator, value].',
+    };
   }
 
-  // TODO: check that placeholders are being counted correctly
   resolveLinkString(columns) {
     const database = this.lookupDatabase();
     // split columns into a list and generate criteria with placeholders
@@ -49,7 +43,7 @@ export class Where extends Builder {
       )
     }
     else {
-      throwWhereError('array', { n: criteria.length });
+      this.errorMsg('array', { n: criteria.length });
     }
   }
 
@@ -64,7 +58,7 @@ export class Where extends Builder {
             this.addValues(value[1]);
           }
           else if (value.length !== 1) {
-            throwWhereError('object', { n: value.length });
+            this.errorMsg('object', { n: value.length });
           }
         }
         else {

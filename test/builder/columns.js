@@ -149,6 +149,8 @@ test(
     const error = t.throws(
       () => db.from('a').columns(['users', 'email', 'email_address', 'oops']).sql()
     );
+    console.log('error: ', error);
+
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid array with 4 items specified for query builder "columns" component. Expected [column, alias] or [table, column, alias].' );
   }

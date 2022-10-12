@@ -1,18 +1,13 @@
 import Builder from '../Builder.js';
 import { splitList } from '@abw/badger-utils';
-import { QueryBuilderError, thrower } from '../Utils/Error.js';
-
-export const throwGroupError = thrower(
-  {
-    array:  'Invalid array with <n> items specified for query builder "group" component. Expected [column].',
-    object: 'Invalid object with "<keys>" properties specified for query builder "group" component.  Valid properties are "columns" and "column".',
-  },
-  QueryBuilderError
-)
 
 export class Group extends Builder {
   initBuilder() {
     this.key = 'group';
+    this.messages = {
+      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column].',
+      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "columns" and "column".',
+    };
   }
   resolveLinkString(group) {
     return splitList(group).map(
@@ -23,7 +18,7 @@ export class Group extends Builder {
     if (group.length === 1) {
       return this.quote(group[0]);
     }
-    throwGroupError('array', { n: group.length });
+    this.errorMsg('array', { n: group.length });
   }
 
   resolveLinkObject(group) {
@@ -33,7 +28,7 @@ export class Group extends Builder {
     else if (group.columns) {
       return this.resolveLinkString(group.columns)
     }
-    throwGroupError('object', { keys: Object.keys(group).sort().join(', ') });
+    this.errorMsg('object', { keys: Object.keys(group).sort().join(', ') });
   }
 }
 

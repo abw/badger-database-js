@@ -1,18 +1,14 @@
 import Builder from '../Builder.js';
-import { QueryBuilderError, thrower } from '../Utils/Error.js';
 import { isArray, isObject, isString, splitList } from '@abw/badger-utils';
-
-const throwFromError = thrower(
-  {
-    array:  'Invalid array with <n> items specified for query builder "from" component. Expected [table, alias].',
-    object: 'Invalid object with "<keys>" properties specified for query builder "from" component.  Valid properties are "tables", "table" and "as".',
-  },
-  QueryBuilderError
-)
 
 export class From extends Builder {
   initBuilder(...tables) {
     this.key = 'from';
+    this.messages = {
+      array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [table, alias].',
+      object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "tables", "table" and "as".',
+    };
+
     // store the table name for subsequent columns() calls to use, but
     // we need to be careful to only handle the valid cases, e.g. where
     // it's a string (which might contain multiple table names), an
@@ -50,7 +46,7 @@ export class From extends Builder {
     // a two-element array is [table, alias]
     return table.length === 2
       ? this.quoteTableAs(...table)
-      : throwFromError('array', { n: table.length });
+      : this.errorMsg('array', { n: table.length });
   }
 
   resolveLinkObject(table) {
@@ -64,7 +60,7 @@ export class From extends Builder {
       // or it can have tables
       return this.resolveLinkString(table.tables);
     }
-    throwFromError('object', { keys: Object.keys(table).sort().join(', ') });
+    this.errorMsg('object', { keys: Object.keys(table).sort().join(', ') });
   }
 }
 
