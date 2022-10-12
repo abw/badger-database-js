@@ -195,6 +195,9 @@ export class Engine {
     return result;
   }
   quote(name) {
+    if (isObject(name) && name.sql) {
+      return name.sql;
+    }
     return name
       .split(/\./)
       .map(
@@ -220,7 +223,7 @@ export class Engine {
     // value can be an array containing a comparison operator and a value,
     // e.g. ['>' 1973], otherwise we assume it's an equality operator, '='
     const cmp = isArray(value) ? value[0] : '=';
-    return `${this.quote(column)}${cmp}${this.formatPlaceholder(n)}`;
+    return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
   }
   formatPlaceholders(values, n=1) {
     return values.map(
