@@ -234,7 +234,7 @@ automatically insert, update, select and delete rows from the table.</p>
 <p>Note that we're using the same database from the previous examples
 and assuming that the <code>users</code> table has already been created.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// define the users table and the columns it contains
-const db = await connect({
+const db = connect({
   database: 'sqlite://test.db',
   tables: {
     users: {

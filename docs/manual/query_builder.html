@@ -261,6 +261,32 @@ queries which you can then use to build multiple different queries
 that are variations of it.</p>
 </li>
 </ul>
+<p>There are a number of limitations, most of which are intentional.
+The first and most prominent is that we currently only support
+select queries.  The reasoning behind this is that insert, update
+and delete queries are destructive in that they write to the database.
+If you get something wrong because the SQL query is obscured by
+using a query builder then you're going to have a bad day.  We don't
+want you to have a bad day, especially not on our account.</p>
+<p>As described in the <a href="manual/tables.html">tables</a> documentation,
+there are already methods provided for inserting, updating and
+deleting records and they come with a safety net.  You can mark
+table columns as <code>required</code> and/or <code>readonly</code> and the method calls
+will be sanity checked for you.  An error will be thrown if you
+try to insert or update <code>readonly</code> columns, or insert records
+with missing <code>required</code> columns.</p>
+<p>If you need to perform an insert, update or delete query that
+is any more complicated than that (e.g. requiring a join to another
+table) then we highly recommend that you write it as an SQL query
+that you can test (on a sacrificial copy of your production database,
+of course) and then define as a <a href="manual/named_queries.html">named query</a>.</p>
+<p>Another limitation is that we don't support all the SQL elements that
+you could possibly want to put in a select query.  Again, this is
+deliberate.  We've tried to cover the things that you're likely to
+need most often, and provide an easy way to embed raw SQL for those
+times when you need something else.  This library does not try
+to discourage you from using SQL when you need to.  In fact, it
+positively encourages you to do so.</p>
 <p>Before we get into too much detail, let's look at some examples.</p>
 <h2 id="getting-started">Getting Started</h2><p>We'll start off by importing the <code>connect</code> and <code>sql</code> functions
 and connecting to a database.  The wrapper code would look something
@@ -268,10 +294,12 @@ like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { connect, sql } from '@abw/badger-database'
 
 async function main() {
-  const db = await connect({ database: 'sqlite:memory' });
+  const db = connect({ database: 'sqlite:memory' });
 
   // examples go here
-}</code></code></pre>
+}
+
+main()</code></code></pre>
 <p>When you create a query, or part of a query, you can call the
 <code>sql()</code> method to see what the generated SQL looks like.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">console.log(
@@ -310,12 +338,14 @@ speaking, it doesn't matter which order you call methods in.  The query
 builder will construct the SQL query in the correct order.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.from('users').select('id name')
 // -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
+<p>NOTE: We don't yet have support for <code>with()</code> but it should be coming soon.
+When it does, we will also allow you to start a query with that.</p>
+<p>If you want to start a query with anything other than <code>select()</code> or <code>from()</code>
+(or <code>with()</code>, coming soon), then you should prefix it with <code>.build</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.build.where('c').from('b').select('a')
+// -&gt; SELECT "a" FROM "b" WHERE "c" = ?</code></code></pre>
 <p>You can call methods multiple times.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id').select('name').from('users')
-// -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
-<p>You can also call methods out of order.  The query builder takes
-care of putting everyting back in the right order.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id').from('users').select('name')
 // -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
 <p>You can also pass multiple arguments to a method.  Each is processed
 in turn as if you had called the method multiple times.  We'll see how

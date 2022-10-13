@@ -1,5 +1,17 @@
 window.esdocSearchIndex = [
   [
+    "@abw/badger-database~and",
+    "variable/index.html#static-variable-AND",
+    "<span>AND</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~asc",
+    "variable/index.html#static-variable-ASC",
+    "<span>ASC</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~after",
     "class/src/Builder/After.js~After.html",
     "<span>After</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -42,6 +54,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~desc",
+    "variable/index.html#static-variable-DESC",
+    "<span>DESC</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~database",
     "class/src/Builder/Database.js~Database.html",
     "<span>Database</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -73,9 +91,33 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~from",
+    "variable/index.html#static-variable-FROM",
+    "<span>FROM</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~full_join",
+    "variable/index.html#static-variable-FULL_JOIN",
+    "<span>FULL_JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~from",
     "class/src/Builder/From.js~From.html",
     "<span>From</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
+  ],
+  [
+    "@abw/badger-database~group_by",
+    "variable/index.html#static-variable-GROUP_BY",
+    "<span>GROUP_BY</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~generators",
+    "variable/index.html#static-variable-Generators",
+    "<span>Generators</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~group",
@@ -85,9 +127,21 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~having",
+    "variable/index.html#static-variable-HAVING",
+    "<span>HAVING</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~having",
     "class/src/Builder/Having.js~Having.html",
     "<span>Having</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
+  ],
+  [
+    "@abw/badger-database~inner_join",
+    "variable/index.html#static-variable-INNER_JOIN",
+    "<span>INNER_JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~insertvalidationerror",
@@ -97,9 +151,27 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~join",
+    "variable/index.html#static-variable-JOIN",
+    "<span>JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~join",
     "class/src/Builder/Join.js~Join.html",
     "<span>Join</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
+  ],
+  [
+    "@abw/badger-database~left_join",
+    "variable/index.html#static-variable-LEFT_JOIN",
+    "<span>LEFT_JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~limit",
+    "variable/index.html#static-variable-LIMIT",
+    "<span>LIMIT</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~limit",
@@ -112,6 +184,24 @@ window.esdocSearchIndex = [
     "class/src/Engine/Mysql.js~MysqlEngine.html",
     "<span>MysqlEngine</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
+  ],
+  [
+    "@abw/badger-database~offset",
+    "variable/index.html#static-variable-OFFSET",
+    "<span>OFFSET</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~on",
+    "variable/index.html#static-variable-ON",
+    "<span>ON</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~order_by",
+    "variable/index.html#static-variable-ORDER_BY",
+    "<span>ORDER_BY</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~offset",
@@ -150,6 +240,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~right_join",
+    "variable/index.html#static-variable-RIGHT_JOIN",
+    "<span>RIGHT_JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~range",
     "class/src/Builder/Range.js~Range.html",
     "<span>Range</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -159,6 +255,18 @@ window.esdocSearchIndex = [
     "@abw/badger-database~record",
     "class/src/Record.js~Record.html",
     "<span>Record</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~select",
+    "variable/index.html#static-variable-SELECT",
+    "<span>SELECT</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~sqlparseerror",
+    "class/src/Utils/Error.js~SQLParseError.html",
+    "<span>SQLParseError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
@@ -205,8 +313,26 @@ window.esdocSearchIndex = [
   ],
   [
     "@abw/badger-database~where",
+    "variable/index.html#static-variable-WHERE",
+    "<span>WHERE</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~with",
+    "variable/index.html#static-variable-WITH",
+    "<span>WITH</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~where",
     "class/src/Builder/Where.js~Where.html",
     "<span>Where</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~with",
+    "class/src/Builder/With.js~With.html",
+    "<span>With</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
@@ -228,10 +354,22 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-database~blank",
+    "variable/index.html#static-variable-blank",
+    "<span>blank</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~builderproxy",
     "function/index.html#static-function-builderProxy",
     "<span>builderProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
+  ],
+  [
+    "@abw/badger-database~comma",
+    "variable/index.html#static-variable-comma",
+    "<span>comma</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~configenv",
@@ -270,10 +408,10 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger-database~factory",
-    "function/index.html#static-function-factory",
-    "<span>factory</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
+    "@abw/badger-database~equals",
+    "variable/index.html#static-variable-equals",
+    "<span>equals</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~format",
@@ -310,6 +448,12 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-modelProxy",
     "<span>modelProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
+  ],
+  [
+    "@abw/badger-database~newline",
+    "variable/index.html#static-variable-newline",
+    "<span>newline</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~notimplemented",
@@ -405,6 +549,30 @@ window.esdocSearchIndex = [
     "@abw/badger-database~setdebug",
     "function/index.html#static-function-setDebug",
     "<span>setDebug</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~space",
+    "variable/index.html#static-variable-space",
+    "<span>space</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~spaceafter",
+    "function/index.html#static-function-spaceAfter",
+    "<span>spaceAfter</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~spacearound",
+    "function/index.html#static-function-spaceAround",
+    "<span>spaceAround</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
+    "@abw/badger-database~spacebefore",
+    "function/index.html#static-function-spaceBefore",
+    "<span>spaceBefore</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
@@ -792,12 +960,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder.js~builder#factory",
-    "class/src/Builder.js~Builder.html#instance-member-factory",
-    "src/Builder.js~Builder#factory",
-    "member"
-  ],
-  [
     "src/builder.js~builder#havingvalues",
     "class/src/Builder.js~Builder.html#instance-method-havingValues",
     "src/Builder.js~Builder#havingValues",
@@ -826,6 +988,18 @@ window.esdocSearchIndex = [
     "class/src/Builder.js~Builder.html#instance-method-lookupTable",
     "src/Builder.js~Builder#lookupTable",
     "method"
+  ],
+  [
+    "src/builder.js~builder#messages",
+    "class/src/Builder.js~Builder.html#instance-member-messages",
+    "src/Builder.js~Builder#messages",
+    "member"
+  ],
+  [
+    "src/builder.js~builder#method",
+    "class/src/Builder.js~Builder.html#instance-member-method",
+    "src/Builder.js~Builder#method",
+    "member"
   ],
   [
     "src/builder.js~builder#one",
@@ -912,15 +1086,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder.js~builder#slot",
+    "class/src/Builder.js~Builder.html#instance-member-slot",
+    "src/Builder.js~Builder#slot",
+    "member"
+  ],
+  [
     "src/builder.js~builder#sql",
     "class/src/Builder.js~Builder.html#instance-method-sql",
     "src/Builder.js~Builder#sql",
-    "method"
-  ],
-  [
-    "src/builder.js~builder#sqlfragments",
-    "class/src/Builder.js~Builder.html#instance-method-sqlFragments",
-    "src/Builder.js~Builder#sqlFragments",
     "method"
   ],
   [
@@ -936,21 +1110,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder.js~builder.generatesql",
+    "class/src/Builder.js~Builder.html#static-method-generateSQL",
+    "src/Builder.js~Builder.generateSQL",
+    "method"
+  ],
+  [
     "src/builder/after.js",
     "file/src/Builder/After.js.html",
     "src/Builder/After.js",
     "file"
   ],
   [
-    "src/builder/after.js~after#initbuilder",
-    "class/src/Builder/After.js~After.html#instance-method-initBuilder",
-    "src/Builder/After.js~After#initBuilder",
-    "method"
+    "src/builder/after.js~after.buildmethod",
+    "class/src/Builder/After.js~After.html#static-member-buildMethod",
+    "src/Builder/After.js~After.buildMethod",
+    "member"
   ],
   [
-    "src/builder/after.js~after#key",
-    "class/src/Builder/After.js~After.html#instance-member-key",
-    "src/Builder/After.js~After#key",
+    "src/builder/after.js~after.buildorder",
+    "class/src/Builder/After.js~After.html#static-member-buildOrder",
+    "src/Builder/After.js~After.buildOrder",
     "member"
   ],
   [
@@ -960,15 +1140,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/builder/before.js~before#initbuilder",
-    "class/src/Builder/Before.js~Before.html#instance-method-initBuilder",
-    "src/Builder/Before.js~Before#initBuilder",
-    "method"
+    "src/builder/before.js~before.buildmethod",
+    "class/src/Builder/Before.js~Before.html#static-member-buildMethod",
+    "src/Builder/Before.js~Before.buildMethod",
+    "member"
   ],
   [
-    "src/builder/before.js~before#key",
-    "class/src/Builder/Before.js~Before.html#instance-member-key",
-    "src/Builder/Before.js~Before#key",
+    "src/builder/before.js~before.buildorder",
+    "class/src/Builder/Before.js~Before.html#static-member-buildOrder",
+    "src/Builder/Before.js~Before.buildOrder",
     "member"
   ],
   [
@@ -1002,9 +1182,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/columns.js~columns#type",
-    "class/src/Builder/Columns.js~Columns.html#instance-member-type",
-    "src/Builder/Columns.js~Columns#type",
+    "src/builder/columns.js~columns.buildmethod",
+    "class/src/Builder/Columns.js~Columns.html#static-member-buildMethod",
+    "src/Builder/Columns.js~Columns.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/columns.js~columns.contextslot",
+    "class/src/Builder/Columns.js~Columns.html#static-member-contextSlot",
+    "src/Builder/Columns.js~Columns.contextSlot",
     "member"
   ],
   [
@@ -1044,18 +1230,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/from.js~from#key",
-    "class/src/Builder/From.js~From.html#instance-member-key",
-    "src/Builder/From.js~From#key",
-    "member"
-  ],
-  [
-    "src/builder/from.js~from#messages",
-    "class/src/Builder/From.js~From.html#instance-member-messages",
-    "src/Builder/From.js~From#messages",
-    "member"
-  ],
-  [
     "src/builder/from.js~from#resolve",
     "class/src/Builder/From.js~From.html#instance-method-resolve",
     "src/Builder/From.js~From#resolve",
@@ -1086,28 +1260,40 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/builder/from.js~from.buildmethod",
+    "class/src/Builder/From.js~From.html#static-member-buildMethod",
+    "src/Builder/From.js~From.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/from.js~from.buildorder",
+    "class/src/Builder/From.js~From.html#static-member-buildOrder",
+    "src/Builder/From.js~From.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/from.js~from.joint",
+    "class/src/Builder/From.js~From.html#static-member-joint",
+    "src/Builder/From.js~From.joint",
+    "member"
+  ],
+  [
+    "src/builder/from.js~from.keyword",
+    "class/src/Builder/From.js~From.html#static-member-keyword",
+    "src/Builder/From.js~From.keyword",
+    "member"
+  ],
+  [
+    "src/builder/from.js~from.messages",
+    "class/src/Builder/From.js~From.html#static-member-messages",
+    "src/Builder/From.js~From.messages",
+    "member"
+  ],
+  [
     "src/builder/group.js",
     "file/src/Builder/Group.js.html",
     "src/Builder/Group.js",
     "file"
-  ],
-  [
-    "src/builder/group.js~group#initbuilder",
-    "class/src/Builder/Group.js~Group.html#instance-method-initBuilder",
-    "src/Builder/Group.js~Group#initBuilder",
-    "method"
-  ],
-  [
-    "src/builder/group.js~group#key",
-    "class/src/Builder/Group.js~Group.html#instance-member-key",
-    "src/Builder/Group.js~Group#key",
-    "member"
-  ],
-  [
-    "src/builder/group.js~group#messages",
-    "class/src/Builder/Group.js~Group.html#instance-member-messages",
-    "src/Builder/Group.js~Group#messages",
-    "member"
   ],
   [
     "src/builder/group.js~group#resolvelinkarray",
@@ -1128,6 +1314,42 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/group.js~group.buildalias",
+    "class/src/Builder/Group.js~Group.html#static-member-buildAlias",
+    "src/Builder/Group.js~Group.buildAlias",
+    "member"
+  ],
+  [
+    "src/builder/group.js~group.buildmethod",
+    "class/src/Builder/Group.js~Group.html#static-member-buildMethod",
+    "src/Builder/Group.js~Group.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/group.js~group.buildorder",
+    "class/src/Builder/Group.js~Group.html#static-member-buildOrder",
+    "src/Builder/Group.js~Group.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/group.js~group.joint",
+    "class/src/Builder/Group.js~Group.html#static-member-joint",
+    "src/Builder/Group.js~Group.joint",
+    "member"
+  ],
+  [
+    "src/builder/group.js~group.keyword",
+    "class/src/Builder/Group.js~Group.html#static-member-keyword",
+    "src/Builder/Group.js~Group.keyword",
+    "member"
+  ],
+  [
+    "src/builder/group.js~group.messages",
+    "class/src/Builder/Group.js~Group.html#static-member-messages",
+    "src/Builder/Group.js~Group.messages",
+    "member"
+  ],
+  [
     "src/builder/having.js",
     "file/src/Builder/Having.js.html",
     "src/Builder/Having.js",
@@ -1140,15 +1362,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/having.js~having#initbuilder",
-    "class/src/Builder/Having.js~Having.html#instance-method-initBuilder",
-    "src/Builder/Having.js~Having#initBuilder",
-    "method"
+    "src/builder/having.js~having.buildmethod",
+    "class/src/Builder/Having.js~Having.html#static-member-buildMethod",
+    "src/Builder/Having.js~Having.buildMethod",
+    "member"
   ],
   [
-    "src/builder/having.js~having#key",
-    "class/src/Builder/Having.js~Having.html#instance-member-key",
-    "src/Builder/Having.js~Having#key",
+    "src/builder/having.js~having.buildorder",
+    "class/src/Builder/Having.js~Having.html#static-member-buildOrder",
+    "src/Builder/Having.js~Having.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/having.js~having.keyword",
+    "class/src/Builder/Having.js~Having.html#static-member-keyword",
+    "src/Builder/Having.js~Having.keyword",
     "member"
   ],
   [
@@ -1162,24 +1390,6 @@ window.esdocSearchIndex = [
     "class/src/Builder/Join.js~Join.html#instance-method-constructJoin",
     "src/Builder/Join.js~Join#constructJoin",
     "method"
-  ],
-  [
-    "src/builder/join.js~join#initbuilder",
-    "class/src/Builder/Join.js~Join.html#instance-method-initBuilder",
-    "src/Builder/Join.js~Join#initBuilder",
-    "method"
-  ],
-  [
-    "src/builder/join.js~join#key",
-    "class/src/Builder/Join.js~Join.html#instance-member-key",
-    "src/Builder/Join.js~Join#key",
-    "member"
-  ],
-  [
-    "src/builder/join.js~join#messages",
-    "class/src/Builder/Join.js~Join.html#instance-member-messages",
-    "src/Builder/Join.js~Join#messages",
-    "member"
   ],
   [
     "src/builder/join.js~join#resolvelinkarray",
@@ -1200,6 +1410,36 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/join.js~join.buildmethod",
+    "class/src/Builder/Join.js~Join.html#static-member-buildMethod",
+    "src/Builder/Join.js~Join.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/join.js~join.buildorder",
+    "class/src/Builder/Join.js~Join.html#static-member-buildOrder",
+    "src/Builder/Join.js~Join.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/join.js~join.joint",
+    "class/src/Builder/Join.js~Join.html#static-member-joint",
+    "src/Builder/Join.js~Join.joint",
+    "member"
+  ],
+  [
+    "src/builder/join.js~join.keyword",
+    "class/src/Builder/Join.js~Join.html#static-member-keyword",
+    "src/Builder/Join.js~Join.keyword",
+    "member"
+  ],
+  [
+    "src/builder/join.js~join.messages",
+    "class/src/Builder/Join.js~Join.html#static-member-messages",
+    "src/Builder/Join.js~Join.messages",
+    "member"
+  ],
+  [
     "src/builder/limit.js",
     "file/src/Builder/Limit.js.html",
     "src/Builder/Limit.js",
@@ -1212,15 +1452,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/limit.js~limit#key",
-    "class/src/Builder/Limit.js~Limit.html#instance-member-key",
-    "src/Builder/Limit.js~Limit#key",
-    "member"
-  ],
-  [
     "src/builder/limit.js~limit#value",
     "class/src/Builder/Limit.js~Limit.html#instance-member-value",
     "src/Builder/Limit.js~Limit#value",
+    "member"
+  ],
+  [
+    "src/builder/limit.js~limit.buildmethod",
+    "class/src/Builder/Limit.js~Limit.html#static-member-buildMethod",
+    "src/Builder/Limit.js~Limit.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/limit.js~limit.buildorder",
+    "class/src/Builder/Limit.js~Limit.html#static-member-buildOrder",
+    "src/Builder/Limit.js~Limit.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/limit.js~limit.keyword",
+    "class/src/Builder/Limit.js~Limit.html#static-member-keyword",
+    "src/Builder/Limit.js~Limit.keyword",
     "member"
   ],
   [
@@ -1236,15 +1488,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/offset.js~offset#key",
-    "class/src/Builder/Offset.js~Offset.html#instance-member-key",
-    "src/Builder/Offset.js~Offset#key",
-    "member"
-  ],
-  [
     "src/builder/offset.js~offset#value",
     "class/src/Builder/Offset.js~Offset.html#instance-member-value",
     "src/Builder/Offset.js~Offset#value",
+    "member"
+  ],
+  [
+    "src/builder/offset.js~offset.buildmethod",
+    "class/src/Builder/Offset.js~Offset.html#static-member-buildMethod",
+    "src/Builder/Offset.js~Offset.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/offset.js~offset.buildorder",
+    "class/src/Builder/Offset.js~Offset.html#static-member-buildOrder",
+    "src/Builder/Offset.js~Offset.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/offset.js~offset.keyword",
+    "class/src/Builder/Offset.js~Offset.html#static-member-keyword",
+    "src/Builder/Offset.js~Offset.keyword",
     "member"
   ],
   [
@@ -1258,24 +1522,6 @@ window.esdocSearchIndex = [
     "class/src/Builder/Order.js~Order.html#instance-method-constructOrder",
     "src/Builder/Order.js~Order#constructOrder",
     "method"
-  ],
-  [
-    "src/builder/order.js~order#initbuilder",
-    "class/src/Builder/Order.js~Order.html#instance-method-initBuilder",
-    "src/Builder/Order.js~Order#initBuilder",
-    "method"
-  ],
-  [
-    "src/builder/order.js~order#key",
-    "class/src/Builder/Order.js~Order.html#instance-member-key",
-    "src/Builder/Order.js~Order#key",
-    "member"
-  ],
-  [
-    "src/builder/order.js~order#messages",
-    "class/src/Builder/Order.js~Order.html#instance-member-messages",
-    "src/Builder/Order.js~Order#messages",
-    "member"
   ],
   [
     "src/builder/order.js~order#resolvelinkarray",
@@ -1296,6 +1542,42 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/order.js~order.buildalias",
+    "class/src/Builder/Order.js~Order.html#static-member-buildAlias",
+    "src/Builder/Order.js~Order.buildAlias",
+    "member"
+  ],
+  [
+    "src/builder/order.js~order.buildmethod",
+    "class/src/Builder/Order.js~Order.html#static-member-buildMethod",
+    "src/Builder/Order.js~Order.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/order.js~order.buildorder",
+    "class/src/Builder/Order.js~Order.html#static-member-buildOrder",
+    "src/Builder/Order.js~Order.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/order.js~order.joint",
+    "class/src/Builder/Order.js~Order.html#static-member-joint",
+    "src/Builder/Order.js~Order.joint",
+    "member"
+  ],
+  [
+    "src/builder/order.js~order.keyword",
+    "class/src/Builder/Order.js~Order.html#static-member-keyword",
+    "src/Builder/Order.js~Order.keyword",
+    "member"
+  ],
+  [
+    "src/builder/order.js~order.messages",
+    "class/src/Builder/Order.js~Order.html#static-member-messages",
+    "src/Builder/Order.js~Order.messages",
+    "member"
+  ],
+  [
     "src/builder/prefix.js",
     "file/src/Builder/Prefix.js.html",
     "src/Builder/Prefix.js",
@@ -1314,12 +1596,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/prefix.js~prefix#key",
-    "class/src/Builder/Prefix.js~Prefix.html#instance-member-key",
-    "src/Builder/Prefix.js~Prefix#key",
-    "member"
-  ],
-  [
     "src/builder/prefix.js~prefix#prefix",
     "class/src/Builder/Prefix.js~Prefix.html#instance-member-prefix",
     "src/Builder/Prefix.js~Prefix#prefix",
@@ -1330,6 +1606,12 @@ window.esdocSearchIndex = [
     "class/src/Builder/Prefix.js~Prefix.html#instance-method-resolve",
     "src/Builder/Prefix.js~Prefix#resolve",
     "method"
+  ],
+  [
+    "src/builder/prefix.js~prefix.buildmethod",
+    "class/src/Builder/Prefix.js~Prefix.html#static-member-buildMethod",
+    "src/Builder/Prefix.js~Prefix.buildMethod",
+    "member"
   ],
   [
     "src/builder/range.js",
@@ -1356,18 +1638,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/range.js~range#key",
-    "class/src/Builder/Range.js~Range.html#instance-member-key",
-    "src/Builder/Range.js~Range#key",
-    "member"
-  ],
-  [
-    "src/builder/range.js~range#messages",
-    "class/src/Builder/Range.js~Range.html#instance-member-messages",
-    "src/Builder/Range.js~Range#messages",
-    "member"
-  ],
-  [
     "src/builder/range.js~range#objectargs",
     "class/src/Builder/Range.js~Range.html#instance-method-objectArgs",
     "src/Builder/Range.js~Range#objectArgs",
@@ -1392,28 +1662,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/range.js~range.buildmethod",
+    "class/src/Builder/Range.js~Range.html#static-member-buildMethod",
+    "src/Builder/Range.js~Range.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/range.js~range.messages",
+    "class/src/Builder/Range.js~Range.html#static-member-messages",
+    "src/Builder/Range.js~Range.messages",
+    "member"
+  ],
+  [
     "src/builder/select.js",
     "file/src/Builder/Select.js.html",
     "src/Builder/Select.js",
     "file"
-  ],
-  [
-    "src/builder/select.js~select#initbuilder",
-    "class/src/Builder/Select.js~Select.html#instance-method-initBuilder",
-    "src/Builder/Select.js~Select#initBuilder",
-    "method"
-  ],
-  [
-    "src/builder/select.js~select#key",
-    "class/src/Builder/Select.js~Select.html#instance-member-key",
-    "src/Builder/Select.js~Select#key",
-    "member"
-  ],
-  [
-    "src/builder/select.js~select#messages",
-    "class/src/Builder/Select.js~Select.html#instance-member-messages",
-    "src/Builder/Select.js~Select#messages",
-    "member"
   ],
   [
     "src/builder/select.js~select#resolvelinkarray",
@@ -1434,6 +1698,36 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/select.js~select.buildmethod",
+    "class/src/Builder/Select.js~Select.html#static-member-buildMethod",
+    "src/Builder/Select.js~Select.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/select.js~select.buildorder",
+    "class/src/Builder/Select.js~Select.html#static-member-buildOrder",
+    "src/Builder/Select.js~Select.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/select.js~select.joint",
+    "class/src/Builder/Select.js~Select.html#static-member-joint",
+    "src/Builder/Select.js~Select.joint",
+    "member"
+  ],
+  [
+    "src/builder/select.js~select.keyword",
+    "class/src/Builder/Select.js~Select.html#static-member-keyword",
+    "src/Builder/Select.js~Select.keyword",
+    "member"
+  ],
+  [
+    "src/builder/select.js~select.messages",
+    "class/src/Builder/Select.js~Select.html#static-member-messages",
+    "src/Builder/Select.js~Select.messages",
+    "member"
+  ],
+  [
     "src/builder/simple.js",
     "file/src/Builder/Simple.js.html",
     "src/Builder/Simple.js",
@@ -1452,12 +1746,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/simple.js~simple#key",
-    "class/src/Builder/Simple.js~Simple.html#instance-member-key",
-    "src/Builder/Simple.js~Simple#key",
-    "member"
-  ],
-  [
     "src/builder/simple.js~simple#resolve",
     "class/src/Builder/Simple.js~Simple.html#instance-method-resolve",
     "src/Builder/Simple.js~Simple#resolve",
@@ -1468,6 +1756,18 @@ window.esdocSearchIndex = [
     "class/src/Builder/Simple.js~Simple.html#instance-member-value",
     "src/Builder/Simple.js~Simple#value",
     "member"
+  ],
+  [
+    "src/builder/simple.js~simple.buildmethod",
+    "class/src/Builder/Simple.js~Simple.html#static-member-buildMethod",
+    "src/Builder/Simple.js~Simple.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/simple.js~simple.generatesql",
+    "class/src/Builder/Simple.js~Simple.html#static-method-generateSQL",
+    "src/Builder/Simple.js~Simple.generateSQL",
+    "method"
   ],
   [
     "src/builder/table.js",
@@ -1488,12 +1788,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/builder/table.js~table#key",
-    "class/src/Builder/Table.js~Table.html#instance-member-key",
-    "src/Builder/Table.js~Table#key",
-    "member"
-  ],
-  [
     "src/builder/table.js~table#resolve",
     "class/src/Builder/Table.js~Table.html#instance-method-resolve",
     "src/Builder/Table.js~Table#resolve",
@@ -1503,6 +1797,12 @@ window.esdocSearchIndex = [
     "src/builder/table.js~table#table",
     "class/src/Builder/Table.js~Table.html#instance-member-table",
     "src/Builder/Table.js~Table#table",
+    "member"
+  ],
+  [
+    "src/builder/table.js~table.buildmethod",
+    "class/src/Builder/Table.js~Table.html#static-member-buildMethod",
+    "src/Builder/Table.js~Table.buildMethod",
     "member"
   ],
   [
@@ -1516,24 +1816,6 @@ window.esdocSearchIndex = [
     "class/src/Builder/Where.js~Where.html#instance-method-addValues",
     "src/Builder/Where.js~Where#addValues",
     "method"
-  ],
-  [
-    "src/builder/where.js~where#initbuilder",
-    "class/src/Builder/Where.js~Where.html#instance-method-initBuilder",
-    "src/Builder/Where.js~Where#initBuilder",
-    "method"
-  ],
-  [
-    "src/builder/where.js~where#key",
-    "class/src/Builder/Where.js~Where.html#instance-member-key",
-    "src/Builder/Where.js~Where#key",
-    "member"
-  ],
-  [
-    "src/builder/where.js~where#messages",
-    "class/src/Builder/Where.js~Where.html#instance-member-messages",
-    "src/Builder/Where.js~Where#messages",
-    "member"
   ],
   [
     "src/builder/where.js~where#resolvelinkarray",
@@ -1552,6 +1834,60 @@ window.esdocSearchIndex = [
     "class/src/Builder/Where.js~Where.html#instance-method-resolveLinkString",
     "src/Builder/Where.js~Where#resolveLinkString",
     "method"
+  ],
+  [
+    "src/builder/where.js~where.buildmethod",
+    "class/src/Builder/Where.js~Where.html#static-member-buildMethod",
+    "src/Builder/Where.js~Where.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/where.js~where.buildorder",
+    "class/src/Builder/Where.js~Where.html#static-member-buildOrder",
+    "src/Builder/Where.js~Where.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/where.js~where.joint",
+    "class/src/Builder/Where.js~Where.html#static-member-joint",
+    "src/Builder/Where.js~Where.joint",
+    "member"
+  ],
+  [
+    "src/builder/where.js~where.keyword",
+    "class/src/Builder/Where.js~Where.html#static-member-keyword",
+    "src/Builder/Where.js~Where.keyword",
+    "member"
+  ],
+  [
+    "src/builder/where.js~where.messages",
+    "class/src/Builder/Where.js~Where.html#static-member-messages",
+    "src/Builder/Where.js~Where.messages",
+    "member"
+  ],
+  [
+    "src/builder/with.js",
+    "file/src/Builder/With.js.html",
+    "src/Builder/With.js",
+    "file"
+  ],
+  [
+    "src/builder/with.js~with.buildmethod",
+    "class/src/Builder/With.js~With.html#static-member-buildMethod",
+    "src/Builder/With.js~With.buildMethod",
+    "member"
+  ],
+  [
+    "src/builder/with.js~with.buildorder",
+    "class/src/Builder/With.js~With.html#static-member-buildOrder",
+    "src/Builder/With.js~With.buildOrder",
+    "member"
+  ],
+  [
+    "src/builder/with.js~with.keyword",
+    "class/src/Builder/With.js~With.html#static-member-keyword",
+    "src/Builder/With.js~With.keyword",
+    "member"
   ],
   [
     "src/builders.js",
@@ -1590,10 +1926,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/database.js~database#builder",
-    "class/src/Database.js~Database.html#instance-method-builder",
-    "src/Database.js~Database#builder",
-    "method"
+    "src/database.js~database#build",
+    "class/src/Database.js~Database.html#instance-member-build",
+    "src/Database.js~Database#build",
+    "member"
   ],
   [
     "src/database.js~database#constructor",
@@ -1884,6 +2220,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine.js~engine#parseerror",
+    "class/src/Engine.js~Engine.html#instance-method-parseError",
+    "src/Engine.js~Engine#parseError",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#parseerrorargs",
+    "class/src/Engine.js~Engine.html#instance-method-parseErrorArgs",
+    "src/Engine.js~Engine#parseErrorArgs",
+    "method"
+  ],
+  [
     "src/engine.js~engine#pool",
     "class/src/Engine.js~Engine.html#instance-member-pool",
     "src/Engine.js~Engine#pool",
@@ -2022,6 +2370,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine/mysql.js~mysqlengine.protocol",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-protocol",
+    "src/Engine/Mysql.js~MysqlEngine.protocol",
+    "member"
+  ],
+  [
     "src/engine/postgres.js",
     "file/src/Engine/Postgres.js.html",
     "src/Engine/Postgres.js",
@@ -2076,6 +2430,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine/postgres.js~postgresengine#parseerrorargs",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-parseErrorArgs",
+    "src/Engine/Postgres.js~PostgresEngine#parseErrorArgs",
+    "method"
+  ],
+  [
     "src/engine/postgres.js~postgresengine#run",
     "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-run",
     "src/Engine/Postgres.js~PostgresEngine#run",
@@ -2086,6 +2446,18 @@ window.esdocSearchIndex = [
     "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-sanitizeResult",
     "src/Engine/Postgres.js~PostgresEngine#sanitizeResult",
     "method"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine.protocol",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-protocol",
+    "src/Engine/Postgres.js~PostgresEngine.protocol",
+    "member"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine.protocolalias",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-protocolAlias",
+    "src/Engine/Postgres.js~PostgresEngine.protocolAlias",
+    "member"
   ],
   [
     "src/engine/sqlite.js",
@@ -2152,6 +2524,12 @@ window.esdocSearchIndex = [
     "class/src/Engine/Sqlite.js~SqliteEngine.html#instance-method-sanitizeResult",
     "src/Engine/Sqlite.js~SqliteEngine#sanitizeResult",
     "method"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine.protocol",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-protocol",
+    "src/Engine/Sqlite.js~SqliteEngine.protocol",
+    "member"
   ],
   [
     "src/engines.js",
@@ -2340,10 +2718,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#builder",
-    "class/src/Table.js~Table.html#instance-method-builder",
-    "src/Table.js~Table#builder",
-    "method"
+    "src/table.js~table#build",
+    "class/src/Table.js~Table.html#instance-member-build",
+    "src/Table.js~Table#build",
+    "member"
   ],
   [
     "src/table.js~table#checkcolumnnames",
@@ -2724,6 +3102,48 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/utils/error.js~sqlparseerror#code",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-member-code",
+    "src/Utils/Error.js~SQLParseError#code",
+    "member"
+  ],
+  [
+    "src/utils/error.js~sqlparseerror#constructor",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-constructor-constructor",
+    "src/Utils/Error.js~SQLParseError#constructor",
+    "method"
+  ],
+  [
+    "src/utils/error.js~sqlparseerror#name",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-member-name",
+    "src/Utils/Error.js~SQLParseError#name",
+    "member"
+  ],
+  [
+    "src/utils/error.js~sqlparseerror#position",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-member-position",
+    "src/Utils/Error.js~SQLParseError#position",
+    "member"
+  ],
+  [
+    "src/utils/error.js~sqlparseerror#query",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-member-query",
+    "src/Utils/Error.js~SQLParseError#query",
+    "member"
+  ],
+  [
+    "src/utils/error.js~sqlparseerror#stack",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-member-stack",
+    "src/Utils/Error.js~SQLParseError#stack",
+    "member"
+  ],
+  [
+    "src/utils/error.js~sqlparseerror#type",
+    "class/src/Utils/Error.js~SQLParseError.html#instance-member-type",
+    "src/Utils/Error.js~SQLParseError#type",
+    "member"
+  ],
+  [
     "src/utils/format.js",
     "file/src/Utils/Format.js.html",
     "src/Utils/Format.js",
@@ -2733,6 +3153,12 @@ window.esdocSearchIndex = [
     "src/utils/relation.js",
     "file/src/Utils/Relation.js.html",
     "src/Utils/Relation.js",
+    "file"
+  ],
+  [
+    "src/utils/space.js",
+    "file/src/Utils/Space.js.html",
+    "src/Utils/Space.js",
     "file"
   ],
   [

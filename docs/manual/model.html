@@ -229,7 +229,7 @@
 in the database model.</p>
 <p>Given a database connection like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// connect to the database
-const musicdb = await connect({
+const musicdb = connect({
   database: 'sqlite:memory',
   tables: {
     artists: {

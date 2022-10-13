@@ -239,7 +239,7 @@ the artist record for "The Pink Floyd" (as they were sometimes know in the early
 days) and change the name to just "Pink Floyd".</p>
 <p>The code might look something like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// connect to the database
-const musicdb = await connect({
+const musicdb = connect({
   database: 'sqlite:memory',
   tables: {
     artists: {
@@ -270,7 +270,7 @@ console.log(name);    // Pink Floyd</code></code></pre>
 <p>The database object that is returned from the <code>connect()</code> method (which you <em>do</em>
 have to wait for) includes a <code>waiter</code> property that allows you to "place your
 entire order at once" and then wait for the result.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const musicdb = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const musicdb = connect({
   // as before
 });
 const name = await musicdb.

@@ -227,7 +227,7 @@
 
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-columns">Table Columns</h1><p>For simple cases you can define table columns using a whitespace delimited string,
 e.g. <code>id name email</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -246,7 +246,7 @@ that's the default name for the id column), <code>required</code> to indicate
 that a column must be provided when a row is inserted, and <code>readonly</code> to indicate
 that a column cannot be inserted or updated.  Multiple flags can be added, each
 separated by a colon.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -269,7 +269,7 @@ await users.insert({
 });</code></code></pre>
 <p>There may be times when you want to insert rows with pre-defined ids.  That's fine -
 you don't have to define your id column as being readonly in this case.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -287,7 +287,7 @@ await users.insert({
 });</code></code></pre>
 <p>If your unique ID column isn't called <code>id</code> then you can mark the relevant column
 using the <code>id</code> tag.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -299,7 +299,7 @@ using the <code>id</code> tag.</p>
 keys that are used to uniquely identify a row then you can mark them with the <code>key</code> tag.
 For example, you might have an <code>employee</code> table which has rows that are uniquely identified
 by the <code>company_id</code> and <code>user_id</code> columns.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     employees: {
@@ -316,7 +316,7 @@ further enlightenment.</p>
 tables.  The more explicit form is to use an object with the column names as
 keys.  The corresponding values can be strings containing any flags for the
 columns, or an empty string if there aren't any.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -329,7 +329,7 @@ columns, or an empty string if there aren't any.</p>
   }
 });</code></code></pre>
 <p>Or you can fully expand them like so:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {

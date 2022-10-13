@@ -227,13 +227,13 @@
 
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="debugging">Debugging</h1><p>To enable debugging messages for the database library add the <code>debug</code> flag to the
 <code>connect()</code> configuration, set to <code>true</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'sqlite:memory',
   debug: true
 })</code></code></pre>
 <p>To enable debugging for individual tables, add the <code>debug</code> flag to the table
 configuration.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {
@@ -244,7 +244,7 @@ configuration.</p>
 })</code></code></pre>
 <p>To enable debugging for a record object associated with a table, set the <code>recordConfig</code>
 for the table to include the <code>debug</code> flag.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {

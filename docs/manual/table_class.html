@@ -240,7 +240,7 @@ export class Users extends Table {
 }
 
 async function main() {
-  const db = await connect({
+  const db = connect({
     database: 'sqlite:memory',
     tables: {
       users: {
@@ -328,7 +328,7 @@ at the end of the method.</p>
 }</code></code></pre>
 <p>When you define the <code>tables</code> for the database you then only need
 to specify the <code>tableClass</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {
@@ -339,7 +339,7 @@ to specify the <code>tableClass</code>.</p>
 <p>If you don't have any other table configuration options that you
 want to specify then you can use a shortcut and point the <code>users</code>
 table directly at your class.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: Users,

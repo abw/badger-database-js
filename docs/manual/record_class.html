@@ -240,7 +240,7 @@ export class User extends Record {
 }
 
 async function main() {
-  const db = await connect({
+  const db = connect({
     database: 'sqlite:memory',
     tables: {
       users: {
@@ -288,7 +288,7 @@ main()</code></code></pre>
 <h2 id="record-configuration-options">Record Configuration Options</h2><p>If you want to pass additional configuration options to the record
 object then you can define them as the <code>recordConfig</code> configuration
 option in the corresponding table configuration.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const db = await connect({
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc.
   tables: {
     users: {

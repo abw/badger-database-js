@@ -233,7 +233,7 @@ insert a row and then fetch it out again.</p>
 
 async function main() {
   // connect to a Sqlite database
-  const db = await connect({ database: 'sqlite://test.db' });
+  const db = connect({ database: 'sqlite://test.db' });
 
   // create a table
   await db.run(
@@ -269,33 +269,31 @@ called <code>main()</code> so that we can use the <code>await</code> keyword to 
 to complete. You can, of course, use <code>.then(...)</code> if you prefer.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
 
-connect({ database: 'sqlite://test.db' }).then(
-  db =&gt; {
-    db.run(
-      `CREATE TABLE users (
-        id    INTEGER PRIMARY KEY ASC,
-        name  TEXT,
-        email TEXT
-      )`
-    ).then(
-      () =&gt; db.run(
-        'INSERT INTO users (name, email) VALUES (?, ?)',
-        ['Bobby Badger', 'bobby@badgerpower.com']
-      )
-    ).then(
-      insert =&gt; console.log("Inserted ID:", insert.lastInsertRowid)
-    ).then(
-      () =&gt; db.one(
-        'SELECT * FROM users WHERE email=?',
-        ['bobby@badgerpower.com']
-      )
-    ).then(
-      bobby =&gt; console.log("Fetched row:", bobby)
-    ).then(
-      () =&gt; db.disconnect()
-    )
-  }
-);</code></code></pre>
+const db = connect({ database: 'sqlite://test.db' });
+
+db.run(
+  `CREATE TABLE users (
+    id    INTEGER PRIMARY KEY ASC,
+    name  TEXT,
+    email TEXT
+  )`
+).then(
+  () =&gt; db.run(
+    'INSERT INTO users (name, email) VALUES (?, ?)',
+    ['Bobby Badger', 'bobby@badgerpower.com']
+  )
+).then(
+  insert =&gt; console.log("Inserted ID:", insert.lastInsertRowid)
+).then(
+  () =&gt; db.one(
+    'SELECT * FROM users WHERE email=?',
+    ['bobby@badgerpower.com']
+  )
+).then(
+  bobby =&gt; console.log("Fetched row:", bobby)
+).then(
+  () =&gt; db.disconnect()
+)</code></code></pre>
 <h2 id="run-query--values--options-">run(query, values, options)</h2><p>The <code>run()</code> method is used to execute a query where you're not expecting
 to return any rows from the database.  However, the method does return some
 data include the number of rows changed, and in the case of <code>INSERT</code> queries,

@@ -236,7 +236,7 @@
 <li><a href="manual/named_queries.html">Named Queries</a> - defining named SQL queries for abstraction and reusability</li>
 <li><a href="manual/query_fragments.html">Query Fragments</a> - defining named SQL fragments for embedding into queries</li>
 <li><a href="manual/query_builder.html">Query Builder</a> - building SQL queries programmatically</li>
-<li><a href="manual/builder_method.html">Builder Method</a> - methods for building SQL queries</li>
+<li><a href="manual/builder_method.html">Query Builder Methods</a> - methods for building SQL queries</li>
 <li><a href="manual/tables.html">Tables</a> - using tables to automatically generate basic queries</li>
 <li><a href="manual/table_columns.html">Table Columns</a> - defining table columns</li>
 <li><a href="manual/table_methods.html">Table Methods</a> - calling table methods</li>
@@ -252,6 +252,8 @@
 <li><a href="manual/limitations.html">Limitations</a> - coping with the limitations of badger-database</li>
 <li><a href="manual/examples.html">Examples</a> - working examples using badger-database</li>
 </ul>
+<h2 id="implementation-details">Implementation Details</h2><p>The library is implemented using ES6 modules.  A bundle for CJS is also provided.</p>
+<p>All asynchronous functions and methods return promises.</p>
 <h2 id="notes-on-case-conventions">Notes on Case Conventions</h2><p>The Javascript convention is to use StudlyCaps for class names (e.g. <code>Artists</code>) and
 camelCase for methods, function, variables, etc., (e.g. <code>albumTracks</code>).</p>
 <p>When it comes to database table and columns names you might want to adopt the same
@@ -262,7 +264,7 @@ it case sensitive so you might want to look into that.</p>
 <p>I prefer to avoid the problem altogether by defining my database tables and columns using
 snake_case (e.g. <code>artists</code>, <code>artist_id</code>, <code>album_tracks</code>, etc). I typically use a number
 of other programming languages to access the same database in a project and many other
-languages (e.g. Rust, Perl, Python, etc.) use snake_case by convention.</p>
+languages (e.g. Rust, Perl, Python, PHP, etc.) use snake_case by convention.</p>
 <p>In these examples I've adopted this convention because it's what works for me.  It doesn't
 bother me that I have to think in snake_case when I'm accessing row data, but camelCase
 when using method names.  In fact, I think it probably helps me to differentiate between
