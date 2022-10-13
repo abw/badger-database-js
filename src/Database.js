@@ -18,6 +18,7 @@ export class Database {
     this.engine  = engine || missing('engine');
     this.queries = new Queries(config);
     this.tables  = config.tablesObject || new config.tablesClass(config.tables);
+    this.build   = databaseBuilder(this);
     this.model   = modelProxy(this);
     this.waiter  = proxymise(this);
     this.state   = {
@@ -72,7 +73,7 @@ export class Database {
   quote(name) {
     return this.engine.quote(name);
   }
-  builder() {
+  XXXbuilder() {
     return databaseBuilder(this);
   }
   select(...args) {
