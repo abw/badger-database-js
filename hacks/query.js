@@ -1,4 +1,4 @@
-import connect, { sql } from "../src/index.js"
+import connect from "../src/index.js"
 
 async function main() {
   const db = await connect({ database: 'sqlite:memory' });
