@@ -301,8 +301,6 @@ test(
   }
 )
 
-
-
 test.after(
   'disconnect',
   t => {

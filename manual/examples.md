@@ -28,3 +28,6 @@ use of relations.
 
 * [08_debugging](https://github.com/abw/badger-database-js/tree/master/examples/08_debugging)
 Enabling debugging to see what's going on behind the scenes.
+
+* [09_custom_builder](https://github.com/abw/badger-database-js/tree/master/examples/09_custom_builder)
+Adding a custom query builder component

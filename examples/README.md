@@ -25,4 +25,5 @@ $ node 05_table_class/example.js
 $ node 06_records/example.js
 $ node 07_musicdb/example.js
 $ node 08_debugging/example.js
+$ node 09_custom_builder/example.js
 ```
