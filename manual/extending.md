@@ -149,7 +149,7 @@ export class MyCoolEngine extends Engine {
 }
 ```
 
-You should then register it using the `registerBuilder()` function.
+You should then register it using the `registerEngine()` function.
 
 ```js
 import { registerEngine } from '@abw/badger-database'
