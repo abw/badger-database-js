@@ -6,11 +6,7 @@ import { terser } from 'rollup-plugin-terser'
 
 // Silence circular dependency warnings
 const ignoreWarnings = [
-  /glob\.js/,
-  /node-pre-gyp/,
-  /readable-stream/,
-  /semver/,
-  /mysql2/,
+  // EXAMPLE: /example/,
 ]
 
 const onwarn = (warning, warn) => {

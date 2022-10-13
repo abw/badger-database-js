@@ -52,9 +52,9 @@ export const factory = (parent, type, ...args) => {
 }
 
 export const databaseBuilder = database =>
-  Proxy(new Database(factory, undefined, database))
+  Proxy(Builders, new Database(factory, undefined, database))
 
 export const tableBuilder = table =>
-  Proxy(new Table(factory, undefined, table))
+  Proxy(Builders, new Table(factory, undefined, table))
 
 export default factory;

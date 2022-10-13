@@ -1,14 +1,15 @@
-import { Builders } from "../Builders.js";
-
-export const builderProxy = parent =>
+export const builderProxy = (builders, parent) =>
   new Proxy(
     parent,
     {
       get(target, prop) {
         // console.log('builderProxy %s', prop);
-        if (Builders[prop]) {
+        if (builders[prop]) {
           return (
-            (...args) => builderProxy(target.factory(parent, prop, ...args))
+            (...args) => builderProxy(
+              builders,
+              target.factory(parent, prop, ...args)
+            )
           ).bind(target);
         }
         else {
