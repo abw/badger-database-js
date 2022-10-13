@@ -8,7 +8,8 @@ export const builderProxy = (builders, parent) =>
           return (
             (...args) => builderProxy(
               builders,
-              target.factory(parent, prop, ...args)
+              new builders[prop](parent, ...args)
+              // target.factory(parent, prop, ...args)
             )
           ).bind(target);
         }

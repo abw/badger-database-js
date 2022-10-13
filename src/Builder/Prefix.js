@@ -17,4 +17,3 @@ export class Prefix extends Builder {
 }
 
 export default Prefix
-

@@ -1,12 +1,16 @@
 import Builder from '../Builder.js';
 import { isArray, isObject, isString, splitList } from '@abw/badger-utils';
+import { comma, FROM } from '../Constants.js';
 
 export class From extends Builder {
   static buildMethod = 'from'
+  static buildOrder  = 30
+  static keyword     = FROM
+  static joint       = comma
   static messages = {
     array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [table, alias].',
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "tables", "table" and "as".',
-  };
+  }
 
   initBuilder(...tables) {
     // store the table name for subsequent columns() calls to use, but

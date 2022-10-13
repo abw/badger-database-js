@@ -1,7 +1,10 @@
 import Where from './Where.js';
+import { HAVING } from '../Constants.js';
 
 export class Having extends Where {
   static buildMethod = 'having'
+  static buildOrder  = 70
+  static keyword     = HAVING
 
   // Everything works the same as for Where, EXCEPT for the fact that we save
   // values in a separate list.  Any where() values go in this.context.values,

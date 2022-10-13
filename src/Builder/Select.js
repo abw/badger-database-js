@@ -1,10 +1,13 @@
 import Builder from '../Builder.js';
 import { splitList } from '@abw/badger-utils';
-
+import { comma, SELECT } from '../Constants.js';
 
 export class Select extends Builder {
   static buildMethod = 'select'
-  static messages = {
+  static buildOrder  = 20;
+  static keyword     = SELECT
+  static joint       = comma
+  static messages    = {
     array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [column, alias] or [table, column, alias].',
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
   }
@@ -13,10 +16,10 @@ export class Select extends Builder {
     // function to map columns to depends on table and/or prefix being defined
     const func = table
       ? prefix
-        ? column => this.quoteTableColumnAs(table, column, `${prefix}${column}`)
+        ? column => this.quoteTableColumnAs(table, column, prefix + column)
         : column => this.quoteTableColumn(table, column)
       : prefix
-        ? column => this.quoteColumnAs(column, `${prefix}${column}`)
+        ? column => this.quoteColumnAs(column, prefix + column)
         : column => this.quote(column)
     ;
     // split string into items and apply function

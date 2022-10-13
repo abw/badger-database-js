@@ -1,5 +1,5 @@
-import { isInteger, isObject } from '@abw/badger-utils';
 import Builder from '../Builder.js';
+import { isInteger, isObject } from '@abw/badger-utils';
 
 export class Range extends Builder {
   static buildMethod = 'range'

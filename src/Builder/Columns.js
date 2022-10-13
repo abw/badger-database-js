@@ -2,10 +2,11 @@ import Select from './Select.js';
 
 export class Columns extends Select {
   static buildMethod = 'columns'
+  static contextSlot = 'select'
 
   initBuilder() {
     // generated fragments get stored in the context with those from select()
-    this.key = 'select';
+    // this.key = 'select';
   }
 
   resolveLinkString(columns, table=this.lookupTable(), prefix=this.context.prefix) {

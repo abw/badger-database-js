@@ -1,8 +1,12 @@
 import Builder from '../Builder.js';
 import { hasValue, isArray, splitList } from '@abw/badger-utils';
+import { AND, WHERE } from '../Constants.js';
 
 export class Where extends Builder {
   static buildMethod = 'where'
+  static buildOrder  = 50
+  static keyword     = WHERE
+  static joint       = AND
   static messages = {
     array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [column, value] or [column, operator, value].',
     object: 'Invalid value array with <n> items specified for query builder "<method>" component. Expected [value] or [operator, value].',

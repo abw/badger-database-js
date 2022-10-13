@@ -4,6 +4,7 @@ import { unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
 import { format } from "./Utils/Format.js";
+// import { Builders } from './Builders.js'
 
 const defaultContext = () => ({
   whereValues:  [ ],
@@ -18,37 +19,45 @@ const defaultContext = () => ({
 // where applicable, e.g. after the opening keyword, e.g. 'WHERE ',
 // and around joining keywords/syntax, e.g. ' AND '
 const parts = {
-  before:  ['',          "\n"     ],
-  select:  ['SELECT ',   ', '     ],
-  from:    ['FROM ',     ', '     ],
-  join:    ['',          "\n"     ],
-  where:   ['WHERE ',    ' AND '  ],
-  group:   ['GROUP BY ', ', '     ],
-  having:  ['HAVING ',   ' AND '  ],
-  order:   ['ORDER BY ', ', '     ],
-  limit:   ['LIMIT ',    ' '      ],
-  offset:  ['OFFSET ',   ' '      ],
-  after:   ['',          "\n"     ],
+  before:  ['',          "\n"     ],  // 0
+  // with: 10
+  select:  ['SELECT ',   ', '     ],  // 20
+  from:    ['FROM ',     ', '     ],  // 30
+  join:    ['',          "\n"     ],  // 40
+  where:   ['WHERE ',    ' AND '  ],  // 50
+  group:   ['GROUP BY ', ', '     ],  // 60
+  having:  ['HAVING ',   ' AND '  ],  // 70
+  order:   ['ORDER BY ', ', '     ],  // 80
+  limit:   ['LIMIT ',    ' '      ],  // 90
+  offset:  ['OFFSET ',   ' '      ],  // 95
+  after:   ['',          "\n"     ],  // 100
 };
 
 const notImplemented = notImplementedInBaseClass('Builder');
 
 export class Builder {
-  constructor(factory, parent, ...args) {
-    this.factory  = factory;
+  constructor(parent, ...args) {
+    // this.factory  = factory;
     this.parent   = parent;
     this.args     = args;
+
     // copy static class variables into this, including messages for generating
     // error messages via errorMsg(), the name of the build method which is also
-    // the default key for storing things in the context,
+    // the default key for storing things in the context, the keyword and joint
+    // used to generate the SQL
     this.messages = this.constructor.messages;
     this.method   = this.constructor.buildMethod;
-    this.key      = this.method;
+    this.keyword  = this.constructor.keyword;
+    this.joint    = this.constructor.joint;
+    this.key      = this.constructor.contextSlot || this.method;
+
     // call the initialisation method to allow subclasses to tweak these
     this.initBuilder(...args);
+
     // add debug() and debugData() methods
     addDebugMethod(this, 'builder', { debugPrefix: this.key && `Builder:${this.key}` });
   }
+
   initBuilder() {
     // stub for subclasses
   }

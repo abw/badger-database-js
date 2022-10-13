@@ -1,4 +1,5 @@
 import Builder from '../Builder.js';
+import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, ON, RIGHT_JOIN, space } from '../Constants.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
 const joinRegex = /^(.*?)=(\w+)\.(\w+)$/;
@@ -8,21 +9,24 @@ const joinElements = {
   to:    3,
 };
 const joinTypes = {
-  left:    'LEFT JOIN ',
-  right:   'RIGHT JOIN ',
-  inner:   'INNER JOIN ',
-  full:    'FULL JOIN ',
-  default: 'JOIN ',
+  left:    LEFT_JOIN,
+  right:   RIGHT_JOIN,
+  inner:   INNER_JOIN,
+  full:    FULL_JOIN,
+  default: JOIN,
 };
 
 export class Join extends Builder {
   static buildMethod = 'join'
-  static messages = {
+  static buildOrder  = 40
+  static keyword     = blank
+  static joint       = newline
+  static messages    = {
     type:   'Invalid join type "<joinType>" specified for query builder "<method>" component.  Valid types are "left", "right", "inner" and "full".',
     string: 'Invalid join string "<join>" specified for query builder "<method>" component.  Expected "from=table.to".',
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "type", "table", "from" and "to".',
     array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
-  };
+  }
 
   resolveLinkString(join) {
     // join('a=b.c')
@@ -82,10 +86,11 @@ export class Join extends Builder {
 
   constructJoin(type, from, table, to) {
     return type
+      + space
       + this.quote(table)
-      + ' ON '
+      + space + ON + space
       + this.quote(from)
-      + ' = '
+      + space + equals + space
       + this.quote(to);
   }
 }
