@@ -35,6 +35,36 @@ elements that precede it.  This means that you can create partial
 queries which you can then use to build multiple different queries
 that are variations of it.
 
+There are a number of limitations, most of which are intentional.
+The first and most prominent is that we currently only support
+select queries.  The reasoning behind this is that insert, update
+and delete queries are destructive in that they write to the database.
+If you get something wrong because the SQL query is obscured by
+using a query builder then you're going to have a bad day.  We don't
+want you to have a bad day, especially not on our account.
+
+As described in the [tables](manual/tables.html) documentation,
+there are already methods provided for inserting, updating and
+deleting records and they come with a safety net.  You can mark
+table columns as `required` and/or `readonly` and the method calls
+will be sanity checked for you.  An error will be thrown if you
+try to insert or update `readonly` columns, or insert records
+with missing `required` columns.
+
+If you need to perform an insert, update or delete query that
+is any more complicated than that (e.g. requiring a join to another
+table) then we highly recommend that you write it as an SQL query
+that you can test (on a sacrificial copy of your production database,
+of course) and then define as a [named query](manual/named_queries.html).
+
+Another limitation is that we don't support all the SQL elements that
+you could possibly want to put in a select query.  Again, this is
+deliberate.  We've tried to cover the things that you're likely to
+need most often, and provide an easy way to embed raw SQL for those
+times when you need something else.  This library does not try
+to discourage you from using SQL when you need to.  In fact, it
+positively encourages you to do so.
+
 Before we get into too much detail, let's look at some examples.
 
 ## Getting Started
@@ -120,6 +150,13 @@ builder will construct the SQL query in the correct order.
 db.from('users').select('id name')
 // -> SELECT "id", "name" FROM "users"
 ```
+
+NOTE: We don't yet have support for `with()` but it should be coming soon.
+When it does, we will also allow you to start a query with that.
+
+If you want to start a query with anything other than `select()` or `from()`
+(or `with()`, coming soon), then you should prefix it with a call to
+`builder()`.
 
 You can call methods multiple times.
 
