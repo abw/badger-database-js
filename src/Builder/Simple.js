@@ -18,7 +18,7 @@ export class Simple extends Builder {
   resolve(context) {
     this.context = {
       ...context,
-      [this.key]: this.value
+      [this.slot]: this.value
     }
     return this.context;
   }

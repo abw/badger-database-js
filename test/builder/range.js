@@ -18,7 +18,7 @@ test(
   t => {
     const op = db.builder().range(0, 9);
     t.true( op instanceof Range )
-    t.is( op.sql(), 'LIMIT 10\nOFFSET 0' );
+    t.is( op.sql(), 'LIMIT 10' );
   }
 )
 

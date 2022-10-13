@@ -1,4 +1,4 @@
-import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, objMap } from "@abw/badger-utils";
+import { fail, hasValue, isArray, isFunction, isObject, isString } from "@abw/badger-utils";
 import { newline, unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
@@ -13,27 +13,6 @@ const defaultContext = () => ({
   havingValues: [ ],
   placeholder:  1,
 });
-
-// Each of the parts of a select query in order.  The first entry
-// is the opening keyword, the second is the text used to join
-// multiple values, e.g. { where: ['a=1', 'b=2'] } is expanded to
-// WHERE a=1 AND b=2.  Note that the entries must have whitespace
-// where applicable, e.g. after the opening keyword, e.g. 'WHERE ',
-// and around joining keywords/syntax, e.g. ' AND '
-const parts = {
-  before:  ['',          "\n"     ],  // 0
-  // with: 10
-  select:  ['SELECT ',   ', '     ],  // 20
-  from:    ['FROM ',     ', '     ],  // 30
-  join:    ['',          "\n"     ],  // 40
-  where:   ['WHERE ',    ' AND '  ],  // 50
-  group:   ['GROUP BY ', ', '     ],  // 60
-  having:  ['HAVING ',   ' AND '  ],  // 70
-  order:   ['ORDER BY ', ', '     ],  // 80
-  limit:   ['LIMIT ',    ' '      ],  // 90
-  offset:  ['OFFSET ',   ' '      ],  // 95
-  after:   ['',          "\n"     ],  // 100
-};
 
 const notImplemented = notImplementedInBaseClass('Builder');
 
@@ -52,19 +31,16 @@ export class Builder {
 
     // copy static class variables into this, including messages for generating
     // error messages via errorMsg(), the name of the build method which is also
-    // the default key for storing things in the context, the keyword and joint
-    // used to generate the SQL
+    // the default slot for storing things in the context
     this.messages = this.constructor.messages;
     this.method   = this.constructor.buildMethod;
-    this.keyword  = this.constructor.keyword;
-    this.joint    = this.constructor.joint;
-    this.key      = this.constructor.contextSlot || this.method;
+    this.slot     = this.constructor.contextSlot || this.method;
 
     // call the initialisation method to allow subclasses to tweak these
     this.initBuilder(...args);
 
     // add debug() and debugData() methods
-    addDebugMethod(this, 'builder', { debugPrefix: this.key && `Builder:${this.key}` });
+    addDebugMethod(this, 'builder', { debugPrefix: this.method && `Builder:${this.method}` });
   }
 
   initBuilder() {
@@ -124,28 +100,19 @@ export class Builder {
 
   // generate SQL
   sql() {
-    const frags = this.sqlFragments();
-    return Object.keys(parts)
-      .map( part => frags[part] )
-      .filter( i => hasValue(i) )
-      .join(newline);
-  }
+    const context = this.resolveChain();
 
-  // generate and collect SQL fragments for each item in the chain
-  sqlFragments(context=this.resolveChain()) {
-    return objMap(
-      context,
-      (value, key) => {
-        const part = parts[key];
-        if (noValue(part) || noValue(value)) {
-          return null;
-        }
-        if (isArray(value) && value.length) {
-          return part[0] + value.join(part[1]);
-        }
-        return part[0] + value;
-      }
-    )
+    return Object.entries(Generators)
+      // sort generators by the buildOrder - the second array element in the value
+      .sort( (a, b) => a[1][1] - b[1][1] )
+      // filter out any that don't have slots defined
+      .filter( ([slot]) => context[slot] )
+      // call the generateSQL() static method
+      .map( ([slot, entry]) => entry[0].generateSQL(context[slot]) )
+      // filter out any that didn't return a value
+      .filter( i => hasValue(i) )
+      // join together into a single string
+      .join(newline);
   }
 
   // resolve the complete chain from top to bottom
@@ -159,13 +126,13 @@ export class Builder {
 
   // resolve a link in the chain and merge into parent context
   resolve(context, args={}) {
-    const key = this.key;
+    const slot = this.slot;
     this.context = {
       ...context,
       ...args
     }
     const values = this.resolveLink();
-    this.context[key] = [...(this.context[key] || []), ...values];
+    this.context[slot] = [...(this.context[slot] || []), ...values];
     return this.context;
   }
 
