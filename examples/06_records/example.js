@@ -8,7 +8,7 @@ export class User extends Record {
 }
 
 async function main() {
-  const db = await connect({
+  const db = connect({
     database: 'sqlite:memory',
     tables: {
       users: {

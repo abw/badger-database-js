@@ -59,7 +59,7 @@ registerBuilder(Animal)
 // Demonstrate usage
 //-----------------------------------------------------------------------------
 async function main() {
-  const db = await connect({ database: 'sqlite:memory' });
+  const db = connect({ database: 'sqlite:memory' });
   const green = color('green');
   const red = color('red');
 

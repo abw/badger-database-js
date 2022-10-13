@@ -5,7 +5,7 @@ import Artists from './Table/Artists.js';
 import Tracks from './Table/Tracks.js';
 
 export const connectMusicDb = async () => {
-  const musicdb = await connect({
+  const musicdb = connect({
     database: 'sqlite:memory',
     queries: Queries,
     tables: {

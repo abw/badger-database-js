@@ -3,7 +3,7 @@ import connect from '@abw/badger-database'
 
 async function main() {
   // connect to a Sqlite database
-  const db = await connect({
+  const db = connect({
     database: 'sqlite:memory',
     tables: {
       // definition for the users table
