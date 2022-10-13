@@ -4,10 +4,10 @@ import { connect } from '../../src/Database.js'
 let db;
 let users;
 
-test.serial(
+test.before(
   'database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -49,4 +49,8 @@ test.serial(
 test.serial(
   'users table keys',
   t => t.is(users.keys.join(','), 'id')
+)
+
+test.after(
+  () => db.disconnect()
 )

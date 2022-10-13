@@ -5,10 +5,10 @@ import { ColumnValidationError } from '../../src/Utils/Error.js';
 let db;
 let users;
 
-test.serial(
+test.before(
   'database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -132,3 +132,6 @@ test.serial(
   }
 )
 
+test.after(
+  () => db.disconnect()
+)

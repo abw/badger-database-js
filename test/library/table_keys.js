@@ -17,8 +17,8 @@ export function runTableKeysTests(engine) {
 
   test.serial(
     'database',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           users: {
@@ -83,11 +83,7 @@ export function runTableKeysTests(engine) {
     }
   )
 
-  test.serial(
-    'destroy',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+  test.after(
+    () => db.disconnect()
   )
 }

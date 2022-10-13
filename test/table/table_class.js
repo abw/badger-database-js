@@ -30,8 +30,8 @@ const dbConfig = {
 
 test.before(
   'connect to database',
-  async t => {
-    db = await connect(dbConfig);
+  t => {
+    db = connect(dbConfig);
     t.pass()
   }
 );
@@ -82,7 +82,6 @@ test.serial(
 )
 
 test.after(
-  'destroy',
   () => db.disconnect()
 )
 

@@ -3,10 +3,10 @@ import { connect } from '../../src/Database.js'
 
 let db;
 
-test.serial(
+test.before(
   'connect',
-  async t => {
-    db = await connect({ database: 'sqlite:memory' });
+  t => {
+    db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
@@ -49,7 +49,7 @@ test.serial(
 
 test.after(
   'destroy',
-  async t => {
+  t => {
     db.disconnect();
     t.pass();
   }

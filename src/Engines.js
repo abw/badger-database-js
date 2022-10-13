@@ -1,37 +1,32 @@
-import { databaseConfig } from "./Utils/Database.js";
-import { invalid, missing } from "./Utils/Error.js";
 import Mysql from './Engine/Mysql.js'
 import Postgres from './Engine/Postgres.js'
 import Sqlite from './Engine/Sqlite.js'
+import { splitList } from "@abw/badger-utils";
+import { databaseConfig } from "./Utils/Database.js";
+import { invalid, missing } from "./Utils/Error.js";
 
 let Engines = { };
 
-export const registerEngine = (name, module) => {
-  Engines[name] = async config => {
-    return new module(config);
-  }
+export const registerEngine = engine => {
+  const ructor = config => new engine(config);
+  [engine.protocol, ...splitList(engine.protocolAlias)].forEach(
+    name => Engines[name] = ructor
+  )
 }
 
-export const registerEngines = (engines) =>
-  Object.entries(engines).forEach(
-    engine => registerEngine(...engine)
-  )
+export const registerEngines = (...engines) =>
+  engines.forEach(registerEngine)
 
-registerEngines({
-  sqlite:     Sqlite,
-  mysql:      Mysql,
-  postgres:   Postgres,
-  postgresql: Postgres,
-});
+registerEngines(Sqlite, Mysql, Postgres);
 
 //-----------------------------------------------------------------------------
 // Engine constructor
 //-----------------------------------------------------------------------------
-export const engine = async config => {
+export const engine = config => {
   config = databaseConfig(config);
   const engine = config.engine || missing('database.engine');
   const handler = Engines[engine] || invalid('database.engine', engine);
-  return await handler(config);
+  return handler(config);
 }
 
 export default Engines;

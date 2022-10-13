@@ -15,10 +15,10 @@ class MyTables extends Tables {
   }
 }
 
-test.serial(
+test.before(
   'database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tablesClass: MyTables,
       tables: {

@@ -8,10 +8,10 @@ export function runTableDeleteTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  test.serial(
+  test.before(
     'database',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           users: {
@@ -159,10 +159,6 @@ export function runTableDeleteTests(engine) {
   )
 
   test.after(
-    'destroy',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+    () => db.disconnect()
   )
 }

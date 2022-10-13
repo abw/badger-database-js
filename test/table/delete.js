@@ -23,8 +23,8 @@ const dbConfig = {
 
 test.before(
   'connect to database',
-  async t => {
-    db = await connect(dbConfig);
+  t => {
+    db = connect(dbConfig);
     t.pass()
   }
 );
@@ -38,7 +38,6 @@ test.serial(
     t.is(create.changes, 0);
   }
 )
-
 
 test.serial(
   'insert([{ ...Roger Rabbit... }, { ...Richard Rabbit... }])',
@@ -77,6 +76,5 @@ test.serial(
 )
 
 test.after(
-  'destroy',
   () => db.disconnect()
 )

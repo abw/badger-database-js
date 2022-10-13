@@ -3,6 +3,9 @@ import Engine from '../Engine.js';
 import { defaultIdColumn } from '../Constants.js';
 
 export class PostgresEngine extends Engine {
+  static protocol = 'postgres'
+  static protocolAlias = 'postgresql'
+
   //-----------------------------------------------------------------------------
   // Pool connections methods
   //-----------------------------------------------------------------------------

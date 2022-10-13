@@ -5,8 +5,8 @@ let db;
 
 test.before(
   'connect to database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       fragments: {
         hello: 'Hello',
@@ -16,7 +16,7 @@ test.before(
         helloWorld: '<hello> <world>!',
       }
     });
-    t.pass("created music database")
+    t.pass("created database")
   }
 );
 
@@ -38,9 +38,9 @@ test.serial(
 
 test.serial(
   'rebuild database',
-  async t => {
-    await db.disconnect();
-    db = await connect({
+  t => {
+    db.disconnect();
+    db = connect({
       database: 'sqlite:memory',
       queries: {
         createArtistsTable: `
@@ -117,4 +117,8 @@ test.serial(
     t.is(artists[1].id, 2);
     t.is(artists[1].name, 'Genesis');
   }
+)
+
+test.after(
+  () => db.disconnect()
 )

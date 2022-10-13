@@ -11,8 +11,8 @@ export function runTableInsertTests(engine) {
   // connect
   test.serial(
     'connect',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           users: {
@@ -189,13 +189,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-
-  // cleanup
   test.after(
-    'destroy',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+    () => db.disconnect()
   )
 }

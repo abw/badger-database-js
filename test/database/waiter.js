@@ -45,8 +45,5 @@ test.serial(
 )
 
 test.after(
-  async t => {
-    await musicdb.disconnect();
-    t.pass();
-  }
+  () => musicdb.disconnect()
 )

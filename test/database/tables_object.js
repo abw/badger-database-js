@@ -21,10 +21,10 @@ const tables = {
   }
 };
 
-test.serial(
+test.before(
   'database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tablesObject: new MyTables(tables),
     })

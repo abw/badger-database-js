@@ -90,8 +90,8 @@ export class Database {
   }
 }
 
-export const connect = async config => {
-  const e = await engine(config);
+export const connect = config => {
+  const e = engine(config);
   return new Database(e, config)
 }
 

@@ -37,8 +37,8 @@ const dbConfig = {
 
 test.before(
   'create database',
-  async t => {
-    db = await connect(dbConfig);
+  t => {
+    db = connect(dbConfig);
     t.pass("created music database")
   }
 );
@@ -102,3 +102,7 @@ test.serial(
     t.is( pfalbums[1].title, 'Wish You Were Here' );
   }
 );
+
+test.after(
+  () => db.disconnect()
+)

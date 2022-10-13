@@ -12,8 +12,8 @@ export function runTableQueriesTests(engine) {
   // connect
   test.serial(
     'connect',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           users: {
@@ -120,12 +120,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  // cleanup
   test.after(
-    'destroy',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+    () => db.disconnect()
   )
 }

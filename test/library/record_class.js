@@ -16,10 +16,10 @@ export function runRecordClassTests(engine) {
   let db;
 
   // connect to the database
-  test.serial(
+  test.before(
     'database',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           users: {
@@ -114,11 +114,7 @@ export function runRecordClassTests(engine) {
   )
 
   // cleanup
-  test.serial(
-    'destroy',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+  test.after(
+    () => db.disconnect()
   )
 }

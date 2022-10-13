@@ -5,7 +5,7 @@ import { ColumnValidationError } from '../../src/Utils/Error.js';
 test(
   'users table with string of columns',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -24,14 +24,14 @@ test(
     t.is(users.columns.name.tableColumn, 'users.name');
     t.is(users.columns.email.column, 'email');
     t.is(users.columns.email.tableColumn, 'users.email');
-    await db.disconnect();
+    db.disconnect();
   }
 )
 
 test(
   'users table with some required columns',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -52,14 +52,14 @@ test(
       users.required,
       ['name', 'email']
     )
-    await db.disconnect();
+    db.disconnect();
   }
 )
 
 test(
   'users table with custom id',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -84,14 +84,14 @@ test(
     t.is(
       users.id, 'user_id'
     )
-    await db.disconnect();
+    db.disconnect();
   }
 )
 
 test(
   'users table with custom id marked in columns',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -115,14 +115,14 @@ test(
     t.is(
       users.id, 'user_id'
     )
-    await db.disconnect();
+    db.disconnect();
   }
 )
 
 test(
   'users table with multiple id columns marked',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -141,7 +141,7 @@ test(
 test(
   'users table with custom keys',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -170,14 +170,14 @@ test(
     t.is(
       users.id, undefined
     )
-    await db.disconnect();
+    db.disconnect();
   }
 )
 
 test(
   'users table with custom keys marked in columns',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -205,14 +205,14 @@ test(
     t.is(
       users.id, undefined
     )
-    await db.disconnect();
+    db.disconnect();
   }
 )
 
 test(
   'users table with expanded columns',
   async t => {
-    const db = await connect({
+    const db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -251,6 +251,6 @@ test(
     t.is(
       users.id, undefined
     )
-    await db.disconnect();
+    db.disconnect();
   }
 )

@@ -10,10 +10,10 @@ class Users extends Table {
   }
 }
 
-test.serial(
+test.before(
   'database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tables: {
         users: Users,

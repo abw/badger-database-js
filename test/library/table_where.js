@@ -14,8 +14,8 @@ export function runTableWhereTests(engine) {
   // connect to the database
   test.serial(
     'connect',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           albums: {
@@ -92,12 +92,7 @@ export function runTableWhereTests(engine) {
     }
   )
 
-
-  test.serial(
-    'disconnect',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+  test.after(
+    () => db.disconnect()
   )
 }

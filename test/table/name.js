@@ -5,8 +5,8 @@ let db;
 
 test.before(
   'create database',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tables: {
         people: {
@@ -36,4 +36,8 @@ test(
     const users = await db.table('users');
     t.is( users.table, 'user' );
   }
+)
+
+test.after(
+  () => db.disconnect()
 )

@@ -10,8 +10,8 @@ export function runTableIdTests(engine) {
 
   test.serial(
     'connect',
-    async t => {
-      db = await connect({
+    t => {
+      db = connect({
         database,
         tables: {
           users: {
@@ -58,11 +58,7 @@ export function runTableIdTests(engine) {
     }
   )
 
-  test.serial(
-    'destroy',
-    t => {
-      db.disconnect();
-      t.pass();
-    }
+  test.after(
+    () => db.disconnect()
   )
 }
