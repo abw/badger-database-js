@@ -340,7 +340,7 @@ Consider this query to fetch employees of a company by joining from the
 const employees = db
   .select(
     'users.name employees.job_title',
-    ['companies.name', 'company_name']  // alias company.name to company_name
+    ['companies.name', 'company_name']  // alias companies.name to company_name
   )
   .from('users')
   .join('users.id=employees.user_id')

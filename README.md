@@ -129,7 +129,9 @@ function from `@abw/badger-database` and create a database connection.  This exa
 `sqlite` in-memory database which is ideal for testing.
 
 ```js
-const database = connect({
+import connect from '@abw/badger-database'
+
+const db = connect({
   database: 'sqlite:memory',
 })
 ```
@@ -138,7 +140,7 @@ Use the [run()](https://abw.github.io/badger-database-js/docs/manual/basic_queri
 method to run SQL queries.  For example, to create a `users` table:
 
 ```js
-await database.run(`
+await db.run(`
   CREATE TABLE users (
     id INTEGER PRIMARY KEY ASC,
     name TEXT,
@@ -150,7 +152,7 @@ await database.run(`
 Or to insert a row of data:
 
 ```js
-const insert = await database.run(
+const insert = await db.run(
   'INSERT INTO users (name, email) VALUES (?, ?)',
   ['Bobby Badger', 'bobby@badgerpower.com']
 );
@@ -161,7 +163,7 @@ Use the [one()](https://abw.github.io/badger-database-js/docs/manual/basic_queri
 method to fetch a row of data:
 
 ```js
-const select = await database.one(
+const select = await db.one(
   'SELECT name, email FROM users WHERE email=?',
   ['bobby@badgerpower.com']
 );
@@ -173,7 +175,7 @@ and reusable [query fragments](https://abw.github.io/badger-database-js/docs/man
 up front so that you don't have to embed SQL in your application code:
 
 ```js
-const database = connect({
+const db = connect({
   database: 'sqlite:memory',
   fragments: {
     selectUser: `
@@ -204,32 +206,78 @@ const database = connect({
 })
 
 // run named query to create table
-await database.run('createUsers');
+await db.run('createUsers');
 
 // run named query to insert a row
-await database.run(
+await db.run(
   'insertUser',
   ['Bobby Badger', 'bobby@badgerpower.com']
 );
 
 // run named query to fetch one row
-const select1 = await database.one(
+const select1 = await db.one(
   'selectUserByEmail',
   ['bobby@badgerpower.com']
 );
 
 // another named query to fetch one row
-const select2 = await database.one(
+const select2 = await db.one(
   'selectUserByName',
   ['Bobby Badger']
 );
+```
+
+Use the [query builder](https://abw.github.io/badger-database-js/docs/manual/query_builder.html)
+to generate custom SQL select queries.
+
+```js
+const employee = db
+  .select(
+    'users.name employees.job_title',
+    ['companies.name', 'company_name']  // alias companies.name to company_name
+  )
+  .from('users')
+  .join('users.id=employees.user_id')
+  .join('employees.company_id=companies.id')
+  .where('companies.id')
+// Generates SQL query:
+//   SELECT "users"."name", "employees"."job_title", "companies"."name" AS "company_name"
+//   FROM "users"
+//   JOIN "employees" ON "users"."id" = "employees"."user_id"
+//   JOIN "companies" ON "employees"."company_id" = "companies"."id"
+//   WHERE "companies"."id" = ?
+```
+
+You can run the query multiple times:
+
+```js
+const emps1 = await employee.all([12345])   // companies.id = 12345
+const emps2 = await employee.all([98765])   // companies.id = 98765
+```
+
+Queries are idempotent so you can safely extend them to build new queries.
+The original query (`employee`) isn't affected in any way.
+
+```js
+const emp1 = await employee         // extend existing query
+  .select('employees.start_date')   // also select this column
+  .where('users.id')                // add a new constraint
+  .one([12345, 4242])               // companies.id = 12345, users.id = 4242
+// Generates SQL query:
+//   SELECT "users"."name", "employees"."job_title", "companies"."name" AS "company_name",
+//          "employees"."start_date"
+//   FROM "users"
+//   JOIN "employees" ON "users"."id" = "employees"."user_id"
+//   JOIN "companies" ON "employees"."company_id" = "companies"."id"
+//   WHERE "companies"."id" = ?
+//   AND "users"."id" = ?
 ```
 
 Define [tables](https://abw.github.io/badger-database-js/docs/manual/tables.html)
 to benefit from table-scoped queries and automatically generated queries:
 
 ```js
-const database = connect({
+const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {
@@ -247,7 +295,7 @@ const database = connect({
 })
 
 // fetch table
-await users = database.table('users');
+await users = db.table('users');
 
 // run named query defined for table
 await users.run('create');
@@ -288,7 +336,7 @@ Define [relations](https://abw.github.io/badger-database-js/docs/manual/relation
 between tables.
 
 ```js
-const musicdb = connect({
+const db = connect({
   database: 'postgres://musicdb',
   tables: {
     artists: {
@@ -318,7 +366,7 @@ const musicdb = connect({
 })
 
 // fetch artists table
-const artists = await musicdb.table('artists');
+const artists = await db.table('artists');
 
 // fetch record for Pink Floyd
 const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
