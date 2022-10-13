@@ -155,21 +155,17 @@ NOTE: We don't yet have support for `with()` but it should be coming soon.
 When it does, we will also allow you to start a query with that.
 
 If you want to start a query with anything other than `select()` or `from()`
-(or `with()`, coming soon), then you should prefix it with a call to
-`builder()`.
+(or `with()`, coming soon), then you should prefix it with `.build`.
+
+```js
+db.build.where('c').from('b').select('a')
+// -> SELECT "a" FROM "b" WHERE "c" = ?
+```
 
 You can call methods multiple times.
 
 ```js
 db.select('id').select('name').from('users')
-// -> SELECT "id", "name" FROM "users"
-```
-
-You can also call methods out of order.  The query builder takes
-care of putting everyting back in the right order.
-
-```js
-db.select('id').from('users').select('name')
 // -> SELECT "id", "name" FROM "users"
 ```
 
