@@ -287,6 +287,22 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Columns.generateSQL('a'), 'SELECT a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Columns.generateSQL(['a', 'b']), 'SELECT a, b' )
+  }
+)
+
+
+
 test.after(
   'disconnect',
   t => {

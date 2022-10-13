@@ -115,6 +115,21 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Group.generateSQL('a'), 'GROUP BY a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Group.generateSQL(['a', 'b']), 'GROUP BY a, b' )
+  }
+)
+
+
 test.after(
   'disconnect',
   t => {

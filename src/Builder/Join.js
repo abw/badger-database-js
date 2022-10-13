@@ -1,5 +1,6 @@
 import Builder from '../Builder.js';
-import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, ON, RIGHT_JOIN, space } from '../Constants.js';
+import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, ON, RIGHT_JOIN } from '../Constants.js';
+import { spaceAfter, spaceAround } from '../Utils/Space.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
 const joinRegex = /^(.*?)=(\w+)\.(\w+)$/;
@@ -85,12 +86,11 @@ export class Join extends Builder {
   }
 
   constructJoin(type, from, table, to) {
-    return type
-      + space
+    return spaceAfter(type)
       + this.quote(table)
-      + space + ON + space
+      + spaceAround(ON)
       + this.quote(from)
-      + space + equals + space
+      + spaceAround(equals)
       + this.quote(to);
   }
 }

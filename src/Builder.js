@@ -1,10 +1,12 @@
-// work in progress / experiment
 import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, objMap } from "@abw/badger-utils";
-import { unknown } from "./Constants.js";
+import { newline, unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
 import { format } from "./Utils/Format.js";
-// import { Builders } from './Builders.js'
+import { spaceAfter } from "./Utils/Space.js";
+
+export let Builders   = { };
+export let Generators = { };
 
 const defaultContext = () => ({
   whereValues:  [ ],
@@ -36,6 +38,13 @@ const parts = {
 const notImplemented = notImplementedInBaseClass('Builder');
 
 export class Builder {
+  static generateSQL(values) {
+    const keyword = this.keyword;
+    const joint   = this.joint;
+    return spaceAfter(keyword)
+      + (isArray(values) ? values.join(joint) : values);
+  }
+
   constructor(parent, ...args) {
     // this.factory  = factory;
     this.parent   = parent;
@@ -119,7 +128,7 @@ export class Builder {
     return Object.keys(parts)
       .map( part => frags[part] )
       .filter( i => hasValue(i) )
-      .join("\n");
+      .join(newline);
   }
 
   // generate and collect SQL fragments for each item in the chain

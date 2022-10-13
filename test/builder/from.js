@@ -15,7 +15,7 @@ test.before(
 )
 
 test(
-  'table',
+  'from',
   t => {
     const op = db.from('a');
     t.true( op instanceof From )
@@ -118,6 +118,20 @@ test(
       error.message,
       'Invalid object with "oops, users" properties specified for query builder "from" component.  Valid properties are "tables", "table" and "as".'
     );
+  }
+)
+
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( From.generateSQL('a'), 'FROM a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( From.generateSQL(['a', 'b']), 'FROM a, b' )
   }
 )
 

@@ -145,6 +145,19 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Join.generateSQL('JOIN a'), 'JOIN a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Join.generateSQL(['JOIN a', 'JOIN b']), 'JOIN a\nJOIN b' )
+  }
+)
 
 test.after(
   'disconnect',

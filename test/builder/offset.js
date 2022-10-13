@@ -45,6 +45,20 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Offset.generateSQL('a'), 'OFFSET a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Offset.generateSQL(['a', 'b']), 'OFFSET b' )
+  }
+)
+
 test.after(
   'disconnect',
   t => {

@@ -1,3 +1,5 @@
+// TODO: this is testing the query building starting off a table.
+// That still needs some work
 import test from 'ava';
 import Database from '../../src/Builder/Database.js';
 import From from '../../src/Builder/From.js';
@@ -45,16 +47,6 @@ test.serial(
     t.true( from instanceof From )
   }
 )
-
-/*
-test.serial(
-  'users table columns',
-  async t => {
-    const sql = users.builder().columns('a, b, c').sql();
-    t.is( sql, 'SELECT "users"."a", "users"."b", "users"."c"\nFROM "users"')
-  }
-)
-*/
 
 test.serial(
   'users table select',

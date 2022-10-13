@@ -173,6 +173,19 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Order.generateSQL('a'), 'ORDER BY a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Order.generateSQL(['a', 'b']), 'ORDER BY a, b' )
+  }
+)
 test.after(
   'disconnect',
   t => {

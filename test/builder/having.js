@@ -1,4 +1,5 @@
 import test from 'ava';
+import Having from '../../src/Builder/Having.js';
 import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js';
 
@@ -9,6 +10,15 @@ test.before(
   async t => {
     db = await connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
+  }
+)
+
+test(
+  'having',
+  t => {
+    const op = db.builder().having('a');
+    t.true( op instanceof Having )
+    t.is( op.sql(), 'HAVING "a" = ?' );
   }
 )
 
@@ -133,6 +143,20 @@ test(
     );
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid value array with 3 items specified for query builder "having" component. Expected [value] or [operator, value].' );
+  }
+)
+
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Having.generateSQL('a'), 'HAVING a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Having.generateSQL(['a', 'b']), 'HAVING a AND b' )
   }
 )
 

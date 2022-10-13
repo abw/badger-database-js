@@ -29,6 +29,20 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Limit.generateSQL('a'), 'LIMIT a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Limit.generateSQL(['a', 'b']), 'LIMIT b' )
+  }
+)
+
 test.after(
   'disconnect',
   t => {

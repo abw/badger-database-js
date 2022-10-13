@@ -1,4 +1,5 @@
 import test from 'ava';
+import Where from '../../src/Builder/Where.js';
 import { connect } from '../../src/Database.js'
 import { sql } from '../../src/index.js';
 import { QueryBuilderError } from '../../src/Utils/Error.js';
@@ -10,6 +11,15 @@ test.before(
   async t => {
     db = await connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
+  }
+)
+
+test(
+  'where',
+  t => {
+    const op = db.builder().where('a');
+    t.true( op instanceof Where )
+    t.is( op.sql(), 'WHERE "a" = ?' );
   }
 )
 
@@ -146,6 +156,19 @@ test(
   }
 )
 
+test(
+  'generateSQL() with single value',
+  t => {
+    t.is( Where.generateSQL('a'), 'WHERE a' )
+  }
+)
+
+test(
+  'generateSQL() with multiple values',
+  t => {
+    t.is( Where.generateSQL(['a', 'b']), 'WHERE a AND b' )
+  }
+)
 
 test.after(
   'disconnect',

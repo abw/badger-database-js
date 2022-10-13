@@ -1,4 +1,5 @@
-import { splitList } from '@abw/badger-utils';
+import { hasValue, splitList } from '@abw/badger-utils';
+import { Builders, Generators } from './Builder.js';
 import After    from './Builder/After.js';
 import Before   from './Builder/Before.js';
 import Columns  from './Builder/Columns.js';
@@ -17,75 +18,62 @@ import Table    from './Builder/Table.js';
 import Where    from './Builder/Where.js';
 import Proxy    from './Proxy/Builder.js';
 
-export let Builders = { };
-
 export const registerBuilder = module => {
-  //const method = module.buildMethod;
-  //const alias  = splitList(module.buildAlias);
+  const slot  = module.contextSlot || module.buildMethod;
+  const order = module.buildOrder;
+  // const method = module.buildMethod;
+  // const alias  = splitList(module.buildAlias);
   // console.log('register [%s] as', name, [method, ...alias]);
+  // console.log('register [%s] => [slot:%s] [order:%s]', method, slot, order);
+
+  // Register the main buildMethod and any buildAlias in the Builders table.
+  // Multiple aliases can be specified in buildAlias as an array or string which
+  // will be split on commas and/or whitespace.  This is what we use to map builder
+  // methods, e.g. select().from(), etc., onto the relevant modules.
   [module.buildMethod, ...splitList(module.buildAlias)].forEach(
     name => Builders[name] = module
   )
+
+  // Builder modules have a slot that they use in the context.  Sometimes multiple
+  // builders can share the same slot (e.g. Columns and Select both use "select").
+  // When we're rendering a builder chain we first generate a context (which may be
+  // cached) in which each builder object instance adds theor fragments of SQL to the
+  // array in their context slot, e.g. from('table1').from(['table2', 'alias']) will
+  // result in the "from" slot containing: ['"table1"', '"table2" as "alias"'].  Then
+  // we need to go through those slots in a particular order (e.g. select, from,
+  // join, where, etc) determined by each module's static buildOrder parameter and look
+  // to see if the corresponding slot has anything in it.  If it does, we call the
+  // module's static generateSQL() method to generate the complete SQL fragment,
+  // e.g. 'FROM "table1", "table2" as "alias"'
+  if (slot && hasValue(order)) {
+    Generators[slot] = [module, order];
+  }
 }
 
 export const registerBuilders = (...builders) =>
   builders.forEach(registerBuilder)
 
 registerBuilders(
-  After,
-  Before,
-  Columns,
-  From,
-  Group,
-  Having,
-  Join,
-  Limit,
-  Offset,
-  Order,
-  Prefix,
-  Range,
-  Select,
-  Table,
-  Where,
+  After, Before, Columns, From, Group, Having, Join, Limit,
+  Offset, Order, Prefix, Range, Select, Table, Where,
 );
-
-export const OLDregisterBuilder = (name, module) => {
-  Builders[name] = module
-}
-
-export const OLDregisterBuilders = (builders) =>
-  Object.entries(builders).forEach(
-    engine => registerBuilder(...engine)
-  )
-
-OLDregisterBuilders({
-  after:     After,
-  before:    Before,
-  columns:   Columns,
-  from:      From,
-  group:     Group,
-  groupBy:   Group,
-  having:    Having,
-  join:      Join,
-  limit:     Limit,
-  offset:    Offset,
-  order:     Order,
-  orderBy:   Order,
-  prefix:    Prefix,
-  range:     Range,
-  select:    Select,
-  table:     Table,
-  where:     Where,
-});
-
-//export const factory = (parent, type, ...args) => {
-//  return new Builders[type](parent, ...args);
-//}
 
 export const databaseBuilder = database =>
   Proxy(Builders, new Database(undefined, database))
 
 export const tableBuilder = table =>
   Proxy(Builders, new Table(undefined, table))
+
+// We used to pass the factory to each builder component as the first
+// argument, but it wasn't used.  However, it's possible that we might
+// want to use it one day, e.g. if a builder wants to add other builder
+// components.  But I think that's over-complicating things.
+//
+//export const factory = (parent, type, ...args) => {
+//  return new Builders[type](parent, ...args);
+//}
+//
+//export const databaseBuilder = database =>
+//  Proxy(Builders, new Database(factory, undefined, database))
 
 // export default factory;
