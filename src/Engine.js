@@ -1,5 +1,5 @@
 import { Pool } from 'tarn';
-import { missing, notImplementedInBaseClass, unexpectedRowCount } from "./Utils/Error.js";
+import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount } from "./Utils/Error.js";
 import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
@@ -90,17 +90,33 @@ export class Engine {
   //-----------------------------------------------------------------------------
   async execute(sql, action, options={}) {
     this.debugData("execute()", { sql, options });
-    const connection = await this.acquire();
-    const query      = await this.prepare(connection, sql);
-    const result     = await action(query);
-    this.release(connection);
-    return options.sanitizeResult
-      ? this.sanitizeResult(result, options)
-      : result;
+    const client = await this.acquire();
+    try {
+      const query  = await this.prepare(client, sql).catch( e => this.parseError(sql, e) )
+      const result = await action(query);
+      return options.sanitizeResult
+        ? this.sanitizeResult(result, options)
+        : result;
+    }
+    finally {
+      this.release(client);
+    }
   }
   async prepare(connection, sql) {
     this.debugData("prepare()", { sql });
     return connection.prepare(sql);
+  }
+  parseError(sql, e) {
+    throw new SQLParseError(sql, this.parseErrorArgs(e));
+  }
+  parseErrorArgs(e) {
+    return {
+      message:  e.message,
+      type:     e.code,
+      code:     e.errno,
+      position: e.position,
+      stack:    e.stack
+    };
   }
   optionalParams(params, options) {
     if (isObject(params)) {

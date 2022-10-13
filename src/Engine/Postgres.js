@@ -29,11 +29,15 @@ export class PostgresEngine extends Engine {
   async execute(sql, params, options={}) {
     this.debugData("execute()", { sql, params, options });
     const client = await this.acquire();
-    const result = await client.query(sql, params);
-    this.release(client);
-    return options.sanitizeResult
-      ? this.sanitizeResult(result, options)
-      : result;
+    try {
+      const result = await client.query(sql, params).catch( e => this.parseError(sql, e) );
+      return options.sanitizeResult
+        ? this.sanitizeResult(result, options)
+        : result;
+    }
+    finally {
+      this.release(client);
+    }
   }
   async run(sql, params, options) {
     this.debugData("run()", { sql, params, options });
@@ -53,7 +57,14 @@ export class PostgresEngine extends Engine {
       .execute(sql, params, options)
       .then( ({rows}) => rows );
   }
-
+  parseErrorArgs(e) {
+    return {
+      message:  e.message,
+      type:     e.severity,
+      code:     e.code,
+      position: e.position,
+    };
+  }
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------

@@ -73,6 +73,20 @@ export class CustomError extends Error {
   }
 }
 
+export class SQLParseError extends Error {
+  constructor(query, args) {
+    super(args.message);
+    this.name  = this.constructor.name;
+    this.query = query;
+    this.type  = args.type;
+    this.code  = args.code;
+    this.position = args.position;
+    if (args.stack) {
+      this.stack = args.stack;
+    }
+  }
+}
+
 /**
  * Error class for reporting unexpected number of rows returned by a
  * database query.
