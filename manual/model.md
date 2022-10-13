@@ -7,7 +7,7 @@ Given a database connection like this:
 
 ```js
 // connect to the database
-const musicdb = await connect({
+const musicdb = connect({
   database: 'sqlite:memory',
   tables: {
     artists: {

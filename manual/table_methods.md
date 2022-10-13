@@ -8,7 +8,7 @@ something like this:
 
 ```js
 // define the users table and the columns it contains
-const db = await connect({
+const db = connect({
   database: 'sqlite://test.db',
   tables: {
     users: {

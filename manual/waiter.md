@@ -19,7 +19,7 @@ The code might look something like this:
 
 ```js
 // connect to the database
-const musicdb = await connect({
+const musicdb = connect({
   database: 'sqlite:memory',
   tables: {
     artists: {
@@ -54,7 +54,7 @@ have to wait for) includes a `waiter` property that allows you to "place your
 entire order at once" and then wait for the result.
 
 ```js
-const musicdb = await connect({
+const musicdb = connect({
   // as before
 });
 const name = await musicdb.

@@ -8,8 +8,8 @@ let db;
 
 test.before(
   'connect',
-  async t => {
-    db = await connect({ database: 'sqlite:memory' });
+  t => {
+    db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
@@ -302,9 +302,5 @@ test(
 )
 
 test.after(
-  'disconnect',
-  t => {
-    db.disconnect();
-    t.pass();
-  }
+  () => db.disconnect()
 )

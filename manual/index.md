@@ -26,6 +26,12 @@ This is the manual for the `badger-database` Javascript module.
 * [Limitations](manual/limitations.html) - coping with the limitations of badger-database
 * [Examples](manual/examples.html) - working examples using badger-database
 
+## Implementation Details
+
+The library is implemented using ES6 modules.  A bundle for CJS is also provided.
+
+All asynchronous functions and methods return promises.
+
 ## Notes on Case Conventions
 
 The Javascript convention is to use StudlyCaps for class names (e.g. `Artists`) and
@@ -40,7 +46,7 @@ it case sensitive so you might want to look into that.
 I prefer to avoid the problem altogether by defining my database tables and columns using
 snake_case (e.g. `artists`, `artist_id`, `album_tracks`, etc). I typically use a number
 of other programming languages to access the same database in a project and many other
-languages (e.g. Rust, Perl, Python, etc.) use snake_case by convention.
+languages (e.g. Rust, Perl, Python, PHP, etc.) use snake_case by convention.
 
 In these examples I've adopted this convention because it's what works for me.  It doesn't
 bother me that I have to think in snake_case when I'm accessing row data, but camelCase

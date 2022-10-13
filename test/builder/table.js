@@ -10,8 +10,8 @@ let db, users;
 
 test.serial(
   'connect',
-  async t => {
-    db = await connect({
+  t => {
+    db = connect({
       database: 'sqlite:memory',
       tables: {
         users: {
@@ -96,9 +96,5 @@ test.serial(
 */
 
 test.after(
-  'disconnect',
-  async t => {
-    db.disconnect();
-    t.pass();
-  }
+  () => db.disconnect()
 )

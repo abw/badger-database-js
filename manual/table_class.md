@@ -18,7 +18,7 @@ export class Users extends Table {
 }
 
 async function main() {
-  const db = await connect({
+  const db = connect({
     database: 'sqlite:memory',
     tables: {
       users: {
@@ -117,7 +117,7 @@ When you define the `tables` for the database you then only need
 to specify the `tableClass`.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {
@@ -132,7 +132,7 @@ want to specify then you can use a shortcut and point the `users`
 table directly at your class.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: Users,

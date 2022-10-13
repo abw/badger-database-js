@@ -225,7 +225,7 @@ export async function connectMusicDatabase(engine='sqlite') {
     artists, albums, tracks
   };
 
-  const musicdb = await connect({
+  const musicdb = connect({
     database, tables, fragments, queries
   });
 

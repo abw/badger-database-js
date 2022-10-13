@@ -4,7 +4,7 @@ To enable debugging messages for the database library add the `debug` flag to th
 `connect()` configuration, set to `true`.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite:memory',
   debug: true
 })
@@ -14,7 +14,7 @@ To enable debugging for individual tables, add the `debug` flag to the table
 configuration.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {
@@ -29,7 +29,7 @@ To enable debugging for a record object associated with a table, set the `record
 for the table to include the `debug` flag.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite:memory',
   tables: {
     users: {

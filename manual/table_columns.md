@@ -4,7 +4,7 @@ For simple cases you can define table columns using a whitespace delimited strin
 e.g. `id name email`.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -28,7 +28,7 @@ that a column cannot be inserted or updated.  Multiple flags can be added, each
 separated by a colon.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -63,7 +63,7 @@ There may be times when you want to insert rows with pre-defined ids.  That's fi
 you don't have to define your id column as being readonly in this case.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -85,7 +85,7 @@ If your unique ID column isn't called `id` then you can mark the relevant column
 using the `id` tag.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -101,7 +101,7 @@ For example, you might have an `employee` table which has rows that are uniquely
 by the `company_id` and `user_id` columns.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     employees: {
@@ -123,7 +123,7 @@ keys.  The corresponding values can be strings containing any flags for the
 columns, or an empty string if there aren't any.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     users: {
@@ -140,7 +140,7 @@ const db = await connect({
 Or you can fully expand them like so:
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tables: {
     users: {

@@ -8,8 +8,8 @@ setDebug({ builder: false })
 
 test.serial(
   'connect',
-  async t => {
-    db = await connect({ database: 'sqlite:memory' });
+  t => {
+    db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
@@ -104,9 +104,5 @@ test.serial(
 )
 
 test.after(
-  'disconnect',
-  async t => {
-    db.disconnect();
-    t.pass();
-  }
+  () => db.disconnect()
 )

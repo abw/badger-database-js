@@ -47,10 +47,12 @@ like this:
 import { connect, sql } from '@abw/badger-database'
 
 async function main() {
-  const db = await connect({ database: 'sqlite:memory' });
+  const db = connect({ database: 'sqlite:memory' });
 
   // examples go here
 }
+
+main()
 ```
 
 When you create a query, or part of a query, you can call the

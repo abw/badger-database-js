@@ -31,7 +31,7 @@ class YourTables extends Tables {
 }
 
 async function main() {
-  const db = await connect({
+  const db = connect({
     // ...database, etc...
     tablesClass: YourTables,
     tables: {
@@ -55,14 +55,14 @@ configuration item.  If you have any pre-defined `tables` that you want it to
 manage then you should pass them as constructor parameters.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc...
   tablesObject: new YourTables({
     tables: {
-        // these tables will be defined in `this.table` for YourTables
-        users: {
-            columns: 'id name email'
-        }
+      // these tables will be defined in `this.table` for YourTables
+      users: {
+        columns: 'id name email'
+      }
     },
     // any other configuration options for YourTable
   })

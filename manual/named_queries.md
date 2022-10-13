@@ -30,7 +30,7 @@ const dbConfig = {
 
 async function main() {
   // connect to the database
-  const db = await connect(dbConfig);
+  const db = connect(dbConfig);
 
   // create the users table using a named query
   await db.run('createUsersTable');

@@ -19,7 +19,7 @@ export class User extends Record {
 }
 
 async function main() {
-  const db = await connect({
+  const db = connect({
     database: 'sqlite:memory',
     tables: {
       users: {
@@ -73,7 +73,7 @@ object then you can define them as the `recordConfig` configuration
 option in the corresponding table configuration.
 
 ```js
-const db = await connect({
+const db = connect({
   // ...database, etc.
   tables: {
     users: {

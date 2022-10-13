@@ -75,7 +75,7 @@ export async function connectUserDatabase(engine='sqlite') {
     }
   };
 
-  return await connect({
+  return connect({
     database, tables, queries
   });
 }

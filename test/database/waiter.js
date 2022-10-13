@@ -1,4 +1,5 @@
 import test from 'ava';
+import { connect } from '../../src/Database.js';
 import { connectMusicDatabase } from '../library/music_database.js';
 
 let musicdb;
@@ -41,6 +42,16 @@ test.serial(
       })
       .name;
     t.is(name, 'Pink Floyd');
+  }
+)
+
+test.serial(
+  'waiter connect',
+  async t => {
+    const row = await connect({ database: 'sqlite:memory' })
+      .waiter
+      .one("SELECT 'Hello World!' AS greeting")
+    t.is(row.greeting, 'Hello World!');
   }
 )
 

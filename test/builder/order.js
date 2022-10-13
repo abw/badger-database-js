@@ -8,8 +8,8 @@ let db;
 
 test.before(
   'connect',
-  async t => {
-    db = await connect({ database: 'sqlite:memory' });
+  t => {
+    db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
@@ -186,10 +186,7 @@ test(
     t.is( Order.generateSQL(['a', 'b']), 'ORDER BY a, b' )
   }
 )
+
 test.after(
-  'disconnect',
-  t => {
-    db.disconnect();
-    t.pass();
-  }
+  () => db.disconnect()
 )

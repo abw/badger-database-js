@@ -11,7 +11,7 @@ import connect from '@abw/badger-database'
 
 async function main() {
   // connect to a Sqlite database
-  const db = await connect({ database: 'sqlite://test.db' });
+  const db = connect({ database: 'sqlite://test.db' });
 
   // create a table
   await db.run(
@@ -51,33 +51,31 @@ to complete. You can, of course, use `.then(...)` if you prefer.
 ```js
 import connect from '@abw/badger-database'
 
-connect({ database: 'sqlite://test.db' }).then(
-  db => {
-    db.run(
-      `CREATE TABLE users (
-        id    INTEGER PRIMARY KEY ASC,
-        name  TEXT,
-        email TEXT
-      )`
-    ).then(
-      () => db.run(
-        'INSERT INTO users (name, email) VALUES (?, ?)',
-        ['Bobby Badger', 'bobby@badgerpower.com']
-      )
-    ).then(
-      insert => console.log("Inserted ID:", insert.lastInsertRowid)
-    ).then(
-      () => db.one(
-        'SELECT * FROM users WHERE email=?',
-        ['bobby@badgerpower.com']
-      )
-    ).then(
-      bobby => console.log("Fetched row:", bobby)
-    ).then(
-      () => db.disconnect()
-    )
-  }
-);
+const db = connect({ database: 'sqlite://test.db' });
+
+db.run(
+  `CREATE TABLE users (
+    id    INTEGER PRIMARY KEY ASC,
+    name  TEXT,
+    email TEXT
+  )`
+).then(
+  () => db.run(
+    'INSERT INTO users (name, email) VALUES (?, ?)',
+    ['Bobby Badger', 'bobby@badgerpower.com']
+  )
+).then(
+  insert => console.log("Inserted ID:", insert.lastInsertRowid)
+).then(
+  () => db.one(
+    'SELECT * FROM users WHERE email=?',
+    ['bobby@badgerpower.com']
+  )
+).then(
+  bobby => console.log("Fetched row:", bobby)
+).then(
+  () => db.disconnect()
+)
 ```
 
 ## run(query, values, options)

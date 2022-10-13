@@ -25,7 +25,7 @@ The simplest way to connect to a database is using a connection string for the
 `database` parameter. This is a concept that should be familiar to Postgres users.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'postgresql://user:password@hostname:5432/database'
 })
 ```
@@ -35,7 +35,7 @@ for the Postgres engine name.  To avoid any chance of confusion, we also support
 this in the connection string and automatically "correct" it for you.
 
 ```js
-const db = await connect({
+const db = connect({
   // 'postgres://...' works the same as 'postgresql://...'
   database: 'postgres://user:password@hostname:5432/database'
 })
@@ -44,7 +44,7 @@ const db = await connect({
 You can use the same connection string format for Mysql databases:
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'mysql://user:password@hostname:3306/database'
 })
 ```
@@ -53,7 +53,7 @@ And also for Sqlite databases, although here the only parameter supported
 is the database filename.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite://database'
 })
 ```
@@ -61,7 +61,7 @@ const db = await connect({
 For an in-memory Sqlite database, use `:memory:` as the database name:
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite://:memory:'
 })
 ```
@@ -69,7 +69,7 @@ const db = await connect({
 Or if you find that a bit clunky, you can use the shortened version:
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'sqlite:memory'
 })
 ```
@@ -79,13 +79,13 @@ Here are the minimal versions which assume the default host (`localhost`),
 port (`3306` for Mysql and `5432` for Postgres) and no username or password.
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'postgresql://database'
 })
 ```
 
 ```js
-const db = await connect({
+const db = connect({
   database: 'mysql://database'
 })
 ```
@@ -98,7 +98,7 @@ loaded via an API call, or fetched in some other way then it may be more
 convenient to use this form.
 
 ```js
-const db = await connect({
+const db = connect({
   // "postgres://badger:s3cr3t@dbhost.com:5433/animals" is short for:
   database: {
     engine:   'postgres',   // or 'postgresql'
@@ -115,7 +115,7 @@ The same configuration options apply to Mysql.  For Sqlite the only supported
 option is `filename`.
 
 ```js
-const db = await connect({
+const db = connect({
   database: {
     engine:   'sqlite',
     filename: 'animals.db',
@@ -126,7 +126,7 @@ const db = await connect({
 You can also use `:memory:` as the `filename` for an in-memory database.
 
 ```js
-const db = await connect({
+const db = connect({
   database: {
     engine:   'sqlite',
     filename: ':memory:',
@@ -147,7 +147,7 @@ For example, if you specify `file` instead of `filename` for a Sqlite database, 
 silently correct it.
 
 ```js
-const db = await connect({
+const db = connect({
   database: {
     engine: 'sqlite',
     file:   'animals.db',   // converted to 'filename'
@@ -158,7 +158,7 @@ const db = await connect({
 This also just works:
 
 ```js
-const db = await connect({
+const db = connect({
   database: {
     engine:   'postgres',
     database: 'animals',
@@ -173,7 +173,7 @@ const db = await connect({
 And this works too:
 
 ```js
-const db = await connect({
+const db = connect({
   database: {
     engine:   'postgres',
     database: 'animals',
@@ -188,7 +188,7 @@ const db = await connect({
 You can also use `name` as an alias for `database`:
 
 ```js
-const db = await connect({
+const db = connect({
   database: {
     engine:   'postgres',
     name:     'animals',
@@ -221,7 +221,7 @@ import connect from '@abw/badger-database'
 // load the .env file
 dotenv.config();
 
-const db = await connect({
+const db = connect({
   env: process.env
 });
 ```
@@ -247,7 +247,7 @@ If you want to use a different environment variable name or prefix, then
 define it using the `envPrefix` option.
 
 ```js
-const db = await connect({
+const db = connect({
   env: process.env
   envPrefix: 'MY_DB'
 });
@@ -275,7 +275,7 @@ By default, the minimum number of connections is 2 and the maximum is 10.  You
 can change these values using the `pool` option.
 
 ```js
-const db = await connect({
+const db = connect({
   database: { ... },
   pool: {
     min: 5,
