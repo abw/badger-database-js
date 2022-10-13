@@ -1,9 +1,7 @@
 import Builder from '../Builder.js';
 
 export class Before extends Builder {
-  initBuilder() {
-    this.key = 'before';
-  }
+  static buildMethod = 'before'
 }
 
 export default Before

@@ -1,9 +1,7 @@
 import Builder from '../Builder.js';
 
 export class After extends Builder {
-  initBuilder() {
-    this.key = 'after';
-  }
+  static buildMethod = 'after'
 }
 
 export default After

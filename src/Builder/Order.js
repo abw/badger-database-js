@@ -3,16 +3,14 @@ import Builder from '../Builder.js';
 
 const ASC  = 'ASC';
 const DESC = 'DESC';
-const messages = {
-  array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, direction] or [column].',
-  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "columns", "column", "direction", "dir", "asc" and "desc".',
-};
 
 export class Order extends Builder {
-  initBuilder() {
-    this.key = 'order';
-    this.messages = messages;
-  }
+  static buildMethod = 'order'
+  static buildAlias  = 'orderBy'
+  static messages = {
+    array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [column, direction] or [column].',
+    object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "direction", "dir", "asc" and "desc".',
+  };
 
   resolveLinkString(order, dir) {
     return splitList(order).map(

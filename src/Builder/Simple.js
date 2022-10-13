@@ -1,10 +1,12 @@
 import Builder from '../Builder.js';
 
 export class Simple extends Builder {
+  static buildMethod = 'simple'
+
   initBuilder(value) {
-    this.key   = 'simple';
     this.value = value;
   }
+
   resolve(context) {
     this.context = {
       ...context,

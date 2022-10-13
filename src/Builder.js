@@ -35,11 +35,18 @@ const notImplemented = notImplementedInBaseClass('Builder');
 
 export class Builder {
   constructor(factory, parent, ...args) {
-    this.factory = factory;
-    this.parent  = parent;
-    this.args    = args;
-    // this.key     = 'unknown';
+    this.factory  = factory;
+    this.parent   = parent;
+    this.args     = args;
+    // copy static class variables into this, including messages for generating
+    // error messages via errorMsg(), the name of the build method which is also
+    // the default key for storing things in the context,
+    this.messages = this.constructor.messages;
+    this.method   = this.constructor.buildMethod;
+    this.key      = this.method;
+    // call the initialisation method to allow subclasses to tweak these
     this.initBuilder(...args);
+    // add debug() and debugData() methods
     addDebugMethod(this, 'builder', { debugPrefix: this.key && `Builder:${this.key}` });
   }
   initBuilder() {
@@ -53,6 +60,7 @@ export class Builder {
     this.debugData("one()", { sql, values });
     return db.one(sql, values);
   }
+
   async any(args) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
@@ -60,6 +68,7 @@ export class Builder {
     this.debugData("any()", { sql, values });
     return db.any(sql, values);
   }
+
   async all(args) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
@@ -80,12 +89,14 @@ export class Builder {
     }
     return [...wvalues, ...hvalues, ...where]
   }
+
   whereValues(...values) {
     if (values.length) {
       this.context.whereValues.push(...values);
     }
     return this.context.whereValues;
   }
+
   havingValues(...values) {
     if (values.length) {
       this.context.havingValues.push(...values);
@@ -169,9 +180,11 @@ export class Builder {
   resolveLinkString() {
     notImplemented("resolveLinkString()");
   }
+
   resolveLinkArray() {
     notImplemented("resolveLinkArray()");
   }
+
   resolveLinkObject() {
     notImplemented("resolveLinkObject()");
   }
@@ -183,52 +196,62 @@ export class Builder {
         ? this.parent.lookup(key)
         : fail(error || `Missing item in query chain: ${key}`))
   }
+
   lookupDatabase() {
     return this.context.database || this.lookup('database');
   }
+
   lookupTable() {
     return this.context.table || this.lookup('table');
   }
+
   quote(item) {
     return this.lookupDatabase().quote(item)
   }
+
   tableColumn(table, column) {
     return column.match(/\./)
       ? column
       : `${table}.${column}`;
   }
+
   quoteTableColumn(table, column) {
     return this.quote(
       this.tableColumn(table, column)
     )
   }
+
   quoteTableAs(table, as) {
     return [
       this.quote(table),
       this.quote(as)
     ].join(' AS ');
   }
+
   quoteTableColumnAs(table, column, as) {
     return [
       this.quoteTableColumn(table, column),
       this.quote(as)
     ].join(' AS ')
   }
+
   quoteColumnAs(column, as) {
     return [
       this.quote(column),
       this.quote(as)
     ].join(' AS ')
   }
+
   errorMsg(msgFormat, args) {
-    const type = this.type || this.key || unknown;
+    const method = this.method || unknown;
     return this.error(
       format(
         this.messages?.[msgFormat] || fail("Invalid message format: ", msgFormat),
-        { type, ...args }
+        { method, ...args }
       )
     )
   }
+
   error(...args) {
     const etype   = this.errorType || QueryBuilderError;
     throw new etype(args.join(''))

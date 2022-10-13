@@ -1,10 +1,7 @@
 import Where from './Where.js';
 
 export class Having extends Where {
-  initBuilder() {
-    super.initBuilder();
-    this.key = 'having';
-  }
+  static buildMethod = 'having'
 
   // Everything works the same as for Where, EXCEPT for the fact that we save
   // values in a separate list.  Any where() values go in this.context.values,

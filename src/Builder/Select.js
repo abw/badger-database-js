@@ -1,15 +1,12 @@
 import Builder from '../Builder.js';
 import { splitList } from '@abw/badger-utils';
 
-const messages = {
-  array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column, alias] or [table, column, alias].',
-  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
-}
 
 export class Select extends Builder {
-  initBuilder() {
-    this.key = 'select';
-    this.messages = messages;
+  static buildMethod = 'select'
+  static messages = {
+    array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [column, alias] or [table, column, alias].',
+    object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
   }
 
   resolveLinkString(columns, table, prefix) {

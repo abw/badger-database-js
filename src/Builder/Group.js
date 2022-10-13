@@ -1,16 +1,14 @@
 import Builder from '../Builder.js';
 import { splitList } from '@abw/badger-utils';
 
-const messages = {
-  array:  'Invalid array with <n> items specified for query builder "<type>" component. Expected [column].',
-  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "columns" and "column".',
-};
 
 export class Group extends Builder {
-  initBuilder() {
-    this.key = 'group';
-    this.messages = messages;
-  }
+  static buildMethod = 'group'
+  static buildAlias  = 'groupBy'
+  static messages = {
+    array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [column].',
+    object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns" and "column".',
+  };
 
   resolveLinkString(group) {
     return splitList(group).map(

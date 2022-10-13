@@ -1,17 +1,15 @@
 import { isInteger, isObject } from '@abw/badger-utils';
 import Builder from '../Builder.js';
 
-const messages = {
-  arg:    'Invalid argument specified for query builder "<type>" component. Expected (from, to), (from) or object.',
-  args:   'Invalid arguments with <n> items specified for query builder "<type>" component. Expected (from, to), (from) or object.',
-  object: 'Invalid object with "<keys>" properties specified for query builder "<type>" component.  Valid properties are "from", "to", "limit" and "offset".',
-}
-
 export class Range extends Builder {
-  initBuilder(...args) {
-    this.key = 'range';
-    this.messages = messages;
+  static buildMethod = 'range'
+  static messages = {
+    arg:    'Invalid argument specified for query builder "<method>" component. Expected (from, to), (from) or object.',
+    args:   'Invalid arguments with <n> items specified for query builder "<method>" component. Expected (from, to), (from) or object.',
+    object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "from", "to", "limit" and "offset".',
+  }
 
+  initBuilder(...args) {
     if (args.length === 2) {
       this.args = this.twoNumberArgs(...args);
     }
@@ -31,17 +29,20 @@ export class Range extends Builder {
       this.errorMsg('args', { n: args.length });
     }
   }
+
   twoNumberArgs(from, to) {
     return {
       offset: from,
       limit: (to - from) + 1
     }
   }
+
   oneNumberArg(from) {
     return {
       offset: from
     }
   }
+
   objectArgs(args) {
     if (args.from && args.to) {
       return this.twoNumberArgs(args.from, args.to);

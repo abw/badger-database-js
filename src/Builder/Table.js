@@ -1,10 +1,12 @@
 import Builder from '../Builder.js';
 
 export class Table extends Builder {
+  static buildMethod = 'table'
+
   initBuilder(table) {
-    this.key   = 'table';
     this.table = table;
   }
+
   resolve(context) {
     this.context = {
       ...context,
