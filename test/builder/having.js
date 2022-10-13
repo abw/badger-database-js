@@ -16,7 +16,7 @@ test.before(
 test(
   'having',
   t => {
-    const op = db.builder().having('a');
+    const op = db.build.having('a');
     t.true( op instanceof Having )
     t.is( op.sql(), 'HAVING "a" = ?' );
   }
@@ -25,7 +25,7 @@ test(
 test(
   'having string',
   t => {
-    const query = db.builder().having('name');
+    const query = db.build.having('name');
     t.is( query.sql(), 'HAVING "name" = ?' );
   }
 )
@@ -34,7 +34,7 @@ test(
 test(
   'having multiple columns as string',
   t => {
-    const query = db.builder().having('name email');
+    const query = db.build.having('name email');
     t.is( query.sql(), 'HAVING "name" = ? AND "email" = ?' );
   }
 )
@@ -42,7 +42,7 @@ test(
 test(
   'array with two elements',
   t => {
-    const query = db.builder().having(['name', 'Bobby Badger']);
+    const query = db.build.having(['name', 'Bobby Badger']);
     t.is( query.sql(), 'HAVING "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
@@ -54,7 +54,7 @@ test(
 test(
   'array with three elements',
   t => {
-    const query = db.builder().having(['name', '!=', 'Bobby Badger']);
+    const query = db.build.having(['name', '!=', 'Bobby Badger']);
     t.is( query.sql(), 'HAVING "name" != ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
@@ -65,7 +65,7 @@ test(
   'array with four elements',
   t => {
     const error = t.throws(
-      () => db.builder().having(['users', 'email', 'email_address', 'oops']).sql()
+      () => db.build.having(['users', 'email', 'email_address', 'oops']).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid array with 4 items specified for query builder "having" component. Expected [column, value] or [column, operator, value].' );
@@ -75,7 +75,7 @@ test(
 test(
   'table name',
   t => {
-    const query = db.builder().having('users.name', 'u.email');
+    const query = db.build.having('users.name', 'u.email');
     t.is( query.sql(), 'HAVING "users"."name" = ? AND "u"."email" = ?' );
   }
 )
@@ -83,7 +83,7 @@ test(
 test(
   'column with value',
   t => {
-    const query = db.builder().having({ name: 'Brian Badger' });
+    const query = db.build.having({ name: 'Brian Badger' });
     t.is( query.sql(), 'HAVING "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Brian Badger' );
@@ -93,7 +93,7 @@ test(
 test(
   'column with comparison',
   t => {
-    const query = db.builder().having({ id: ['>', 99] });
+    const query = db.build.having({ id: ['>', 99] });
     t.is( query.sql(), 'HAVING "id" > ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 99 );
@@ -103,7 +103,7 @@ test(
 test(
   'column with comparison operator',
   t => {
-    const query = db.builder().having({ id: ['>'] });
+    const query = db.build.having({ id: ['>'] });
     t.is( query.sql(), 'HAVING "id" > ?' );
     t.is( query.allValues().length, 0 );
   }
@@ -112,7 +112,7 @@ test(
 test(
   'where() and having()',
   t => {
-    const query = db.builder().having({ b: 20 }).where({ a: 10 });
+    const query = db.build.having({ b: 20 }).where({ a: 10 });
     t.is( query.sql(), 'WHERE "a" = ?\nHAVING "b" = ?' );
     const values = query.allValues();
     t.is( values.length, 2 );
@@ -124,7 +124,7 @@ test(
 test(
   'where() and having() with interleaved values',
   t => {
-    const query = db.builder().where({ a: 10 }).where('b').having({ c: 30 }).having('d');
+    const query = db.build.where({ a: 10 }).where('b').having({ c: 30 }).having('d');
     t.is( query.sql(), 'WHERE "a" = ? AND "b" = ?\nHAVING "c" = ? AND "d" = ?' );
     const values = query.allValues((w, h) => [...w, 20, ...h, 40]);
     t.is( values.length, 4 );
@@ -139,7 +139,7 @@ test(
   'object with value array with three elements',
   t => {
     const error = t.throws(
-      () => db.builder().having({ id: ['id', '>', 123] }).sql()
+      () => db.build.having({ id: ['id', '>', 123] }).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid value array with 3 items specified for query builder "having" component. Expected [value] or [operator, value].' );

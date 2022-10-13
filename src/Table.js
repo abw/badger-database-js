@@ -22,6 +22,7 @@ export class Table {
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
     this.queries       = new Queries({ ...config, debugPrefix: `Queries:${this.table}` });
+    this.build         = this.database.build;
 
     // method aliases
     this.insertRow     = this.insertOneRow;
@@ -258,11 +259,8 @@ export class Table {
     return this.allRows(where, { ...options, record: true });
   }
 
-  builder() {
-    return this.database.builder();
-  }
   select(...args) {
-    return this.builder().from(this.table).select(...args);
+    return this.build.from(this.table).select(...args);
   }
   // EEK!  this.columns() is already defined
   //columns(...args) {

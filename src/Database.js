@@ -73,14 +73,11 @@ export class Database {
   quote(name) {
     return this.engine.quote(name);
   }
-  XXXbuilder() {
-    return databaseBuilder(this);
-  }
   select(...args) {
-    return this.builder().select(...args);
+    return this.build.select(...args);
   }
   from(...args) {
-    return this.builder().from(...args);
+    return this.build.from(...args);
   }
   disconnect() {
     return this.engine.destroy();

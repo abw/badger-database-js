@@ -17,7 +17,7 @@ test.before(
 test(
   'where',
   t => {
-    const op = db.builder().where('a');
+    const op = db.build.where('a');
     t.true( op instanceof Where )
     t.is( op.sql(), 'WHERE "a" = ?' );
   }

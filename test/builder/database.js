@@ -17,7 +17,7 @@ test.before(
 test(
   'builder',
   t => {
-    const op = db.builder();
+    const op = db.build;
     t.true( op instanceof Database );
   }
 )

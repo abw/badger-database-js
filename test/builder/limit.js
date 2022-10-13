@@ -15,7 +15,7 @@ test.before(
 test(
   'limit',
   t => {
-    const op = db.builder().limit(10);
+    const op = db.build.limit(10);
     t.true( op instanceof Limit )
     t.is( op.sql(), 'LIMIT 10' );
   }
@@ -24,7 +24,7 @@ test(
 test(
   'limit called multiple times',
   t => {
-    const op = db.builder().limit(10).limit(20);
+    const op = db.build.limit(10).limit(20);
     t.is( op.sql(), 'LIMIT 20' );
   }
 )

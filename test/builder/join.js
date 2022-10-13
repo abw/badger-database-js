@@ -17,7 +17,7 @@ test.before(
 test(
   'join object',
   t => {
-    const op = db.builder().join({ table: 'a', from: 'b', to: 'c' });
+    const op = db.build.join({ table: 'a', from: 'b', to: 'c' });
     t.true( op instanceof Join )
     t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
   }
@@ -26,7 +26,7 @@ test(
 test(
   'join object with combined to',
   t => {
-    const op = db.builder().join({ from: 'a.b', to: 'c.d' });
+    const op = db.build.join({ from: 'a.b', to: 'c.d' });
     t.true( op instanceof Join )
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
@@ -35,7 +35,7 @@ test(
 test(
   'join object with combined to and type',
   t => {
-    const op = db.builder().join({ from: 'a.b', to: 'c.d', type: 'inner' });
+    const op = db.build.join({ from: 'a.b', to: 'c.d', type: 'inner' });
     t.true( op instanceof Join )
     t.is( op.sql(), 'INNER JOIN "c" ON "a"."b" = "c"."d"' );
   }
@@ -44,7 +44,7 @@ test(
 test(
   'join string',
   t => {
-    const op = db.builder().join("b=a.c");
+    const op = db.build.join("b=a.c");
     t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
   }
 )
@@ -52,7 +52,7 @@ test(
 test(
   'join string with table name',
   t => {
-    const op = db.builder().join("a.b=c.d");
+    const op = db.build.join("a.b=c.d");
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
@@ -60,7 +60,7 @@ test(
 test(
   'join array with four elements',
   t => {
-    const op = db.builder().join(['left', 'a.b', 'c', 'd']);
+    const op = db.build.join(['left', 'a.b', 'c', 'd']);
     t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
@@ -68,7 +68,7 @@ test(
 test(
   'join array with three elements',
   t => {
-    const op = db.builder().join(['a.b', 'c', 'd']);
+    const op = db.build.join(['a.b', 'c', 'd']);
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
@@ -76,7 +76,7 @@ test(
 test(
   'join array with two elements',
   t => {
-    const op = db.builder().join(['a.b', 'c.d']);
+    const op = db.build.join(['a.b', 'c.d']);
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
@@ -84,7 +84,7 @@ test(
 test(
   'multiple joins',
   t => {
-    const op = db.builder().join('users.id=employees.user_id', 'employees.company_id=companies.id');
+    const op = db.build.join('users.id=employees.user_id', 'employees.company_id=companies.id');
     t.is( op.sql(), 'JOIN "employees" ON "users"."id" = "employees"."user_id"\nJOIN "companies" ON "employees"."company_id" = "companies"."id"' );
   }
 )
@@ -93,7 +93,7 @@ test(
   'invalid join type',
   t => {
     const error = t.throws(
-      () => db.builder().join({ type: 'wibble', table: 'a', from: 'b', to: 'c' }).sql()
+      () => db.build.join({ type: 'wibble', table: 'a', from: 'b', to: 'c' }).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is(
@@ -107,7 +107,7 @@ test(
   'invalid join object',
   t => {
     const error = t.throws(
-      () => db.builder().join({ talbe: 'a', from: 'b', to: 'c' }).sql()
+      () => db.build.join({ talbe: 'a', from: 'b', to: 'c' }).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is(
@@ -121,7 +121,7 @@ test(
   'invalid join string',
   t => {
     const error = t.throws(
-      () => db.builder().join('wibble=wobble').sql()
+      () => db.build.join('wibble=wobble').sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is(
@@ -135,7 +135,7 @@ test(
   'invalid join array',
   t => {
     const error = t.throws(
-      () => db.builder().join(['wibble', 'wobble']).sql()
+      () => db.build.join(['wibble', 'wobble']).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is(

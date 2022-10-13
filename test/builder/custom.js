@@ -50,7 +50,7 @@ test.before(
 test(
   'animal',
   t => {
-    const op = db.builder().animal('badger');
+    const op = db.build.animal('badger');
     t.true( op instanceof Animal )
   }
 )
@@ -58,7 +58,7 @@ test(
 test(
   "one badger",
   t => {
-    const op = db.builder().animal('Badger');
+    const op = db.build.animal('Badger');
     t.is( op.sql(), '# Badger' );
   }
 )
@@ -66,7 +66,7 @@ test(
 test(
   "three badgers",
   t => {
-    const op = db.builder().animal(['Badger', 3]);
+    const op = db.build.animal(['Badger', 3]);
     t.is( op.sql(), '# Badger, Badger, Badger' );
   }
 )
@@ -74,7 +74,7 @@ test(
 test(
   "five badgers",
   t => {
-    const op = db.builder().animal({ animal: 'Badger', count: 5 });
+    const op = db.build.animal({ animal: 'Badger', count: 5 });
     t.is( op.sql(), '# Badger, Badger, Badger, Badger, Badger' );
   }
 )
@@ -82,7 +82,7 @@ test(
 test(
   "multiple calls",
   t => {
-    const op = db.builder()
+    const op = db.build
       .select('foo')
       .animal(['Badger', 3])
       .from('bar')
@@ -99,7 +99,7 @@ test(
   'invalid array',
   t => {
     const error = t.throws(
-      () => db.builder().animal(['Badger', 'Mushroom', 'Snake']).sql()
+      () => db.build.animal(['Badger', 'Mushroom', 'Snake']).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is(

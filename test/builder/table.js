@@ -34,7 +34,7 @@ test.serial(
 test.serial(
   'users table builder',
   async t => {
-    const builder = users.builder();
+    const builder = users.build;
     t.true( builder instanceof Database )
     t.is( builder.database.engine.engine, 'sqlite' );
   }
@@ -43,7 +43,7 @@ test.serial(
 test.serial(
   'users builder from',
   async t => {
-    const from = users.builder().from('wibble');
+    const from = users.build.from('wibble');
     t.true( from instanceof From )
   }
 )
