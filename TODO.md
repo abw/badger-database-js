@@ -17,12 +17,6 @@
 
 * debug documentation - prefix and color
 
-* Extending documentation - adding engines, adding builders
-
-* Documentation for query builder - mention that we only support select at this
-time.  Also mention the db.builder() function if you want to start a query with
-anything other than select() or from()
-
 * Query builder - add support for with()
 
 * Builder join() string - use different arrows for LEFT/RIGHT/INNER/FULL
@@ -30,3 +24,5 @@ anything other than select() or from()
   a=>b   # LEFT
   a<=b   # RIGHT
   a<=>b  # FULL
+
+* Debugging / error reporting for queries
