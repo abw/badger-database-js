@@ -3,7 +3,7 @@ import Engine from '../Engine.js';
 import { defaultIdColumn } from '../Constants.js';
 
 export class MysqlEngine extends Engine {
-  static protocol = 'mysql'
+  static name = 'mysql'
 
   //-----------------------------------------------------------------------------
   // Pool connections methods

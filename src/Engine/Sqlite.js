@@ -4,7 +4,7 @@ import { missing } from '../Utils/Error.js';
 import { defaultIdColumn } from '../Constants.js';
 
 export class SqliteEngine extends Engine {
-  static protocol = 'sqlite'
+  static name = 'sqlite'
 
   configure(config) {
     this.filename = config.database.filename || missing('filename');

@@ -9,7 +9,7 @@ let Engines = { };
 
 export const registerEngine = engine => {
   const ructor = config => new engine(config);
-  [engine.protocol, ...splitList(engine.protocolAlias)].forEach(
+  [engine.name, ...splitList(engine.alias)].forEach(
     name => Engines[name] = ructor
   )
 }

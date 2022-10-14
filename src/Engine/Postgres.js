@@ -3,8 +3,8 @@ import Engine from '../Engine.js';
 import { defaultIdColumn } from '../Constants.js';
 
 export class PostgresEngine extends Engine {
-  static protocol = 'postgres'
-  static protocolAlias = 'postgresql'
+  static name  = 'postgres'
+  static alias = 'postgresql'
 
   //-----------------------------------------------------------------------------
   // Pool connections methods
@@ -15,9 +15,11 @@ export class PostgresEngine extends Engine {
     await client.connect();
     return client;
   }
+
   async connected() {
     return true;
   }
+
   async disconnect(client) {
     this.debug("disconnect()");
     client.end();
@@ -39,24 +41,28 @@ export class PostgresEngine extends Engine {
       this.release(client);
     }
   }
+
   async run(sql, params, options) {
     this.debugData("run()", { sql, params, options });
     [params, options] = this.optionalParams(params, options);
     return this
       .execute(sql, params, options)
   }
+
   async any(sql, params, options) {
     this.debugData("any()", { sql, params, options });
     return this
       .execute(sql, params, options)
       .then( ({rows}) => rows[0] );
   }
+
   async all(sql, params, options) {
     this.debugData("all()", { sql, params, options });
     return this
       .execute(sql, params, options)
       .then( ({rows}) => rows );
   }
+
   parseErrorArgs(e) {
     return {
       message:  e.message,
@@ -65,12 +71,8 @@ export class PostgresEngine extends Engine {
       position: e.position,
     };
   }
-  //-----------------------------------------------------------------------------
-  // Query formatting
-  //-----------------------------------------------------------------------------
+
   sanitizeResult(result, options={}) {
-    // console.log('sanitizeResult() result: ', result);
-    // console.log('sanitizeResult() options: ', options);
     result.changes ||= result.rowCount || 0;
     if (result.command === 'INSERT' && result.rows?.length) {
       const keys = options.keys || [defaultIdColumn];
@@ -81,9 +83,14 @@ export class PostgresEngine extends Engine {
     }
     return result;
   }
+
+  //-----------------------------------------------------------------------------
+  // Query formatting
+  //-----------------------------------------------------------------------------
   formatPlaceholder(n) {
     return '$' + n;
   }
+
   formatReturning(keys) {
     return ' RETURNING ' + this.formatColumns(keys);
   }
