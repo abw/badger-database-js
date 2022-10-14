@@ -101,6 +101,10 @@ export class Table {
     this.debugData("query()", { name, config });
     return this.queries.query(name, config);
   }
+  namedQuery(name) {
+    this.debugData("namedQuery()", { name });
+    return this.queries.namedQuery(name);
+  }
   run(query, params, options) {
     this.debugData("run()", { query, params, options });
     return this.query(query).run(params, options)

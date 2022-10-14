@@ -163,7 +163,7 @@ test.serial(
 )
 
 test.serial(
-  'selectByName',
+  'selectByName one',
   async t => {
     const bobby = await db.one('selectByName', ['Bobby Badger']);
     t.is(bobby.name, 'Bobby Badger');
@@ -171,10 +171,44 @@ test.serial(
 )
 
 test.serial(
-  'selectByEmail',
+  'selectByEmail one',
   async t => {
     const bobby = await db.one('selectByEmail', ['bobby@badgerpower.com']);
     t.is(bobby.name, 'Bobby Badger');
+  }
+)
+
+test.serial(
+  'selectByName any',
+  async t => {
+    const bobby = await db.any('selectByName', ['Bobby Badger']);
+    t.is(bobby.name, 'Bobby Badger');
+  }
+)
+
+test.serial(
+  'selectByEmail any',
+  async t => {
+    const bobby = await db.any('selectByEmail', ['bobby@badgerpower.com']);
+    t.is(bobby.name, 'Bobby Badger');
+  }
+)
+
+test.serial(
+  'selectByName all',
+  async t => {
+    const rows = await db.all('selectByName', ['Bobby Badger']);
+    t.is(rows.length, 1);
+    t.is(rows[0].name, 'Bobby Badger');
+  }
+)
+
+test.serial(
+  'selectByEmail all',
+  async t => {
+    const rows = await db.all('selectByEmail', ['bobby@badgerpower.com']);
+    t.is(rows.length, 1);
+    t.is(rows[0].name, 'Bobby Badger');
   }
 )
 
