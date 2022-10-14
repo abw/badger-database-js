@@ -561,10 +561,33 @@ also provide `order` (or `orderBy` if you prefer to use a naming convention as
 close as possible to the SQL equivalent of `ORDER BY`) to specify the order in
 which rows should be returned:
 
+The `order` can contain multiple columns and each will be automatically quoted.
+
 ```js
 const allUsers = await users.allRows(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
-  { order: 'name DESC' }
+  { order: 'name, id' }   // -> ORDER BY "name", "id"
+);
+```
+
+If you want to use a raw SQL order then define it as an object with a single `sql`
+property:
+
+```js
+const allUsers = await users.allRows(
+  { },  // you can specify selection criteria or use an empty object to fetch all rows
+  { order: { sql: 'name DESC' } }
+);
+```
+
+Or use the `sql` function to generate it for you from a tagged template literal.
+
+```js
+import { sql } from '@abw/badger-database'
+
+const allUsers = await users.allRows(
+  { },  // you can specify selection criteria or use an empty object to fetch all rows
+  { order: sql`name DESC` }
 );
 ```
 
