@@ -71,3 +71,12 @@ const badgers = await db.all(
 );
 ```
 
+If you want to see how a query is expanded you can call the `sql()`
+method.  This will return the expanded SQL query.
+
+```js
+db.sql('&lt;selectEmployee&gt; WHERE companies.name=?');
+// -> SELECT users.*, companies.* FROM users
+//    JOIN companies on users.company_id=companies.id
+//    WHERE companies.name=?
+```

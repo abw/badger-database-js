@@ -212,7 +212,13 @@ test.serial(
   }
 )
 
-
+test.serial(
+  'extended select query builder',
+  async t => {
+    const bobby = await db.namedQuery('select').where({ name: 'Bobby Badger' }).one();
+    t.is(bobby.name, 'Bobby Badger');
+  }
+)
 
 test.after(
   'destroy',

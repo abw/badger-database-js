@@ -382,7 +382,105 @@ isn't in the base query.
 
 ```js
 const rows = await employees
-  .select('user.id')
+  .select('users.id')
   .where('employees.job_title')
   .all(['Chief Badger'])
 ```
+
+## Named Queries Using a Query Builder
+
+You can define [named queries](manual/named_queries.html) that use the query
+builder to generate the SQL.
+
+The named query should be defined as a function.  It will be passed a reference
+to the database and should return a query generated using the query builder.
+
+```js
+const db = connect({
+  database: 'sqlite:memory',
+  queries: {
+    selectUserByName:
+      db => db
+        .select('name email')
+        .from('users')
+        .where('name')
+  }
+});
+```
+
+You can then use the named query just like any other named query.
+
+```js
+const bobby = await db.one(
+  'selectUserByName',
+  ['Bobby Badger']
+);
+```
+
+You can use the `namedQuery()` method to fetch a named query.  If it's
+constructed using the query builder then you can call further methods
+on it to create a more specialised query.  Remember, the original named
+query won't be affected so it's perfectly safe to do this.
+
+```js
+const bobby = await db
+  .namedQuery('selectUserByName')
+  .select('id')   // also select user id
+  .one(['Bobby Badger']);
+```
+
+You can even do this to create named queries based on other named queries.
+
+```js
+const db = connect({
+  database: 'sqlite:memory',
+  queries: {
+    // "base" query to select a user
+    selectUser:
+      db => db
+        .select('name email')
+        .from('users')  // SELECT "name", "email" FROM "users"
+
+    // specialised version to select a user by name
+    selectUserByName:
+      db => db
+        .namedQuery('selectUser')
+        .where('name')  // SELECT "name", "email" FROM "users" WHERE "name" = ?
+
+    // specialised version to select a user by email
+    selectUserByName:
+      db => db
+        .namedQuery('selectUser')
+        .where('email') // SELECT "name", "email" FROM "users" WHERE "email" = ?
+  }
+});
+
+const bobby = db.one(
+  'selectUserByName',
+  ['Bobby Badger']
+);
+
+const brian = db.one(
+  'selectUserByEmail',
+  ['brian@badgerpower.com']
+);
+```
+
+You can provide parameters in named queries and they will be "remembered" when
+you come to run the query.
+
+```js
+const db = connect({
+  database: 'sqlite:memory',
+  queries: {
+    fetchAllBadgers:
+      db => db
+        .select('name email')
+        .from('users')
+        .where({ animal: 'Badger' })
+  }
+});
+
+const badgers = await db.all('fetchAllBadgers')
+```
+
