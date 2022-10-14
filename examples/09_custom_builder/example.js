@@ -1,13 +1,13 @@
 // This example shows a custom query builder component
-import { color } from '@abw/badger';
 import { connect, Builder, registerBuilder, comma } from '@abw/badger-database';
+import { color } from '@abw/badger';
 import { range } from '@abw/badger-utils';
 
 //-----------------------------------------------------------------------------
 // Define a custom builder component
-// db.builder().animal('Badger')       // -> # Badger
-// db.builder().animal(['Badger', 3])  // -> # Badger, Badger, Badger
-// db.builder().animal({ animal: 'Badger', count: 2 })  // -> # Badger, Badger
+// db.build.animal('Badger')       // -> # Badger
+// db.build.animal(['Badger', 3])  // -> # Badger, Badger, Badger
+// db.build.animal({ animal: 'Badger', count: 2 })  // -> # Badger, Badger
 //-----------------------------------------------------------------------------
 class Animal extends Builder {
   // the name of the builder method
@@ -67,7 +67,7 @@ async function main() {
   console.log(
     "One badger\n" +
     green(
-      db.builder().animal('Badger').sql()
+      db.build.animal('Badger').sql()
     )
   );
 
@@ -75,7 +75,7 @@ async function main() {
   console.log(
     "\nThree badgers\n" +
     green(
-      db.builder().animal(['Badger', 3]).sql()
+      db.build.animal(['Badger', 3]).sql()
     )
   )
 
@@ -83,7 +83,7 @@ async function main() {
   console.log(
     "\nFive badgers\n" +
     green(
-      db.builder().animal({ animal: 'Badger', count: 5 }).sql()
+      db.build.animal({ animal: 'Badger', count: 5 }).sql()
     )
   )
 
@@ -91,7 +91,7 @@ async function main() {
   console.log(
     "\nBadgers, Mushrooms and a Snake\n" +
     green(
-      db.builder()
+      db.build
         .select('foo')
         .animal(['Badger', 3])
         .from('bar')
@@ -104,7 +104,7 @@ async function main() {
 
   // error handling
   try {
-    db.builder().animal(['Badger', 'Mushroom', 'Snake']).sql()
+    db.build.animal(['Badger', 'Mushroom', 'Snake']).sql()
   }
   catch (e) {
     console.log(
