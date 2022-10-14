@@ -146,7 +146,27 @@ export function runTableRowsTests(engine) {
     'allRows() with order',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.allRows({ }, { order: 'name DESC' });
+      const rows  = await users.allRows({ }, { order: 'name' });
+      t.is( rows.length, 2 );
+      t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[1].name, 'Brian Badger' );
+    }
+  )
+  test.serial(
+    'allRows() with multiple order columns',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.allRows({ }, { order: 'name, id' });
+      t.is( rows.length, 2 );
+      t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[1].name, 'Brian Badger' );
+    }
+  )
+  test.serial(
+    'allRows() with order DESC',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.allRows({ }, { order: { sql: 'name DESC' } });
       t.is( rows.length, 2 );
       t.is( rows[0].name, 'Brian Badger' );
       t.is( rows[1].name, 'Bobby Badger' );
@@ -156,7 +176,7 @@ export function runTableRowsTests(engine) {
     'allRows() with orderBy',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.allRows({ }, { orderBy: 'name DESC' });
+      const rows  = await users.allRows({ }, { orderBy: { sql: 'name DESC' } });
       t.is( rows.length, 2 );
       t.is( rows[0].name, 'Brian Badger' );
       t.is( rows[1].name, 'Bobby Badger' );
