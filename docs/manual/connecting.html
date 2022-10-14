@@ -79,6 +79,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#named-queries-using-a-query-builder" data-ice="link">Named Queries Using a Query Builder</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -366,7 +367,7 @@ silently correct it.</p>
 A database connection string should be defined as the <code>DATABASE</code>
 environment variable.</p>
 <p>For example, you could define <code>DATABASE</code> in a <code>.env</code> file:</p>
-<pre><code class="lang-bash"><code class="source-code prettyprint">DATABASE=sqlite:memory:</code></code></pre>
+<pre><code class="lang-bash"><code class="source-code prettyprint">DATABASE=sqlite:memory</code></code></pre>
 <p>You can load the environment variables from the <code>.env</code> file
 using <a href="https://www.npmjs.com/package/dotenv">dotenv</a> or a similar
 module. The environment variables will then be defined in <code>process.env</code>.
@@ -397,7 +398,7 @@ define it using the <code>envPrefix</code> option.</p>
   envPrefix: 'MY_DB'
 });</code></code></pre>
 <p>Then you can define the database connection string like so:</p>
-<pre><code><code class="source-code prettyprint">MY_DB=sqlite:memory:</code></code></pre><p>Or using separate environment variables like this:</p>
+<pre><code><code class="source-code prettyprint">MY_DB=sqlite:memory</code></code></pre><p>Or using separate environment variables like this:</p>
 <pre><code class="lang-bash"><code class="source-code prettyprint">MY_DB_ENGINE=mysql
 MY_DB_NAME=animals
 MY_DB_USER=badger

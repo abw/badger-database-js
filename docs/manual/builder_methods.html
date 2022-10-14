@@ -79,6 +79,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#named-queries-using-a-query-builder" data-ice="link">Named Queries Using a Query Builder</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -241,7 +242,7 @@ passing an object with a single <code>sql</code> property:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
 
 db.select(sql`COUNT(id) AS n`)</code></code></pre>
-<p>All of the methods can be called multiple time, or passed multiple
+<p>All of the methods can be called multiple times, or passed multiple
 arguments.  They both have the same effect.  Generally speaking,
 you can call the methods in any order and the query builder will
 generate the SQL query with them in the correct order.</p>

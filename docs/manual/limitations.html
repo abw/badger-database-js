@@ -79,6 +79,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#named-queries-using-a-query-builder" data-ice="link">Named Queries Using a Query Builder</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -246,12 +247,12 @@ delete queries.  Again, this is quite deliberate.  The methods provided
 by <a href="manual/table_methods.html">tables</a> should be sufficient to insert,
 update and delete rows for <em>most</em> simple cases.  If you need a more complex
 query involving joins, subqueries, etc., then, once again, writing a
-custom SQL query and saving it as a named queries is probably the best
+custom SQL query and saving it as a named query is probably the best
 solution.</p>
-<p>Similarly, the support for relations has some shortcomings.  For example,
-you can't define many-to-many relations that use intermediate link
-tables. However, you can define your own load method with a custom SQL
-query when you need to.</p>
+<p>Similarly, the support for <a href="manual/relations.html">relations</a> has some
+shortcomings.  For example, you can't define many-to-many relations that
+use intermediate link tables. However, you can define your own load method
+with a custom SQL query when you need to.</p>
 <p>These are all deliberate design decision.  Supporting everything that
 is possible in SQL would require a full-blown ORM or SQL query generator
 with all the problems that they bring.</p>

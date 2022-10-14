@@ -31,6 +31,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
@@ -42,7 +43,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngines">registerEngines</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Builders">Builders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Generators">Generators</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AND">AND</a></span></span></li>
@@ -70,6 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-equals">equals</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-newline">newline</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-singleWord">singleWord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-space">space</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-unknown">unknown</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-whereTrue">whereTrue</a></span></span></li>
@@ -136,8 +137,12 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Queries.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { fail } from "@abw/badger-utils";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { fail, isFunction, isString } from "@abw/badger-utils";
+import Builder from "./Builder.js";
+import { singleWord } from "./Constants.js";
+import Query from "./Query.js";
 import { addDebugMethod } from "./Utils/Debug.js";
+import { missing } from "./Utils/Error.js";
 
 const defaults = {
   maxExpansion: 16,
@@ -146,24 +151,62 @@ const defaults = {
 };
 
 export class Queries {
-  constructor(config) {
+  constructor(parent, config) {
+    this.parent = parent || missing('parent');
+    this.engine = parent.engine || missing('engine');
     this.config = { ...defaults, ...config };
+
     //this.fragments = schema.fragments || { };
     //this.queries = schema.queries || { };
     //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;
     addDebugMethod(this, 'queries', this.config);
+    // this.debugData("constructor", { engine, config });
   }
-  query(name) {
-    // if the name is a single word then it must be a named query, otherwise
-    // we assume it's an SQL query possibly with embedded fragments.
-    return this.expandFragments(
-      name.match(/^\w+$/)
-        ? this.config.queries[name] || fail("Invalid query specified: ", name)
-        : name
-    );
+  sql(name) {
+    return this.query(name).sql();
   }
+
+  query(source, config) {
+    let sql;
+
+    if (source.match(singleWord)) {
+      // if the source is a single word then it must be a named query
+      let query = this.namedQuery(source);
+
+      if (isString(query)) {
+        // if we've got a string then expand any fragments
+        sql = this.expandFragments(query);
+      }
+      else if (query instanceof Builder) {
+        // if we have a query builder element then ask it to generate the SQL and
+        // provide any values it collected along the way.
+        sql = query.sql();
+        config = query.contextValues();
+        // TODO: should merge config whereValues and havingValues into any in config passed as argument
+      }
+      else {
+        // otherwise fail
+        fail(`Named query "${source}" returned invalid result: `, query);
+      }
+    }
+    else {
+      // if it's not a named query then it's an SQL query possibly with embedded fragments
+      sql = this.expandFragments(source);
+    }
+
+    return new Query(this.engine, sql, config);
+  }
+
+  namedQuery(source) {
+    let query = this.config.queries[source] || fail("Invalid named query specified: ", source);
+    return isFunction(query)
+      ? query(this.parent)
+      : query;
+  }
+
   expandFragments(query) {
     const fragments = this.config.fragments;
+    this.debugData("expandFragments()", { fragments })
     query = query.trim();
     let sql = query;
     let max = this.config.maxExpansion;
@@ -195,9 +238,6 @@ export class Queries {
     return sql;
   }
 }
-
-export const queries = (schema) =&gt;
-  new Queries(schema)
 
 export default Queries</code></pre>
 

@@ -31,6 +31,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
@@ -42,7 +43,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-engine">engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngine">registerEngine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerEngines">registerEngines</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-queries">queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Builders">Builders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Generators">Generators</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AND">AND</a></span></span></li>
@@ -70,6 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-defaultIdColumn">defaultIdColumn</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-equals">equals</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-newline">newline</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-singleWord">singleWord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-space">space</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-unknown">unknown</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-whereTrue">whereTrue</a></span></span></li>
@@ -1384,6 +1385,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-namedQuery">namedQuery</a></span></span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-newRecord">newRecord</a></span></span><span class="code" data-ice="signature">(row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -1580,7 +1609,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-query">query</a></span></span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-query">query</a></span></span><span class="code" data-ice="signature">(name: <span>*</span>, config: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1693,6 +1722,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-select">select</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Table.js~Table.html#instance-method-sql">sql</a></span></span><span class="code" data-ice="signature">(name: <span>*</span>, config: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2848,7 +2905,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber107">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber116">source</a></span></span>
     </span>
   </h3>
 
@@ -2931,7 +2988,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber257">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber266">source</a></span></span>
     </span>
   </h3>
 
@@ -3009,7 +3066,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber236">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber245">source</a></span></span>
     </span>
   </h3>
 
@@ -3087,7 +3144,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber103">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber112">source</a></span></span>
     </span>
   </h3>
 
@@ -3170,7 +3227,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber253">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber262">source</a></span></span>
     </span>
   </h3>
 
@@ -3248,7 +3305,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber225">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber234">source</a></span></span>
     </span>
   </h3>
 
@@ -3764,7 +3821,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber202">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber211">source</a></span></span>
     </span>
   </h3>
 
@@ -3835,7 +3892,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber273">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber282">source</a></span></span>
     </span>
   </h3>
 
@@ -3906,7 +3963,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber119">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber128">source</a></span></span>
     </span>
   </h3>
 
@@ -3983,7 +4040,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber145">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber154">source</a></span></span>
     </span>
   </h3>
 
@@ -4061,7 +4118,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber133">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber142">source</a></span></span>
     </span>
   </h3>
 
@@ -4138,7 +4195,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber141">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber150">source</a></span></span>
     </span>
   </h3>
 
@@ -4216,7 +4273,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber124">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber133">source</a></span></span>
     </span>
   </h3>
 
@@ -4294,7 +4351,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber282">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber291">source</a></span></span>
     </span>
   </h3>
 
@@ -4367,6 +4424,77 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-namedQuery">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">namedQuery</span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber104">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">name</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-newRecord">
     <span class="access" data-ice="access">public</span>
     
@@ -4378,7 +4506,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber306">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber315">source</a></span></span>
     </span>
   </h3>
 
@@ -4449,7 +4577,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber111">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber120">source</a></span></span>
     </span>
   </h3>
 
@@ -4532,7 +4660,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber249">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber258">source</a></span></span>
     </span>
   </h3>
 
@@ -4610,7 +4738,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber216">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber225">source</a></span></span>
     </span>
   </h3>
 
@@ -4688,7 +4816,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber211">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber220">source</a></span></span>
     </span>
   </h3>
 
@@ -4836,7 +4964,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber152">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber161">source</a></span></span>
     </span>
   </h3>
 
@@ -4909,11 +5037,11 @@
     
     
     
-    <span class="code" data-ice="name">query</span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">query</span><span class="code" data-ice="signature">(name: <span>*</span>, config: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber96">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber100">source</a></span></span>
     </span>
   </h3>
 
@@ -4934,6 +5062,12 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">name</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">config</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -4984,7 +5118,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber311">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber320">source</a></span></span>
     </span>
   </h3>
 
@@ -5055,7 +5189,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber317">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber326">source</a></span></span>
     </span>
   </h3>
 
@@ -5126,7 +5260,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber99">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber108">source</a></span></span>
     </span>
   </h3>
 
@@ -5209,7 +5343,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber262">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber271">source</a></span></span>
     </span>
   </h3>
 
@@ -5269,6 +5403,83 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-sql">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">sql</span><span class="code" data-ice="signature">(name: <span>*</span>, config: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber96">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">name</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">config</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-tableFragments">
     <span class="access" data-ice="access">public</span>
     
@@ -5280,7 +5491,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber270">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber279">source</a></span></span>
     </span>
   </h3>
 
@@ -5335,7 +5546,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber157">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber166">source</a></span></span>
     </span>
   </h3>
 
@@ -5406,7 +5617,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber184">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber193">source</a></span></span>
     </span>
   </h3>
 
@@ -5490,7 +5701,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber171">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber180">source</a></span></span>
     </span>
   </h3>
 
@@ -5574,7 +5785,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber160">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber169">source</a></span></span>
     </span>
   </h3>
 
@@ -5658,7 +5869,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber295">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Table.js.html#lineNumber304">source</a></span></span>
     </span>
   </h3>
 

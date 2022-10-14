@@ -35,3 +35,5 @@ at least one of the database driver modules:
     // sqlite
     yarn add @abw/badger-database better-sqlite
 
+Once you've got it installed you're ready to [connect](manual/connecting.html)
+to a database.

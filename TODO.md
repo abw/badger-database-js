@@ -5,8 +5,6 @@
 
 * table fetch columns with aliases: { alias: column } ???
 
-* document query() method to view generated SQL (rename sql()?)
-
 * waiter is not throwing errors
 
 * database inspection to grok tables automagically?

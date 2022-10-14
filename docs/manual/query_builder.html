@@ -79,6 +79,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#named-queries-using-a-query-builder" data-ice="link">Named Queries Using a Query Builder</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -468,9 +469,83 @@ onto the end of the base query.  For example, you can <code>select()</code> addi
 columns in one of the new queries if there's something extra you need that
 isn't in the base query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = await employees
-  .select('user.id')
+  .select('users.id')
   .where('employees.job_title')
   .all(['Chief Badger'])</code></code></pre>
+<h2 id="named-queries-using-a-query-builder">Named Queries Using a Query Builder</h2><p>You can define <a href="manual/named_queries.html">named queries</a> that use the query
+builder to generate the SQL.</p>
+<p>The named query should be defined as a function.  It will be passed a reference
+to the database and should return a query generated using the query builder.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite:memory',
+  queries: {
+    selectUserByName:
+      db =&gt; db
+        .select('name email')
+        .from('users')
+        .where('name')
+  }
+});</code></code></pre>
+<p>You can then use the named query just like any other named query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await db.one(
+  'selectUserByName',
+  ['Bobby Badger']
+);</code></code></pre>
+<p>You can use the <code>namedQuery()</code> method to fetch a named query.  If it's
+constructed using the query builder then you can call further methods
+on it to create a more specialised query.  Remember, the original named
+query won't be affected so it's perfectly safe to do this.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await db
+  .namedQuery('selectUserByName')
+  .select('id')   // also select user id
+  .one(['Bobby Badger']);</code></code></pre>
+<p>You can even do this to create named queries based on other named queries.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite:memory',
+  queries: {
+    // "base" query to select a user
+    selectUser:
+      db =&gt; db
+        .select('name email')
+        .from('users')  // SELECT "name", "email" FROM "users"
+
+    // specialised version to select a user by name
+    selectUserByName:
+      db =&gt; db
+        .namedQuery('selectUser')
+        .where('name')  // SELECT "name", "email" FROM "users" WHERE "name" = ?
+
+    // specialised version to select a user by email
+    selectUserByName:
+      db =&gt; db
+        .namedQuery('selectUser')
+        .where('email') // SELECT "name", "email" FROM "users" WHERE "email" = ?
+  }
+});
+
+const bobby = db.one(
+  'selectUserByName',
+  ['Bobby Badger']
+);
+
+const brian = db.one(
+  'selectUserByEmail',
+  ['brian@badgerpower.com']
+);</code></code></pre>
+<p>You can provide parameters in named queries and they will be "remembered" when
+you come to run the query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite:memory',
+  queries: {
+    fetchAllBadgers:
+      db =&gt; db
+        .select('name email')
+        .from('users')
+        .where({ animal: 'Badger' })
+  }
+});
+
+const badgers = await db.all('fetchAllBadgers')</code></code></pre>
 </div>
 </div>
 

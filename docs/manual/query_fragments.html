@@ -79,6 +79,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#placeholder-values" data-ice="link">Placeholder Values</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#running-queries" data-ice="link">Running Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#the-importance-of-being-idempotent" data-ice="link">The Importance of Being Idempotent</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/query_builder.html"><a href="manual/query_builder.html#named-queries-using-a-query-builder" data-ice="link">Named Queries Using a Query Builder</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -281,6 +282,12 @@ includes the <code>selectEmployee</code> fragment like so:</p>
   '&lt;selectEmployee&gt; WHERE companies.name=?',
   ['Badgers Inc.']
 );</code></code></pre>
+<p>If you want to see how a query is expanded you can call the <code>sql()</code>
+method.  This will return the expanded SQL query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.sql('&lt;selectEmployee&gt; WHERE companies.name=?');
+// -&gt; SELECT users.*, companies.* FROM users
+//    JOIN companies on users.company_id=companies.id
+//    WHERE companies.name=?</code></code></pre>
 </div>
 </div>
 
