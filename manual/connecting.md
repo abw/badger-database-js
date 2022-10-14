@@ -233,7 +233,7 @@ environment variable.
 For example, you could define `DATABASE` in a `.env` file:
 
 ```bash
-DATABASE=sqlite:memory:
+DATABASE=sqlite:memory
 ```
 
 You can load the environment variables from the `.env` file
@@ -284,7 +284,7 @@ const db = connect({
 Then you can define the database connection string like so:
 
 ```
-MY_DB=sqlite:memory:
+MY_DB=sqlite:memory
 ```
 
 Or using separate environment variables like this:

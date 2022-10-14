@@ -25,7 +25,7 @@ import { sql } from '@abw/badger-database'
 db.select(sql`COUNT(id) AS n`)
 ```
 
-All of the methods can be called multiple time, or passed multiple
+All of the methods can be called multiple times, or passed multiple
 arguments.  They both have the same effect.  Generally speaking,
 you can call the methods in any order and the query builder will
 generate the SQL query with them in the correct order.
