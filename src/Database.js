@@ -16,7 +16,7 @@ export class Database {
   constructor(engine, params={ }) {
     const config = { ...defaults, ...params };
     this.engine  = engine || missing('engine');
-    this.queries = new Queries(config);
+    this.queries = new Queries(this.engine, config);
     this.tables  = config.tablesObject || new config.tablesClass(config.tables);
     this.build   = databaseBuilder(this);
     this.model   = modelProxy(this);

@@ -1,5 +1,5 @@
 import test from 'ava';
-import Queries, { queries } from '../../src/Queries.js'
+import Queries from '../../src/Queries.js'
 
 const spec = {
   debug: false,
@@ -17,7 +17,7 @@ const spec = {
     select: 'SELECT <allColumns> FROM <table>',
   }
 }
-const queries1 = new Queries(spec);
+const queries1 = new Queries('MockEngine', spec);
 
 test(
   'query("one")',
@@ -43,7 +43,7 @@ test(
   }
 );
 
-const queries2 = queries(spec);
+const queries2 = new Queries('MockEngine', spec);
 
 test(
   'query("two")',

@@ -15,7 +15,7 @@ const spec = {
     loopB: 'loopB then <loopA>',
   }
 }
-const queries = new Queries(spec);
+const queries = new Queries('MockEngine', spec);
 
 test(
   'expand query',
@@ -41,7 +41,7 @@ test(
   }
 );
 
-const queries2 = new Queries({ ...spec, maxExpansion: 5 });
+const queries2 = new Queries('MockEngine', { ...spec, maxExpansion: 5 });
 test(
   'expand query with runaway throws an error more soonly',
   t => {

@@ -1,5 +1,7 @@
 import { fail } from "@abw/badger-utils";
+import Query from "./Query.js";
 import { addDebugMethod } from "./Utils/Debug.js";
+import { missing } from "./Utils/Error.js";
 
 const defaults = {
   maxExpansion: 16,
@@ -8,14 +10,25 @@ const defaults = {
 };
 
 export class Queries {
-  constructor(config) {
+  constructor(engine, config) {
+    this.engine = engine || missing('engine');
     this.config = { ...defaults, ...config };
+
     //this.fragments = schema.fragments || { };
     //this.queries = schema.queries || { };
     //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;
     addDebugMethod(this, 'queries', this.config);
+    this.debugData("config", { engine, config });
   }
   query(name) {
+    return this.sql(name)
+  }
+  queryObject(name, config) {
+    // new method
+    const sql = this.sql(name);
+    return new Query(sql, this.engine, config);
+  }
+  sql(name) {
     // if the name is a single word then it must be a named query, otherwise
     // we assume it's an SQL query possibly with embedded fragments.
     return this.expandFragments(
@@ -26,6 +39,7 @@ export class Queries {
   }
   expandFragments(query) {
     const fragments = this.config.fragments;
+    this.debugData("expandFragments()", { fragments })
     query = query.trim();
     let sql = query;
     let max = this.config.maxExpansion;
@@ -57,8 +71,5 @@ export class Queries {
     return sql;
   }
 }
-
-export const queries = (schema) =>
-  new Queries(schema)
 
 export default Queries

@@ -21,6 +21,9 @@ export const createDatabase = async (config=defaultConfig) => connect(config);
 export const database = createDatabase();
 
 export class MockDatabase {
+  constructor() {
+    this.engine = 'MockEngine'
+  }
   raw(...args) {
     return "[RAW:" + args.join(':') + "]";
   }

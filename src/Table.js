@@ -21,7 +21,7 @@ export class Table {
     this.recordConfig  = config.recordConfig;
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
-    this.queries       = new Queries({ ...config, debugPrefix: `Queries:${this.table}` });
+    this.queries       = new Queries(this.engine, { ...config, debugPrefix: `Queries:${this.table}` });
     this.build         = this.database.build;
 
     // method aliases
