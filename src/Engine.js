@@ -3,7 +3,7 @@ import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount }
 import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, whereTrue } from './Constants.js';
+import { allColumns, ORDER_BY, space, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -179,6 +179,7 @@ export class Engine {
     const columns = this.formatColumns(options.columns);
     const where   = this.formatWherePlaceholders(wherecols, wherevals);
     const order   = this.formatOrderBy(options.orderBy || options.order);
+    table = this.quote(table);
     return [
       format(queries.select, { table, columns, where, order }),
       this.prepareValues(wherevals)
@@ -257,6 +258,9 @@ export class Engine {
     ).join(joint) || whereTrue;
   }
   formatColumns(columns) {
+    if (isObject(columns) && columns.sql) {
+      return columns.sql;
+    }
     return hasValue(columns)
       ? splitList(columns)
         .map(
@@ -270,7 +274,7 @@ export class Engine {
   }
   formatOrderBy(order) {
     return hasValue(order)
-      ? `ORDER BY ${order}`
+      ? ORDER_BY + space + this.formatColumns(order)
       : '';
   }
   prepareValues(values) {
