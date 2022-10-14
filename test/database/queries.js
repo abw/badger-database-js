@@ -23,7 +23,7 @@ test.before(
 test.serial(
   'named query',
   async t => {
-    const hw = db.query('helloWorld');
+    const hw = db.sql('helloWorld');
     t.is(hw, 'Hello World!');
   }
 )
@@ -31,7 +31,7 @@ test.serial(
 test.serial(
   'query with embedded fragments',
   async t => {
-    const hw = db.query('<hello> Everyone!');
+    const hw = db.sql('<hello> Everyone!');
     t.is(hw, 'Hello Everyone!');
   }
 )

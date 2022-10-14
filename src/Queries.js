@@ -1,4 +1,6 @@
-import { fail } from "@abw/badger-utils";
+import { fail, isFunction, isString } from "@abw/badger-utils";
+import Builder from "./Builder.js";
+import { singleWord } from "./Constants.js";
 import Query from "./Query.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { missing } from "./Utils/Error.js";
@@ -10,33 +12,59 @@ const defaults = {
 };
 
 export class Queries {
-  constructor(engine, config) {
-    this.engine = engine || missing('engine');
+  constructor(parent, config) {
+    this.parent = parent || missing('parent');
+    this.engine = parent.engine || missing('engine');
     this.config = { ...defaults, ...config };
 
     //this.fragments = schema.fragments || { };
     //this.queries = schema.queries || { };
     //this.maxExpansion = schema.maxExpansion || defaults.maxExpansion;
     addDebugMethod(this, 'queries', this.config);
-    this.debugData("config", { engine, config });
-  }
-  query(name) {
-    return this.sql(name)
-  }
-  queryObject(name, config) {
-    // new method
-    const sql = this.sql(name);
-    return new Query(sql, this.engine, config);
+    // this.debugData("constructor", { engine, config });
   }
   sql(name) {
-    // if the name is a single word then it must be a named query, otherwise
-    // we assume it's an SQL query possibly with embedded fragments.
-    return this.expandFragments(
-      name.match(/^\w+$/)
-        ? this.config.queries[name] || fail("Invalid query specified: ", name)
-        : name
-    );
+    return this.query(name).sql();
   }
+
+  query(source, config) {
+    let sql;
+
+    if (source.match(singleWord)) {
+      // if the source is a single word then it must be a named query
+      let query = this.namedQuery(source);
+
+      if (isString(query)) {
+        // if we've got a string then expand any fragments
+        sql = this.expandFragments(query);
+      }
+      else if (query instanceof Builder) {
+        // if we have a query builder element then ask it to generate the SQL and
+        // provide any values it collected along the way.
+        sql = query.sql();
+        config = query.contextValues();
+        // TODO: should merge config whereValues and havingValues into any in config passed as argument
+      }
+      else {
+        // otherwise fail
+        fail(`Named query "${source}" returned invalid result: `, query);
+      }
+    }
+    else {
+      // if it's not a named query then it's an SQL query possibly with embedded fragments
+      sql = this.expandFragments(source);
+    }
+
+    return new Query(this.engine, sql, config);
+  }
+
+  namedQuery(source) {
+    let query = this.config.queries[source] || fail("Invalid named query specified: ", source);
+    return isFunction(query)
+      ? query(this.parent)
+      : query;
+  }
+
   expandFragments(query) {
     const fragments = this.config.fragments;
     this.debugData("expandFragments()", { fragments })

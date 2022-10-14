@@ -16,7 +16,7 @@ export class Database {
   constructor(engine, params={ }) {
     const config = { ...defaults, ...params };
     this.engine  = engine || missing('engine');
-    this.queries = new Queries(this.engine, config);
+    this.queries = new Queries(this, config);
     this.tables  = config.tablesObject || new config.tablesClass(config.tables);
     this.build   = databaseBuilder(this);
     this.model   = modelProxy(this);
@@ -36,25 +36,33 @@ export class Database {
   release(connection) {
     this.engine.release(connection);
   }
-  query(name) {
-    this.debugData("query()", { name });
-    return this.queries.query(name);
+  sql(name, config) {
+    this.debugData("sql()", { name, config });
+    return this.query(name, config).sql();
+  }
+  query(name, config) {
+    this.debugData("query()", { name, config });
+    return this.queries.query(name, config);
+  }
+  namedQuery(name) {
+    this.debugData("namedQuery()", { name });
+    return this.queries.namedQuery(name);
   }
   run(query, params, options) {
     this.debugData("run()", { query, params, options });
-    return this.engine.run(this.query(query), params, options)
+    return this.query(query).run(params, options)
   }
   any(query, params, options) {
     this.debugData("any()", { query, params, options });
-    return this.engine.any(this.query(query), params, options)
+    return this.query(query).any(params, options)
   }
   all(query, params, options) {
     this.debugData("all()", { query, params, options });
-    return this.engine.all(this.query(query), params, options)
+    return this.query(query).all(params, options)
   }
   one(query, params, options) {
     this.debugData("one()", { query, params, options });
-    return this.engine.one(this.query(query), params, options)
+    return this.query(query).one(params, options)
   }
   async table(name) {
     return this.state.table[name]

@@ -71,17 +71,21 @@ export class Builder {
     return db.all(sql, values);
   }
 
+  contextValues() {
+    const { whereValues, havingValues } = this.resolveChain();
+    return { whereValues, havingValues };
+  }
+
   allValues(where=[]) {
-    const context = this.resolveChain();
-    const wvalues = context.whereValues;
-    const hvalues = context.havingValues;
+    const { whereValues, havingValues } = this.resolveChain();
+
     // In the usual case we just get one set of extra args and they
     // go at the end.  But if there's some need to jiggle the parameters
     // more then a function can be provided.
     if (isFunction(where)) {
-      return where(wvalues, hvalues);
+      return where(whereValues, havingValues);
     }
-    return [...wvalues, ...hvalues, ...where]
+    return [...whereValues, ...havingValues, ...where]
   }
 
   whereValues(...values) {

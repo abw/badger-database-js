@@ -21,7 +21,7 @@ export class Table {
     this.recordConfig  = config.recordConfig;
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
-    this.queries       = new Queries(this.engine, { ...config, debugPrefix: `Queries:${this.table}` });
+    this.queries       = new Queries(this, { ...config, debugPrefix: `Queries:${this.table}` });
     this.build         = this.database.build;
 
     // method aliases
@@ -93,24 +93,29 @@ export class Table {
   //-----------------------------------------------------------------------------
   // Engine methods
   //-----------------------------------------------------------------------------
-  query(name) {
-    return this.queries.query(name);
+  sql(name, config) {
+    this.debugData("sql()", { name, config });
+    return this.query(name, config).sql();
+  }
+  query(name, config) {
+    this.debugData("query()", { name, config });
+    return this.queries.query(name, config);
   }
   run(query, params, options) {
     this.debugData("run()", { query, params, options });
-    return this.engine.run(this.query(query), params, options)
+    return this.query(query).run(params, options)
   }
   any(query, params, options) {
     this.debugData("any()", { query, params, options });
-    return this.engine.any(this.query(query), params, options)
+    return this.query(query).any(params, options)
   }
   all(query, params, options) {
     this.debugData("all()", { query, params, options });
-    return this.engine.all(this.query(query), params, options)
+    return this.query(query).all(params, options)
   }
   one(query, params, options) {
     this.debugData("one()", { query, params, options });
-    return this.engine.one(this.query(query), params, options)
+    return this.query(query).one(params, options)
   }
 
   //-----------------------------------------------------------------------------

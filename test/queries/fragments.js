@@ -1,5 +1,6 @@
 import test from 'ava';
 import Queries from '../../src/Queries.js'
+import { mockDatabase } from '../library/database.js';
 
 const spec = {
   debug: false,
@@ -15,7 +16,7 @@ const spec = {
     loopB: 'loopB then <loopA>',
   }
 }
-const queries = new Queries('MockEngine', spec);
+const queries = new Queries(mockDatabase, spec);
 
 test(
   'expand query',
@@ -41,7 +42,7 @@ test(
   }
 );
 
-const queries2 = new Queries('MockEngine', { ...spec, maxExpansion: 5 });
+const queries2 = new Queries(mockDatabase, { ...spec, maxExpansion: 5 });
 test(
   'expand query with runaway throws an error more soonly',
   t => {
