@@ -35,10 +35,10 @@ async function main() {
     // ...database, etc...
     tablesClass: YourTables,
     tables: {
-        // these tables will be defined in `this.tables` for YourTables
-        users: {
-            columns: 'id name email'
-        }
+      // these tables will be defined in `this.tables` for YourTables
+      users: {
+        columns: 'id name email'
+      }
     }
   });
   const users = await db.table('users');      // returns users defined above
@@ -165,7 +165,11 @@ Your engine module should be a subclass of the `Engine` base class.
 import { Engine } from '@abw/badger-database'
 
 export class BadgerEngine extends Engine {
+  static name  = 'badger'
+  static alias = 'mushroom'
+
   configure(config) {
+    // any custom configuration option handling
     console.log('got BadgerEngine config:', config);
     return config;
   }
@@ -175,42 +179,83 @@ export class BadgerEngine extends Engine {
   async disconnect(db) {
     // your code to disconnect from the database
   }
-  async run(sql, params=[], options) {
-    // your code to run a query
+  async execute(sql, params=[], options) {
+    // acquire a connection from the pool
+    const client = await this.acquire();
+
+    try {
+      const result = await
+        //...database specific code goes here
+        .catch( e => this.parseError(sql, e) );
+
+      return options.sanitizeResult
+        ? this.sanitizeResult(result, options)
+        : result;
+    }
+    finally {
+      // release the connection back to the pool
+      this.release(client);
+    }
   }
-  async any(sql, params=[], options) {
-    // your code to run a query and return any row
+  sanitizeResult(result, options={}) {
+    // your code to sanitize the response, e.g. changes, inserted ID
   }
-  async all(sql, params=[], options) {
-    // your code to run a query and return all rows
+  parseErrorArgs(e) {
+    // your code to sanitize a parse error, e.g. message, code, position
   }
 }
 ```
+
+It should define the static `name` property which is used to identify
+it.  If you have another name (or names) that you want it to be known
+by (e.g. `postgres` is also known as `postgresql`) then you can define
+that as the `alias` property.  Multiple aliases can be defined as an
+array (e.g. `static alias = ['mushroom', 'snake']`) or using the short
+hand syntax of a single whitespace delimited string
+(e.g. `static alias = 'mushroom snake'`).
+
+Depending on how the database that you're connecting to works, you may
+have to implement other methods as well.
 
 You should then register it using the `registerEngine()` function.
 
 ```js
 import { registerEngine } from '@abw/badger-database'
 
-registerEngine('badger', BadgerEngine);
+registerEngine(BadgerEngine);
 ```
 
-Then you can connect to it using the `badger` protocol:
+You can then connect to it using the `badger` protocol (or one of the
+alias protocols):
 
 ```js
 import { connect } from '@abw/badger-database'
 
-async function main() {
-  const db = connect({ database: 'badger://username:password@host:port/database' });
-  // your code here
-}
+const db = connect({
+  database: 'badger://username:password@host:port/database'
+});
+```
 
-main()
+The `configure()` method will received the expanded connection parameters.
+You can specify them as an object yourself if you prefer:
+
+```js
+import { connect } from '@abw/badger-database'
+
+const db = connect({
+  database: {
+    engine:    'badger',   // or 'mushroom', 'snake'
+    user:      'username',
+    password:  'password',
+    host:      'host',
+    port:      'port',
+    database:  'database'
+});
 ```
 
 If you implement support for a database engine that we don't currently
 support then please consider raising a pull request so we can add it
 for other people to use.  Or if you prefer you can release it as a
 stand-alone module.  End users would still need to call the
-`registerEngine()` module to plug it in, but that's only a line or
-two of code.
+`registerEngine()` module to plug it in, but that's only a line of
+code, so not too much trouble.

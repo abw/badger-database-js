@@ -562,8 +562,8 @@ in the `from` column.
 
 ```js
 db.select('name email')
-  .from('users')
   .select(['companies.name', 'company_name'])
+  .from('users')
   .join('users.company_id=companies.id')
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"

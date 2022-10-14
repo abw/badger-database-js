@@ -49,9 +49,8 @@ const name = artist.name;
 console.log(name);    // Pink Floyd
 ```
 
-The database object that is returned from the `connect()` method (which you *do*
-have to wait for) includes a `waiter` property that allows you to "place your
-entire order at once" and then wait for the result.
+The database object that is returned from the `connect()` method includes a `waiter`
+property that allows you to "place your entire order at once" and then wait for the result.
 
 ```js
 const musicdb = connect({
