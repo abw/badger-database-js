@@ -89,14 +89,16 @@ come with a pull request that fixes the bug then it's less likely to
 make it to the top of my TODO list.  Iif you're looking to add a new
 feature then please [discuss it with me](mailto:abw@wardley.org) first.
 
-All that said, it's a relatively simple project totalling around 1,500
-lines of code.  An experienced Javascript programmer with knowledge of
-SQL should be able to grok the code in an hour or two.  If you're
-happy to use the source, Luke, then it may be the droids you're looking
-for.  But if you're looking for a fully-featured, production-ready
-solution with VC funding to pay for commercial support then it might
-not be for you - there are *plenty* of other Javascript ORMs that might
-be a better place to start.
+All that said, it's a relatively simple project totalling less
+than 2,500 lines of code.  It's got an extensive test suite of around
+1,000 tests (adding another 8,000 lines of code) and a comprehensive
+user manual.  An experienced Javascript programmer with knowledge of SQL
+should be able to grok the code in a few hours.  If you're happy to use
+the source, Luke, then it may be the droids you're looking for.  But
+if you're looking for a fully-featured, production-ready solution with
+VC funding to pay for commercial-grade support and extensive promotion
+then it might not be for you - there are *plenty* of other Javascript
+ORMs that might be a better place to start.
 
 If you are using it to develop an application and want to hire me for
 some paid consultancy work, or if you need someone to help with systems
