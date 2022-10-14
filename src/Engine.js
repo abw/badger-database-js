@@ -115,7 +115,6 @@ export class Engine {
       type:     e.code,
       code:     e.errno,
       position: e.position,
-      stack:    e.stack
     };
   }
   optionalParams(params, options) {

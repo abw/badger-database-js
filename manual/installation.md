@@ -5,7 +5,7 @@ from `@abw/badger-database`.  You should also install
 at least one of the database driver modules:
 
 * `pg` for Postgres
-* `mysql2` for Mysql
+* `mysql2` for Mysql or MariaDB
 * `better-sqlite3` for Sqlite.
 
 ### npm

@@ -172,7 +172,7 @@ Sqlite is perhaps the database that provides the least friendly error messages.
 It will look something like this:
 
 ```js
-SqliteError: near "FROM": syntax error
+SQLParseError: near "FROM": syntax error
     at Database.prepare (...blah...)
     at SqliteEngine.prepare (...blah...)
     at SqliteEngine.execute (...blah...)
@@ -204,13 +204,13 @@ SQLParseError: relation "badger" does not exist
 And here it is for Mysql:
 
 ```js
-Error: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROM badger mushroom' at line 1
+SQLParseError: You have an error in your SQL syntax; check the manual that corresponds to
+your MySQL server version for the right syntax to use near 'FROM badger mushroom' at line 1
     at PromiseConnection.prepare (...blah...)
     at MysqlEngine.prepare (...blah...)
     at MysqlEngine.execute (...blah...)
     at processTicksAndRejections (...blah...)
     at async main (...blah...) {
-  name: 'SQLParseError',
   query: 'SELECT FROM badger mushroom',
   type: 'ER_PARSE_ERROR',
   code: 1064,

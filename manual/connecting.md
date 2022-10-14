@@ -49,8 +49,19 @@ const db = connect({
 })
 ```
 
-And also for Sqlite databases, although here the only parameter supported
-is the database filename.
+MariaDB is a drop-in replacement for MySQL so you can use the exact
+same `mysql` connection string for a MariaDB database.  You can use
+the `maria` or `mariadb` prefix if you prefer as they're defined as
+aliases for `mysql`.
+
+```js
+const db = connect({
+  database: 'mariadb://user:password@hostname:3306/database'
+})
+```
+
+The same connection string is also supported for Sqlite databases,
+although here the only parameter supported is the database filename.
 
 ```js
 const db = connect({
@@ -73,6 +84,7 @@ const db = connect({
   database: 'sqlite:memory'
 })
 ```
+
 
 Most of the elements are optional for Postgres and Mysql databases.
 Here are the minimal versions which assume the default host (`localhost`),
@@ -111,8 +123,24 @@ const db = connect({
 })
 ```
 
-The same configuration options apply to Mysql.  For Sqlite the only supported
-option is `filename`.
+The same configuration options apply to Mysql.  The only difference is that
+you should use `mysql` (or `mariadb`) as the engine name.
+
+```js
+const db = connect({
+  // "mysql://badger:s3cr3t@dbhost.com:5433/animals" is short for:
+  database: {
+    engine:   'mysql',   // or 'maria' / 'mariadb'
+    user:     'badger',
+    password: 's3cr3t',
+    host:     'dbhost.com',
+    port:     '5433',
+    database: 'animals',
+  }
+})
+```
+
+For Sqlite the only supported option is `filename`.
 
 ```js
 const db = connect({
@@ -136,12 +164,12 @@ const db = connect({
 
 ## Connection Parameter Aliases
 
-I don't know about you, but whenever I'm writing the code to connect to a database there's
-a good chance I'll get one of the parameter names wrong.  Is it `user` or `username`?
-`pass` or `password`? `host` or `hostname`? `file` or `filename`?
+Whenever I'm writing the code to connect to a database there's a good chance I'll get
+at least one of the parameter names wrong.  Is it `user` or `username`? `pass` or
+`password`? `host` or `hostname`? `file` or `filename`?  I can never remember.
 
-Of course you could google it, but there's no need. You can specify any of the "incorrect"
-parameters and we'll automatically fix them for you.
+To save you from having to google it you can specify any of the "incorrect" parameters
+and they will be automatically corrected.
 
 For example, if you specify `file` instead of `filename` for a Sqlite database, we'll
 silently correct it.
