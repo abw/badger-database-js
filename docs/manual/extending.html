@@ -198,6 +198,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/debugging.html"><a href="manual/debugging.html#sql-parse-errors" data-ice="link">SQL Parse Errors</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -255,10 +256,10 @@ async function main() {
     // ...database, etc...
     tablesClass: YourTables,
     tables: {
-        // these tables will be defined in `this.tables` for YourTables
-        users: {
-            columns: 'id name email'
-        }
+      // these tables will be defined in `this.tables` for YourTables
+      users: {
+        columns: 'id name email'
+      }
     }
   });
   const users = await db.table('users');      // returns users defined above
@@ -348,7 +349,11 @@ isn't much to it.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { Engine } from '@abw/badger-database'
 
 export class BadgerEngine extends Engine {
+  static name  = 'badger'
+  static alias = 'mushroom'
+
   configure(config) {
+    // any custom configuration option handling
     console.log('got BadgerEngine config:', config);
     return config;
   }
@@ -358,35 +363,70 @@ export class BadgerEngine extends Engine {
   async disconnect(db) {
     // your code to disconnect from the database
   }
-  async run(sql, params=[], options) {
-    // your code to run a query
+  async execute(sql, params=[], options) {
+    // acquire a connection from the pool
+    const client = await this.acquire();
+
+    try {
+      const result = await
+        //...database specific code goes here
+        .catch( e =&gt; this.parseError(sql, e) );
+
+      return options.sanitizeResult
+        ? this.sanitizeResult(result, options)
+        : result;
+    }
+    finally {
+      // release the connection back to the pool
+      this.release(client);
+    }
   }
-  async any(sql, params=[], options) {
-    // your code to run a query and return any row
+  sanitizeResult(result, options={}) {
+    // your code to sanitize the response, e.g. changes, inserted ID
   }
-  async all(sql, params=[], options) {
-    // your code to run a query and return all rows
+  parseErrorArgs(e) {
+    // your code to sanitize a parse error, e.g. message, code, position
   }
 }</code></code></pre>
+<p>It should define the static <code>name</code> property which is used to identify
+it.  If you have another name (or names) that you want it to be known
+by (e.g. <code>postgres</code> is also known as <code>postgresql</code>) then you can define
+that as the <code>alias</code> property.  Multiple aliases can be defined as an
+array (e.g. <code>static alias = ['mushroom', 'snake']</code>) or using the short
+hand syntax of a single whitespace delimited string
+(e.g. <code>static alias = 'mushroom snake'</code>).</p>
+<p>Depending on how the database that you're connecting to works, you may
+have to implement other methods as well.</p>
 <p>You should then register it using the <code>registerEngine()</code> function.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { registerEngine } from '@abw/badger-database'
 
-registerEngine('badger', BadgerEngine);</code></code></pre>
-<p>Then you can connect to it using the <code>badger</code> protocol:</p>
+registerEngine(BadgerEngine);</code></code></pre>
+<p>You can then connect to it using the <code>badger</code> protocol (or one of the
+alias protocols):</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { connect } from '@abw/badger-database'
 
-async function main() {
-  const db = connect({ database: 'badger://username:password@host:port/database' });
-  // your code here
-}
+const db = connect({
+  database: 'badger://username:password@host:port/database'
+});</code></code></pre>
+<p>The <code>configure()</code> method will received the expanded connection parameters.
+You can specify them as an object yourself if you prefer:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { connect } from '@abw/badger-database'
 
-main()</code></code></pre>
+const db = connect({
+  database: {
+    engine:    'badger',   // or 'mushroom', 'snake'
+    user:      'username',
+    password:  'password',
+    host:      'host',
+    port:      'port',
+    database:  'database'
+});</code></code></pre>
 <p>If you implement support for a database engine that we don't currently
 support then please consider raising a pull request so we can add it
 for other people to use.  Or if you prefer you can release it as a
 stand-alone module.  End users would still need to call the
-<code>registerEngine()</code> module to plug it in, but that's only a line or
-two of code.</p>
+<code>registerEngine()</code> module to plug it in, but that's only a line of
+code, so not too much trouble.</p>
 </div>
 </div>
 

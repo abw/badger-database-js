@@ -2370,9 +2370,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/mysql.js~mysqlengine.protocol",
-    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-protocol",
-    "src/Engine/Mysql.js~MysqlEngine.protocol",
+    "src/engine/mysql.js~mysqlengine.alias",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-alias",
+    "src/Engine/Mysql.js~MysqlEngine.alias",
+    "member"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine.name",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-name",
+    "src/Engine/Mysql.js~MysqlEngine.name",
     "member"
   ],
   [
@@ -2448,15 +2454,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/postgres.js~postgresengine.protocol",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-protocol",
-    "src/Engine/Postgres.js~PostgresEngine.protocol",
+    "src/engine/postgres.js~postgresengine.alias",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-alias",
+    "src/Engine/Postgres.js~PostgresEngine.alias",
     "member"
   ],
   [
-    "src/engine/postgres.js~postgresengine.protocolalias",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-protocolAlias",
-    "src/Engine/Postgres.js~PostgresEngine.protocolAlias",
+    "src/engine/postgres.js~postgresengine.name",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-name",
+    "src/Engine/Postgres.js~PostgresEngine.name",
     "member"
   ],
   [
@@ -2526,9 +2532,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/sqlite.js~sqliteengine.protocol",
-    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-protocol",
-    "src/Engine/Sqlite.js~SqliteEngine.protocol",
+    "src/engine/sqlite.js~sqliteengine.name",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-name",
+    "src/Engine/Sqlite.js~SqliteEngine.name",
     "member"
   ],
   [

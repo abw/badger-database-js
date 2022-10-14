@@ -2,7 +2,7 @@
 
 This is a simple but powerful database management tool that allows you to
 build database abstraction layers for your Javascript projects. It has
-support for accessing Postgres, MySQL and Sqlite databases.
+support for accessing Sqlite, Postgres, MySQL and MariaDB databases.
 
 The aim is to provide a *Separation of Concerns* between your application
 code and your database code so that you can write application code at a

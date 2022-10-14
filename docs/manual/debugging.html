@@ -198,6 +198,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/debugging.html"><a href="manual/debugging.html#sql-parse-errors" data-ice="link">SQL Parse Errors</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -264,11 +265,40 @@ setDebug({
   database: true,   // general database queries
   engine:   true,   // lower level functionality
   queries:  true,   // query lookup and expansion
+  builder:  true,   // query builder
   table:    true,   // table methods
   record:   true,   // record methods
 })</code></code></pre>
+<p>Debugging messages are formatted with a colored prefix to help you identify
+where the error came from.</p>
+<img width="100%" src="./images/screenshots/debugging.png">
+
+<p>You can change the debug message prefix for different components and the color
+that it is rendered in.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">setDebug({
+  engine: {
+    debug:  true,
+    prefix: 'Snake!',
+    color:  'red'
+  }
+})</code></code></pre>
+<p>The available colors are: <code>black</code>, <code>red</code>, <code>green</code>, <code>yellow</code>, <code>blue</code>, <code>magenta</code>, <code>cyan</code>,
+<code>grey</code> and <code>white</code>.  You can also prefix any of them with <code>bright</code> or <code>dark</code>, e.g.
+<code>dark red</code>, <code>bright yellow</code>, etc.</p>
+<p>You can specify the <code>color</code> as an object containing <code>fg</code> to set the foreground
+color and <code>bg</code> to set the background color independently.  Note that the <code>bright</code> and
+<code>dark</code> prefixes might not work as you expect, e.g. both foreground and background will
+end up bright or dark, even if you only add the modified to one or the other.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">setDebug({
+  engine: {
+    debug:  true,
+    prefix: 'Snake!',
+    color:  { fg: 'yellow', bg: 'blue' }
+  }
+})</code></code></pre>
 <p>Inside a custom table or record module you can print debugging messages to the console
-using the <code>debug()</code> method.</p>
+using the <code>debug()</code> method.  If debugging is enabled for the module then it will be
+printed to the console.  Otherwise it will be ignored.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">export class User extends Record {
   helloWorld() {
     this.debug("helloWorld()");
@@ -277,12 +307,86 @@ using the <code>debug()</code> method.</p>
 }</code></code></pre>
 <p>You can use the <code>debugData()</code> method to generate debugging messages to display
 the contents of data items.  This is a useful way to inspect the parameters
-passed to a method.</p>
+passed to a method.  Again, it will only generate output if debugging is enabled
+for that module so you can safely add these lines to your code and enabled them
+by setting the <code>debug</code> option when you need to.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">export class User extends Record {
   helloWorld(message, options) {
     this.debugData("helloWorld()", { message, options });
     // ...your code goes here...
   }
+}</code></code></pre>
+<h2 id="sql-parse-errors">SQL Parse Errors</h2><p>In an ideal world every SQL query you write would be syntactically correct,
+run first time, return the correct results and be efficient to boot.
+Unfortunately we don't live in an ideal world.  I've been writing SQL in a
+professional capacity for longer than I care to remember (3 decades or so)
+and I <em>very rarely</em> get a complex query right first time.</p>
+<p>This is one reason why I'm not a fan of using ORMs or query builders for more
+complex queries.  I <em>nearly always</em> write, test and debug a complex query in SQL
+first.  When it's finally working as expecting I don't want to then have to
+translate it into a format that the ORM or query builder will understand and
+hope that it generates the same SQL that I've written.  Your experience may
+be different, of course, but it's the principle that has guided me in the
+design and implementation of this library.</p>
+<p>Databases aren't well known for producing friendly error messages when
+something goes wrong (I'm looking at <em>all</em> of you, Sqlite, Mysql and Postgres).
+The database engine modules that handle the specifics of different databases
+try to make the process of debugging SQL queries a little less painful.  If
+there is a parse error in a SQL query then they will throw a <code>SQLParseError</code>
+and do their best to standardise the response.</p>
+<p>Most importantly, the error will contain a copy of the SQL query that failed
+so that you don't have to go digging around to find it (this is particularly
+useful when the query has been generated programmatically by a query builder).</p>
+<p>Here's a trivial example showing an invalid SQL query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">async function main() {
+  const db = connect({
+    database: 'sqlite:memory',
+  })
+  await db.run(
+    `SELECT FROM badger mushroom`
+  ).catch(
+    e =&gt; console.log(e)
+  )
+  db.disconnect();
+}
+main()</code></code></pre>
+<p>Sqlite is perhaps the database that provides the least friendly error messages.
+It will look something like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">SQLParseError: near "FROM": syntax error
+    at Database.prepare (...blah...)
+    at SqliteEngine.prepare (...blah...)
+    at SqliteEngine.execute (...blah...)
+    at async main (...blah...) {
+  name: 'SQLParseError',
+  query: 'SELECT FROM badger mushroom',
+  type: 'SQLITE_ERROR',
+  code: undefined,
+  position: undefined
+}</code></code></pre>
+<p>Here's an example of the same error when using Postgres:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">SQLParseError: relation "badger" does not exist
+    at PostgresEngine.parseError (...blah...)
+    at ...blah...
+    at processTicksAndRejections (...blah...)
+    at async PostgresEngine.execute (...blah...)
+    at async main (...blah...) {
+  query: 'SELECT FROM badger mushroom',
+  type: 'ERROR',
+  code: '42P01',
+  position: '13'
+}</code></code></pre>
+<p>And here it is for Mysql:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">SQLParseError: You have an error in your SQL syntax; check the manual that corresponds to
+your MySQL server version for the right syntax to use near 'FROM badger mushroom' at line 1
+    at PromiseConnection.prepare (...blah...)
+    at MysqlEngine.prepare (...blah...)
+    at MysqlEngine.execute (...blah...)
+    at processTicksAndRejections (...blah...)
+    at async main (...blah...) {
+  query: 'SELECT FROM badger mushroom',
+  type: 'ER_PARSE_ERROR',
+  code: 1064,
+  position: undefined
 }</code></code></pre>
 </div>
 </div>

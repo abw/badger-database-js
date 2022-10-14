@@ -198,6 +198,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/debugging.html"><a href="manual/debugging.html#sql-parse-errors" data-ice="link">SQL Parse Errors</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -562,8 +563,8 @@ column you're joining from, <code>table</code> is the table you're joining onto
 and <code>to</code> is the column in the joined table that should match the value
 in the <code>from</code> column.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
-  .from('users')
   .select(['companies.name', 'company_name'])
+  .from('users')
   .join('users.company_id=companies.id')
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"

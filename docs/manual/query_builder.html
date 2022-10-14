@@ -198,6 +198,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/debugging.html"><a href="manual/debugging.html#sql-parse-errors" data-ice="link">SQL Parse Errors</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -442,7 +443,7 @@ independent world and doesn't affect any other.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const employees = db
   .select(
     'users.name employees.job_title',
-    ['companies.name', 'company_name']  // alias company.name to company_name
+    ['companies.name', 'company_name']  // alias companies.name to company_name
   )
   .from('users')
   .join('users.id=employees.user_id')

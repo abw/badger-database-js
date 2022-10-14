@@ -198,6 +198,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/debugging.html"><a href="manual/debugging.html#sql-parse-errors" data-ice="link">SQL Parse Errors</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -226,23 +227,37 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="limitations">Limitations</h1><p>The scope of the library is, quite deliberately, limited.</p>
-<p>The table methods to insert, update, select and delete rows,
-for example, are intended to automate <em>most</em> of the trivial queries
-that you might want to perform, but there will undoubtedly be cases
-where they fall short.</p>
-<p>You can't select, update or delete rows using a JOIN onto another
-table, for example.  Nor can you select rows using subqueries or
-temporary tables.  Aliases for selecting columns aren't support at
-the time of writing (although they might be by the time you read this).</p>
+<p>The <a href="manual/query_builder.html">query builder</a> allows you to
+construct <em>many</em> of the simpler select queries that you might need,
+but certainly not <em>every</em> SQL query that you could imagine.</p>
+<p>There's no built-in support for subqueries, for example, but you
+can still define them using raw SQL fragments if you want to.
+That said, for more complex queries you might be better off writing
+them entirely in SQL and saving them as
+<a href="manual/named_queries.html">named queries</a>.</p>
+<p>That gives you the benefit of having a "pure" SQL query that
+you can write, test, inspect and amend, without having to translate
+it back and forth between the query builder methods.  Making it a
+named query allows it to be hidden away somewhere in a library file
+so that your application code can remain simple and treat it like a
+black box.</p>
+<p>The query builder doesn't support the construction of insert, update or
+delete queries.  Again, this is quite deliberate.  The methods provided
+by <a href="manual/table_methods.html">tables</a> should be sufficient to insert,
+update and delete rows for <em>most</em> simple cases.  If you need a more complex
+query involving joins, subqueries, etc., then, once again, writing a
+custom SQL query and saving it as a named queries is probably the best
+solution.</p>
 <p>Similarly, the support for relations has some shortcomings.  For example,
 you can't define many-to-many relations that use intermediate link
-tables (although you can define your own load method to do that).</p>
+tables. However, you can define your own load method with a custom SQL
+query when you need to.</p>
 <p>These are all deliberate design decision.  Supporting everything that
 is possible in SQL would require a full-blown ORM or SQL query generator
 with all the problems that they bring.</p>
 <p>The library aims to hit the 90/10 sweet spot, where it handles 90% of
 trivial tasks that can easily be automated, leaving the remaining 10%
-(which would take 90% of the effort) up to you.</p>
+(which would take 90% of the effort to implement) up to you.</p>
 <p>Instead, the library makes it easy for you to define named queries and
 custom table or record methods so that you can use the full power of SQL
 behind the scenes, without having to embed SQL directly into your
@@ -254,7 +269,11 @@ like a black box, accessing the complex functionality hidden behind the
 scenes through simple method calls.  Even if you don't have an SQL expert,
 the fact that the library supports and encourages the use of SQL queries
 makes it easier to cut and paste examples from Stack Overflow without
-having to first translate the SQL into the right calls to a query generator.</p>
+having to first translate the SQL into the right calls to a query generator.
+(NOTE: please don't use queries from Stack Overflow without first reading
+through them, understanding how they work, adapting them as necessary
+and then testing them thoroughly on a sacrifical copy of your production
+database).</p>
 <p>SQL is powerful.  SQL is portable.  SQL is (nearly always) the solution
 if the library doesn't already do what you want.</p>
 </div>

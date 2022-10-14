@@ -198,6 +198,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/debugging.html"><a href="manual/debugging.html" data-ice="link">Debugging</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/debugging.html"><a href="manual/debugging.html#sql-parse-errors" data-ice="link">SQL Parse Errors</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -248,8 +249,15 @@ this in the connection string and automatically "correct" it for you.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'mysql://user:password@hostname:3306/database'
 })</code></code></pre>
-<p>And also for Sqlite databases, although here the only parameter supported
-is the database filename.</p>
+<p>MariaDB is a drop-in replacement for MySQL so you can use the exact
+same <code>mysql</code> connection string for a MariaDB database.  You can use
+the <code>maria</code> or <code>mariadb</code> prefix if you prefer as they're defined as
+aliases for <code>mysql</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'mariadb://user:password@hostname:3306/database'
+})</code></code></pre>
+<p>The same connection string is also supported for Sqlite databases,
+although here the only parameter supported is the database filename.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'sqlite://database'
 })</code></code></pre>
@@ -285,8 +293,20 @@ convenient to use this form.</p>
     database: 'animals',
   }
 })</code></code></pre>
-<p>The same configuration options apply to Mysql.  For Sqlite the only supported
-option is <code>filename</code>.</p>
+<p>The same configuration options apply to Mysql.  The only difference is that
+you should use <code>mysql</code> (or <code>mariadb</code>) as the engine name.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  // "mysql://badger:s3cr3t@dbhost.com:5433/animals" is short for:
+  database: {
+    engine:   'mysql',   // or 'maria' / 'mariadb'
+    user:     'badger',
+    password: 's3cr3t',
+    host:     'dbhost.com',
+    port:     '5433',
+    database: 'animals',
+  }
+})</code></code></pre>
+<p>For Sqlite the only supported option is <code>filename</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: {
     engine:   'sqlite',
@@ -300,11 +320,11 @@ option is <code>filename</code>.</p>
     filename: ':memory:',
   }
 })</code></code></pre>
-<h2 id="connection-parameter-aliases">Connection Parameter Aliases</h2><p>I don't know about you, but whenever I'm writing the code to connect to a database there's
-a good chance I'll get one of the parameter names wrong.  Is it <code>user</code> or <code>username</code>?
-<code>pass</code> or <code>password</code>? <code>host</code> or <code>hostname</code>? <code>file</code> or <code>filename</code>?</p>
-<p>Of course you could google it, but there's no need. You can specify any of the "incorrect"
-parameters and we'll automatically fix them for you.</p>
+<h2 id="connection-parameter-aliases">Connection Parameter Aliases</h2><p>Whenever I'm writing the code to connect to a database there's a good chance I'll get
+at least one of the parameter names wrong.  Is it <code>user</code> or <code>username</code>? <code>pass</code> or
+<code>password</code>? <code>host</code> or <code>hostname</code>? <code>file</code> or <code>filename</code>?  I can never remember.</p>
+<p>To save you from having to google it you can specify any of the "incorrect" parameters
+and they will be automatically corrected.</p>
 <p>For example, if you specify <code>file</code> instead of <code>filename</code> for a Sqlite database, we'll
 silently correct it.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
