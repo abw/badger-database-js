@@ -255,8 +255,9 @@ const emps1 = await employee.all([12345])   // companies.id = 12345
 const emps2 = await employee.all([98765])   // companies.id = 98765
 ```
 
-Queries are idempotent so you can safely extend them to build new queries.
-The original query (`employee`) isn't affected in any way.
+Queries are immutable and idempotent so you can safely extend them to
+build new queries.  The original query (`employee` in this example) isn't
+affected in any way.
 
 ```js
 const emp1 = await employee         // extend existing query

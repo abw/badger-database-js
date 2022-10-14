@@ -152,7 +152,7 @@ function DataDebugger(enabled, prefix, color, length=debugWidth) {
         );
         Object.entries(data).map(
           ([key, value]) => console.log(
-            '%s' + key.padStart(length, ' ') + '%s:',
+            '%s' + key.padStart(length, ' ') + ':%s',
             color ? ANSIescape(color) : '',
             color ? ANSIreset() : '',
             value

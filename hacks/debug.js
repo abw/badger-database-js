@@ -3,10 +3,14 @@ import { connect, setDebug } from '../src/index.js';
 
 setDebug({
   database: true,
-  engine:   true,
   queries:  true,
   table:    true,
   record:   true,
+  engine: {
+    debug:  true,
+    prefix: 'Snake!',
+    color:  { fg: 'yellow', bg: 'blue' }
+  }
 })
 
 async function main() {

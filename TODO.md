@@ -25,4 +25,3 @@
   a<=b   # RIGHT
   a<=>b  # FULL
 
-* Debugging / error reporting for queries
