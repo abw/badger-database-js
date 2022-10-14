@@ -594,9 +594,23 @@ containing options.  It supports the <code>columns</code> and <code>record</code
 also provide <code>order</code> (or <code>orderBy</code> if you prefer to use a naming convention as
 close as possible to the SQL equivalent of <code>ORDER BY</code>) to specify the order in
 which rows should be returned:</p>
+<p>The <code>order</code> can contain multiple columns and each will be automatically quoted.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.allRows(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
-  { order: 'name DESC' }
+  { order: 'name, id' }   // -&gt; ORDER BY "name", "id"
+);</code></code></pre>
+<p>If you want to use a raw SQL order then define it as an object with a single <code>sql</code>
+property:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.allRows(
+  { },  // you can specify selection criteria or use an empty object to fetch all rows
+  { order: { sql: 'name DESC' } }
+);</code></code></pre>
+<p>Or use the <code>sql</code> function to generate it for you from a tagged template literal.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
+
+const allUsers = await users.allRows(
+  { },  // you can specify selection criteria or use an empty object to fetch all rows
+  { order: sql`name DESC` }
 );</code></code></pre>
 <h2 id="onerecord-where--options-">oneRecord(where, options)</h2><p>This method is a wrapper around <a href="#onerow-where--options-">oneRow()</a> which returns
 the row as a record object.  It effectively sets the <code>record</code> option for you.</p>

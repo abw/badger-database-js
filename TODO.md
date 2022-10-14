@@ -7,15 +7,11 @@
 
 * document query() method to view generated SQL (rename sql()?)
 
-* additional 'where' criteria for relations (check names get properly quoted)
-
 * waiter is not throwing errors
 
 * database inspection to grok tables automagically?
 
 * API documentation
-
-* debug documentation - prefix and color
 
 * Query builder - add support for with()
 
