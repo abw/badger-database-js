@@ -62,13 +62,14 @@ export class Where extends Builder {
 
   resolveLinkObject(criteria) {
     const database = this.lookupDatabase();
-    return Object.entries(criteria).map(
+    let values = [ ];
+    const result = Object.entries(criteria).map(
       ([column, value]) => {
         if (isArray(value)) {
           // the value can be a two element array: [operator, value]
           // or a single element array: [operator]
           if (value.length === 2) {
-            this.addValues(value[1]);
+            values.push(value[1])
           }
           else if (value.length !== 1) {
             this.errorMsg('object', { n: value.length });
@@ -76,7 +77,7 @@ export class Where extends Builder {
         }
         else {
           // otherwise we assume it's just a value
-          this.addValues(value);
+          values.push(value)
         }
         // generate the criteria with a placeholder
         return database.engine.formatWherePlaceholder(
@@ -86,6 +87,10 @@ export class Where extends Builder {
         )
       }
     )
+    if (values.length) {
+      this.addValues(...values);
+    }
+    return result;
   }
   addValues(...values) {
     this.whereValues(...values)
