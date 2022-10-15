@@ -1,4 +1,3 @@
-import Builder from "../Builder.js";
 import Query from "../Query.js";
 import { singleWord } from "../Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
@@ -34,40 +33,39 @@ export const expandFragments = (query, fragments={}, maxDepth=16) => {
 }
 
 export const addQueryMethods = object => {
-  object.query = function(source, config) {
-    let sql;
-
-    if (source.match(singleWord)) {
-      // if the source is a single word then it must be a named query
-      let query = this.namedQuery(source);
-
-      if (isString(query)) {
-        // if we've got a string then expand any fragments
-        sql = expandFragments(query, this.fragments);
-      }
-      else if (query instanceof Builder) {
-        // if we have a query builder element then ask it to generate the SQL and
-        // provide any values it collected along the way.
-        sql = query.sql();
-        config = query.contextValues();
-        // TODO: should merge config whereValues and havingValues into any in config passed as argument
-      }
-      else {
-        // otherwise fail
-        fail(`Named query "${source}" returned invalid result: `, query);
-      }
-    }
-    else {
-      // if it's not a named query then it's an SQL query possibly with embedded fragments
-      sql = expandFragments(source, this.fragments);
-    }
-
-    return new Query(this.engine, sql, config);
+  object.buildQuery = function(source, config) {
+    this.debugData("buildQuery()", { source });
+    return new Query(
+      this.engine,
+      this.expandQuery(source),
+      config
+    );
   }
 
-  object.namedQuery = function(source) {
-    this.debugData("namedQuery()", { source });
-    let query = this.queries[source] || fail("Invalid named query specified: ", source);
+  object.expandQuery = function(source, config) {
+    this.debugData("expandQuery()", { source });
+    // if the source is a single word then it must be a named query
+    // otherwise it's an SQL query possibly with embedded fragments
+    return source.match(singleWord)
+      ? this.expandNamedQuery(source, config)
+      : expandFragments(source, this.fragments);
+  }
+
+  object.expandNamedQuery = function(name) {
+    this.debugData("expandNamedQuery()", { name });
+    const query = this.query(name);
+    // the named query can be a string with embedded fragments that should
+    // be expanded, or it can be a query builder
+    return isString(query)
+      ? expandFragments(query, this.fragments)
+      : query;
+  }
+
+  object.query = function(source) {
+    this.debugData("query()", { source });
+    const query = this.queries[source] || fail("Invalid named query specified: ", source);
+    // a named query can be a function which we call, returning either a string
+    // or a query builder
     return isFunction(query)
       ? query(this)
       : query;
@@ -75,26 +73,26 @@ export const addQueryMethods = object => {
 
   object.sql = function(name, config) {
     this.debugData("sql()", { name, config });
-    return this.query(name, config).sql();
+    return this.buildQuery(name, config).sql();
   }
 
   object.run = function(query, params, options) {
     this.debugData("run()", { query, params, options });
-    return this.query(query).run(params, options)
+    return this.buildQuery(query).run(params, options)
   }
 
   object.one = function(query, params, options) {
     this.debugData("one()", { query, params, options });
-    return this.query(query).one(params, options)
+    return this.buildQuery(query).one(params, options)
   }
 
   object.any = function(query, params, options) {
     this.debugData("any()", { query, params, options });
-    return this.query(query).any(params, options)
+    return this.buildQuery(query).any(params, options)
   }
 
   object.all = function(query, params, options) {
     this.debugData("all()", { query, params, options });
-    return this.query(query).all(params, options)
+    return this.buildQuery(query).all(params, options)
   }
 }

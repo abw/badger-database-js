@@ -37,9 +37,9 @@ test.before(
         selectBobby:
           db => db.select('*').from('user').where({ name: 'Bobby Badger' }),
         selectByName:
-          db => db.namedQuery('select').where('name'),
+          db => db.query('select').where('name'),
         selectByEmail:
-          db => db.namedQuery('select').where('email'),
+          db => db.query('select').where('email'),
       }
     });
     t.is( db.engine.engine, 'sqlite' );
@@ -47,9 +47,17 @@ test.before(
 )
 
 test.serial(
-  'hello',
+  'hello query',
   t => {
-    const query = db.query('hello');
+    const hello = db.query('hello');
+    t.is(hello, 'Hello <world>!');
+  }
+)
+
+test.serial(
+  'build hello query',
+  t => {
+    const query = db.buildQuery('hello');
     t.is(query.query, 'Hello World!');
     t.is(query.sql(), 'Hello World!');
   }
@@ -58,7 +66,7 @@ test.serial(
 test.serial(
   'create',
   async t => {
-    const query = db.query('create');
+    const query = db.buildQuery('create');
     const create = await query.run();
     t.is(create.changes, 0);
   }
@@ -67,7 +75,7 @@ test.serial(
 test.serial(
   'insert a row',
   async t => {
-    const query = db.query('insert');
+    const query = db.buildQuery('insert');
     const insert = await query.run(
       ['Bobby Badger', 'bobby@badgerpower.com']
     );
@@ -78,7 +86,7 @@ test.serial(
 test.serial(
   'insert a row with whereValues',
   async t => {
-    const query = db.query('insert', { whereValues: ['Brian Badger'] });
+    const query = db.buildQuery('insert', { whereValues: ['Brian Badger'] });
     const values = query.allValues(['brian@badgerpower.com']);
     t.deepEqual(values, ['Brian Badger', 'brian@badgerpower.com']);
     const insert = await query.run(['brian@badgerpower.com']);
@@ -86,11 +94,10 @@ test.serial(
   }
 )
 
-
 test.serial(
   'fetch any row',
   async t => {
-    const bobby = await db.query('selectEmail').any(
+    const bobby = await db.buildQuery('selectEmail').any(
       ['bobby@badgerpower.com']
     );
     t.is(bobby.name, 'Bobby Badger');
@@ -100,7 +107,7 @@ test.serial(
 test.serial(
   'fetch one row',
   async t => {
-    const brian = await db.query('selectEmail').one(
+    const brian = await db.buildQuery('selectEmail').one(
       ['brian@badgerpower.com']
     );
     t.is(brian.name, 'Brian Badger');
@@ -110,7 +117,7 @@ test.serial(
 test.serial(
   'fetch all rows',
   async t => {
-    const badgers = await db.query('selectAll').all();
+    const badgers = await db.buildQuery('selectAll').all();
     t.is(badgers.length, 2);
     t.is(badgers[0].name, 'Bobby Badger');
     t.is(badgers[1].name, 'Brian Badger');
@@ -120,7 +127,7 @@ test.serial(
 test.serial(
   'select query builder',
   async t => {
-    const query = db.query('select');
+    const query = db.buildQuery('select');
     t.is( query.sql(), 'SELECT *\nFROM "user"' );
     const badgers = await query.all();
     t.is(badgers.length, 2);
@@ -130,7 +137,7 @@ test.serial(
 test.serial(
   'selectBobby query',
   async t => {
-    const query = db.query('selectBobby');
+    const query = db.buildQuery('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
     const bobby = await query.any();
     t.is(bobby.name, 'Bobby Badger');
@@ -215,7 +222,7 @@ test.serial(
 test.serial(
   'extended select query builder',
   async t => {
-    const bobby = await db.namedQuery('select').where({ name: 'Bobby Badger' }).one();
+    const bobby = await db.query('select').where({ name: 'Bobby Badger' }).one();
     t.is(bobby.name, 'Bobby Badger');
   }
 )

@@ -164,12 +164,6 @@ export class Table {
     this.debugData("updateAllRows()", { set, where, options });
     const args   = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
-    // return update;
-    //let rows = [ ];
-    //for (const row of data) {
-    //  rows.push(await this.insertOne(row, options));
-    //}
-    //return rows;
     return options.reload
       ? fail("Cannot reload multiple updated rows")
       : update;
@@ -241,10 +235,6 @@ export class Table {
   select(...args) {
     return this.build.from(this.table).select(...args);
   }
-  // EEK!  this.columns() is already defined
-  //columns(...args) {
-  //  return this.builder().from(this.table).columns(...args);
-  //}
 
   tableFragments() {
     return this.tableFragments

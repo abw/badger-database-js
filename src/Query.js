@@ -1,15 +1,32 @@
-import { isFunction } from "@abw/badger-utils";
+import Builder from './Builder.js'
+import { fail, isFunction, isString } from "@abw/badger-utils";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { missing } from "./Utils/Error.js";
 
 export class Query {
   constructor(engine, query, config={}) {
     this.engine       = engine || missing('engine');
-    this.query        = query;
-    this.whereValues  = config.whereValues || [ ];
+    this.whereValues  = config.whereValues  || [ ];
     this.havingValues = config.havingValues || [ ];
+
+    if (isString(query)) {
+      this.query = query;
+    }
+    else if (query instanceof Builder) {
+      // if we have a query builder element then ask it to generate the SQL and
+      // provide any whereValues/havingValues it collected along the way that we
+      // combine with any provided in the config
+      this.query = query.sql();
+      const values = query.contextValues();
+      Object.keys(values).forEach(
+        key => this[key] = [ ...values[key], ...this[key] ]
+      )
+    }
+    else {
+      fail(`Invalid query type: `, query);
+    }
+
     addDebugMethod(this, 'query', this.config);
-    // this.debugData("constructor()", { query, ...config })
   }
 
   sql() {
