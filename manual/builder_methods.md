@@ -555,20 +555,26 @@ db.select('name email')
 ## join(table)
 
 This method can be used to join tables.  A string can be passed as
-a shorthand syntax of the form `from=table.to`, where `from` is the
+a shorthand syntax of the form `from = table.to`, where `from` is the
 column you're joining from, `table` is the table you're joining onto
 and `to` is the column in the joined table that should match the value
-in the `from` column.
+in the `from` column.  Spaces are optional around the equals sign,
+e.g. `from=table.to` or `from = table.to` are both treated the same.
 
 ```js
 db.select('name email')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('users.company_id=companies.id')
+  .join('users.company_id = companies.id')
 // -> SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
+
+For a left join, use a left pointing arrow, e.g. `from <= table.to`.
+For a right join, use a right pointing arrow, e.g. `from => table.to`.
+For a full join, use a double headed arrow, e.g. `from <=> table.to`.
+Spaces around the arrow are optional.
 
 You can pass an array to the method containing 2, 3, or 4 elements.
 When using two elements, the first should be the table column you're
@@ -666,8 +672,8 @@ And just like the other methods, you can call the method multiple times.
 db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('users.id=employees.user_id')
-  .join('employees.company_id=companies.id')
+  .join('users.id = employees.user_id')
+  .join('employees.company_id = companies.id')
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "employees" ON "users"."id" = "employees"."user_id"
@@ -681,7 +687,7 @@ can be any of the values described above.
 db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('users.id=employees.user_id', 'employees.company_id=companies.id')
+  .join('users.id = employees.user_id', 'employees.company_id = companies.id')
 // -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "employees" ON "users"."id" = "employees"."user_id"

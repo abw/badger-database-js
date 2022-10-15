@@ -3,18 +3,23 @@ import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, ON, RIG
 import { spaceAfter, spaceAround } from '../Utils/Space.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
-const joinRegex = /^(.*?)=(\w+)\.(\w+)$/;
+const joinRegex = /^(.*?)\s*(<?=>?)\s*(\w+)\.(\w+)$/;
 const joinElements = {
   from:  1,
-  table: 2,
-  to:    3,
+  type:  2,
+  table: 3,
+  to:    4,
 };
 const joinTypes = {
-  left:    LEFT_JOIN,
-  right:   RIGHT_JOIN,
-  inner:   INNER_JOIN,
-  full:    FULL_JOIN,
   default: JOIN,
+  inner:   INNER_JOIN,
+  '=':     JOIN,
+  left:    LEFT_JOIN,
+  '<=':    LEFT_JOIN,
+  right:   RIGHT_JOIN,
+  '=>':    RIGHT_JOIN,
+  full:    FULL_JOIN,
+  '<=>':   FULL_JOIN,
 };
 
 export class Join extends Builder {

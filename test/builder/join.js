@@ -50,10 +50,113 @@ test(
 )
 
 test(
+  'join string with spaces',
+  t => {
+    const op = db.build.join("b = a.c");
+    t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
+  }
+)
+
+test(
   'join string with table name',
   t => {
     const op = db.build.join("a.b=c.d");
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'join string with table name and spaces',
+  t => {
+    const op = db.build.join("a.b = c.d");
+    t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'left join string',
+  t => {
+    const op = db.build.join("a<=b.c");
+    t.is( op.sql(), 'LEFT JOIN "b" ON "a" = "b"."c"' );
+  }
+)
+test(
+  'left join string with spaces',
+  t => {
+    const op = db.build.join("a <= b.c");
+    t.is( op.sql(), 'LEFT JOIN "b" ON "a" = "b"."c"' );
+  }
+)
+test(
+  'left join string with table name',
+  t => {
+    const op = db.build.join("a.b<=c.d");
+    t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+test(
+  'left join string with table name and spaces',
+  t => {
+    const op = db.build.join("a.b <= c.d");
+    t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'right join string',
+  t => {
+    const op = db.build.join("a=>b.c");
+    t.is( op.sql(), 'RIGHT JOIN "b" ON "a" = "b"."c"' );
+  }
+)
+test(
+  'right join string with spaces',
+  t => {
+    const op = db.build.join("a => b.c");
+    t.is( op.sql(), 'RIGHT JOIN "b" ON "a" = "b"."c"' );
+  }
+)
+test(
+  'right join string with table name',
+  t => {
+    const op = db.build.join("a.b=>c.d");
+    t.is( op.sql(), 'RIGHT JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+test(
+  'right join string with table name and spaces',
+  t => {
+    const op = db.build.join("a.b => c.d");
+    t.is( op.sql(), 'RIGHT JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+
+test(
+  'full join string',
+  t => {
+    const op = db.build.join("a<=>b.c");
+    t.is( op.sql(), 'FULL JOIN "b" ON "a" = "b"."c"' );
+  }
+)
+test(
+  'full join string with spaces',
+  t => {
+    const op = db.build.join("a <=> b.c");
+    t.is( op.sql(), 'FULL JOIN "b" ON "a" = "b"."c"' );
+  }
+)
+test(
+  'full join string with table name',
+  t => {
+    const op = db.build.join("a.b<=>c.d");
+    t.is( op.sql(), 'FULL JOIN "c" ON "a"."b" = "c"."d"' );
+  }
+)
+test(
+  'full join string with table name and spaces',
+  t => {
+    const op = db.build.join("a.b <=> c.d");
+    t.is( op.sql(), 'FULL JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
