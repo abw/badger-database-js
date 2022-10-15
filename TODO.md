@@ -13,3 +13,4 @@
 
 * tables should inherit fragments and queries from parent database
 
+* Check/update examples for new select methods / table queries / etc.
