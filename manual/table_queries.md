@@ -86,7 +86,265 @@ selectByEmail:
   //    WHERE "email" = ?
 ```
 
-## run(sql, values)
+
+## selectOneRow(query, values, options)
+
+There are three different methods for selecting rows from the table using
+SQL queries or named queries.  The `selectOneRow()` method will return a single row.
+If the row isn't found or multiple rows match the criteria then an
+`UnexpectedRowCount` error will be thrown with a message of
+the form `N rows were returned when one was expected`.
+
+You can then call a named query by specifying the name as the
+first argument, followed by an array of any placeholder values.
+
+```js
+// returns a single row or throws an error
+const brian = await users.selectOneRow(
+  'selectByName', ['Bobby Badger']
+);
+console.log('Brian:', brian);
+```
+
+You can can also use SQL query string in place of a named query.
+
+```js
+// returns a single row or throws an error
+const brian = await users.selectOneRow(
+  'SELECT * FROM users WHERE name = ?',
+  ['Bobby Badger']
+);
+console.log('Brian:', brian);
+```
+
+You can pass a third argument which can contain the `record` option if you
+want the data returned as a [record](manual/record.html) instead of a row.
+
+```js
+const brian = await users.selectOneRow(
+  'selectByName', ['Bobby Badger'],
+  { record: true }
+);
+```
+
+The `selectRow()` method is provided as an alias to this method.
+
+```js
+const brian = await users.selectRow(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+## selectAnyRow(query, values, options)
+
+The `selectAnyRow()` method is like [selectOneRow()](#selectonerow-query--values--options-)
+but will return a single row if it exists or `undefined` if it doesn't.
+
+```js
+// returns a single row or undefined
+const brian = await users.selectAnyRow(
+  'selectByName', ['Bobby Badger']
+);
+if (brian) {
+  console.log('Brian:', brian);
+}
+else {
+  console.log('Brian Badger was not found');
+}
+```
+
+As per [selectOneRow()](#selectonerow-query--values--options-) you can pass an
+additional object containing the `record` option to return the row as a record
+object.
+
+```js
+const brian = await users.selectAnyRow(
+  'selectByName', ['Bobby Badger']
+  { record: true }
+);
+```
+
+## selectAllRows(query, values, options)
+
+The `selectAllRows()` method will return an array of all matching rows.
+
+```js
+// returns an array of all rows (possibly empty)
+const bobbies = await users.selectAllRows(
+  'selectByName', ['Bobby Badger']
+);
+if (bobbies.length) {
+  console.log("Fetched %s users called 'Bobby Badger':", bobbies.length);
+}
+else {
+  console.log("There aren't any users called 'Bobby Badger'");
+}
+```
+
+The `selectRows()` method is provided as an alias to this method.
+
+```js
+const bobbies = await users.selectRows(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+## selectOneRecord(query, values, options)
+
+This method is a wrapper around [selectOneRow()](#selectonerow-query--values--options-) which returns
+the row as a record object.  It effectively sets the `record` option for you.
+
+Read more about records [here](manual/records.html).
+
+## selectAnyRecord(query, values, options)
+
+This method is a wrapper around [selectAnyRow()](#selectanyrow-query--values--options-) which returns
+the row as a record object.
+
+## selectAllRecords(query, values, options)
+
+This method is a wrapper around [selectAllRows()](#selectallrows-query--values--options-) which returns
+the rows as an array of record objects.
+
+## oneRow(query, args)
+
+This method is a multiplexer around
+[selectOneRow()](#selectonerow-query--values--options-)
+and
+[fetchOneRow()](manual/table_methods#fetchonerow-where--options-).  If the first argument
+is a string or query builder object then it calls `selectOneRow()`
+otherwise it calls `fetchOneRow()`.
+
+```js
+// same as users.selectOneRow()
+const row = await users.oneRow(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+```js
+// same as users.fetchOneRow()
+const row = await users.oneRow(
+  { name: 'Bobby Badger' }
+);
+```
+
+## anyRow(query, args)
+
+This method is a multiplexer around
+[selectAnyRow()](#selectanyrow-query--values--options-)
+and
+[fetchAnyRow()](manual/table_methods#fetchanyrow-where--options-).  If the first argument
+is a string or query builder object then it calls `selectAnyRow()`,
+otherwise it calls `fetchAnyRow()`.
+
+```js
+// same as users.selectAnyRow()
+const row = await users.anyRow(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+```js
+// same as users.fetchAnyRow()
+const row = await users.anyRow(
+  { name: 'Bobby Badger' }
+);
+```
+
+## allRows(query, args)
+
+This method is a multiplexer around
+[selectAllRows()](#selectallrows-query--values--options-)
+and
+[fetchAllRows()](manual/table_methods#fetchallrows-where--options-).  If the first argument
+is a string or query builder object then it calls `selectAllRows()`,
+otherwise it calls `fetchAllRows()`.
+
+```js
+// same as users.selectAllRows()
+const rows = await users.allRows(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+```js
+// same as users.fetchAllRows()
+const row = await users.allRows(
+  { name: 'Bobby Badger' }
+);
+```
+
+## oneRecord(query, args)
+
+This method is a multiplexer around
+[selectOneRecord()](#selectonerecord-query--values--options-)
+and
+[fetchOneRecord()](manual/table_methods#fetchonerecord-where--options-).  If the first argument
+is a string or query builder object then it calls `selectOneRecord()`
+otherwise it calls `fetchOneRecord()`.
+
+```js
+// same as users.selectOneRecord()
+const row = await users.oneRecord(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+```js
+// same as users.fetchOneRecord()
+const row = await users.oneRecord(
+  { name: 'Bobby Badger' }
+);
+```
+
+## anyRecord(query, args)
+
+This method is a multiplexer around
+[selectAnyRecord()](#selectanyrecord-query--values--options-)
+and
+[fetchAnyRecord()](manual/table_methods#fetchanyrecord-where--options-).  If the first argument
+is a string or query builder object then it calls `selectAnyRecord()`,
+otherwise it calls `fetchAnyRecord()`.
+
+```js
+// same as users.selectAnyRecord()
+const row = await users.anyRecord(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+```js
+// same as users.fetchAnyRecord()
+const row = await users.anyRecord(
+  { name: 'Bobby Badger' }
+);
+```
+
+## allRecords(query, args)
+
+This method is a multiplexer around
+[selectAllRecords()](#selectallrecords-query--values--options-)
+and
+[fetchAllRecords()](manual/table_methods#fetchallrecords-where--options-).  If the first argument
+is a string or query builder object then it calls `selectAllRecords()`,
+otherwise it calls `fetchAllRecords()`.
+
+```js
+// same as users.selectAllRecords()
+const rows = await users.allRecords(
+  'selectByName', ['Bobby Badger']
+);
+```
+
+```js
+// same as users.fetchAllRecords()
+const row = await users.allRecords(
+  { name: 'Bobby Badger' }
+);
+```
+
+## run(query, values, options)
 
 This is a low-level method for running a named query, or indeed
 any arbitrary SQL query, where you're not expecting to fetch any rows.

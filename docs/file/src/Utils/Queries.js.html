@@ -125,6 +125,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addQueryMethods">addQueryMethods</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-expandFragments">expandFragments</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isQuery">isQuery</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseRelationString">parseRelationString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-relationConfig">relationConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-spaceAfter">spaceAfter</a></span></span></li>
@@ -139,8 +140,12 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Utils/Queries.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Query from "../Query.js";
+import Builder from "../Builder.js";
 import { singleWord } from "../Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
+
+export const isQuery = query =&gt;
+  isString(query) || (query instanceof Builder)
 
 export const expandFragments = (query, fragments={}, maxDepth=16) =&gt; {
   query = query.trim();
@@ -177,7 +182,7 @@ export const addQueryMethods = object =&gt; {
     this.debugData("buildQuery()", { source });
     return new Query(
       this.engine,
-      this.expandQuery(source),
+      isString(source) ? this.expandQuery(source) : source,
       config
     );
   }

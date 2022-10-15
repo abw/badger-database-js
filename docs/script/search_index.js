@@ -444,6 +444,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-database~isquery",
+    "function/index.html#static-function-isQuery",
+    "<span>isQuery</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~many",
     "function/index.html#static-function-many",
     "<span>many</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -2838,6 +2844,66 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/table.js~table#fetchallrecords",
+    "class/src/Table.js~Table.html#instance-method-fetchAllRecords",
+    "src/Table.js~Table#fetchAllRecords",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchallrows",
+    "class/src/Table.js~Table.html#instance-method-fetchAllRows",
+    "src/Table.js~Table#fetchAllRows",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchanyrecord",
+    "class/src/Table.js~Table.html#instance-method-fetchAnyRecord",
+    "src/Table.js~Table#fetchAnyRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchanyrow",
+    "class/src/Table.js~Table.html#instance-method-fetchAnyRow",
+    "src/Table.js~Table#fetchAnyRow",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchonerecord",
+    "class/src/Table.js~Table.html#instance-method-fetchOneRecord",
+    "src/Table.js~Table#fetchOneRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchonerow",
+    "class/src/Table.js~Table.html#instance-method-fetchOneRow",
+    "src/Table.js~Table#fetchOneRow",
+    "method"
+  ],
+  [
+    "src/table.js~table#fetchrecord",
+    "class/src/Table.js~Table.html#instance-member-fetchRecord",
+    "src/Table.js~Table#fetchRecord",
+    "member"
+  ],
+  [
+    "src/table.js~table#fetchrecords",
+    "class/src/Table.js~Table.html#instance-member-fetchRecords",
+    "src/Table.js~Table#fetchRecords",
+    "member"
+  ],
+  [
+    "src/table.js~table#fetchrow",
+    "class/src/Table.js~Table.html#instance-member-fetchRow",
+    "src/Table.js~Table#fetchRow",
+    "member"
+  ],
+  [
+    "src/table.js~table#fetchrows",
+    "class/src/Table.js~Table.html#instance-member-fetchRows",
+    "src/Table.js~Table#fetchRows",
+    "member"
+  ],
+  [
     "src/table.js~table#fragments",
     "class/src/Table.js~Table.html#instance-member-fragments",
     "src/Table.js~Table#fragments",
@@ -3016,6 +3082,66 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-select",
     "src/Table.js~Table#select",
     "method"
+  ],
+  [
+    "src/table.js~table#selectallrecords",
+    "class/src/Table.js~Table.html#instance-method-selectAllRecords",
+    "src/Table.js~Table#selectAllRecords",
+    "method"
+  ],
+  [
+    "src/table.js~table#selectallrows",
+    "class/src/Table.js~Table.html#instance-method-selectAllRows",
+    "src/Table.js~Table#selectAllRows",
+    "method"
+  ],
+  [
+    "src/table.js~table#selectanyrecord",
+    "class/src/Table.js~Table.html#instance-method-selectAnyRecord",
+    "src/Table.js~Table#selectAnyRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#selectanyrow",
+    "class/src/Table.js~Table.html#instance-method-selectAnyRow",
+    "src/Table.js~Table#selectAnyRow",
+    "method"
+  ],
+  [
+    "src/table.js~table#selectonerecord",
+    "class/src/Table.js~Table.html#instance-method-selectOneRecord",
+    "src/Table.js~Table#selectOneRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#selectonerow",
+    "class/src/Table.js~Table.html#instance-method-selectOneRow",
+    "src/Table.js~Table#selectOneRow",
+    "method"
+  ],
+  [
+    "src/table.js~table#selectrecord",
+    "class/src/Table.js~Table.html#instance-member-selectRecord",
+    "src/Table.js~Table#selectRecord",
+    "member"
+  ],
+  [
+    "src/table.js~table#selectrecords",
+    "class/src/Table.js~Table.html#instance-member-selectRecords",
+    "src/Table.js~Table#selectRecords",
+    "member"
+  ],
+  [
+    "src/table.js~table#selectrow",
+    "class/src/Table.js~Table.html#instance-member-selectRow",
+    "src/Table.js~Table#selectRow",
+    "member"
+  ],
+  [
+    "src/table.js~table#selectrows",
+    "class/src/Table.js~Table.html#instance-member-selectRows",
+    "src/Table.js~Table#selectRows",
+    "member"
   ],
   [
     "src/table.js~table#table",
