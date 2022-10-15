@@ -3,6 +3,9 @@ export const serialTypeFragment = engine =>
     ? 'INTEGER PRIMARY KEY ASC'
     : 'SERIAL'
 
+export const dropUsersTableQuery =
+  `DROP TABLE IF EXISTS users`
+
 export const createUsersTableQuery = engine => {
   const serial = serialTypeFragment(engine);
   return `

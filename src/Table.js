@@ -19,7 +19,7 @@ export class Table {
     this.id            = config.id;
     this.recordClass   = config.recordClass || Record;
     this.recordConfig  = config.recordConfig;
-    this.queries       = config.queries;
+    this.queries       = config.queries || { };
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
     this.build         = this.database.build;

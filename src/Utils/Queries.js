@@ -37,7 +37,7 @@ export const addQueryMethods = object => {
     this.debugData("buildQuery()", { source });
     return new Query(
       this.engine,
-      this.expandQuery(source),
+      isString(source) ? this.expandQuery(source) : source,
       config
     );
   }
