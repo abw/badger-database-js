@@ -30,7 +30,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Builder.js~Builder.html">Builder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
@@ -124,6 +123,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addQueryMethods">addQueryMethods</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-expandFragments">expandFragments</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseRelationString">parseRelationString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-relationConfig">relationConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-spaceAfter">spaceAfter</a></span></span></li>
@@ -136,7 +137,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">33/485</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">33/467</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -152,14 +153,14 @@
   <tbody>
     
   <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Builder.js.html#errorLines=106,11,123,132,134,144,153,169,17,173,177,182,189,19,193,197,20,201,207,213,220,227,234,244,27,29,30,35,36,37,46,50,58,66,74,79,8,9,91,98">src/Builder.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Builder.js.html#errorLines=102,11,110,127,136,138,148,157,17,173,177,181,186,19,193,197,20,201,205,211,217,224,231,238,248,27,29,30,35,36,37,46,50,58,66,74,79,8,83,9,95">src/Builder.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Builder.js~Builder.html">Builder</a></span>
 <span><a href="variable/index.html#static-variable-Builders">Builders</a></span>
 <span><a href="variable/index.html#static-variable-Generators">Generators</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/40</span></td>
-      <td style="display: none;" data-ice="size">6446 byte</td>
-      <td style="display: none;" data-ice="lines">249</td>
-      <td style="display: none;" data-ice="updated">2022-10-06 15:30:05 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/41</span></td>
+      <td style="display: none;" data-ice="size">6507 byte</td>
+      <td style="display: none;" data-ice="lines">253</td>
+      <td style="display: none;" data-ice="updated">2022-10-07 09:19:00 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Builder/After.js.html#errorLines=3,4,5">src/Builder/After.js</a></span></td>
@@ -218,12 +219,12 @@
       <td style="display: none;" data-ice="updated">2022-10-05 10:29:34 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Builder/Join.js.html#errorLines=12,20,21,22,23,24,25,32,48,5,6,68,7,88">src/Builder/Join.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Builder/Join.js.html#errorLines=13,25,26,27,28,29,30,37,5,53,6,7,73,93">src/Builder/Join.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Builder/Join.js~Join.html">Join</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/14</span></td>
-      <td style="display: none;" data-ice="size">3201 byte</td>
-      <td style="display: none;" data-ice="lines">97</td>
-      <td style="display: none;" data-ice="updated">2022-10-05 10:35:09 (UTC)</td>
+      <td style="display: none;" data-ice="size">3309 byte</td>
+      <td style="display: none;" data-ice="lines">102</td>
+      <td style="display: none;" data-ice="updated">2022-10-07 07:31:36 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Builder/Limit.js.html#errorLines=10,4,5,6,7,9">src/Builder/Limit.js</a></span></td>
@@ -353,13 +354,13 @@
       <td style="display: none;" data-ice="updated">2022-10-06 14:08:51 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Database.js.html#errorLines=11,15,16,18,19,20,21,22,23,24,33,36,39,43,47,51,55,59,63,67,71,74,81,84,87,90,93,99">src/Database.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Database.js.html#errorLines=11,15,16,18,19,20,21,22,23,24,25,35,38,41,45,48,55,58,61,64,67,73">src/Database.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Database.js~Database.html">Database</a></span>
 <span><a href="function/index.html#static-function-connect">connect</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/28</span></td>
-      <td style="display: none;" data-ice="size">3033 byte</td>
-      <td style="display: none;" data-ice="lines">105</td>
-      <td style="display: none;" data-ice="updated">2022-10-06 15:12:27 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/22</span></td>
+      <td style="display: none;" data-ice="size">2199 byte</td>
+      <td style="display: none;" data-ice="lines">79</td>
+      <td style="display: none;" data-ice="updated">2022-10-07 08:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Engine.js.html#errorLines=10,105,109,112,120,127,130,133,136,150,158,16,166,177,188,193,198,203,21,210,213,225,232,235,238,244,249,254,260,272,275,28,280,29,294,30,31,32,33,34,35,38,45,66,69,72,79,8,83,91">src/Engine.js</a></span></td>
@@ -429,20 +430,12 @@
       <td style="display: none;" data-ice="updated">2022-10-03 16:06:50 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Queries.js.html#errorLines=14,15,16,17,18,26,30,61,68,8">src/Queries.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/10</span></td>
-      <td style="display: none;" data-ice="size">3032 byte</td>
-      <td style="display: none;" data-ice="lines">102</td>
-      <td style="display: none;" data-ice="updated">2022-10-06 15:31:33 (UTC)</td>
-    </tr>
-<tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Query.js.html#errorLines=10,15,19,26,33,40,47,5,6,7,8,9">src/Query.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Query.js.html#errorLines=10,13,32,36,43,50,57,6,64,7,8,9">src/Query.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Query.js~Query.html">Query</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/12</span></td>
-      <td style="display: none;" data-ice="size">1812 byte</td>
-      <td style="display: none;" data-ice="lines">60</td>
-      <td style="display: none;" data-ice="updated">2022-10-06 15:27:28 (UTC)</td>
+      <td style="display: none;" data-ice="size">2329 byte</td>
+      <td style="display: none;" data-ice="lines">77</td>
+      <td style="display: none;" data-ice="updated">2022-10-07 08:49:49 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Record.js.html#errorLines=10,11,12,13,16,24,29,32,44,49,7,8,9">src/Record.js</a></span></td>
@@ -469,12 +462,12 @@
       <td style="display: none;" data-ice="updated">2022-10-01 08:43:24 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Table.js.html#errorLines=10,100,104,108,11,112,116,12,120,128,13,133,14,142,15,150,154,16,161,166,169,17,18,180,19,193,20,21,211,22,220,225,23,234,24,245,25,258,262,266,271,279,28,282,29,291,30,304,31,315,32,320,326,33,36,39,52,59,76,79,82,9,96">src/Table.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/Table.js.html#errorLines=10,102,107,11,116,12,124,128,13,135,14,140,143,15,154,16,167,17,179,18,188,19,193,20,202,21,213,22,226,23,230,234,239,24,242,246,249,25,258,26,271,282,287,293,32,33,34,35,36,37,42,45,58,65,82,85,88,9">src/Table.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Table.js~Table.html">Table</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/63</span></td>
-      <td style="display: none;" data-ice="size">12078 byte</td>
-      <td style="display: none;" data-ice="lines">336</td>
-      <td style="display: none;" data-ice="updated">2022-10-06 15:33:02 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/58</span></td>
+      <td style="display: none;" data-ice="size">10844 byte</td>
+      <td style="display: none;" data-ice="lines">303</td>
+      <td style="display: none;" data-ice="updated">2022-10-07 09:56:49 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Tables.js.html#errorLines=3,4,5,7">src/Tables.js</a></span></td>
@@ -543,6 +536,15 @@
       <td style="display: none;" data-ice="size">620 byte</td>
       <td style="display: none;" data-ice="lines">21</td>
       <td style="display: none;" data-ice="updated">2022-10-07 10:59:11 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Utils/Queries.js.html#errorLines=35,5">src/Utils/Queries.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-addQueryMethods">addQueryMethods</a></span>
+<span><a href="function/index.html#static-function-expandFragments">expandFragments</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
+      <td style="display: none;" data-ice="size">2965 byte</td>
+      <td style="display: none;" data-ice="lines">98</td>
+      <td style="display: none;" data-ice="updated">2022-10-07 08:51:51 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Utils/Relation.js.html#errorLines=3,4,8">src/Utils/Relation.js</a></span></td>

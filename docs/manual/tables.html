@@ -136,10 +136,16 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerecord-where--options-" data-ice="link">oneRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrecord-where--options-" data-ice="link">anyRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#allrecords-where--options-" data-ice="link">allRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -270,8 +276,42 @@ console.log(brian);
 await users.delete({
   email: 'brian@badgerpower.com'
 });</code></code></pre>
+<p>You can also define table specific named queries, either as static HTML or
+using the <a href="manual/query_builder.html">query builder</a>.  The table automatically
+provides some pre-defined <a href="manual/query_fragments.html">query fragments</a> to
+embed into queries (<code>&lt;table&gt;</code> and <code>&lt;columns&gt;</code>) and has some shortcuts that
+can be used with the query builder, e.g. <code>.fetch</code> which automatically selects
+all the table columns and defines the table name.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite://test.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectByName:
+          // SQL query including table-specific fragments
+          'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
+        selectByEmail:
+          // using a query builder
+          t =&gt; t.select('id name email').from('users').where('email'),
+        allBadgers:
+          // using the .fetch query builder shortcut
+          t =&gt; t.fetch.where({ animal: 'Badger' })
+      }
+    },
+  }
+});
+
+// fetch the users table
+const users = await db.table('users');
+
+// calling named queries
+const user1 = await users.one('selectByName', ['Bobby Badger']);
+const user2 = await users.any('selectByEmail', ['brian@badgerpower.com']);
+const user3 = await users.all('allBadgers');</code></code></pre>
 <p>In the next few sections we'll look at how <a href="manual/table_columns.html">table columns</a>
-are defined, the <a href="manual/table_methods.html">table methods</a> that are provided, and how
+are defined, the <a href="manual/table_methods.html">table methods</a> that are provided, how to
+define and use <a href="manual/table_queries.html">table queries</a>, and how
 to define your own custom <a href="manual/table_class.html">table class</a> where you can put
 additional functionality relating to a table.</p>
 </div>

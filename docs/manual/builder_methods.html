@@ -136,10 +136,16 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerecord-where--options-" data-ice="link">oneRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrecord-where--options-" data-ice="link">anyRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#allrecords-where--options-" data-ice="link">allRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -461,7 +467,9 @@ const row = await db
 //    WHERE "name" = ?
 //    AND "id" = ?</code></code></pre>
 <p>For this reason it is usually best if you <em>either</em> specify all of the values in
-the <code>where()</code> clauses, <em>or</em> pass them all into the <code>one()</code>, <code>any()</code> or <code>all()</code> methods.</p>
+the <code>where()</code> clauses, <em>or</em> pass them all into the <code>one()</code>, <code>any()</code> or <code>all()</code> methods.
+This is also particularly relevant if you have a query that includes
+<a href="#having-criteria-">having()</a> clauses as well.</p>
 <p>You can also provide values as an array of <code>[column, value]</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .select('id name email')
@@ -471,6 +479,15 @@ the <code>where()</code> clauses, <em>or</em> pass them all into the <code>one()
 // -&gt; SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE "id" = ?</code></code></pre>
+<p>If you want to see what placeholder values have been collected in a query then you
+can call the <code>values()</code> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .select('id name')
+  .from('users')
+  .where({ id: 12345 })
+
+console.log(query.values())
+// -&gt; [12345]</code></code></pre>
 <p>The column can be raw SQL if necessary.  Either use the
 <code>sql</code> function to create a tagged template literal or
 pass it as an object with a single <code>sql</code> property.</p>
@@ -559,17 +576,22 @@ can be any of the values described above.</p>
 //    FROM "users"
 //    WHERE "id" &gt; ? AND "name" = ?</code></code></pre>
 <h2 id="join-table-">join(table)</h2><p>This method can be used to join tables.  A string can be passed as
-a shorthand syntax of the form <code>from=table.to</code>, where <code>from</code> is the
+a shorthand syntax of the form <code>from = table.to</code>, where <code>from</code> is the
 column you're joining from, <code>table</code> is the table you're joining onto
 and <code>to</code> is the column in the joined table that should match the value
-in the <code>from</code> column.</p>
+in the <code>from</code> column.  Spaces are optional around the equals sign,
+e.g. <code>from=table.to</code> or <code>from = table.to</code> are both treated the same.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('users.company_id=companies.id')
+  .join('users.company_id = companies.id')
 // -&gt; SELECT "name", "email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "companies" ON "users"."company_id" = "companies"."id"</code></code></pre>
+<p>For a left join, use a left pointing arrow, e.g. <code>from &lt;= table.to</code>.
+For a right join, use a right pointing arrow, e.g. <code>from =&gt; table.to</code>.
+For a full join, use a double headed arrow, e.g. <code>from &lt;=&gt; table.to</code>.
+Spaces around the arrow are optional.</p>
 <p>You can pass an array to the method containing 2, 3, or 4 elements.
 When using two elements, the first should be the table column you're
 joining from and the second should be the table column you're joining to.</p>
@@ -636,8 +658,8 @@ can use raw SQL to define the joins, either with an object containing a
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('users.id=employees.user_id')
-  .join('employees.company_id=companies.id')
+  .join('users.id = employees.user_id')
+  .join('employees.company_id = companies.id')
 // -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "employees" ON "users"."id" = "employees"."user_id"
@@ -647,7 +669,7 @@ can be any of the values described above.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
-  .join('users.id=employees.user_id', 'employees.company_id=companies.id')
+  .join('users.id = employees.user_id', 'employees.company_id = companies.id')
 // -&gt; SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "employees" ON "users"."id" = "employees"."user_id"
@@ -800,6 +822,26 @@ from <code>having()</code> values and passed them to the database engine in the 
   .having({ x: xValue })
   .where({ y: yValue })
   .all()            // placeholder values will be [yValue, xValue]</code></code></pre>
+<p>You can see what placeholder values have been collected in a query, and the order
+that they will appear, in by calling the <code>values()</code> method.  Note that regardless
+of the order of method calls, all <code>where()</code> placeholder values comes before <code>having()</code>
+values.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .select('...')
+  .from('...')
+  .where({ a: 123 })
+  .having({ b: 789 })
+  .where({ a: 456 })
+
+console.log(query.values())
+// -&gt; [123, 456, 789]</code></code></pre>
+<p>In order to get the placeholder values in the right order, the query builder stores
+<code>where()</code> values separately from <code>having()</code> values.  The <code>whereValues()</code> and <code>havingValues()</code>
+methods all you to inspect them.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log(query.whereValues())
+// -&gt; [123, 456]
+console.log(query.havingValues())
+// -&gt; [789]</code></code></pre>
 <h2 id="limit-n-">limit(n)</h2><p>This method can be used to set a <code>LIMIT</code> for the number of rows returned.</p>
 <p>An integer should be passed to it.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name')
@@ -991,6 +1033,18 @@ values in the right order.</p>
   .having('d')
   .one((where, having) =&gt; [...where, 20, ...having, 40])</code></code></pre>
 <p>Now the order of placeholder values will be correctly set to <code>[10, 20, 30, 40]</code>.</p>
+<p>If you want to double-check you can call the <code>values()</code> method on a query to
+check that it returns them in the right order.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select(...)
+  .from(...)
+  .where({ a: 10 })
+  .where('b')
+  .having({ c: 30 })
+  .having('d')
+  .values((where, having) =&gt; [...where, 20, ...having, 40])
+// -&gt; [10, 20, 30, 40]</code></code></pre>
+<p>You can also call the <code>whereValues()</code> and <code>havingValues()</code> to see what the query
+has got stored for them.</p>
 <h2 id="any-values-">any(values)</h2><p>This method will execute the query and return one row if it exists or <code>undefined</code>
 if it doesn't.  In all other respects it works exactly like <a href="#one-values-">one()</a>.</p>
 <h2 id="all-values-">all(values)</h2><p>This method will execute the query and return an array of all matching rows.

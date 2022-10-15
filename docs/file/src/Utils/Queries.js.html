@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">src/Builder/Table.js | Badger Database</title>
+  <title data-ice="title">src/Utils/Queries.js | Badger Database</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -137,27 +137,105 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">src/Builder/Table.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Builder from '../Builder.js';
+<div class="content" data-ice="content"><h1 data-ice="title">src/Utils/Queries.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Query from "../Query.js";
+import { singleWord } from "../Constants.js";
+import { fail, isFunction, isString } from "@abw/badger-utils";
 
-export class Table extends Builder {
-  static buildMethod = 'table'
+export const expandFragments = (query, fragments={}, maxDepth=16) =&gt; {
+  query = query.trim();
+  let sql = query;
+  let runaway = 0;
+  let expanded = [ ];
 
-  initBuilder(table) {
-    this.table = table;
-  }
-
-  resolve(context) {
-    this.context = {
-      ...context,
-      table: this.table
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let replaced = false;
+    sql = sql.replace(
+      /&lt;(\w+?)&gt;/g,
+      (match, word) =&gt; {
+        replaced = true;
+        expanded.push(word);
+        return fragments[word] || fail("Invalid fragment in SQL expansion: &lt;", word, "&gt;");
+      }
+    );
+    if (! replaced) {
+      break;
     }
-    return this.context;
+    if (++runaway &gt;= maxDepth) {
+      fail(
+        "Maximum SQL expansion limit (maxDepth=", maxDepth, ") exceeded: ",
+        expanded.join(' -&gt; ', )
+      )
+    }
   }
+  return sql;
 }
 
-export default Table
+export const addQueryMethods = object =&gt; {
+  object.buildQuery = function(source, config) {
+    this.debugData("buildQuery()", { source });
+    return new Query(
+      this.engine,
+      this.expandQuery(source),
+      config
+    );
+  }
 
+  object.expandQuery = function(source, config) {
+    this.debugData("expandQuery()", { source });
+    // if the source is a single word then it must be a named query
+    // otherwise it's an SQL query possibly with embedded fragments
+    return source.match(singleWord)
+      ? this.expandNamedQuery(source, config)
+      : expandFragments(source, this.fragments);
+  }
+
+  object.expandNamedQuery = function(name) {
+    this.debugData("expandNamedQuery()", { name });
+    const query = this.query(name);
+    // the named query can be a string with embedded fragments that should
+    // be expanded, or it can be a query builder
+    return isString(query)
+      ? expandFragments(query, this.fragments)
+      : query;
+  }
+
+  object.query = function(source) {
+    this.debugData("query()", { source });
+    const query = this.queries[source] || fail("Invalid named query specified: ", source);
+    // a named query can be a function which we call, returning either a string
+    // or a query builder
+    return isFunction(query)
+      ? query(this)
+      : query;
+  }
+
+  object.sql = function(name, config) {
+    this.debugData("sql()", { name, config });
+    return this.buildQuery(name, config).sql();
+  }
+
+  object.run = function(query, params, options) {
+    this.debugData("run()", { query, params, options });
+    return this.buildQuery(query).run(params, options)
+  }
+
+  object.one = function(query, params, options) {
+    this.debugData("one()", { query, params, options });
+    return this.buildQuery(query).one(params, options)
+  }
+
+  object.any = function(query, params, options) {
+    this.debugData("any()", { query, params, options });
+    return this.buildQuery(query).any(params, options)
+  }
+
+  object.all = function(query, params, options) {
+    this.debugData("all()", { query, params, options });
+    return this.buildQuery(query).all(params, options)
+  }
+}
 </code></pre>
 
 </div>

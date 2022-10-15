@@ -136,10 +136,16 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerecord-where--options-" data-ice="link">oneRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrecord-where--options-" data-ice="link">anyRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#allrecords-where--options-" data-ice="link">allRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -620,58 +626,6 @@ the row as a record object.  It effectively sets the <code>record</code> option 
 the row as a record object.</p>
 <h2 id="allrecords-where--options-">allRecords(where, options)</h2><p>This method is a wrapper around <a href="#allrows-where--options-">allRows()</a> which returns
 the rows as an array of record objects.</p>
-<h2 id="run-sql--values-">run(sql, values)</h2><p>This is a low-level method for running any arbitrary SQL query where
-you're not expecting to fetch any rows.  It's just like the
-<a href="manual/basic_queries.html#run-query--values--options-">run()</a>
-method on the database object.  The only difference is that there are
-some table-specific fragments pre-defined: <code>table</code> contains the table
-name and <code>columns</code> contains a comma separated list of all column names.
-Any other <code>fragments</code> that you've specified in your table definition
-will also be available.</p>
-<p>The columns have the table name prepended and are property quoted for
-the database.  For example, a <code>users</code> table having columns defined as
-<code>id name email</code> will expand the <code>columns</code> SQL fragment as
-<code>"users"."id", "users"."name", "users"."email"</code> for Sqlite and Postgres.
-For Mysql the backtick character is used instead of double quotes.</p>
-<p>As a trivial example, you can embed the <code>table</code> name in a query like so:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">users.run('DROP TABLE &lt;table&gt;')</code></code></pre>
-<p>You can also run any named <code>queries</code> that you've pre-defined for the table,
-or include any table <code>fragments</code> in your queries.  For example, if you've
-defined a named query called <code>drop</code> then you can run it like so:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">users.run('drop')</code></code></pre>
-<h2 id="one-query--values--options-">one(query, values, options)</h2><p>This is another low-level method for running an SQL query where you're
-expecting to get exactly one row returned.  It's just like the
-corresponding <a href="manual/basic_queries.html#one-query--values--options-">one()</a>
-database method, with the additional table-specific SQL fragments available, as
-per <a href="#run-query--values--options-">run()</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = users.one(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
-  ['Bobby Badger']
-)</code></code></pre>
-<p>You can also run any pre-defined named <code>queries</code> or include query <code>fragments</code>
-in the queries you run using this method.</p>
-<h2 id="any-query--values--options-">any(query, values, options)</h2><p>This is yet another low-level method for running an SQL query, but where
-you're expecting to get one row returned which may or may not exist.
-It's just like the corresponding
-<a href="manual/basic_queries.html#any-query--values--options-">any()</a>
-database method, with the additional table-specific SQL fragments available,
-as per <a href="#run-query--values--options-">run()</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = users.any(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
-  ['Bobby Badger']
-)</code></code></pre>
-<p>Pre-defined named <code>queries</code> can also be run, or you can include query
-<code>fragments</code> in the SQL.</p>
-<h2 id="all-query--values--options-">all(query, values, options)</h2><p>The final low-level method for running an SQL query where you're expecting to
-get multiple rows.  It's just like the corresponding
-<a href="manual/basic_queries.html#all-query--values--options-">all()</a>
-database method, with the additional table-specific SQL fragments available, as
-per <a href="#run-query--values--options-">run()</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rows = users.all(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt;',
-)</code></code></pre>
-<p>Unsurprisingly, this method also allows you to run pre-defined named
-<code>queries</code> or embed query <code>fragments</code> in the SQL.</p>
 </div>
 </div>
 

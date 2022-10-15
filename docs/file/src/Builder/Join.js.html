@@ -30,7 +30,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Builder.js~Builder.html">Builder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queries.js~Queries.html">Queries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
@@ -124,6 +123,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addQueryMethods">addQueryMethods</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-expandFragments">expandFragments</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseRelationString">parseRelationString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-relationConfig">relationConfig</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-spaceAfter">spaceAfter</a></span></span></li>
@@ -142,18 +143,23 @@ import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, ON, RIG
 import { spaceAfter, spaceAround } from '../Utils/Space.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
-const joinRegex = /^(.*?)=(\w+)\.(\w+)$/;
+const joinRegex = /^(.*?)\s*(&lt;?=&gt;?)\s*(\w+)\.(\w+)$/;
 const joinElements = {
   from:  1,
-  table: 2,
-  to:    3,
+  type:  2,
+  table: 3,
+  to:    4,
 };
 const joinTypes = {
-  left:    LEFT_JOIN,
-  right:   RIGHT_JOIN,
-  inner:   INNER_JOIN,
-  full:    FULL_JOIN,
   default: JOIN,
+  inner:   INNER_JOIN,
+  '=':     JOIN,
+  left:    LEFT_JOIN,
+  '&lt;=':    LEFT_JOIN,
+  right:   RIGHT_JOIN,
+  '=&gt;':    RIGHT_JOIN,
+  full:    FULL_JOIN,
+  '&lt;=&gt;':   FULL_JOIN,
 };
 
 export class Join extends Builder {

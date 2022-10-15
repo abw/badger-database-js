@@ -136,10 +136,16 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#onerecord-where--options-" data-ice="link">oneRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#anyrecord-where--options-" data-ice="link">anyRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#allrecords-where--options-" data-ice="link">allRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-sql--values-" data-ice="link">run(sql, values)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -400,12 +406,32 @@ FROM "users"
 WHERE "id"=?</code></code></pre>
 <p>You can also define values in the <code>where()</code> clause.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = db
-  .from('users')
   .select('id name')
+  .from('users')
   .where({ id: 12345 })
   .one();     // automatically uses placeholder values: [12345]</code></code></pre>
 <p>The query generated will still use placeholders.  It will also
 automatically keep track of the values that go with each placeholder.</p>
+<p>If you want to see what placeholder values a query has collected then
+you can call the <code>values()</code> method.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const query = db
+  .select('id name')
+  .from('users')
+  .where({ id: 12345 })
+
+console.log(query.values())
+// -&gt; [12345]</code></code></pre>
+<p>The query builder also provides a <a href="manual/builder_methods.html#having-criteria-">having()</a>
+method which works in a similar way.  The query builder collects placeholder values
+associated with <code>WHERE</code> clauses separately from those associated with <code>HAVING</code> clauses.
+This is because any <code>WHERE</code> clauses come before any <code>HAVING</code> clauses and the placeholder
+values must be ordered in that way.</p>
+<p>You can call the <code>whereValues()</code> and <code>havingValues()</code> method to see what values have
+been collected for them separately.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log(query.whereValues())
+// -&gt; [12345]
+console.log(query.havingValues())
+// -&gt; []</code></code></pre>
 <h2 id="running-queries">Running Queries</h2><p>When you've constructed a query you can add the <code>all()</code> method to the end to
 fetch all rows matching the query.  It's an asynchronous method so you'll need
 to <code>await</code> the response (or use <code>.then(...)</code> if you prefer).</p>
@@ -491,12 +517,12 @@ to the database and should return a query generated using the query builder.</p>
   'selectUserByName',
   ['Bobby Badger']
 );</code></code></pre>
-<p>You can use the <code>namedQuery()</code> method to fetch a named query.  If it's
+<p>You can use the <code>query()</code> method to fetch a named query.  If it's
 constructed using the query builder then you can call further methods
 on it to create a more specialised query.  Remember, the original named
 query won't be affected so it's perfectly safe to do this.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await db
-  .namedQuery('selectUserByName')
+  .query('selectUserByName')
   .select('id')   // also select user id
   .one(['Bobby Badger']);</code></code></pre>
 <p>You can even do this to create named queries based on other named queries.</p>
@@ -512,13 +538,13 @@ query won't be affected so it's perfectly safe to do this.</p>
     // specialised version to select a user by name
     selectUserByName:
       db =&gt; db
-        .namedQuery('selectUser')
+        .query('selectUser')
         .where('name')  // SELECT "name", "email" FROM "users" WHERE "name" = ?
 
     // specialised version to select a user by email
     selectUserByName:
       db =&gt; db
-        .namedQuery('selectUser')
+        .query('selectUser')
         .where('email') // SELECT "name", "email" FROM "users" WHERE "email" = ?
   }
 });
@@ -546,6 +572,13 @@ you come to run the query.</p>
 });
 
 const badgers = await db.all('fetchAllBadgers')</code></code></pre>
+<p>The <code>sql()</code> method can be used to view the SQL generated by a named
+query builder.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.sql('fetchAllBadgers')
+// -&gt; SELECT "name", "email"
+//    FROM "users"
+//    WHERE "animal" = ?</code></code></pre>
+<p>If you want to see what placeholder values the query has got defined then</p>
 </div>
 </div>
 
