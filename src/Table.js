@@ -1,10 +1,10 @@
-import Queries from "./Queries.js";
 import Record from "./Record.js";
 import recordProxy from "./Proxy/Record.js";
 import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils";
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
+import { addQueryMethods } from "./Utils/Queries.js";
 
 export class Table {
   constructor(database, config) {
@@ -19,9 +19,9 @@ export class Table {
     this.id            = config.id;
     this.recordClass   = config.recordClass || Record;
     this.recordConfig  = config.recordConfig;
+    this.queries       = config.queries;
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
-    this.queries       = new Queries(this, { ...config, debugPrefix: `Queries:${this.table}` });
     this.build         = this.database.build;
 
     // method aliases
@@ -31,6 +31,8 @@ export class Table {
     this.insertRecords = this.insertAllRecords;
     this.updateRow     = this.updateOneRow;
     this.updateRows    = this.updateAllRows;
+
+    addQueryMethods(this);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
   }
   configure(config) {
@@ -88,38 +90,6 @@ export class Table {
         }
       }
     );
-  }
-
-  //-----------------------------------------------------------------------------
-  // Engine methods
-  //-----------------------------------------------------------------------------
-  sql(name, config) {
-    this.debugData("sql()", { name, config });
-    return this.query(name, config).sql();
-  }
-  query(name, config) {
-    this.debugData("query()", { name, config });
-    return this.queries.query(name, config);
-  }
-  namedQuery(name) {
-    this.debugData("namedQuery()", { name });
-    return this.queries.namedQuery(name);
-  }
-  run(query, params, options) {
-    this.debugData("run()", { query, params, options });
-    return this.query(query).run(params, options)
-  }
-  any(query, params, options) {
-    this.debugData("any()", { query, params, options });
-    return this.query(query).any(params, options)
-  }
-  all(query, params, options) {
-    this.debugData("all()", { query, params, options });
-    return this.query(query).all(params, options)
-  }
-  one(query, params, options) {
-    this.debugData("one()", { query, params, options });
-    return this.query(query).one(params, options)
   }
 
   //-----------------------------------------------------------------------------

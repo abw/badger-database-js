@@ -1,8 +1,8 @@
 import test from 'ava';
-import Queries from '../../src/Queries.js'
-import { mockDatabase } from '../library/database.js';
+import { connect } from '../../src/Database.js';
 
-const spec = {
+const db = connect({
+  database: 'sqlite:memory',
   queries: {
     one: '<select> WHERE one=1',
     two: '<select> WHERE two=2',
@@ -14,13 +14,12 @@ const spec = {
     allColumns: '<someColumns>, <moreColumns>',
     select: 'SELECT <allColumns> FROM <table>',
   }
-}
-const queries1 = new Queries(mockDatabase, spec);
+});
 
 test(
   'query("one")',
   t => t.is(
-    queries1.sql('one'),
+    db.sql('one'),
     'SELECT a, b, c, d, e, f FROM badgers WHERE one=1'
   )
 );
@@ -28,7 +27,7 @@ test(
 test(
   'query("SELECT a FROM <table>")',
   t => t.is(
-    queries1.sql('SELECT a FROM <table>'),
+    db.sql('SELECT a FROM <table>'),
     'SELECT a FROM badgers'
   )
 );
@@ -36,17 +35,15 @@ test(
 test(
   'query("eleven")',
   t => {
-    const error = t.throws( () => queries1.sql('eleven') );
+    const error = t.throws( () => db.sql('eleven') );
     t.is( error.message, "Invalid named query specified: eleven" )
   }
 );
 
-const queries2 = new Queries(mockDatabase, spec);
-
 test(
   'query("two")',
   t => t.is(
-    queries2.sql('two'),
+    db.sql('two'),
     'SELECT a, b, c, d, e, f FROM badgers WHERE two=2'
   )
 );

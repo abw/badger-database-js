@@ -1,12 +1,12 @@
 import Table from './Table.js';
 import Tables from './Tables.js';
-import Queries from './Queries.js';
 import proxymise from 'proxymise';
 import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
 import { invalid, missing } from './Utils/Error.js';
 import { addDebugMethod } from './Utils/Debug.js';
 import { databaseBuilder } from './Builders.js';
+import { addQueryMethods } from './Utils/Queries.js';
 
 const defaults = {
   tablesClass: Tables
@@ -14,16 +14,18 @@ const defaults = {
 
 export class Database {
   constructor(engine, params={ }) {
-    const config = { ...defaults, ...params };
-    this.engine  = engine || missing('engine');
-    this.queries = new Queries(this, config);
-    this.tables  = config.tablesObject || new config.tablesClass(config.tables);
-    this.build   = databaseBuilder(this);
-    this.model   = modelProxy(this);
-    this.waiter  = proxymise(this);
-    this.state   = {
+    const config   = { ...defaults, ...params };
+    this.engine    = engine || missing('engine');
+    this.queries   = config.queries;
+    this.fragments = config.fragments;
+    this.tables    = config.tablesObject || new config.tablesClass(config.tables);
+    this.build     = databaseBuilder(this);
+    this.model     = modelProxy(this);
+    this.waiter    = proxymise(this);
+    this.state     = {
       table: { },
     };
+    addQueryMethods(this);
     addDebugMethod(this, 'database', config);
   }
 
@@ -35,34 +37,6 @@ export class Database {
   }
   release(connection) {
     this.engine.release(connection);
-  }
-  sql(name, config) {
-    this.debugData("sql()", { name, config });
-    return this.query(name, config).sql();
-  }
-  query(name, config) {
-    this.debugData("query()", { name, config });
-    return this.queries.query(name, config);
-  }
-  namedQuery(name) {
-    this.debugData("namedQuery()", { name });
-    return this.queries.namedQuery(name);
-  }
-  run(query, params, options) {
-    this.debugData("run()", { query, params, options });
-    return this.query(query).run(params, options)
-  }
-  any(query, params, options) {
-    this.debugData("any()", { query, params, options });
-    return this.query(query).any(params, options)
-  }
-  all(query, params, options) {
-    this.debugData("all()", { query, params, options });
-    return this.query(query).all(params, options)
-  }
-  one(query, params, options) {
-    this.debugData("one()", { query, params, options });
-    return this.query(query).one(params, options)
   }
   async table(name) {
     return this.state.table[name]
