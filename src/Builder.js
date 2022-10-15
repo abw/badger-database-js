@@ -94,14 +94,18 @@ export class Builder {
 
   whereValues(...values) {
     if (values.length) {
-      this.context.whereValues.push(...values);
+      this.context.whereValues = [
+        ...this.context.whereValues, ...values
+      ];
     }
     return this.context.whereValues;
   }
 
   havingValues(...values) {
     if (values.length) {
-      this.context.havingValues.push(...values);
+      this.context.havingValues = [
+        ...this.context.havingValues, ...values
+      ];
     }
     return this.context.havingValues;
   }
