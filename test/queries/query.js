@@ -145,6 +145,66 @@ test.serial(
 )
 
 test.serial(
+  'selectBobby query values',
+  async t => {
+    const query = db.query('selectBobby');
+    t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
+    const values = query.values();
+    t.deepEqual(values, ['Bobby Badger']);
+  }
+)
+
+test.serial(
+  'selectBobby query values with more',
+  async t => {
+    const query = db.query('selectBobby');
+    t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
+    const values = query.values(['foo']);
+    t.deepEqual(values, ['Bobby Badger', 'foo']);
+  }
+)
+
+test.serial(
+  'selectBobby query values with function',
+  async t => {
+    const query = db.query('selectBobby').having({ y: 99 });
+    t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?\nHAVING "y" = ?' );
+    const values = query.values((w, h) => ['foo', ...w, 'bar', ...h]);
+    t.deepEqual(values, ['foo', 'Bobby Badger', 'bar', 99]);
+  }
+)
+
+test.serial(
+  'selectBobby query allValues',
+  async t => {
+    const query = db.query('selectBobby');
+    t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
+    const values = query.allValues();
+    t.deepEqual(values, ['Bobby Badger']);
+  }
+)
+
+test.serial(
+  'selectBobby query whereValues',
+  async t => {
+    const query = db.query('selectBobby');
+    t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
+    const values = query.whereValues();
+    t.deepEqual(values, ['Bobby Badger']);
+  }
+)
+
+test.serial(
+  'selectBobby query havingValues',
+  async t => {
+    const query = db.query('selectBobby');
+    t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
+    const values = query.havingValues();
+    t.deepEqual(values, []);
+  }
+)
+
+test.serial(
   'selectBobby one',
   async t => {
     const bobby = await db.one('selectBobby');

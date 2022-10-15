@@ -408,6 +408,8 @@ const row = await db
 
 For this reason it is usually best if you *either* specify all of the values in
 the `where()` clauses, *or* pass them all into the `one()`, `any()` or `all()` methods.
+This is also particularly relevant if you have a query that includes
+[having()](#having-criteria-) clauses as well.
 
 You can also provide values as an array of `[column, value]`.
 
@@ -420,6 +422,19 @@ const row = await db
 // -> SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE "id" = ?
+```
+
+If you want to see what placeholder values have been collected in a query then you
+can call the `values()` method.
+
+```js
+const query = db
+  .select('id name')
+  .from('users')
+  .where({ id: 12345 })
+
+console.log(query.values())
+// -> [12345]
 ```
 
 The column can be raw SQL if necessary.  Either use the
@@ -921,6 +936,34 @@ db.select(...)
   .all()            // placeholder values will be [yValue, xValue]
 ```
 
+You can see what placeholder values have been collected in a query, and the order
+that they will appear, in by calling the `values()` method.  Note that regardless
+of the order of method calls, all `where()` placeholder values comes before `having()`
+values.
+
+```js
+const query = db
+  .select('...')
+  .from('...')
+  .where({ a: 123 })
+  .having({ b: 789 })
+  .where({ a: 456 })
+
+console.log(query.values())
+// -> [123, 456, 789]
+```
+
+In order to get the placeholder values in the right order, the query builder stores
+`where()` values separately from `having()` values.  The `whereValues()` and `havingValues()`
+methods all you to inspect them.
+
+```js
+console.log(query.whereValues())
+// -> [123, 456]
+console.log(query.havingValues())
+// -> [789]
+```
+
 ## limit(n)
 
 This method can be used to set a `LIMIT` for the number of rows returned.
@@ -1054,7 +1097,6 @@ db.select('id name')
 //    FROM "users"
 //    OFFSET 50
 ```
-
 
 ## columns(columns)
 
@@ -1218,6 +1260,23 @@ db.select(...)
 ```
 
 Now the order of placeholder values will be correctly set to `[10, 20, 30, 40]`.
+
+If you want to double-check you can call the `values()` method on a query to
+check that it returns them in the right order.
+
+```js
+db.select(...)
+  .from(...)
+  .where({ a: 10 })
+  .where('b')
+  .having({ c: 30 })
+  .having('d')
+  .values((where, having) => [...where, 20, ...having, 40])
+// -> [10, 20, 30, 40]
+```
+
+You can also call the `whereValues()` and `havingValues()` to see what the query
+has got stored for them.
 
 ## any(values)
 

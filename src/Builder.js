@@ -76,6 +76,10 @@ export class Builder {
     return { whereValues, havingValues };
   }
 
+  values(...args) {
+    return this.allValues(...args);
+  }
+
   allValues(where=[]) {
     const { whereValues, havingValues } = this.resolveChain();
 
