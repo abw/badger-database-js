@@ -29,7 +29,12 @@ const dbConfig = {
             artist_id INTEGER,
             FOREIGN KEY(artist_id) REFERENCES artists(id)
           )`,
-        byArtistId: `SELECT <columns> FROM <table> WHERE artist_id=?`
+        byArtistId:
+          `SELECT <columns> FROM <table> WHERE artist_id=?`,
+        byTitle:
+          table => table.select('id year title').from('albums').where('title'),
+        byYear:
+          table => table.fetch.where('year'),
       }
     }
   }
@@ -100,6 +105,37 @@ test.serial(
     t.is( pfalbums.length, 2 );
     t.is( pfalbums[0].title, 'The Dark Side of the Moon' );
     t.is( pfalbums[1].title, 'Wish You Were Here' );
+  }
+);
+
+test.serial(
+  'fetch album by title',
+  async t => {
+    const albums = await db.table('albums');
+    const dsotm  = await albums.one('byTitle', ['The Dark Side of the Moon']);
+    t.is( dsotm.id, 1 );
+    t.is( dsotm.title, 'The Dark Side of the Moon' );
+    t.is( dsotm.year, 1973 );
+  }
+);
+
+test.serial(
+  'fetch query',
+  async t => {
+    const albums = await db.table('albums');
+    const sql    = albums.fetch.sql();
+    t.is( sql, 'SELECT "albums"."id", "albums"."year", "albums"."title", "albums"."artist_id"\nFROM "albums"' )
+  }
+)
+
+test.serial(
+  'fetch album by year',
+  async t => {
+    const albums = await db.table('albums');
+    const dsotm  = await albums.one('byYear', [1973]);
+    t.is( dsotm.id, 1 );
+    t.is( dsotm.title, 'The Dark Side of the Moon' );
+    t.is( dsotm.year, 1973 );
   }
 );
 

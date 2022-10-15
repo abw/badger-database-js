@@ -49,7 +49,45 @@ await users.delete({
 });
 ```
 
+You can also define table specific named queries, either as static HTML or
+using the [query builder](manual/query_builder.html).  The table automatically
+provides some pre-defined [query fragments](manual/query_fragments.html) to
+embed into queries (`<table>` and `<columns>`) and has some shortcuts that
+can be used with the query builder, e.g. `.fetch` which automatically selects
+all the table columns and defines the table name.
+
+```js
+const db = connect({
+  database: 'sqlite://test.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectByName:
+          // SQL query including table-specific fragments
+          'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
+        selectByEmail:
+          // using a query builder
+          t => t.select('id name email').from('users').where('email'),
+        allBadgers:
+          // using the .fetch query builder shortcut
+          t => t.fetch.where({ animal: 'Badger' })
+      }
+    },
+  }
+});
+
+// fetch the users table
+const users = await db.table('users');
+
+// calling named queries
+const user1 = await users.one('selectByName', ['Bobby Badger']);
+const user2 = await users.any('selectByEmail', ['brian@badgerpower.com']);
+const user3 = await users.all('allBadgers');
+```
+
 In the next few sections we'll look at how [table columns](manual/table_columns.html)
-are defined, the [table methods](manual/table_methods.html) that are provided, and how
+are defined, the [table methods](manual/table_methods.html) that are provided, how to
+define and use [table queries](manual/table_queries.html), and how
 to define your own custom [table class](manual/table_class.html) where you can put
 additional functionality relating to a table.

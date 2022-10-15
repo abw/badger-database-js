@@ -23,6 +23,10 @@ export class Table {
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
     this.build         = this.database.build;
+    this.fetch         = this.build.select({
+      table:   this.table,
+      columns: Object.keys(this.columns)
+    }).from(this.table)
 
     // method aliases
     this.insertRow     = this.insertOneRow;
@@ -233,7 +237,10 @@ export class Table {
   }
 
   select(...args) {
-    return this.build.from(this.table).select(...args);
+    return this.build.select(...args);
+  }
+  from(...args) {
+    return this.build.from(...args);
   }
 
   tableFragments() {
