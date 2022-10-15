@@ -4,7 +4,7 @@ import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
-import { addQueryMethods } from "./Utils/Queries.js";
+import { addQueryMethods, isQuery } from "./Utils/Queries.js";
 
 export class Table {
   constructor(database, config) {
@@ -35,6 +35,14 @@ export class Table {
     this.insertRecords = this.insertAllRecords;
     this.updateRow     = this.updateOneRow;
     this.updateRows    = this.updateAllRows;
+    this.fetchRow      = this.fetchOneRow;
+    this.fetchRows     = this.fetchAllRows;
+    this.selectRow     = this.selectOneRow;
+    this.selectRows    = this.selectAllRows;
+    this.fetchRecord   = this.fetchOneRecord;
+    this.fetchRecords  = this.fetchAllRecords;
+    this.selectRecord  = this.selectOneRecord;
+    this.selectRecords = this.selectAllRecords;
 
     addQueryMethods(this);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
@@ -129,6 +137,7 @@ export class Table {
     this.debugData("insertAllRecords()", { data, options });
     return this.insertAllRows(data, { ...options, record: true })
   }
+
   //-----------------------------------------------------------------------------
   // update
   //-----------------------------------------------------------------------------
@@ -183,15 +192,15 @@ export class Table {
   }
 
   //-----------------------------------------------------------------------------
-  // oneRow(), anyRow() and allRows()
+  // fetch - using where data
   //-----------------------------------------------------------------------------
   prepareFetch(where, params) {
     params.columns ||= Object.keys(this.columns);
     this.checkColumnNames(params.columns);
     return this.checkWhereColumns(where);
   }
-  async oneRow(where, options={}) {
-    this.debugData("oneRow()", { where, options });
+  async fetchOneRow(where, options={}) {
+    this.debugData("fetchOneRow()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     const row = await this.engine.selectOne(this.table, wcols, wvals, params);
@@ -199,8 +208,8 @@ export class Table {
       ? this.record(row)
       : row;
   }
-  async anyRow(where, options={}) {
-    this.debugData("anyRow()", { where, options });
+  async fetchAnyRow(where, options={}) {
+    this.debugData("fetchAnyRow()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     const row = await this.engine.selectAny(this.table, wcols, wvals, params);
@@ -210,8 +219,8 @@ export class Table {
         : row
       : undefined;
   }
-  async allRows(where, options={}) {
-    this.debugData("allRows()", { where, options });
+  async fetchAllRows(where, options={}) {
+    this.debugData("fetchAllRows()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     const rows = await this.engine.selectAll(this.table, wcols, wvals, params);
@@ -219,22 +228,101 @@ export class Table {
       ? this.records(rows)
       : rows;
   }
+  async fetchOneRecord(where, options={}) {
+    this.debugData("fetchOneRecord()", { where, options });
+    return this.fetchOneRow(where, { ...options, record: true });
+  }
+  async fetchAnyRecord(where, options={}) {
+    this.debugData("fetchAnyRecord()", { where, options });
+    return this.fetchAnyRow(where, { ...options, record: true });
+  }
+  async fetchAllRecords(where, options={}) {
+    this.debugData("fetchAllRecords()", { where, options });
+    return this.fetchAllRows(where, { ...options, record: true });
+  }
 
   //-----------------------------------------------------------------------------
-  // oneRecord(), anyRecord() and allRecords()
+  // select - using a query
   //-----------------------------------------------------------------------------
-  async oneRecord(where, options={}) {
-    this.debugData("oneRecord()", { where, options });
-    return this.oneRow(where, { ...options, record: true });
+  async selectOneRow(query, values, options={}) {
+    this.debugData("selectOneRow()", { query, values, options });
+    const row = await this.one(query, values, options);
+    return options.record
+      ? this.record(row)
+      : row;
   }
-  async anyRecord(where, options={}) {
-    this.debugData("anyRecord()", { where, options });
-    return this.anyRow(where, { ...options, record: true });
+  async selectAnyRow(query, values, options={}) {
+    this.debugData("selectAnyRow()", { query, values, options });
+    const row = await this.any(query, values, options);
+    return row
+      ? options.record
+        ? this.record(row)
+        : row
+      : undefined;
   }
-  async allRecords(where, options={}) {
-    this.debugData("allRecords()", { where, options });
-    return this.allRows(where, { ...options, record: true });
+  async selectAllRows(query, values, options={}) {
+    this.debugData("selectAllRows()", { query, values, options });
+    const rows = await this.all(query, values, options);
+    return options.record
+      ? this.records(rows)
+      : rows;
   }
+  async selectOneRecord(query, values, options={}) {
+    this.debugData("selectOneRecord()", { query, values, options });
+    return this.selectOneRow(query, values, { ...options, record: true });
+  }
+  async selectAnyRecord(query, values, options={}) {
+    this.debugData("selectAnyRecord()", { query, values, options });
+    return this.selectAnyRow(query, values, { ...options, record: true });
+  }
+  async selectAllRecords(query, values, options={}) {
+    this.debugData("selectAllRecords()", { query, values, options });
+    return this.selectAllRows(query, values, { ...options, record: true });
+  }
+
+  //-----------------------------------------------------------------------------
+  // Generic methods map onto equivalent fetch or select methods depending on
+  // first arguments.  If it's a query (string or builder) then it's forwarded
+  // to the select method, otherwise to the fetch method.
+  //-----------------------------------------------------------------------------
+  async oneRow(query, ...args) {
+    this.debugData("oneRow()", { query, args });
+    return isQuery(query)
+      ? this.selectOneRow(query, ...args)
+      : this.fetchOneRow(query, ...args)
+  }
+  async anyRow(query, ...args) {
+    this.debugData("anyRow()", { query, ...args });
+    return isQuery(query)
+      ? this.selectAnyRow(query, ...args)
+      : this.fetchAnyRow(query, ...args)
+  }
+  async allRows(query, ...args) {
+    this.debugData("allRows()", { query, ...args });
+    return isQuery(query)
+      ? this.selectAllRows(query, ...args)
+      : this.fetchAllRows(query, ...args)
+  }
+  async oneRecord(query, ...args) {
+    this.debugData("oneRecord()", { query, args });
+    return isQuery(query)
+      ? this.selectOneRecord(query, ...args)
+      : this.fetchOneRecord(query, ...args)
+  }
+  async anyRecord(query, ...args) {
+    this.debugData("anyRecord()", { query, args });
+    return isQuery(query)
+      ? this.selectAnyRecord(query, ...args)
+      : this.fetchAnyRecord(query, ...args)
+  }
+  async allRecords(query, ...args) {
+    this.debugData("allRecords()", { query, args });
+    return isQuery(query)
+      ? this.selectAllRecords(query, ...args)
+      : this.fetchAllRecords(query, ...args)
+  }
+
+
 
   select(...args) {
     return this.build.select(...args);

@@ -1,6 +1,10 @@
 import Query from "../Query.js";
+import Builder from "../Builder.js";
 import { singleWord } from "../Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
+
+export const isQuery = query =>
+  isString(query) || (query instanceof Builder)
 
 export const expandFragments = (query, fragments={}, maxDepth=16) => {
   query = query.trim();

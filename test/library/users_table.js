@@ -13,6 +13,7 @@ export const createUsersTableQuery = engine => {
       id      ${serial},
       name    TEXT,
       email   TEXT,
+      animal  TEXT,
       friends INTEGER DEFAULT 0
     )`
 }
@@ -23,6 +24,7 @@ export const createUsersIdTableQuery = engine => {
     CREATE TABLE users (
       user_id ${serial},
       name    TEXT,
+      animal  TEXT,
       email   TEXT
     )`
 }

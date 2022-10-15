@@ -17,7 +17,7 @@ export function runTableQueriesTests(engine) {
         database,
         tables: {
           users: {
-            columns: 'id:readonly name:required email:required',
+            columns: 'id:readonly name:required email:required animal',
             fragments: {
               select:
                 'SELECT <columns> FROM <table>'
@@ -31,6 +31,8 @@ export function runTableQueriesTests(engine) {
                 `<select> WHERE name=${placeholder}`,
               selectByEmail:
                 `<select> WHERE email=${placeholder}`,
+              allBadgers:
+                table => table.fetch.where({ animal: 'Badger' })
             }
           }
         }
@@ -64,8 +66,9 @@ export function runTableQueriesTests(engine) {
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
-        name:  'Bobby Badger',
-        email: 'bobby@badgerpower.com'
+        name:   'Bobby Badger',
+        email:  'bobby@badgerpower.com',
+        animal: 'Badger'
       });
       t.is( result.id, 1 );
       t.is( result.changes, 1 );
@@ -117,6 +120,33 @@ export function runTableQueriesTests(engine) {
       t.is( bobbies[0].id, 1 );
       t.is( bobbies[0].name, 'Bobby Badger' );
       t.is( bobbies[0].email, 'bobby@badgerpower.com' );
+    }
+  )
+
+  // fetch all badgers once
+  test.serial(
+    'fetch all badgers once',
+    async t => {
+      const users = await db.table('users');
+      const values = users.query('allBadgers').values();
+      t.deepEqual( values, ['Badger'] );
+    }
+  )
+  // fetch all badgers twice
+  test.serial(
+    'fetch all badgers twice',
+    async t => {
+      const users = await db.table('users');
+      const values = users.query('allBadgers').values();
+      t.deepEqual( values, ['Badger'] );
+    }
+  )
+  test.serial(
+    'inspect fetch',
+    async t => {
+      const users = await db.table('users');
+      const values = users.fetch.values();
+      t.deepEqual( values, [] );
     }
   )
 

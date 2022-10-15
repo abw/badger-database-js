@@ -24,7 +24,7 @@ test.serial(
 )
 
 test.serial(
-  'users tables',
+  'users table',
   async t => {
     users = await db.model.users;
     t.is( users.table, 'users' );
@@ -32,7 +32,7 @@ test.serial(
 )
 
 test.serial(
-  'users table builder',
+  'build',
   async t => {
     const builder = users.build;
     t.true( builder instanceof Database )
@@ -41,7 +41,7 @@ test.serial(
 )
 
 test.serial(
-  'users builder from',
+  'build from',
   async t => {
     const from = users.build.from('wibble');
     t.true( from instanceof From )
@@ -49,51 +49,40 @@ test.serial(
 )
 
 test.serial(
-  'users table select',
+  'select',
   async t => {
     const select = users.select('a, b, c');
     const sql = select.sql();
-    t.is( sql, 'SELECT "a", "b", "c"\nFROM "users"')
-  }
-)
-
-/*
-test.serial(
-  'select columns',
-  async t => {
-    const select = users.select({ columns: 'a b c' });
-    const sql = select.sql();
-    t.is( sql, `SELECT "users"."a", "users"."b", "users"."c"\nFROM users`)
+    t.is( sql, 'SELECT "a", "b", "c"')
   }
 )
 
 test.serial(
-  'select columns with table name',
+  'from',
   async t => {
-    const select = users.select({ columns: 'a b c', table: 'another' });
-    const sql = select.sql();
-    t.is( sql, `SELECT "another"."a", "another"."b", "another"."c"\nFROM users`)
+    const from = users.from('a, b, c');
+    const sql = from.sql();
+    t.is( sql, 'FROM "a", "b", "c"')
   }
 )
 
 test.serial(
-  'select columns from multiple tables',
+  'fetch',
   async t => {
-    const select = users.select({ columns: 'a b' }).from('another').select({ columns: 'x y' });
-    const sql = select.sql();
-    t.is( sql, `SELECT "users"."a", "users"."b", "another"."x", "another"."y"\nFROM users, another`)
+    const fetch = users.fetch;
+    const sql = fetch.sql();
+    t.is( sql, 'SELECT "users"."id", "users"."name", "users"."email"\nFROM "users"')
   }
 )
 
 test.serial(
-  'select columns from multiple tables',
+  'fetch where',
   async t => {
-    const select = users.select({ columns: 'a b' }).from('another').select({ columns: 'x y' });
+    const select = users.fetch.where({ a: 10 });
     const sql = select.sql();
-    t.is( sql, `SELECT "users"."a", "users"."b", "another"."x", "another"."y"\nFROM users, another`)
+    t.is( sql, `SELECT "users"."id", "users"."name", "users"."email"\nFROM "users"\nWHERE "a" = ?`)
   }
 )
-*/
 
 test.after(
   () => db.disconnect()

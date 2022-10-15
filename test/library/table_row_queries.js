@@ -18,6 +18,7 @@ export function runTableRowQueries(engine) {
           users: {
             columns: 'id:readonly name:required email:required',
             queries: {
+              all:     t => t.fetch,
               byName:  t => t.fetch.where('name'),
               byEmail: t => t.fetch.where('email')
             }
@@ -98,7 +99,16 @@ export function runTableRowQueries(engine) {
     }
   )
 
-/*
+  test.serial(
+    'selectOneRow()',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.selectOneRow('byEmail', ['bobby@badgerpower.com']);
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+    }
+  )
+
   test.serial(
     'oneRow()',
     async t => {
@@ -108,7 +118,53 @@ export function runTableRowQueries(engine) {
       t.is( bobby.email, 'bobby@badgerpower.com' );
     }
   )
-*/
+
+  test.serial(
+    'selectAnyRow()',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.selectAnyRow('byEmail', ['bobby@badgerpower.com']);
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+    }
+  )
+
+  test.serial(
+    'anyRow()',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.anyRow('byEmail', ['bobby@badgerpower.com']);
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+    }
+  )
+
+  test.serial(
+    'selectAllRows()',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.selectAllRows('all');
+      t.is( rows.length, 2 );
+      t.is( rows[0].name,  'Bobby Badger' );
+      t.is( rows[0].email, 'bobby@badgerpower.com' );
+      t.is( rows[1].name,  'Brian Badger' );
+      t.is( rows[1].email, 'brian@badgerpower.com' );
+    }
+  )
+
+  test.serial(
+    'allRows()',
+    async t => {
+      const users = await db.table('users');
+      const rows = await users.allRows('all');
+      t.is( rows.length, 2 );
+      t.is( rows[0].name,  'Bobby Badger' );
+      t.is( rows[0].email, 'bobby@badgerpower.com' );
+      t.is( rows[1].name,  'Brian Badger' );
+      t.is( rows[1].email, 'brian@badgerpower.com' );
+    }
+  )
+
   test.after(
     () => db.disconnect()
   )
