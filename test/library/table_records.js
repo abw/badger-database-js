@@ -11,8 +11,7 @@ export function runTableRecordsTests(engine) {
   let db;
 
   // connect to the database
-  test.serial(
-    'database',
+  test.serial( 'database',
     t => {
       db = connect({
         database,
@@ -20,8 +19,8 @@ export function runTableRecordsTests(engine) {
           users: {
             columns: 'id:readonly name:required email:required animal',
             queries: {
-              byName:  table => table.fetch.where('name'),
-              badgers: table => table.fetch.where({ animal: 'Badger' })
+              byName:  table => table.selectFrom.where('name'),
+              badgers: table => table.selectFrom.where({ animal: 'Badger' })
             }
           }
         }
@@ -31,8 +30,7 @@ export function runTableRecordsTests(engine) {
   )
 
   // drop any existing users table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -42,8 +40,7 @@ export function runTableRecordsTests(engine) {
   )
 
   // create the table
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
@@ -51,8 +48,7 @@ export function runTableRecordsTests(engine) {
   );
 
   // insert some rows
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -68,8 +64,7 @@ export function runTableRecordsTests(engine) {
       t.is( result.email, 'bobby@badgerpower.com' );
     }
   )
-  test.serial(
-    'insert another row',
+  test.serial( 'insert another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -85,8 +80,7 @@ export function runTableRecordsTests(engine) {
       t.is( result.email, 'brian@badgerpower.com' );
     }
   )
-  test.serial(
-    'insert multiple rows',
+  test.serial( 'insert multiple rows',
     async t => {
       const users = await db.table('users');
       const result = await users.insert([
@@ -106,8 +100,7 @@ export function runTableRecordsTests(engine) {
   )
 
   // one methods
-  test.serial(
-    'fetchOneRecord()',
+  test.serial( 'fetchOneRecord()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.fetchOneRecord({
@@ -120,8 +113,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-  test.serial(
-    'fetchRecord()',
+  test.serial( 'fetchRecord()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.fetchRecord({
@@ -134,12 +126,22 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-  test.serial(
-    'selectOneRecord()',
+  test.serial( 'one()',
     async t => {
       const users = await db.table('users');
-      const bobby = await users.selectOneRecord(
+      const bobby = await users.one(
         'byName', ['Bobby Badger']
+      );
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.row, undefined );
+    }
+  )
+  test.serial( 'one() with record option',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.one(
+        'byName', ['Bobby Badger'], { record: true }
       );
       t.is( bobby.name, 'Bobby Badger' );
       t.is( bobby.email, 'bobby@badgerpower.com' );
@@ -148,22 +150,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-  test.serial(
-    'selectRecord()',
-    async t => {
-      const users = await db.table('users');
-      const bobby = await users.selectRecord(
-        'byName', ['Bobby Badger']
-      );
-      t.is( bobby.name, 'Bobby Badger' );
-      t.is( bobby.email, 'bobby@badgerpower.com' );
-      t.is( bobby.row.name, 'Bobby Badger' );
-      t.is( bobby.row.email, 'bobby@badgerpower.com' );
-      t.is( bobby instanceof Record, true );
-    }
-  )
-  test.serial(
-    'oneRecord() with data',
+  test.serial( 'oneRecord() with data',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRecord({
@@ -177,8 +164,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-  test.serial(
-    'oneRecord() with query',
+  test.serial( 'oneRecord() with query',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRecord(
@@ -191,289 +177,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-
-  // any
-  test.serial(
-    'fetchAnyRecord()',
-    async t => {
-      const users = await db.table('users');
-      const bobby = await users.fetchAnyRecord({
-        email: 'bobby@badgerpower.com'
-      });
-      t.is( bobby.name, 'Bobby Badger' );
-      t.is( bobby.email, 'bobby@badgerpower.com' );
-      t.is( bobby.row.name, 'Bobby Badger' );
-      t.is( bobby.row.email, 'bobby@badgerpower.com' );
-      t.is( bobby instanceof Record, true );
-    }
-  )
-  test.serial(
-    'selectAnyRecord()',
-    async t => {
-      const users = await db.table('users');
-      const bobby = await users.selectAnyRecord(
-        'byName', ['Bobby Badger']
-      );
-      t.is( bobby.name, 'Bobby Badger' );
-      t.is( bobby.email, 'bobby@badgerpower.com' );
-      t.is( bobby.row.name, 'Bobby Badger' );
-      t.is( bobby.row.email, 'bobby@badgerpower.com' );
-      t.is( bobby instanceof Record, true );
-    }
-  )
-  test.serial(
-    'anyRecord() with data',
-    async t => {
-      const users = await db.table('users');
-      const bobby = await users.anyRecord({
-        email: 'bobby@badgerpower.com'
-      });
-      t.is( bobby.name, 'Bobby Badger' );
-      t.is( bobby.email, 'bobby@badgerpower.com' );
-      t.is( bobby.row.name, 'Bobby Badger' );
-      t.is( bobby.row.email, 'bobby@badgerpower.com' );
-      t.is( bobby instanceof Record, true );
-    }
-  )
-  test.serial(
-    'anyRecord() with query',
-    async t => {
-      const users = await db.table('users');
-      const bobby = await users.anyRecord(
-        'byName', ['Bobby Badger']
-      );
-      t.is( bobby.name, 'Bobby Badger' );
-      t.is( bobby.email, 'bobby@badgerpower.com' );
-      t.is( bobby.row.name, 'Bobby Badger' );
-      t.is( bobby.row.email, 'bobby@badgerpower.com' );
-      t.is( bobby instanceof Record, true );
-    }
-  )
-
-  // all
-  test.serial(
-    'fetchAllRecords()',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.fetchAllRecords({
-        email: 'bobby@badgerpower.com'
-      });
-      t.is( recs.length, 1 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'fetchRecords()',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.fetchRecords({
-        email: 'bobby@badgerpower.com'
-      });
-      t.is( recs.length, 1 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'selectAllRecords()',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.selectAllRecords(
-        'byName', ['Bobby Badger'],
-      );
-      t.is( recs.length, 1 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'selectRecords()',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.selectRecords(
-        'byName', ['Bobby Badger'],
-      );
-      t.is( recs.length, 1 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-    }
-  )
-
-  test.serial(
-    'allRecords() with data',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords({
-        email: 'bobby@badgerpower.com'
-      });
-      t.is( recs.length, 1 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'allRecords() with query',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords(
-        'byName', ['Bobby Badger']
-      );
-      t.is( recs.length, 1 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-    }
-  )
-
-  test.serial(
-    'fetchAllRecords() multiple rows',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.fetchAllRecords({
-        animal: 'Badger'
-      });
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'fetchRecords() multiple rows',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.fetchRecords({
-        animal: 'Badger'
-      });
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'selectAllRecords() multiple rows',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.selectAllRecords('badgers');
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'selectRecords() multiple rows',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.selectRecords('badgers');
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-
-  test.serial(
-    'allRecords() with query multiple rows',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords('badgers');
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'allRecords() with query multiple rows repeated',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords('badgers');
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-
-  test.serial(
-    'allRecords() with data multiple rows',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords({
-        animal: 'Badger'
-      });
-      t.is( recs.length, 2 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-
-  test.serial(
-    'allRecords() with no spec',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords();
-      t.is( recs.length, 4 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1].email, 'brian@badgerpower.com' );
-      t.is( recs[1].row.name, 'Brian Badger' );
-      t.is( recs[1].row.email, 'brian@badgerpower.com' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'allRecords() with empty spec',
-    async t => {
-      const users = await db.table('users');
-      const recs  = await users.allRecords({ });
-      t.is( recs.length, 4 );
-      t.is( recs[0].name, 'Bobby Badger' );
-      t.is( recs[0].email, 'bobby@badgerpower.com' );
-      t.is( recs[0].row.name, 'Bobby Badger' );
-      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
-      t.is( recs[0] instanceof Record, true );
-      t.is( recs[1].name, 'Brian Badger' );
-      t.is( recs[1].email, 'brian@badgerpower.com' );
-      t.is( recs[1].row.name, 'Brian Badger' );
-      t.is( recs[1].row.email, 'brian@badgerpower.com' );
-      t.is( recs[1] instanceof Record, true );
-    }
-  )
-  test.serial(
-    'oneRecord() with columns',
+  test.serial( 'oneRecord() with columns',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRecord(
@@ -493,9 +197,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-
-  test.serial(
-    'oneRecord() with then',
+  test.serial( 'oneRecord() with then',
     async t => {
       await db.table('users')
         .then(
@@ -515,9 +217,264 @@ export function runTableRecordsTests(engine) {
     }
   )
 
+  // any
+  test.serial( 'fetchAnyRecord()',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.fetchAnyRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.row.name, 'Bobby Badger' );
+      t.is( bobby.row.email, 'bobby@badgerpower.com' );
+      t.is( bobby instanceof Record, true );
+    }
+  )
+  test.serial( 'any() with record option',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.any(
+        'byName', ['Bobby Badger'], { record: true }
+      );
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.row.name, 'Bobby Badger' );
+      t.is( bobby.row.email, 'bobby@badgerpower.com' );
+      t.is( bobby instanceof Record, true );
+    }
+  )
+  test.serial( 'anyRecord() with data',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.anyRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.row.name, 'Bobby Badger' );
+      t.is( bobby.row.email, 'bobby@badgerpower.com' );
+      t.is( bobby instanceof Record, true );
+    }
+  )
+  test.serial( 'anyRecord() with query',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.anyRecord(
+        'byName', ['Bobby Badger']
+      );
+      t.is( bobby.name, 'Bobby Badger' );
+      t.is( bobby.email, 'bobby@badgerpower.com' );
+      t.is( bobby.row.name, 'Bobby Badger' );
+      t.is( bobby.row.email, 'bobby@badgerpower.com' );
+      t.is( bobby instanceof Record, true );
+    }
+  )
+
+  // all
+  test.serial( 'fetchAllRecords()',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.fetchAllRecords({
+        email: 'bobby@badgerpower.com'
+      });
+      t.is( recs.length, 1 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+    }
+  )
+  test.serial( 'fetchRecords()',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.fetchRecords({
+        email: 'bobby@badgerpower.com'
+      });
+      t.is( recs.length, 1 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+    }
+  )
+  test.serial( 'all()',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.all(
+        'byName', ['Bobby Badger']
+      );
+      t.is( rows.length, 1 );
+      t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[0].email, 'bobby@badgerpower.com' );
+      t.is( rows[0].row, undefined );
+    }
+  )
+  test.serial( 'all() with record option',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.all(
+        'byName', ['Bobby Badger'], { record: true }
+      );
+      t.is( recs.length, 1 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with data',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords({
+        email: 'bobby@badgerpower.com'
+      });
+      t.is( recs.length, 1 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with query',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords(
+        'byName', ['Bobby Badger']
+      );
+      t.is( recs.length, 1 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+    }
+  )
+  test.serial( 'fetchAllRecords() multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.fetchAllRecords({
+        animal: 'Badger'
+      });
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'fetchRecords() multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.fetchRecords({
+        animal: 'Badger'
+      });
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords('badgers');
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'all() with record option multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.all('badgers', [], { record: true });
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with query multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords('badgers');
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with query multiple rows repeated',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords('badgers');
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with data multiple rows',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords({
+        animal: 'Badger'
+      });
+      t.is( recs.length, 2 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with no spec',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords();
+      t.is( recs.length, 4 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1].email, 'brian@badgerpower.com' );
+      t.is( recs[1].row.name, 'Brian Badger' );
+      t.is( recs[1].row.email, 'brian@badgerpower.com' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+  test.serial( 'allRecords() with empty spec',
+    async t => {
+      const users = await db.table('users');
+      const recs  = await users.allRecords({ });
+      t.is( recs.length, 4 );
+      t.is( recs[0].name, 'Bobby Badger' );
+      t.is( recs[0].email, 'bobby@badgerpower.com' );
+      t.is( recs[0].row.name, 'Bobby Badger' );
+      t.is( recs[0].row.email, 'bobby@badgerpower.com' );
+      t.is( recs[0] instanceof Record, true );
+      t.is( recs[1].name, 'Brian Badger' );
+      t.is( recs[1].email, 'brian@badgerpower.com' );
+      t.is( recs[1].row.name, 'Brian Badger' );
+      t.is( recs[1].row.email, 'brian@badgerpower.com' );
+      t.is( recs[1] instanceof Record, true );
+    }
+  )
+
+
   // record update
-  test.serial(
-    'record update',
+  test.serial( 'record update',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRecord({
@@ -529,8 +486,7 @@ export function runTableRecordsTests(engine) {
   )
 
   // record delete
-  test.serial(
-    'record delete',
+  test.serial( 'record delete',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRecord({
@@ -545,8 +501,7 @@ export function runTableRecordsTests(engine) {
     }
   )
 
-  test.serial(
-    'cannot update deleted record',
+  test.serial( 'cannot update deleted record',
     async t => {
       const users = await db.table('users');
       const brian = await users.oneRecord({
@@ -569,8 +524,8 @@ export function runTableRecordsTests(engine) {
     }
   )
 
-  test.serial(
-    'insert a record',
+  // insert records
+  test.serial( 'insert a record',
     async t => {
       const users = await db.table('users');
       const bobby = await users.insert(
@@ -585,9 +540,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-
-  test.serial(
-    'insert a record with reload',
+  test.serial( 'insert a record with reload',
     async t => {
       const users = await db.table('users');
       const brian = await users.insert(
@@ -602,9 +555,21 @@ export function runTableRecordsTests(engine) {
       t.is( brian instanceof Record, true );
     }
   )
-
-  test.serial(
-    'insert records',
+  test.serial( 'insert a record using insertRecord()',
+    async t => {
+      const users = await db.table('users');
+      const alan  = await users.insertRecord(
+        {
+          name:  'Alan Aardvark',
+          email: 'alan@badgerpower.com'
+        },
+      );
+      t.is( alan.name, 'Alan Aardvark' );
+      t.is( alan.email, 'alan@badgerpower.com' );
+      t.is( alan instanceof Record, true );
+    }
+  )
+  test.serial( 'insert records using insertRecords()',
     async t => {
       const users = await db.table('users');
       const records = await users.insertRecords(

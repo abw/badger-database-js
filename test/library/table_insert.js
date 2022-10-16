@@ -35,6 +35,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
+  // create table
   test.serial(
     'create table',
     async t => {
@@ -43,7 +44,7 @@ export function runTableInsertTests(engine) {
     }
   );
 
-  // insert a row
+  // insert rows
   test.serial(
     'insert a row',
     async t => {
@@ -58,13 +59,11 @@ export function runTableInsertTests(engine) {
       t.is( result.email, undefined );
     }
   )
-
-  // insert another row
   test.serial(
-    'insert another row using insertOneRow()',
+    'insert another row using insertOne()',
     async t => {
       const users = await db.table('users');
-      const result = await users.insertOneRow(
+      const result = await users.insertOne(
         {
           name:  'Brian Badger',
           email: 'brian@badgerpower.com'
@@ -84,7 +83,7 @@ export function runTableInsertTests(engine) {
     'allRows()',
     async t => {
       const users = await db.table('users');
-      const badgers = await users.allRows();
+      const badgers = await users.allRows();    // why not all?
       t.is( badgers.length, 2 );
       t.is( badgers[0].name, 'Bobby Badger' );
       t.is( badgers[1].name, 'Brian Badger' );
@@ -143,10 +142,10 @@ export function runTableInsertTests(engine) {
   )
 
   test.serial(
-    'insert multiple rows using insertAllRows()',
+    'insert multiple rows using insertAll()',
     async t => {
       const users = await db.table('users');
-      const result = await users.insertAllRows([
+      const result = await users.insertAll([
         {
           name:  'Edward Elephant',
           email: 'edward@badgerpower.com'
@@ -165,10 +164,10 @@ export function runTableInsertTests(engine) {
   )
 
   test.serial(
-    'insert multiple rows using insertAllRows() with reload',
+    'insert multiple rows using insertAll() with reload',
     async t => {
       const users = await db.table('users');
-      const result = await users.insertAllRows(
+      const result = await users.insertAll(
         [
           {
             name:  'Hector Horse',

@@ -57,7 +57,7 @@ export function runTableWhereTests(engine) {
   test.serial(
     'insert some rows',
     async t => {
-      const albums = await db.waiter.model.albums.insertRows([
+      const albums = await db.waiter.model.albums.insertAll([
         { year: 1970, title: 'Atom Heart Mother' },
         { year: 1973, title: 'The Dark Side of the Moon' },
         { year: 1975, title: 'Wish You Were Here' },

@@ -17,7 +17,7 @@ export class Record {
     this.debugData("update()", { set });
     this.assertNotDeleted('update');
     const where = this.table.identity(this.row);
-    const update = await this.table.updateOneRow(set, where, { reload: true });
+    const update = await this.table.updateOne(set, where, { reload: true });
     Object.assign(this.row, update);
     return this;
   }

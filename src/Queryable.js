@@ -10,6 +10,16 @@ export class Queryable {
     this.engine    = engine || missing('engine');
   }
 
+  query(source) {
+    this.debugData("query()", { source });
+    const query = this.queries[source] || fail("Invalid named query specified: ", source);
+    // a named query can be a function which we call, returning either a string
+    // or a query builder
+    return isFunction(query)
+      ? query(this)
+      : query;
+  }
+
   buildQuery(source, config) {
     this.debugData("buildQuery()", { source });
     return new Query(
@@ -38,39 +48,48 @@ export class Queryable {
       : query;
   }
 
-  query(source) {
-    this.debugData("query()", { source });
-    const query = this.queries[source] || fail("Invalid named query specified: ", source);
-    // a named query can be a function which we call, returning either a string
-    // or a query builder
-    return isFunction(query)
-      ? query(this)
-      : query;
-  }
-
   sql(name, config) {
     this.debugData("sql()", { name, config });
     return this.buildQuery(name, config).sql();
   }
 
-  run(query, params, options) {
+  async run(query, params, options) {
     this.debugData("run()", { query, params, options });
     return this.buildQuery(query).run(params, options)
   }
 
-  one(query, params, options) {
+  async one(query, params, options) {
     this.debugData("one()", { query, params, options });
-    return this.buildQuery(query).one(params, options)
+    return this.loadedOne(
+      await this.buildQuery(query).one(params, options),
+      options
+    )
   }
 
-  any(query, params, options) {
+  async any(query, params, options) {
     this.debugData("any()", { query, params, options });
-    return this.buildQuery(query).any(params, options)
+    return this.loadedAny(
+      await this.buildQuery(query).any(params, options),
+      options
+    )
   }
 
-  all(query, params, options) {
+  async all(query, params, options) {
     this.debugData("all()", { query, params, options });
-    return this.buildQuery(query).all(params, options)
+    return this.loadedAll(
+      await this.buildQuery(query).all(params, options),
+      options
+    )
+  }
+
+  loadedOne(row) {
+    return row;
+  }
+  loadedAny(row) {
+    return row;
+  }
+  loadedAll(rows) {
+    return rows;
   }
 }
 

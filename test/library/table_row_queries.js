@@ -8,9 +8,7 @@ export function runTableRowQueries(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  // connect to the database
-  test.serial(
-    'database',
+  test.serial( 'database',
     t => {
       db = connect({
         database,
@@ -18,9 +16,9 @@ export function runTableRowQueries(engine) {
           users: {
             columns: 'id:readonly name:required email:required',
             queries: {
-              all:     t => t.fetch,
-              byName:  t => t.fetch.where('name'),
-              byEmail: t => t.fetch.where('email')
+              all:     t => t.selectFrom,
+              byName:  t => t.selectFrom.where('name'),
+              byEmail: t => t.selectFrom.where('email')
             }
           },
         }
@@ -29,27 +27,21 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  // drop any existing users table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(dropUsersTableQuery)
       t.pass();
     }
   )
 
-  // create the table
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  // insert a couple of rows
-  test.serial(
-    'insert a row',
+  test.serial( 'insert rows',
     async t => {
       const users = await db.table('users');
       const result = await users.insert([
@@ -66,8 +58,7 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'one()',
+  test.serial( 'one()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.one('byEmail', ['bobby@badgerpower.com']);
@@ -76,8 +67,7 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'any()',
+  test.serial( 'any()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.any('byEmail', ['bobby@badgerpower.com']);
@@ -86,11 +76,10 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'all()',
+  test.serial( 'all()',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.all(users.fetch);
+      const rows  = await users.all(users.selectFrom);
       t.is( rows.length, 2 );
       t.is( rows[0].name,  'Bobby Badger' );
       t.is( rows[0].email, 'bobby@badgerpower.com' );
@@ -99,18 +88,16 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'selectOneRow()',
+  test.serial( 'oneRow() with data',
     async t => {
       const users = await db.table('users');
-      const bobby = await users.selectOneRow('byEmail', ['bobby@badgerpower.com']);
+      const bobby = await users.oneRow({ email: 'bobby@badgerpower.com' });
       t.is( bobby.name, 'Bobby Badger' );
       t.is( bobby.email, 'bobby@badgerpower.com' );
     }
   )
 
-  test.serial(
-    'oneRow()',
+  test.serial( 'oneRow() with query',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRow('byEmail', ['bobby@badgerpower.com']);
@@ -119,18 +106,16 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'selectAnyRow()',
+  test.serial( 'anyRow() with data',
     async t => {
       const users = await db.table('users');
-      const bobby = await users.selectAnyRow('byEmail', ['bobby@badgerpower.com']);
+      const bobby = await users.anyRow({ email: 'bobby@badgerpower.com' });
       t.is( bobby.name, 'Bobby Badger' );
       t.is( bobby.email, 'bobby@badgerpower.com' );
     }
   )
 
-  test.serial(
-    'anyRow()',
+  test.serial( 'anyRow() with query',
     async t => {
       const users = await db.table('users');
       const bobby = await users.anyRow('byEmail', ['bobby@badgerpower.com']);
@@ -139,11 +124,10 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'selectAllRows()',
+  test.serial( 'allRows() with data',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.selectAllRows('all');
+      const rows  = await users.allRows();
       t.is( rows.length, 2 );
       t.is( rows[0].name,  'Bobby Badger' );
       t.is( rows[0].email, 'bobby@badgerpower.com' );
@@ -152,8 +136,7 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.serial(
-    'allRows()',
+  test.serial( 'allRows() with query',
     async t => {
       const users = await db.table('users');
       const rows = await users.allRows('all');

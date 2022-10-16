@@ -9,22 +9,12 @@ import Queryable from "./Queryable.js";
 import { aliasMethods } from "./Utils/Methods.js";
 
 const methodAliases = {
-  insertRow:     "insertOneRow",
-  insertRows:    "insertAllRows",
   insertRecord:  "insertOneRecord",
   insertRecords: "insertAllRecords",
-  updateRow:     "updateOneRow",
-  updateRows:    "updateAllRows",
-  fetchRow:      "fetchOneRow",
-  fetchRows:     "fetchAllRows",
-  selectRow:     "selectOneRow",
-  selectRows:    "selectAllRows",
+  update:         "updateAll",
   fetchRecord:   "fetchOneRecord",
   fetchRecords:  "fetchAllRecords",
-  selectRecord:  "selectOneRecord",
-  selectRecords: "selectAllRecords",
 }
-
 
 export class Table extends Queryable {
   constructor(database, config) {
@@ -43,7 +33,7 @@ export class Table extends Queryable {
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
     this.build         = this.database.build;
-    this.fetch         = this.build.select({
+    this.selectFrom    = this.build.select({
       table:   this.table,
       columns: Object.keys(this.columns)
     }).from(this.table)
@@ -113,11 +103,11 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   async insert(data, options) {
     return isArray(data, options)
-      ? this.insertAllRows(data, options)
-      : this.insertOneRow(data, options)
+      ? this.insertAll(data, options)
+      : this.insertOne(data, options)
   }
-  async insertOneRow(data, options={}) {
-    this.debugData("insertOneRow()", { data, options });
+  async insertOne(data, options={}) {
+    this.debugData("insertOne()", { data, options });
     const [cols, vals] = this.checkWritableColumns(data);
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
@@ -125,21 +115,21 @@ export class Table extends Queryable {
       ? this.insertReload(data, insert, options)
       : insert;
   }
-  async insertAllRows(data, options) {
-    this.debugData("insertAllRows()", { data, options });
+  async insertAll(data, options) {
+    this.debugData("insertAll()", { data, options });
     let rows = [ ];
     for (const row of data) {
-      rows.push(await this.insertOneRow(row, options));
+      rows.push(await this.insertOne(row, options));
     }
     return rows;
   }
-  async insertOneRecord(data, options={}) {
+  async insertOneRecord(data, options) {
     this.debugData("insertOneRecord()", { data, options });
-    return this.insertOneRow(data, { ...options, record: true })
+    return this.insertOne(data, this.withRecordOption(options))
   }
-  async insertAllRecords(data, options={}) {
+  async insertAllRecords(data, options) {
     this.debugData("insertAllRecords()", { data, options });
-    return this.insertAllRows(data, { ...options, record: true })
+    return this.insertAll(data, this.withRecordOption(options))
   }
 
   //-----------------------------------------------------------------------------
@@ -150,11 +140,8 @@ export class Table extends Queryable {
     const [wcols, wvals] = this.checkWhereColumns(where);
     return [dcols, dvals, wcols, wvals];
   }
-  async update(...args) {
-    return this.updateAllRows(...args);
-  }
-  async updateOneRow(set, where, options={}) {
-    this.debugData("updateOneRow()", { set, where, options });
+  async updateOne(set, where, options={}) {
+    this.debugData("updateOne()", { set, where, options });
     const args = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes !== 1) {
@@ -164,8 +151,8 @@ export class Table extends Queryable {
       ? this.updateReload(set, where)
       : update;
   }
-  async updateAnyRow(set, where, options={}) {
-    this.debugData("updateAnyRow()", { set, where, options });
+  async updateAny(set, where, options={}) {
+    this.debugData("updateAny()", { set, where, options });
     const args = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes > 1) {
@@ -177,7 +164,7 @@ export class Table extends Queryable {
         : undefined
       : update;
   }
-  async updateAllRows(set, where, options={}) {
+  async updateAll(set, where, options={}) {
     this.debugData("updateAllRows()", { set, where, options });
     const args   = this.prepareUpdate(set, where);
     const update = await this.engine.update(this.table, ...args);
@@ -203,8 +190,8 @@ export class Table extends Queryable {
     this.checkColumnNames(params.columns);
     return this.checkWhereColumns(where);
   }
-  async fetchOneRow(where, options={}) {
-    this.debugData("fetchOneRow()", { where, options });
+  async fetchOne(where, options={}) {
+    this.debugData("fetchOne()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     const row = await this.engine.selectOne(this.table, wcols, wvals, params);
@@ -212,8 +199,8 @@ export class Table extends Queryable {
       ? this.record(row)
       : row;
   }
-  async fetchAnyRow(where, options={}) {
-    this.debugData("fetchAnyRow()", { where, options });
+  async fetchAny(where, options={}) {
+    this.debugData("fetchAny()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
     const row = await this.engine.selectAny(this.table, wcols, wvals, params);
@@ -223,7 +210,7 @@ export class Table extends Queryable {
         : row
       : undefined;
   }
-  async fetchAllRows(where, options={}) {
+  async fetchAll(where, options={}) {
     this.debugData("fetchAllRows()", { where, options });
     const params = { ...options };
     const [wcols, wvals] = this.prepareFetch(where, params);
@@ -232,56 +219,17 @@ export class Table extends Queryable {
       ? this.records(rows)
       : rows;
   }
-  async fetchOneRecord(where, options={}) {
+  async fetchOneRecord(where, options) {
     this.debugData("fetchOneRecord()", { where, options });
-    return this.fetchOneRow(where, { ...options, record: true });
+    return this.fetchOne(where, this.withRecordOption(options));
   }
-  async fetchAnyRecord(where, options={}) {
+  async fetchAnyRecord(where, options) {
     this.debugData("fetchAnyRecord()", { where, options });
-    return this.fetchAnyRow(where, { ...options, record: true });
+    return this.fetchAny(where, this.withRecordOption(options));
   }
-  async fetchAllRecords(where, options={}) {
+  async fetchAllRecords(where, options) {
     this.debugData("fetchAllRecords()", { where, options });
-    return this.fetchAllRows(where, { ...options, record: true });
-  }
-
-  //-----------------------------------------------------------------------------
-  // select - using a query
-  //-----------------------------------------------------------------------------
-  async selectOneRow(query, values, options={}) {
-    this.debugData("selectOneRow()", { query, values, options });
-    const row = await this.one(query, values, options);
-    return options.record
-      ? this.record(row)
-      : row;
-  }
-  async selectAnyRow(query, values, options={}) {
-    this.debugData("selectAnyRow()", { query, values, options });
-    const row = await this.any(query, values, options);
-    return row
-      ? options.record
-        ? this.record(row)
-        : row
-      : undefined;
-  }
-  async selectAllRows(query, values, options={}) {
-    this.debugData("selectAllRows()", { query, values, options });
-    const rows = await this.all(query, values, options);
-    return options.record
-      ? this.records(rows)
-      : rows;
-  }
-  async selectOneRecord(query, values, options={}) {
-    this.debugData("selectOneRecord()", { query, values, options });
-    return this.selectOneRow(query, values, { ...options, record: true });
-  }
-  async selectAnyRecord(query, values, options={}) {
-    this.debugData("selectAnyRecord()", { query, values, options });
-    return this.selectAnyRow(query, values, { ...options, record: true });
-  }
-  async selectAllRecords(query, values, options={}) {
-    this.debugData("selectAllRecords()", { query, values, options });
-    return this.selectAllRows(query, values, { ...options, record: true });
+    return this.fetchAll(where, this.withRecordOption(options));
   }
 
   //-----------------------------------------------------------------------------
@@ -292,41 +240,58 @@ export class Table extends Queryable {
   async oneRow(query, ...args) {
     this.debugData("oneRow()", { query, args });
     return isQuery(query)
-      ? this.selectOneRow(query, ...args)
-      : this.fetchOneRow(query, ...args)
+      ? this.one(query, ...args)
+      : this.fetchOne(query, ...args)
   }
   async anyRow(query, ...args) {
     this.debugData("anyRow()", { query, ...args });
     return isQuery(query)
-      ? this.selectAnyRow(query, ...args)
-      : this.fetchAnyRow(query, ...args)
+      ? this.any(query, ...args)
+      : this.fetchAny(query, ...args)
   }
   async allRows(query, ...args) {
     this.debugData("allRows()", { query, ...args });
     return isQuery(query)
-      ? this.selectAllRows(query, ...args)
-      : this.fetchAllRows(query, ...args)
+      ? this.all(query, ...args)
+      : this.fetchAll(query, ...args)
   }
   async oneRecord(query, ...args) {
     this.debugData("oneRecord()", { query, args });
     return isQuery(query)
-      ? this.selectOneRecord(query, ...args)
-      : this.fetchOneRecord(query, ...args)
+      ? this.one(query, args[0], this.withRecordOption(args[1]))
+      : this.fetchOne(query, this.withRecordOption(args[0]))
   }
   async anyRecord(query, ...args) {
     this.debugData("anyRecord()", { query, args });
     return isQuery(query)
-      ? this.selectAnyRecord(query, ...args)
-      : this.fetchAnyRecord(query, ...args)
+      ? this.any(query, args[0], this.withRecordOption(args[1]))
+      : this.fetchAny(query, this.withRecordOption(args[0]))
   }
   async allRecords(query, ...args) {
     this.debugData("allRecords()", { query, args });
     return isQuery(query)
-      ? this.selectAllRecords(query, ...args)
-      : this.fetchAllRecords(query, ...args)
+      ? this.all(query, args[0], this.withRecordOption(args[1]))
+      : this.fetchAll(query, this.withRecordOption(args[0]))
   }
 
-
+  loadedOne(row, options={}) {
+    return options.record
+      ? this.record(row)
+      : row;
+  }
+  loadedAny(row, options={}) {
+    return row
+      ? this.loadedOne(row, options)
+      : undefined;
+  }
+  loadedAll(rows, options={}) {
+    return options.record
+      ? this.records(rows)
+      : rows;
+  }
+  withRecordOption(options={}) {
+    return { ...options, record: true };
+  }
 
   select(...args) {
     return this.build.select(...args);

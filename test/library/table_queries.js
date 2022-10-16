@@ -9,9 +9,7 @@ export function runTableQueriesTests(engine) {
   const placeholder = engine === 'postgres' ? '$1' : '?';
   let db;
 
-  // connect
-  test.serial(
-    'connect',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -32,7 +30,7 @@ export function runTableQueriesTests(engine) {
               selectByEmail:
                 `<select> WHERE email=${placeholder}`,
               allBadgers:
-                table => table.fetch.where({ animal: 'Badger' })
+                table => table.selectFrom.where({ animal: 'Badger' })
             }
           }
         }
@@ -41,9 +39,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  // drop any existing table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       const users = await db.table('users');
       await users.run('dropTable');
@@ -51,8 +47,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       const users = await db.table('users');
       await users.run('createTable');
@@ -60,9 +55,7 @@ export function runTableQueriesTests(engine) {
     }
   );
 
-  // insert a row
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -75,9 +68,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  // fetch one row
-  test.serial(
-    'fetch one row',
+  test.serial( 'fetch one row',
     async t => {
       const users = await db.table('users');
       const bobby = await users.one(
@@ -92,9 +83,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  // fetch any row
-  test.serial(
-    'fetch any row',
+  test.serial( 'fetch any row',
     async t => {
       const users = await db.table('users');
       const bobby = await users.any(
@@ -107,9 +96,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  // fetch all rows
-  test.serial(
-    'fetch all rows',
+  test.serial( 'fetch all rows',
     async t => {
       const users = await db.table('users');
       const bobbies = await users.all(
@@ -123,29 +110,26 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  // fetch all badgers once
-  test.serial(
-    'fetch all badgers once',
+  test.serial( 'fetch all badgers once',
     async t => {
       const users = await db.table('users');
       const values = users.query('allBadgers').values();
       t.deepEqual( values, ['Badger'] );
     }
   )
-  // fetch all badgers twice
-  test.serial(
-    'fetch all badgers twice',
+
+  test.serial( 'fetch all badgers twice',
     async t => {
       const users = await db.table('users');
       const values = users.query('allBadgers').values();
       t.deepEqual( values, ['Badger'] );
     }
   )
-  test.serial(
-    'inspect fetch',
+
+  test.serial( 'inspect fetch',
     async t => {
       const users = await db.table('users');
-      const values = users.fetch.values();
+      const values = users.selectFrom.values();
       t.deepEqual( values, [] );
     }
   )
