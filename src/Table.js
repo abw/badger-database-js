@@ -11,7 +11,8 @@ import { aliasMethods } from "./Utils/Methods.js";
 const methodAliases = {
   insertRecord:  "insertOneRecord",
   insertRecords: "insertAllRecords",
-  update:         "updateAll",
+  update:        "updateAll",
+  fetch:         "fetchAll",
   fetchRecord:   "fetchOneRecord",
   fetchRecords:  "fetchAllRecords",
 }
