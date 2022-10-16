@@ -70,6 +70,13 @@ The [github repository](https://github.com/abw/badger-database-js) includes a
 number of [examples](https://github.com/abw/badger-database-js/tree/master/examples/)
 taken from the manual that demonstrate the functionality.
 
+## Stability
+
+Version 1.x.x should be considered an alpha release which is subject
+to change.
+
+Version 2.0.0 will be the first stable release.
+
 ## Caveat
 
 This is currently a work in progress loosely based on the Perl
@@ -90,7 +97,7 @@ make it to the top of my TODO list.  Iif you're looking to add a new
 feature then please [discuss it with me](mailto:abw@wardley.org) first.
 
 All that said, it's a relatively simple project totalling less
-than 2,500 lines of code.  It's got an extensive test suite of around
+than 2,500 lines of code.  It's got an extensive test suite of over
 1,000 tests (adding another 8,000 lines of code) and a comprehensive
 user manual.  An experienced Javascript programmer with knowledge of SQL
 should be able to grok the code in a few hours.  If you're happy to use
