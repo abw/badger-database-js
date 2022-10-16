@@ -425,9 +425,7 @@ to match all records where the `year` is greater than `2000`.
 
 ### fetch(where, options)
 
-TODO: this is an alias for fetchAll
-
-PROBLEM: already a table.fetch property for builder
+This is an alias for the [fetchAll()](#fetchall-where--options-) method.
 
 ### fetchOne(where, options)
 
