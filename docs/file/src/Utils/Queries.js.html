@@ -146,7 +146,7 @@ import { fail, isString } from "@abw/badger-utils";
 export const isQuery = query =&gt;
   isString(query) || (query instanceof Builder)
 
-export const expandFragments = (query, fragments={}, maxDepth=16) =&gt; {
+export const expandFragments = (query, queryable, maxDepth=16) =&gt; {
   query = query.trim();
   let sql = query;
   let runaway = 0;
@@ -160,7 +160,7 @@ export const expandFragments = (query, fragments={}, maxDepth=16) =&gt; {
       (match, word) =&gt; {
         replaced = true;
         expanded.push(word);
-        return fragments[word] || fail("Invalid fragment in SQL expansion: &lt;", word, "&gt;");
+        return queryable.fragment(word);
       }
     );
     if (! replaced) {

@@ -149,17 +149,26 @@ import { missing } from "./Utils/Error.js";
 
 export class Queryable {
   constructor(engine) {
-    this.engine    = engine || missing('engine');
+    this.engine = engine || missing('engine');
   }
 
   query(source) {
     this.debugData("query()", { source });
-    const query = this.queries[source] || fail("Invalid named query specified: ", source);
+    const query = this.queries[source]
+      || (this.database &amp;&amp; this.database.query(source))
+      || fail("Invalid named query specified: ", source);
     // a named query can be a function which we call, returning either a string
     // or a query builder
     return isFunction(query)
       ? query(this)
       : query;
+  }
+
+  fragment(name) {
+    this.debugData("fragment()", { name });
+    return this.fragments[name]
+      || (this.database &amp;&amp; this.database.fragment(name))
+      || fail("Invalid query fragment in SQL expansion: &lt;", name, "&gt;");
   }
 
   buildQuery(source, config) {
@@ -177,7 +186,7 @@ export class Queryable {
     // otherwise it's an SQL query possibly with embedded fragments
     return source.match(singleWord)
       ? this.expandNamedQuery(source, config)
-      : expandFragments(source, this.fragments);
+      : expandFragments(source, this);
   }
 
   expandNamedQuery(name) {
@@ -186,9 +195,10 @@ export class Queryable {
     // the named query can be a string with embedded fragments that should
     // be expanded, or it can be a query builder
     return isString(query)
-      ? expandFragments(query, this.fragments)
+      ? expandFragments(query, this)
       : query;
   }
+
 
   sql(name, config) {
     this.debugData("sql()", { name, config });

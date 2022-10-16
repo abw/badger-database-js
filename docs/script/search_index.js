@@ -2688,6 +2688,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/queryable.js~queryable#fragment",
+    "class/src/Queryable.js~Queryable.html#instance-method-fragment",
+    "src/Queryable.js~Queryable#fragment",
+    "method"
+  ],
+  [
     "src/queryable.js~queryable#loadedall",
     "class/src/Queryable.js~Queryable.html#instance-method-loadedAll",
     "src/Queryable.js~Queryable#loadedAll",
