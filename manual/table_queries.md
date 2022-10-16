@@ -1,346 +1,444 @@
 # Table Queries
 
-You can define named queries and query fragments in your tables.
-This allows you to scope queries more closely to the table that
+## Query Methods
+
+Table objects implement the [run()](#run-query--values--options-),
+[one()](#one-query--values--options-), [any()](#any-query--values--options-)
+and [all()](#all-query--values--options-) method similar to those
+defined on the main database for running [basic queries](manual/basic_queries.html).
+
+```js
+const user = await users.one(
+  'SELECT "name" FROM "users" WHERE id = ?'
+  [12345]
+);
+```
+
+## Named Queries
+
+You can define [named queries](manual/named_queries.html) in your
+tables. This allows you to scope queries more closely to the table that
 they relate to, instead of piling everything into the main database
 definition.
 
-They work in exactly the same way as for
-[named queries](manual/named_queries.html) defined on the database.
-You can use static SQL queries, you can embed query fragments into
-queries, or you can use the [query builder](manual/query_builder.html)
-to generate the queries for you.
-
 ```js
 const db = connect({
-  database: 'sqlite://.db',
+  database: 'sqlite://users.db',
   tables: {
     users: {
       columns: 'id name email'
       queries: {
-        selectByName:
-          // SQL including table-specific fragments
-          'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
-        selectByEmail:
-          // using a query builder
-          t => t.select('id name email').from('users').where('email'),
-        allBadgers:
-          // using the .fetch query builder shortcut
-          t => t.fetch.where({ animal: 'Badger' })
+        selectNameById:
+          'SELECT "name" FROM "users" WHERE id = ?'
       }
     },
   }
 });
+const users = await db.table('users')
+const user = await users.one(
+  'selectNameById'
+  [12345]
+);
+```
 
-// fetch the users table
-const users = await db.table('users');
+## Query Fragments
 
-// calling named queries
-const user1 = await users.one('selectByName', ['Bobby Badger']);
-const user2 = await users.any('selectByEmail', ['brian@badgerpower.com']);
+You can define [query fragments](manual/query_fragments.html)
+that can be embedded in your named queries or arbitrary SQL
+queries.
+
+```js
+const db = connect({
+  database: 'sqlite://users.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      fragments: {
+        selectName:
+          'SELECT "name" FROM "users"'
+      }
+      queries: {
+        selectNameById:
+          '&lt;selectName&gt; WHERE id = ?'
+      }
+    },
+  }
+});
+const users = await db.table('users')
+
+// named query with embedded fragments
+const user1 = await users.one(
+  'selectNameById'
+  [12345]
+);
+
+// embed fragments directly into SQL query
+const user2 = await users.one(
+  '&lt;selectName&gt; WHERE email = ?'
+  ['bobby@badgerpower.com']
+);
 ```
 
 The table pre-defines two fragments for each table: `<table>` is the quoted
 table name (e.g. `"users"`) and `<columns>` is a list of all the columns
 in the table, scoped to the table name with both parts properly quoted
-(e.g. `"users"."id", "users"."name", "users"."email").
+(e.g. `"users"."id", "users"."name", "users"."email"`).
 
 This allows you to write more succinct named queries where you want to include
 all the columns:
 
 ```js
-// tables.users.queries...
-selectByName:
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
+const db = connect({
+  database: 'sqlite://users.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectById:
+          'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE id = ?'
+      }
+    },
+  }
+});
+const users = await db.table('users')
+
+// named query with embedded fragments
+const user1 = await users.one(
+  'selectById'
+  [12345]
+);
+
+// embed fragments directly into SQL query
+const user2 = await users.one(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE email = ?'
+  ['bobby@badgerpower.com']
+);
 ```
 
-To use the query builder define a named query as a function.  It will
-receive a reference to the table object on which you can call `select()`
-or `from()` to start a query.  Further query builder methods can then
-be called on it.
+## Query Builder
+
+You can use the [query builder](manual/query_builder.html) to generate
+queries.  Call the `select()` or `from()` methods to start a query
+and then chain further methods calls to build the query.
 
 ```js
-// tables.users.queries...
-selectByEmail:
-  t => t.select('id name email').from('users').where('email'),
+const byEmail = users
+  .select('id name')
+  .from('users')
+  .where('email')
+
+const user = await byEmail.one(['bobby@badgerpower.com'])
 ```
 
-If you want to start a query with a method other than `select()`
-or `from()` for some reason then you must prefix it with `.build`.
+You can pass a query constructed using the query builder as the first argument
+to the [run()](#run-query--values--options-), [one()](#one-query--values--options-),
+[any()](#any-query--values--options-) or [all()](#all-query--values--options-) methods.
 
 ```js
-// tables.users.queries...
-selectByEmail:
-  t => t.build.where('email').select('id name email').from('users')
+const user = await users.one(byEmail, ['bobby@badgerpower.com'])
 ```
 
-The table provides a `.fetch` shortcut which is a query
-builder that has the table name and all columns pre-selected.
+If you want to start a query with a method other than `select()` or `from()`
+then prefix it with `.build`.
 
 ```js
-// tables.users.queries...
-selectByEmail:
-  t => t.fetch.where('email')
-  // -> SELECT "users"."id", "users"."name", "users"."email"
-  //    FROM "users"
-  //    WHERE "email" = ?
+const byEmail = users.build
+  .where('email')
+  .from('users')
+  .select('id name')
 ```
 
+The table `.selectFrom` property contains a query builder that has been
+pre-initialised to select all the table columns from the table.
 
-## selectOneRow(query, values, options)
+```js
+const byEmail = users.selectFrom.where('email')
+// -> SELECT "users"."id", "users"."name", "users"."email"
+//    FROM "users"
+//    WHERE "email" = ?
+```
+
+You can use the query builder to generate named queries.  The query
+should be defined as a function that will receive a reference to the
+table object and should return the query builder chain.
+
+```js
+const db = connect({
+  database: 'sqlite://users.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectByEmail:
+          // using the query builder
+          t => t.select('name email').from('users').where('email'),
+        allBadgers:
+          // using the .selectFrom query builder shortcut
+          t => t.selectFrom.where({ animal: 'Badger' })
+      }
+    },
+  }
+});
+const users = await db.table('users');
+const user1 = await db.one(
+  'selectByEmail',
+  ['bobby@badgerpower.com']
+);
+const badgers = await db.all(
+  'allBadgers'
+);
+```
+
+## one(query, values, options)
 
 There are three different methods for selecting rows from the table using
-SQL queries or named queries.  The `selectOneRow()` method will return a single row.
+SQL queries or named queries.  The `one()` method will return a single row.
 If the row isn't found or multiple rows match the criteria then an
 `UnexpectedRowCount` error will be thrown with a message of
 the form `N rows were returned when one was expected`.
 
-You can then call a named query by specifying the name as the
+You can call a named query by specifying the name as the
 first argument, followed by an array of any placeholder values.
 
 ```js
 // returns a single row or throws an error
-const brian = await users.selectOneRow(
-  'selectByName', ['Bobby Badger']
+const bobby = await users.one(
+  'selectByEmail', ['bobby@badgerpower.com']
 );
-console.log('Brian:', brian);
 ```
 
-You can can also use SQL query string in place of a named query.
+You can also use a raw SQL query string in place of a named query.
 
 ```js
 // returns a single row or throws an error
-const brian = await users.selectOneRow(
-  'SELECT * FROM users WHERE name = ?',
-  ['Bobby Badger']
+const bobby = await users.one(
+  'SELECT * FROM users WHERE email = ?',
+  ['bobby@badgerpower.com']
 );
-console.log('Brian:', brian);
+```
+
+A SQL query can include references to query fragments.
+
+```js
+const bobby = await users.one(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE email = ?',
+  ['bobby@badgerpower.com']
+);
 ```
 
 You can pass a third argument which can contain the `record` option if you
 want the data returned as a [record](manual/record.html) instead of a row.
 
 ```js
-const brian = await users.selectOneRow(
-  'selectByName', ['Bobby Badger'],
+const brian = await users.one(
+  'selectByEmail', ['bobby@badgerpower.com'],
   { record: true }
 );
 ```
 
-The `selectRow()` method is provided as an alias to this method.
+## any(query, values, options)
 
-```js
-const brian = await users.selectRow(
-  'selectByName', ['Bobby Badger']
-);
-```
-
-## selectAnyRow(query, values, options)
-
-The `selectAnyRow()` method is like [selectOneRow()](#selectonerow-query--values--options-)
+The `any()` method is like [one()](#one-query--values--options-)
 but will return a single row if it exists or `undefined` if it doesn't.
 
 ```js
 // returns a single row or undefined
-const brian = await users.selectAnyRow(
-  'selectByName', ['Bobby Badger']
+const bobby = await users.any(
+  'selectByEmail', ['bobby@badgerpower.com']
 );
-if (brian) {
-  console.log('Brian:', brian);
+if (bobby) {
+  console.log('Bobby:', bobby);
 }
 else {
-  console.log('Brian Badger was not found');
+  console.log('Bobby Badger was not found');
 }
 ```
 
-As per [selectOneRow()](#selectonerow-query--values--options-) you can pass an
-additional object containing the `record` option to return the row as a record
-object.
+You can can use a SQL query string in place of a named query and this
+can include query fragments.
 
 ```js
-const brian = await users.selectAnyRow(
-  'selectByName', ['Bobby Badger']
+const bobby = await users.any(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE email = ?',
+  ['bobby@badgerpower.com']
+);
+```
+
+You can also pass an additional object containing the `record` option to
+return the row as a record object.
+
+```js
+const bobby = await users.any(
+  'selectByEmail', ['bobby@badgerpower.com']
   { record: true }
 );
 ```
 
-## selectAllRows(query, values, options)
+## all(query, values, options)
 
-The `selectAllRows()` method will return an array of all matching rows.
+The `all()` method will return an array of all matching rows.
 
 ```js
 // returns an array of all rows (possibly empty)
-const bobbies = await users.selectAllRows(
-  'selectByName', ['Bobby Badger']
+const badgers = await users.all(
+  'selectByEmail', ['bobby@badgerpower.com']
 );
-if (bobbies.length) {
-  console.log("Fetched %s users called 'Bobby Badger':", bobbies.length);
+if (badgers.length) {
+  console.log("Fetched %s Bobby Badger records':", badgers.length);
 }
 else {
-  console.log("There aren't any users called 'Bobby Badger'");
+  console.log("There aren't any badgers with that email address");
 }
 ```
 
-The `selectRows()` method is provided as an alias to this method.
+You can can use a SQL query string in place of a named query and this
+can include query fragments.
 
 ```js
-const bobbies = await users.selectRows(
-  'selectByName', ['Bobby Badger']
+const badgers = await users.all(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE animal=?',
+  ['Badger']
 );
+if (badgers.length) {
+  console.log("Fetched %s badgers':", badgers.length);
+}
+else {
+  console.log("There aren't any badgers");
+}
+
 ```
 
-## selectOneRecord(query, values, options)
+You can also pass an additional object containing the `record` option to
+return the rows as an array of record objects.
 
-This method is a wrapper around [selectOneRow()](#selectonerow-query--values--options-) which returns
-the row as a record object.  It effectively sets the `record` option for you.
-
-Read more about records [here](manual/records.html).
-
-## selectAnyRecord(query, values, options)
-
-This method is a wrapper around [selectAnyRow()](#selectanyrow-query--values--options-) which returns
-the row as a record object.
-
-## selectAllRecords(query, values, options)
-
-This method is a wrapper around [selectAllRows()](#selectallrows-query--values--options-) which returns
-the rows as an array of record objects.
+```js
+const brian = await users.all(
+  'selectByEmail', ['bobby@badgerpower.com']
+  { record: true }
+);
+```
 
 ## oneRow(query, args)
 
 This method is a multiplexer around
-[selectOneRow()](#selectonerow-query--values--options-)
+[one()](#one-query--values--options-)
 and
-[fetchOneRow()](manual/table_methods#fetchonerow-where--options-).  If the first argument
-is a string or query builder object then it calls `selectOneRow()`
-otherwise it calls `fetchOneRow()`.
+[fetchOne()](manual/table_methods#fetchone-where--options-).  If the first argument
+is a string or query builder object then it calls `one()`
+otherwise it calls `fetchOne()`.
 
 ```js
-// same as users.selectOneRow()
-const row = await users.oneRow(
-  'selectByName', ['Bobby Badger']
+// same as users.one()
+const row = await users.one(
+  'selectByEmail', ['bobby@badgerpower.com']
 );
 ```
 
 ```js
-// same as users.fetchOneRow()
-const row = await users.oneRow(
-  { name: 'Bobby Badger' }
+// same as users.fetchOne()
+const row = await users.one(
+  { email: 'bobby@badgerpower.com' }
 );
 ```
 
 ## anyRow(query, args)
 
 This method is a multiplexer around
-[selectAnyRow()](#selectanyrow-query--values--options-)
+[any()](#any-query--values--options-)
 and
-[fetchAnyRow()](manual/table_methods#fetchanyrow-where--options-).  If the first argument
-is a string or query builder object then it calls `selectAnyRow()`,
-otherwise it calls `fetchAnyRow()`.
+[fetchAny()](manual/table_methods#fetchany-where--options-).  If the first argument
+is a string or query builder object then it calls `any()`,
+otherwise it calls `fetchAny()`.
 
 ```js
-// same as users.selectAnyRow()
+// same as users.any()
 const row = await users.anyRow(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );
 ```
 
 ```js
-// same as users.fetchAnyRow()
+// same as users.fetchAny()
 const row = await users.anyRow(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );
 ```
 
 ## allRows(query, args)
 
 This method is a multiplexer around
-[selectAllRows()](#selectallrows-query--values--options-)
+[all()](#all-query--values--options-)
 and
-[fetchAllRows()](manual/table_methods#fetchallrows-where--options-).  If the first argument
-is a string or query builder object then it calls `selectAllRows()`,
-otherwise it calls `fetchAllRows()`.
+[fetchAll()](manual/table_methods#fetchall-where--options-).  If the first argument
+is a string or query builder object then it calls `all()`,
+otherwise it calls `fetchAll()`.
 
 ```js
-// same as users.selectAllRows()
+// same as users.all()
 const rows = await users.allRows(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );
 ```
 
 ```js
-// same as users.fetchAllRows()
+// same as users.fetchAll()
 const row = await users.allRows(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );
 ```
 
 ## oneRecord(query, args)
 
-This method is a multiplexer around
-[selectOneRecord()](#selectonerecord-query--values--options-)
-and
-[fetchOneRecord()](manual/table_methods#fetchonerecord-where--options-).  If the first argument
-is a string or query builder object then it calls `selectOneRecord()`
-otherwise it calls `fetchOneRecord()`.
+This method is like [oneRow()](#onerow-query--args-) but returns the row as a record.
 
 ```js
-// same as users.selectOneRecord()
+// same as users.one() with the record option
 const row = await users.oneRecord(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );
 ```
 
 ```js
-// same as users.fetchOneRecord()
+// same as users.fetchOne() with the record option
 const row = await users.oneRecord(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );
 ```
 
 ## anyRecord(query, args)
 
-This method is a multiplexer around
-[selectAnyRecord()](#selectanyrecord-query--values--options-)
-and
-[fetchAnyRecord()](manual/table_methods#fetchanyrecord-where--options-).  If the first argument
-is a string or query builder object then it calls `selectAnyRecord()`,
-otherwise it calls `fetchAnyRecord()`.
+This method is like [anyRow()](#anyrow-query--args-) but returns the row as a record.
 
 ```js
-// same as users.selectAnyRecord()
+// same as users.any() with the record option
 const row = await users.anyRecord(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );
 ```
 
 ```js
-// same as users.fetchAnyRecord()
+// same as users.fetchAny() with the record options
 const row = await users.anyRecord(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );
 ```
 
 ## allRecords(query, args)
 
-This method is a multiplexer around
-[selectAllRecords()](#selectallrecords-query--values--options-)
-and
-[fetchAllRecords()](manual/table_methods#fetchallrecords-where--options-).  If the first argument
-is a string or query builder object then it calls `selectAllRecords()`,
-otherwise it calls `fetchAllRecords()`.
+This method is like [allRows()](#allrows-query--args-) but returns the rows as an
+array of records.
 
 ```js
-// same as users.selectAllRecords()
+// same as users.all() with the record option
 const rows = await users.allRecords(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );
 ```
 
 ```js
-// same as users.fetchAllRecords()
+// same as users.fetchAll() with the record option
 const row = await users.allRecords(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );
 ```
 
@@ -367,58 +465,3 @@ like so:
 ```js
 users.run('drop')
 ```
-
-## one(query, values, options)
-
-This is another low-level method for running an SQL query where you're
-expecting to get exactly one row returned.  It's just like the
-corresponding [one()](manual/basic_queries.html#one-query--values--options-)
-database method, with the additional table-specific SQL fragments available, as
-per [run()](#run-query--values--options-).
-
-```js
-const bobby = users.one(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
-  ['Bobby Badger']
-)
-```
-
-You can also run any pre-defined named `queries` or include query `fragments`
-in the queries you run using this method.
-
-## any(query, values, options)
-
-This is yet another low-level method for running an SQL query, but where
-you're expecting to get one row returned which may or may not exist.
-It's just like the corresponding
-[any()](manual/basic_queries.html#any-query--values--options-)
-database method, with the additional table-specific SQL fragments available,
-as per [run()](#run-query--values--options-).
-
-```js
-const bobby = users.any(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
-  ['Bobby Badger']
-)
-```
-
-Pre-defined named `queries` can also be run, or you can include query
-`fragments` in the SQL.
-
-## all(query, values, options)
-
-The final low-level method for running an SQL query where you're expecting to
-get multiple rows.  It's just like the corresponding
-[all()](manual/basic_queries.html#all-query--values--options-)
-database method, with the additional table-specific SQL fragments available, as
-per [run()](#run-query--values--options-).
-
-```js
-const rows = users.all(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt;',
-)
-```
-
-Unsurprisingly, this method also allows you to run pre-defined named
-`queries` or embed query `fragments` in the SQL.
-

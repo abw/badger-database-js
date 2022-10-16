@@ -21,7 +21,9 @@ const db = connect({
 const users = await db.table('users');
 ```
 
-## insert(data, options)
+## Insert Methods
+
+### insert(data, options)
 
 The `insert()` method will construct and run an `INSERT` SQL query to insert a
 row from the column data that you provide.
@@ -150,28 +152,26 @@ console.log(frank.name);    // Frank Ferret
 console.log(frank.email);   // frank@ferrets-r-us.com
 ```
 
-## insertOneRow(data, options)
+### insertOne(data, options)
 
 Internally, the [insert()](#insert-data--options-) method calls either
-`insertAllRows()`, if the value passed is an array, or `insertOneRow()`
+`insertAll()`, if the value passed is an array, or `insertOne()`
 if it's a single data object. You can call these methods directly if you prefer.
 
 ```js
-const result = await users.insertOneRow({
+const result = await users.insertOne({
   name:  'Brian Badger',
   email: 'brian@badgerpower.com'
 });
 ```
 
-The `insertRow()` method is provided as an alias for this method.
+### insertAll(array, options)
 
-## insertAllRows(array, options)
-
-Here's an example explicitly calling the `insertAllRows()` method.  It's exactly the
+Here's an example explicitly calling the `insertAll()` method.  It's exactly the
 same as calling [insert()](#insert-data--options-) with an array of rows to insert.
 
 ```js
-const results = await users.insertAllRows([
+const results = await users.insertAll([
   {
     name:  'Frank Ferret',
     email: 'frank@badgerpower.com'
@@ -183,11 +183,9 @@ const results = await users.insertAllRows([
 ]);
 ```
 
-The `insertRows()` method is provided as an alias for this method.
+### insertOneRecord(data, options)
 
-## insertOneRecord(data, options)
-
-This is a wrapper around the [insertOneRow()](#insertonerow-data--options-)
+This is a wrapper around the [insertOne()](#insertone-data--options-) method
 which automatically sets the `record` option for you.  The result returned
 will be a record object instead of a result object.
 
@@ -203,9 +201,9 @@ console.log(record.email);  // brian@badgerpower.com
 
 The `insertRecord()` method is provided as an alias for this method.
 
-## insertAllRecords(array, options)
+### insertAllRecords(array, options)
 
-This is a wrapper around the [insertAllRows()](#insertallrows-array--options-)
+This is a wrapper around the [insertAll()](#insertall-array--options-) method
 which automatically sets the `record` option for you.  The result returned
 will be an array of record objects instead of an array of results.
 
@@ -230,9 +228,12 @@ console.log(records[1].email);   // brian@badgerpower.com
 
 The `insertRecords()` method is provided as an alias for this method.
 
-## update(set, where, options)
+## Update Methods
+
+### update(set, where, options)
 
 The `update()` method, as the name suggests, allows you to update rows.
+It is an alias for the [updateAll()](#updateall-set--where--options-) method.
 
 ```js
 await users.update(
@@ -281,10 +282,10 @@ WHERE  email!=?
 Any single value SQL operator can be used, e.g. `=`, `!=`, `<`, `<=`, `>`, `>=`.
 You can't use operators that expect lists of values, e.g. `in (...)`.
 
-## updateOneRow(set, where, options)
+### updateOne(set, where, options)
 
 This is a variant of the [update()](#update-set--where--options-) /
-[updateAllRows()](#updateallrows-set--where--options-) method that has an
+[updateAll()](#updateall-set--where--options-) method that has an
 additional assertion check that exactly one row is updated.  If zero or more
 rows are updated then an `UnexpectedRowCount` error will be thrown with a
 message of the form `N rows were updated when one was expected`.
@@ -295,7 +296,7 @@ This can be useful if you've got a column which is automatically set when the
 record is updated, e.g. a `modified` column, which you want to inspect.
 
 ```js
-const row = await users.updateOneRow(
+const row = await users.updateOne(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -313,7 +314,7 @@ to reload the data.  If, for example, you change the email address of a row
 then it will correctly reload the record using the new email address.
 
 ```js
-const row = await users.updateOneRow(
+const row = await users.updateOne(
   { email: 'brian-badger@badgerpower.com' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -328,7 +329,7 @@ where the `friends` count is set to `0`.  You feel sorry for the poor user and
 decide to modify their `friends` count to be `1`.  You'll be their friend, right?
 
 ```js
-await users.updateOneRow(
+await users.updateOne(
   { friends: 1 },
   { friends: 0 },
   { reload: true }
@@ -342,21 +343,17 @@ error.  In these cases you should always provide some other unique attribute to 
 that the correct row can be identified and reloaded:
 
 ```js
-await users.updateOneRow(
+await users.updateOne(
   { friends: 1 },
   { email: 'bobby@badger.com' },
   { reload: true }
 );
 ```
 
-The `updateRow()` method is provided as an alias for this method.
-
-
-
-## updateAnyRow(set, where, options)
+### updateAny(set, where, options)
 
 This is a variant of the [update()](#update-set--where--options-) /
-[updateAllRows()](#updateallrows-set--where--options-) method that has an
+[updateAll()](#updateall-set--where--options-) method that has an
 additional assertion check that no more than one row is updated.  If more
 than one rows are updated then an `UnexpectedRowCount` error will be thrown
 with a message of the form `N rows were updated when one was expected`.
@@ -365,7 +362,7 @@ This also supports the `reload` option.  If a row is updated then the complete
 row data will be returned.  Otherwise it will return `undefined`.
 
 ```js
-const row = await users.updateAnyRow(
+const row = await users.updateAny(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -382,18 +379,18 @@ You can also use other comparison operator as per the [update()](#update-set--wh
 method, e.g. `{ year: ['>', 2000] }` to match all records where the `year` is greater
 than `2000`.
 
-## updateAllRows(set, where, options)
+### updateAll(set, where, options)
 
-The [update()](#update-set--where--options-) method is internally a wrapper
-around `updateAllRows()`.  If you want additional checks to be performed to
+The [update()](#update-set--where--options-) method is an alias for the
+`updateAll()` method.  If you want additional checks to be performed to
 ensure that you're only updating one row, or if you want to automatically
 reload a row after an update then you can use the
-[updateOneRow()](#updateonerow-set--where--options-) or
-[updateAnyRow()](#updateanyrow-set--where--options-) methods.
+[updateOne()](#updateone-set--where--options-) or
+[updateAny()](#updateany-set--where--options-) methods.
 
-The `updateRows()` method is provided as an alias for this method.
+## Delete Method
 
-## delete(where)
+### delete(where)
 
 You can probably guess what the `delete()` method does.
 
@@ -424,17 +421,25 @@ You can also use other comparison operator in the `where` clause, as per the
 [update()](#update-set--where--options-) method, e.g. `{ year: ['>', 2000] }`
 to match all records where the `year` is greater than `2000`.
 
-## fetchOneRow(where, options)
+## Fetch Methods
+
+### fetch(where, options)
+
+TODO: this is an alias for fetchAll
+
+PROBLEM: already a table.fetch property for builder
+
+### fetchOne(where, options)
 
 There are three different methods for fetching rows from the table using
-selection criteria.  The `fetchOneRow()` method will return a single row.
+selection criteria.  The `fetchOne()` method will return a single row.
 If the row isn't found or multiple rows match the criteria then an
 `UnexpectedRowCount` error will be thrown with a message of
 the form `N rows were returned when one was expected`.
 
 ```js
 // returns a single row or throws an error
-const brian = await users.fetchOneRow({
+const brian = await users.fetchOne({
   email: 'brian@badgerpower.com'
 });
 console.log('Brian:', brian);
@@ -451,7 +456,7 @@ the columns that you want to select.  They can be specified as a string
 containing the columns names separated by whitespace:
 
 ```js
-const brian = await users.fetchOneRow(
+const brian = await users.fetchOne(
   { email: 'brian@badgerpower.com' },
   { columns: 'id name' }
 );
@@ -460,7 +465,7 @@ const brian = await users.fetchOneRow(
 Or as an array:
 
 ```js
-const brian = await users.fetchOneRow(
+const brian = await users.fetchOne(
   { email: 'brian@badgerpower.com' },
   { columns: ['id', 'name'] }
 );
@@ -470,35 +475,27 @@ The `record` option can be specified if you want the data returned as a
 [record](manual/record.html) instead of a row.
 
 ```js
-const brian = await users.fetchOneRow(
+const brian = await users.fetchOne(
   { email: 'brian@badgerpower.com' },
   { record: true }
 );
 ```
 
-The generated SQL for this method (and also [fetchAnyRow()](#fetchanyrow-where--options-)
-and [fetchAllRows()](#fetchallrows-where--options-) will look something like this:
+The generated SQL for this method (and also [fetchAny()](#fetchany-where--options-)
+and [fetchAll()](#fetchall-where--options-) will look something like this:
 
 ```sql
 SELECT "users"."id", "users"."name" FROM users
 WHERE email=?
 ```
 
-The `fetchRow()` method is provided as an alias to this method.
+### fetchAny(where, options)
 
-```js
-const brian = await users.fetchRow({
-  email: 'brian@badgerpower.com'
-});
-```
-
-## fetchAnyRow(where, options)
-
-The `fetchAnyRow()` method will return a single row if it exists or `undefined` if it doesn't.
+The `fetchAny()` method will return a single row if it exists or `undefined` if it doesn't.
 
 ```js
 // returns a single row or undefined
-const brian = await users.fetchAnyRow({
+const brian = await users.fetchAny({
   email: 'brian@badgerpower.com'
 });
 if (brian) {
@@ -514,11 +511,11 @@ other methods described above, you can use other comparison operators e.g.
 `{ year: ['>', 2000] }` to match all records where the `year` is greater
 than `2000`.
 
-As per [fetchOneRow()](#fetchonerow-where--options-) you can pass an additional object
+As per [fetchOne()](#fetchone-where--options-) you can pass an additional object
 containing options.  For example, to specify the columns you want returned:
 
 ```js
-const brian = await users.fetchAnyRow(
+const brian = await users.fetchAny(
   { email: 'brian@badgerpower.com' },
   { columns: 'id email' }
 );
@@ -527,19 +524,19 @@ const brian = await users.fetchAnyRow(
 Or to return the row as a record object:
 
 ```js
-const brian = await users.fetchAnyRow(
+const brian = await users.fetchAny(
   { email: 'brian@badgerpower.com' },
   { record: true }
 );
 ```
 
-## fetchAllRows(where, options)
+### fetchAll(where, options)
 
-The `fetchAllRows()` method will return an array of all matching rows.
+The `fetchAll()` method will return an array of all matching rows.
 
 ```js
 // returns an array of all rows (possibly empty)
-const bobbies = await users.fetchAllRows(
+const bobbies = await users.fetchAll(
   { name: 'Bobby Badger' }
 );
 if (bobbies.length) {
@@ -554,18 +551,18 @@ If you want to return all matching rows then you can omit the criteria or
 specify an empty object.
 
 ```js
-const allUsers = await users.fetchAllRows();
+const allUsers = await users.fetchAll();
 ```
 
 ```js
-const allUsers = await users.fetchAllRows({ });
+const allUsers = await users.fetchAll({ });
 ```
 
 It shouldn't surprise you to learn that you can use other comparison operators
 in the `where` clause, e.g. `{ year: ['>', 2000] }` to match all records where
 the `year` is greater than `2000`.
 
-As per [fetchOneRow()](#fetchonerow-where--options-) you can pass an additional objects
+As per [fetchOne()](#fetchone-where--options-) you can pass an additional objects
 containing options.  It supports the `columns` and `record` options.  You can
 also provide `order` (or `orderBy` if you prefer to use a naming convention as
 close as possible to the SQL equivalent of `ORDER BY`) to specify the order in
@@ -574,7 +571,7 @@ which rows should be returned:
 The `order` can contain multiple columns and each will be automatically quoted.
 
 ```js
-const allUsers = await users.fetchAllRows(
+const allUsers = await users.fetchAll(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
   { order: 'name, id' }   // -> ORDER BY "name", "id"
 );
@@ -584,7 +581,7 @@ If you want to use a raw SQL order then define it as an object with a single `sq
 property:
 
 ```js
-const allUsers = await users.fetchAllRows(
+const allUsers = await users.fetchAll(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
   { order: { sql: 'name DESC' } }
 );
@@ -595,41 +592,39 @@ Or use the `sql` function to generate it for you from a tagged template literal.
 ```js
 import { sql } from '@abw/badger-database'
 
-const allUsers = await users.fetchAllRows(
+const allUsers = await users.fetchAll(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
   { order: sql`name DESC` }
 );
 ```
 
-The `fetchRows()` method is provided as an alias to this method.
+### fetchOneRecord(where, options)
 
-```js
-const bobbies = await users.fetchRows({
-  { name: 'Bobby Badger' }
-);
-```
-
-## fetchOneRecord(where, options)
-
-This method is a wrapper around [fetchOneRow()](#fetchonerow-where--options-) which returns
+This method is a wrapper around [fetchOne()](#fetchone-where--options-) which returns
 the row as a record object.  It effectively sets the `record` option for you.
 
 Read more about records [here](manual/records.html).
 
-## fetchAnyRecord(where, options)
+The `fetchRecord()` method is provided as an alias for this method.
 
-This method is a wrapper around [fetchAnyRow()](#fetchanyrow-where--options-) which returns
+### fetchAnyRecord(where, options)
+
+This method is a wrapper around [fetchAny()](#fetchany-where--options-) which returns
 the row as a record object.
 
-## fetchAllRecords(where, options)
+### fetchAllRecords(where, options)
 
-This method is a wrapper around [fetchAllRows()](#fetchallrows-where--options-) which returns
+This method is a wrapper around [fetchAll()](#fetchall-where--options-) which returns
 the rows as an array of record objects.
 
-## record(row)
+The `fetchRecords()` method is provided as an alias for this method.
+
+## Record Methods
+
+### record(row)
 
 This methods converts a row of data to a [record](manual/records.html) object.
 
-## records(rows)
+### records(rows)
 
 This methods converts an array of rows of data to a an array of [record](manual/records.html) objects.
