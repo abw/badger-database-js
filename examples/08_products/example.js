@@ -112,12 +112,62 @@ async function OrderDetails(order) {
   console.log("There are %s items on the order", items.length);
   items.forEach(
     item => console.log(
-      "  - %s - %s @ $%s = $%s",
-      item.name, item.quantity, item.price, item.total
+      "  %s %s @ $%s = $%s",
+      item.name.padEnd(14), item.quantity.toString().padStart(6),
+      item.price.toFixed(2).padStart(7), item.total.toFixed(2).padStart(7)
     )
   )
   console.log('---------------------------------------------')
-  console.log("Order total: $%s\n", order.total)
+  console.log("Order total:                         $%s\n",
+    order.total.toFixed(2).padStart(7)
+  )
 }
 
 main();
+
+/*
+Expected Output:
+
+Order #1 placed 2022-10-15 by Bobby Badger
+---------------------------------------------
+There are 2 items on the order
+  Ferret Frock        1 @ $  49.99 = $  49.99
+  Stoaty Shoes        2 @ $  32.99 = $  65.98
+---------------------------------------------
+Order total:                         $ 115.97
+
+Order #2 placed 2022-10-16 by Brian Badger
+---------------------------------------------
+There are 3 items on the order
+  Ferret Frock        2 @ $  49.99 = $  99.98
+  Stoaty Socks        3 @ $   4.99 = $  14.97
+  Stoaty Shoes        1 @ $  32.99 = $  32.99
+---------------------------------------------
+Order total:                         $ 147.94
+
+Order #3 placed 2022-10-17 by Fiona Ferret
+---------------------------------------------
+There are 2 items on the order
+  Ferret Frock        1 @ $  49.99 = $  49.99
+  Ferret Furs         2 @ $ 159.99 = $ 319.98
+---------------------------------------------
+Order total:                         $ 369.97
+
+Order #4 placed 2022-10-18 by Susan Stoat
+---------------------------------------------
+There are 2 items on the order
+  Stoaty Socks        5 @ $   4.99 = $  24.95
+  Stoaty Shoes        7 @ $  32.99 = $ 230.93
+---------------------------------------------
+Order total:                         $ 255.88
+
+Sales Figures
+----------------------------------------
+Product         Sold     Price   Revenue
+----------------------------------------
+Stoaty Shoes      10     32.99    329.90
+Ferret Furs        2    159.99    319.98
+Ferret Frock       4     49.99    199.96
+Stoaty Socks       8      4.99     39.92
+
+*/

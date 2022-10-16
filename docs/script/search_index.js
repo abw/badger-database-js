@@ -1908,6 +1908,24 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/builder/with.js~with#initbuilder",
+    "class/src/Builder/With.js~With.html#instance-method-initBuilder",
+    "src/Builder/With.js~With#initBuilder",
+    "method"
+  ],
+  [
+    "src/builder/with.js~with#resolvelinkarray",
+    "class/src/Builder/With.js~With.html#instance-method-resolveLinkArray",
+    "src/Builder/With.js~With#resolveLinkArray",
+    "method"
+  ],
+  [
+    "src/builder/with.js~with#resolvelinkobject",
+    "class/src/Builder/With.js~With.html#instance-method-resolveLinkObject",
+    "src/Builder/With.js~With#resolveLinkObject",
+    "method"
+  ],
+  [
     "src/builder/with.js~with.buildmethod",
     "class/src/Builder/With.js~With.html#static-member-buildMethod",
     "src/Builder/With.js~With.buildMethod",
@@ -1920,9 +1938,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/builder/with.js~with.joint",
+    "class/src/Builder/With.js~With.html#static-member-joint",
+    "src/Builder/With.js~With.joint",
+    "member"
+  ],
+  [
     "src/builder/with.js~with.keyword",
     "class/src/Builder/With.js~With.html#static-member-keyword",
     "src/Builder/With.js~With.keyword",
+    "member"
+  ],
+  [
+    "src/builder/with.js~with.messages",
+    "class/src/Builder/With.js~With.html#static-member-messages",
+    "src/Builder/With.js~With.messages",
     "member"
   ],
   [
