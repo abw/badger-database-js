@@ -8,11 +8,8 @@ class Albums extends Table {
     schema.relations = {
       artist: 'arist_id -> artists.id',
       tracks: {
-        type:  'many',
-        from:  'id',
-        table: 'tracks',
-        to:    'album_id',
-        order: 'track_no'
+        relation: 'id => tracks.album_id',
+        order:    'track_no'
       }
     }
     return schema;
