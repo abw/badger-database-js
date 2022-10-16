@@ -108,6 +108,8 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#insert--update--fetch-and-delete" data-ice="link">Insert, Update, Fetch and Delete</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#table-queries" data-ice="link">Table Queries</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -120,36 +122,43 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_methods.html"><a href="manual/table_methods.html" data-ice="link">Table Methods</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows-set--where--options-" data-ice="link">updateAllRows(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerow-where--options-" data-ice="link">fetchOneRow(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrow-where--options-" data-ice="link">fetchAnyRow(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrows-where--options-" data-ice="link">fetchAllRows(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerecord-where--options-" data-ice="link">fetchOneRecord(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-methods" data-ice="link">Insert Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertone-data--options-" data-ice="link">insertOne(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertall-array--options-" data-ice="link">insertAll(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-methods" data-ice="link">Update Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone-set--where--options-" data-ice="link">updateOne(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany-set--where--options-" data-ice="link">updateAny(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall-set--where--options-" data-ice="link">updateAll(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-method" data-ice="link">Delete Method</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-methods" data-ice="link">Fetch Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-where--options-" data-ice="link">fetch(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchone-where--options-" data-ice="link">fetchOne(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchany-where--options-" data-ice="link">fetchAny(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchall-where--options-" data-ice="link">fetchAll(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerecord-where--options-" data-ice="link">fetchOneRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-methods" data-ice="link">Record Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectonerow-query--values--options-" data-ice="link">selectOneRow(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectanyrow-query--values--options-" data-ice="link">selectAnyRow(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectallrows-query--values--options-" data-ice="link">selectAllRows(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectonerecord-query--values--options-" data-ice="link">selectOneRecord(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectanyrecord-query--values--options-" data-ice="link">selectAnyRecord(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectallrecords-query--values--options-" data-ice="link">selectAllRecords(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-methods" data-ice="link">Query Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#named-queries" data-ice="link">Named Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-fragments" data-ice="link">Query Fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-builder" data-ice="link">Query Builder</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#onerow-query--args-" data-ice="link">oneRow(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#anyrow-query--args-" data-ice="link">anyRow(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#allrows-query--args-" data-ice="link">allRows(query, args)</a></li>
@@ -157,9 +166,6 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#anyrecord-query--args-" data-ice="link">anyRecord(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#allrecords-query--args-" data-ice="link">allRecords(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-query--values--options-" data-ice="link">run(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -250,11 +256,12 @@
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="tables">Tables</h1><p>It can quickly get tedious if you've got to write lots of different
 queries for trivial operations like inserting, updating, selecting
 and deleting rows.</p>
-<p>In this example we introduce the concept of <code>tables</code>.  This allows you
+<p>In this example we introduce table objects.  This allows you
 to specify the columns in each table and use higher level methods to
-automatically insert, update, select and delete rows from the table.</p>
-<p>Note that we're using the same database from the previous examples
-and assuming that the <code>users</code> table has already been created.</p>
+automatically insert, update, fetch and delete rows from the table.</p>
+<p>Here's a simple example. Note that we're using the same database from
+the previous examples and assuming that the <code>users</code> table has already
+been created.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// define the users table and the columns it contains
 const db = connect({
   database: 'sqlite://test.db',
@@ -263,34 +270,67 @@ const db = connect({
       columns: 'id name email'
     }
   }
-});
-
-// fetch the users table
-const users = await db.table('users');
-
-// insert a row
-await users.insert({
+});</code></code></pre>
+<p>The database <code>table()</code> method is used to fetch a table object, using
+the name that you defined for it.  Note that it's an asynchronous
+function that returns a promise so you have to <code>await</code> it or use
+<code>.then()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// fetch the users table
+const users = await db.table('users');</code></code></pre>
+<h2 id="insert--update--fetch-and-delete">Insert, Update, Fetch and Delete</h2><p>The table object provides methods to insert, update, fetch and delete
+rows.  These methods all accept one or more objects specifying the data
+that you want to use.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.insert({
   name:  'Brian Badger',
   email: 'brian@badgerpower.com'
 });
 
-// update a row
 await users.update(
   { name: 'Brian "The Brains" Badger' },  // set...
   { email: 'brian@badgerpower.com' }      // where...
 );
 
-// fetch a row
-const brian = await users.oneRow({
+const rows = await users.fetch({
   email: 'brian@badgerpower.com'
 });
-console.log(brian);
 
-// delete a row
 await users.delete({
   email: 'brian@badgerpower.com'
 });</code></code></pre>
-<p>You can also define table specific named queries, either as static HTML or
+<p>These methods have variants for the cases where you're operating on a single
+row or multiple rows.</p>
+<p>For example, the <a href="manual/table_methods.html#insert-data--options-">insert()</a>
+method will call <a href="manual/table_methods.html#insertone-data--options-">insertOne()</a>
+if you pass it an object as the first parameter, or
+<a href="manual/table_methods.html#insertall-array--options-">insertAll()</a>
+if you pass it an array.  You can call the methods directly if you prefer.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// insert a single row
+await users.insertOne(
+  { name:  'Bobby Badger', email: 'bobby@badgerpower.com' }
+);
+// insert multiple rows
+await users.insertAll([
+  { name:  'Bobby Badger', email: 'bobby@badgerpower.com' }
+  { name:  'Brian Badger', email: 'brian@badgerpower.com' }
+]);</code></code></pre>
+<p>The <a href="manual/table_methods.html#update-set--where--options-">update()</a> method
+is an alias for <a href="manual/table_methods.html#updateall-set--where--options-">updateAll()</a>.
+You can call also call the <a href="manual/table_methods.html#updateany-set--where--options-">updateAny()</a>
+method if you're expecting to update zero or one row,
+or <a href="manual/table_methods.html#updateone-set--where--options-">updateOne()</a> if you're expecting
+to update exactly one row.  Both of these methods provide additional assertions to check
+that the expected number of rows were updated (zero or one in the case of <code>updateAny()</code>, or
+exactly one row in the case of <code>updateOne()</code>).</p>
+<p>The <a href="manual/table_methods.html#fetch-where--options-">fetch()</a> method
+is an alias for <a href="manual/table_methods.html#fetchall-where--options-">fetchAll()</a>.
+This returns an array of matching rows.  You can call also call the
+<a href="manual/table_methods.html#fetchany-where--options-">fetchAny()</a> method which will return a
+single row if it exists or <code>undefined</code> if it doesn't. The
+<a href="manual/table_methods.html#fetchone-where--options-">fetchOne()</a> method returns a single
+row if it exists and will throw an error if the row isn't found or multiple rows are returned.</p>
+<p>The insert and fetch methods also have variants that return rows as <a href="manual/records.html">record</a>
+objects.</p>
+<h2 id="table-queries">Table Queries</h2><p>You can also define table specific named queries, either as static SQL or
 using the <a href="manual/query_builder.html">query builder</a>.  The table automatically
 provides some pre-defined <a href="manual/query_fragments.html">query fragments</a> to
 embed into queries (<code>&lt;table&gt;</code> and <code>&lt;columns&gt;</code>) and has some shortcuts that

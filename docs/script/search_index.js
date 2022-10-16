@@ -240,6 +240,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~queryable",
+    "class/src/Queryable.js~Queryable.html",
+    "<span>Queryable</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
     "@abw/badger-database~right_join",
     "variable/index.html#static-variable-RIGHT_JOIN",
     "<span>RIGHT_JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -342,9 +348,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger-database~addquerymethods",
-    "function/index.html#static-function-addQueryMethods",
-    "<span>addQueryMethods</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "@abw/badger-database~aliasmethods",
+    "function/index.html#static-function-aliasMethods",
+    "<span>aliasMethods</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
@@ -1968,12 +1974,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/database.js~database#engine",
-    "class/src/Database.js~Database.html#instance-member-engine",
-    "src/Database.js~Database#engine",
-    "member"
-  ],
-  [
     "src/database.js~database#fragments",
     "class/src/Database.js~Database.html#instance-member-fragments",
     "src/Database.js~Database#fragments",
@@ -2640,6 +2640,96 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/queryable.js",
+    "file/src/Queryable.js.html",
+    "src/Queryable.js",
+    "file"
+  ],
+  [
+    "src/queryable.js~queryable#all",
+    "class/src/Queryable.js~Queryable.html#instance-method-all",
+    "src/Queryable.js~Queryable#all",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#any",
+    "class/src/Queryable.js~Queryable.html#instance-method-any",
+    "src/Queryable.js~Queryable#any",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#buildquery",
+    "class/src/Queryable.js~Queryable.html#instance-method-buildQuery",
+    "src/Queryable.js~Queryable#buildQuery",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#constructor",
+    "class/src/Queryable.js~Queryable.html#instance-constructor-constructor",
+    "src/Queryable.js~Queryable#constructor",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#engine",
+    "class/src/Queryable.js~Queryable.html#instance-member-engine",
+    "src/Queryable.js~Queryable#engine",
+    "member"
+  ],
+  [
+    "src/queryable.js~queryable#expandnamedquery",
+    "class/src/Queryable.js~Queryable.html#instance-method-expandNamedQuery",
+    "src/Queryable.js~Queryable#expandNamedQuery",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#expandquery",
+    "class/src/Queryable.js~Queryable.html#instance-method-expandQuery",
+    "src/Queryable.js~Queryable#expandQuery",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#loadedall",
+    "class/src/Queryable.js~Queryable.html#instance-method-loadedAll",
+    "src/Queryable.js~Queryable#loadedAll",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#loadedany",
+    "class/src/Queryable.js~Queryable.html#instance-method-loadedAny",
+    "src/Queryable.js~Queryable#loadedAny",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#loadedone",
+    "class/src/Queryable.js~Queryable.html#instance-method-loadedOne",
+    "src/Queryable.js~Queryable#loadedOne",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#one",
+    "class/src/Queryable.js~Queryable.html#instance-method-one",
+    "src/Queryable.js~Queryable#one",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#query",
+    "class/src/Queryable.js~Queryable.html#instance-method-query",
+    "src/Queryable.js~Queryable#query",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#run",
+    "class/src/Queryable.js~Queryable.html#instance-method-run",
+    "src/Queryable.js~Queryable#run",
+    "method"
+  ],
+  [
+    "src/queryable.js~queryable#sql",
+    "class/src/Queryable.js~Queryable.html#instance-method-sql",
+    "src/Queryable.js~Queryable#sql",
+    "method"
+  ],
+  [
     "src/record.js",
     "file/src/Record.js.html",
     "src/Record.js",
@@ -2832,16 +2922,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#engine",
-    "class/src/Table.js~Table.html#instance-member-engine",
-    "src/Table.js~Table#engine",
-    "member"
-  ],
-  [
-    "src/table.js~table#fetch",
-    "class/src/Table.js~Table.html#instance-member-fetch",
-    "src/Table.js~Table#fetch",
-    "member"
+    "src/table.js~table#fetchall",
+    "class/src/Table.js~Table.html#instance-method-fetchAll",
+    "src/Table.js~Table#fetchAll",
+    "method"
   ],
   [
     "src/table.js~table#fetchallrecords",
@@ -2850,9 +2934,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#fetchallrows",
-    "class/src/Table.js~Table.html#instance-method-fetchAllRows",
-    "src/Table.js~Table#fetchAllRows",
+    "src/table.js~table#fetchany",
+    "class/src/Table.js~Table.html#instance-method-fetchAny",
+    "src/Table.js~Table#fetchAny",
     "method"
   ],
   [
@@ -2862,9 +2946,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#fetchanyrow",
-    "class/src/Table.js~Table.html#instance-method-fetchAnyRow",
-    "src/Table.js~Table#fetchAnyRow",
+    "src/table.js~table#fetchone",
+    "class/src/Table.js~Table.html#instance-method-fetchOne",
+    "src/Table.js~Table#fetchOne",
     "method"
   ],
   [
@@ -2872,36 +2956,6 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-method-fetchOneRecord",
     "src/Table.js~Table#fetchOneRecord",
     "method"
-  ],
-  [
-    "src/table.js~table#fetchonerow",
-    "class/src/Table.js~Table.html#instance-method-fetchOneRow",
-    "src/Table.js~Table#fetchOneRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#fetchrecord",
-    "class/src/Table.js~Table.html#instance-member-fetchRecord",
-    "src/Table.js~Table#fetchRecord",
-    "member"
-  ],
-  [
-    "src/table.js~table#fetchrecords",
-    "class/src/Table.js~Table.html#instance-member-fetchRecords",
-    "src/Table.js~Table#fetchRecords",
-    "member"
-  ],
-  [
-    "src/table.js~table#fetchrow",
-    "class/src/Table.js~Table.html#instance-member-fetchRow",
-    "src/Table.js~Table#fetchRow",
-    "member"
-  ],
-  [
-    "src/table.js~table#fetchrows",
-    "class/src/Table.js~Table.html#instance-member-fetchRows",
-    "src/Table.js~Table#fetchRows",
-    "member"
   ],
   [
     "src/table.js~table#fragments",
@@ -2934,15 +2988,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#insertall",
+    "class/src/Table.js~Table.html#instance-method-insertAll",
+    "src/Table.js~Table#insertAll",
+    "method"
+  ],
+  [
     "src/table.js~table#insertallrecords",
     "class/src/Table.js~Table.html#instance-method-insertAllRecords",
     "src/Table.js~Table#insertAllRecords",
     "method"
   ],
   [
-    "src/table.js~table#insertallrows",
-    "class/src/Table.js~Table.html#instance-method-insertAllRows",
-    "src/Table.js~Table#insertAllRows",
+    "src/table.js~table#insertone",
+    "class/src/Table.js~Table.html#instance-method-insertOne",
+    "src/Table.js~Table#insertOne",
     "method"
   ],
   [
@@ -2952,46 +3012,34 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#insertonerow",
-    "class/src/Table.js~Table.html#instance-method-insertOneRow",
-    "src/Table.js~Table#insertOneRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#insertrecord",
-    "class/src/Table.js~Table.html#instance-member-insertRecord",
-    "src/Table.js~Table#insertRecord",
-    "member"
-  ],
-  [
-    "src/table.js~table#insertrecords",
-    "class/src/Table.js~Table.html#instance-member-insertRecords",
-    "src/Table.js~Table#insertRecords",
-    "member"
-  ],
-  [
     "src/table.js~table#insertreload",
     "class/src/Table.js~Table.html#instance-method-insertReload",
     "src/Table.js~Table#insertReload",
     "method"
   ],
   [
-    "src/table.js~table#insertrow",
-    "class/src/Table.js~Table.html#instance-member-insertRow",
-    "src/Table.js~Table#insertRow",
-    "member"
-  ],
-  [
-    "src/table.js~table#insertrows",
-    "class/src/Table.js~Table.html#instance-member-insertRows",
-    "src/Table.js~Table#insertRows",
-    "member"
-  ],
-  [
     "src/table.js~table#keys",
     "class/src/Table.js~Table.html#instance-member-keys",
     "src/Table.js~Table#keys",
     "member"
+  ],
+  [
+    "src/table.js~table#loadedall",
+    "class/src/Table.js~Table.html#instance-method-loadedAll",
+    "src/Table.js~Table#loadedAll",
+    "method"
+  ],
+  [
+    "src/table.js~table#loadedany",
+    "class/src/Table.js~Table.html#instance-method-loadedAny",
+    "src/Table.js~Table#loadedAny",
+    "method"
+  ],
+  [
+    "src/table.js~table#loadedone",
+    "class/src/Table.js~Table.html#instance-method-loadedOne",
+    "src/Table.js~Table#loadedOne",
+    "method"
   ],
   [
     "src/table.js~table#newrecord",
@@ -3084,63 +3132,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#selectallrecords",
-    "class/src/Table.js~Table.html#instance-method-selectAllRecords",
-    "src/Table.js~Table#selectAllRecords",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectallrows",
-    "class/src/Table.js~Table.html#instance-method-selectAllRows",
-    "src/Table.js~Table#selectAllRows",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectanyrecord",
-    "class/src/Table.js~Table.html#instance-method-selectAnyRecord",
-    "src/Table.js~Table#selectAnyRecord",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectanyrow",
-    "class/src/Table.js~Table.html#instance-method-selectAnyRow",
-    "src/Table.js~Table#selectAnyRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectonerecord",
-    "class/src/Table.js~Table.html#instance-method-selectOneRecord",
-    "src/Table.js~Table#selectOneRecord",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectonerow",
-    "class/src/Table.js~Table.html#instance-method-selectOneRow",
-    "src/Table.js~Table#selectOneRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#selectrecord",
-    "class/src/Table.js~Table.html#instance-member-selectRecord",
-    "src/Table.js~Table#selectRecord",
-    "member"
-  ],
-  [
-    "src/table.js~table#selectrecords",
-    "class/src/Table.js~Table.html#instance-member-selectRecords",
-    "src/Table.js~Table#selectRecords",
-    "member"
-  ],
-  [
-    "src/table.js~table#selectrow",
-    "class/src/Table.js~Table.html#instance-member-selectRow",
-    "src/Table.js~Table#selectRow",
-    "member"
-  ],
-  [
-    "src/table.js~table#selectrows",
-    "class/src/Table.js~Table.html#instance-member-selectRows",
-    "src/Table.js~Table#selectRows",
+    "src/table.js~table#selectfrom",
+    "class/src/Table.js~Table.html#instance-member-selectFrom",
+    "src/Table.js~Table#selectFrom",
     "member"
   ],
   [
@@ -3156,27 +3150,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#update",
-    "class/src/Table.js~Table.html#instance-method-update",
-    "src/Table.js~Table#update",
+    "src/table.js~table#updateall",
+    "class/src/Table.js~Table.html#instance-method-updateAll",
+    "src/Table.js~Table#updateAll",
     "method"
   ],
   [
-    "src/table.js~table#updateallrows",
-    "class/src/Table.js~Table.html#instance-method-updateAllRows",
-    "src/Table.js~Table#updateAllRows",
+    "src/table.js~table#updateany",
+    "class/src/Table.js~Table.html#instance-method-updateAny",
+    "src/Table.js~Table#updateAny",
     "method"
   ],
   [
-    "src/table.js~table#updateanyrow",
-    "class/src/Table.js~Table.html#instance-method-updateAnyRow",
-    "src/Table.js~Table#updateAnyRow",
-    "method"
-  ],
-  [
-    "src/table.js~table#updateonerow",
-    "class/src/Table.js~Table.html#instance-method-updateOneRow",
-    "src/Table.js~Table#updateOneRow",
+    "src/table.js~table#updateone",
+    "class/src/Table.js~Table.html#instance-method-updateOne",
+    "src/Table.js~Table#updateOne",
     "method"
   ],
   [
@@ -3186,16 +3174,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#updaterow",
-    "class/src/Table.js~Table.html#instance-member-updateRow",
-    "src/Table.js~Table#updateRow",
-    "member"
-  ],
-  [
-    "src/table.js~table#updaterows",
-    "class/src/Table.js~Table.html#instance-member-updateRows",
-    "src/Table.js~Table#updateRows",
-    "member"
+    "src/table.js~table#withrecordoption",
+    "class/src/Table.js~Table.html#instance-method-withRecordOption",
+    "src/Table.js~Table#withRecordOption",
+    "method"
   ],
   [
     "src/tables.js",
@@ -3303,6 +3285,12 @@ window.esdocSearchIndex = [
     "src/utils/format.js",
     "file/src/Utils/Format.js.html",
     "src/Utils/Format.js",
+    "file"
+  ],
+  [
+    "src/utils/methods.js",
+    "file/src/Utils/Methods.js.html",
+    "src/Utils/Methods.js",
     "file"
   ],
   [

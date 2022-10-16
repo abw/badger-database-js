@@ -108,6 +108,8 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#insert--update--fetch-and-delete" data-ice="link">Insert, Update, Fetch and Delete</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#table-queries" data-ice="link">Table Queries</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -120,36 +122,43 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_methods.html"><a href="manual/table_methods.html" data-ice="link">Table Methods</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows-set--where--options-" data-ice="link">updateAllRows(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerow-where--options-" data-ice="link">fetchOneRow(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrow-where--options-" data-ice="link">fetchAnyRow(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrows-where--options-" data-ice="link">fetchAllRows(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerecord-where--options-" data-ice="link">fetchOneRecord(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-methods" data-ice="link">Insert Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertone-data--options-" data-ice="link">insertOne(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertall-array--options-" data-ice="link">insertAll(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-methods" data-ice="link">Update Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone-set--where--options-" data-ice="link">updateOne(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany-set--where--options-" data-ice="link">updateAny(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall-set--where--options-" data-ice="link">updateAll(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-method" data-ice="link">Delete Method</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-methods" data-ice="link">Fetch Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-where--options-" data-ice="link">fetch(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchone-where--options-" data-ice="link">fetchOne(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchany-where--options-" data-ice="link">fetchAny(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchall-where--options-" data-ice="link">fetchAll(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerecord-where--options-" data-ice="link">fetchOneRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-methods" data-ice="link">Record Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectonerow-query--values--options-" data-ice="link">selectOneRow(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectanyrow-query--values--options-" data-ice="link">selectAnyRow(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectallrows-query--values--options-" data-ice="link">selectAllRows(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectonerecord-query--values--options-" data-ice="link">selectOneRecord(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectanyrecord-query--values--options-" data-ice="link">selectAnyRecord(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectallrecords-query--values--options-" data-ice="link">selectAllRecords(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-methods" data-ice="link">Query Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#named-queries" data-ice="link">Named Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-fragments" data-ice="link">Query Fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-builder" data-ice="link">Query Builder</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#onerow-query--args-" data-ice="link">oneRow(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#anyrow-query--args-" data-ice="link">anyRow(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#allrows-query--args-" data-ice="link">allRows(query, args)</a></li>
@@ -157,9 +166,6 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#anyrecord-query--args-" data-ice="link">anyRecord(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#allrecords-query--args-" data-ice="link">allRecords(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-query--values--options-" data-ice="link">run(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -247,223 +253,301 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-queries">Table Queries</h1><p>You can define named queries and query fragments in your tables.
-This allows you to scope queries more closely to the table that
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="table-queries">Table Queries</h1><h2 id="query-methods">Query Methods</h2><p>Table objects implement the <a href="#run-query--values--options-">run()</a>,
+<a href="#one-query--values--options-">one()</a>, <a href="#any-query--values--options-">any()</a>
+and <a href="#all-query--values--options-">all()</a> method similar to those
+defined on the main database for running <a href="manual/basic_queries.html">basic queries</a>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const user = await users.one(
+  'SELECT "name" FROM "users" WHERE id = ?'
+  [12345]
+);</code></code></pre>
+<h2 id="named-queries">Named Queries</h2><p>You can define <a href="manual/named_queries.html">named queries</a> in your
+tables. This allows you to scope queries more closely to the table that
 they relate to, instead of piling everything into the main database
 definition.</p>
-<p>They work in exactly the same way as for
-<a href="manual/named_queries.html">named queries</a> defined on the database.
-You can use static SQL queries, you can embed query fragments into
-queries, or you can use the <a href="manual/query_builder.html">query builder</a>
-to generate the queries for you.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
-  database: 'sqlite://.db',
+  database: 'sqlite://users.db',
   tables: {
     users: {
       columns: 'id name email'
       queries: {
-        selectByName:
-          // SQL including table-specific fragments
-          'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
-        selectByEmail:
-          // using a query builder
-          t =&gt; t.select('id name email').from('users').where('email'),
-        allBadgers:
-          // using the .fetch query builder shortcut
-          t =&gt; t.fetch.where({ animal: 'Badger' })
+        selectNameById:
+          'SELECT "name" FROM "users" WHERE id = ?'
       }
     },
   }
 });
+const users = await db.table('users')
+const user = await users.one(
+  'selectNameById'
+  [12345]
+);</code></code></pre>
+<h2 id="query-fragments">Query Fragments</h2><p>You can define <a href="manual/query_fragments.html">query fragments</a>
+that can be embedded in your named queries or arbitrary SQL
+queries.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite://users.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      fragments: {
+        selectName:
+          'SELECT "name" FROM "users"'
+      }
+      queries: {
+        selectNameById:
+          '&lt;selectName&gt; WHERE id = ?'
+      }
+    },
+  }
+});
+const users = await db.table('users')
 
-// fetch the users table
-const users = await db.table('users');
+// named query with embedded fragments
+const user1 = await users.one(
+  'selectNameById'
+  [12345]
+);
 
-// calling named queries
-const user1 = await users.one('selectByName', ['Bobby Badger']);
-const user2 = await users.any('selectByEmail', ['brian@badgerpower.com']);</code></code></pre>
+// embed fragments directly into SQL query
+const user2 = await users.one(
+  '&lt;selectName&gt; WHERE email = ?'
+  ['bobby@badgerpower.com']
+);</code></code></pre>
 <p>The table pre-defines two fragments for each table: <code>&lt;table&gt;</code> is the quoted
 table name (e.g. <code>"users"</code>) and <code>&lt;columns&gt;</code> is a list of all the columns
 in the table, scoped to the table name with both parts properly quoted
-(e.g. `"users"."id", "users"."name", "users"."email").</p>
+(e.g. <code>"users"."id", "users"."name", "users"."email"</code>).</p>
 <p>This allows you to write more succinct named queries where you want to include
 all the columns:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// tables.users.queries...
-selectByName:
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',</code></code></pre>
-<p>To use the query builder define a named query as a function.  It will
-receive a reference to the table object on which you can call <code>select()</code>
-or <code>from()</code> to start a query.  Further query builder methods can then
-be called on it.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// tables.users.queries...
-selectByEmail:
-  t =&gt; t.select('id name email').from('users').where('email'),</code></code></pre>
-<p>If you want to start a query with a method other than <code>select()</code>
-or <code>from()</code> for some reason then you must prefix it with <code>.build</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// tables.users.queries...
-selectByEmail:
-  t =&gt; t.build.where('email').select('id name email').from('users')</code></code></pre>
-<p>The table provides a <code>.fetch</code> shortcut which is a query
-builder that has the table name and all columns pre-selected.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// tables.users.queries...
-selectByEmail:
-  t =&gt; t.fetch.where('email')
-  // -&gt; SELECT "users"."id", "users"."name", "users"."email"
-  //    FROM "users"
-  //    WHERE "email" = ?</code></code></pre>
-<h2 id="selectonerow-query--values--options-">selectOneRow(query, values, options)</h2><p>There are three different methods for selecting rows from the table using
-SQL queries or named queries.  The <code>selectOneRow()</code> method will return a single row.
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite://users.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectById:
+          'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE id = ?'
+      }
+    },
+  }
+});
+const users = await db.table('users')
+
+// named query with embedded fragments
+const user1 = await users.one(
+  'selectById'
+  [12345]
+);
+
+// embed fragments directly into SQL query
+const user2 = await users.one(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE email = ?'
+  ['bobby@badgerpower.com']
+);</code></code></pre>
+<h2 id="query-builder">Query Builder</h2><p>You can use the <a href="manual/query_builder.html">query builder</a> to generate
+queries.  Call the <code>select()</code> or <code>from()</code> methods to start a query
+and then chain further methods calls to build the query.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const byEmail = users
+  .select('id name')
+  .from('users')
+  .where('email')
+
+const user = await byEmail.one(['bobby@badgerpower.com'])</code></code></pre>
+<p>You can pass a query constructed using the query builder as the first argument
+to the <a href="#run-query--values--options-">run()</a>, <a href="#one-query--values--options-">one()</a>,
+<a href="#any-query--values--options-">any()</a> or <a href="#all-query--values--options-">all()</a> methods.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const user = await users.one(byEmail, ['bobby@badgerpower.com'])</code></code></pre>
+<p>If you want to start a query with a method other than <code>select()</code> or <code>from()</code>
+then prefix it with <code>.build</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const byEmail = users.build
+  .where('email')
+  .from('users')
+  .select('id name')</code></code></pre>
+<p>The table <code>.selectFrom</code> property contains a query builder that has been
+pre-initialised to select all the table columns from the table.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const byEmail = users.selectFrom.where('email')
+// -&gt; SELECT "users"."id", "users"."name", "users"."email"
+//    FROM "users"
+//    WHERE "email" = ?</code></code></pre>
+<p>You can use the query builder to generate named queries.  The query
+should be defined as a function that will receive a reference to the
+table object and should return the query builder chain.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite://users.db',
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectByEmail:
+          // using the query builder
+          t =&gt; t.select('name email').from('users').where('email'),
+        allBadgers:
+          // using the .selectFrom query builder shortcut
+          t =&gt; t.selectFrom.where({ animal: 'Badger' })
+      }
+    },
+  }
+});
+const users = await db.table('users');
+const user1 = await db.one(
+  'selectByEmail',
+  ['bobby@badgerpower.com']
+);
+const badgers = await db.all(
+  'allBadgers'
+);</code></code></pre>
+<h2 id="one-query--values--options-">one(query, values, options)</h2><p>There are three different methods for selecting rows from the table using
+SQL queries or named queries.  The <code>one()</code> method will return a single row.
 If the row isn't found or multiple rows match the criteria then an
 <code>UnexpectedRowCount</code> error will be thrown with a message of
 the form <code>N rows were returned when one was expected</code>.</p>
-<p>You can then call a named query by specifying the name as the
+<p>You can call a named query by specifying the name as the
 first argument, followed by an array of any placeholder values.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or throws an error
-const brian = await users.selectOneRow(
-  'selectByName', ['Bobby Badger']
-);
-console.log('Brian:', brian);</code></code></pre>
-<p>You can can also use SQL query string in place of a named query.</p>
+const bobby = await users.one(
+  'selectByEmail', ['bobby@badgerpower.com']
+);</code></code></pre>
+<p>You can also use a raw SQL query string in place of a named query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or throws an error
-const brian = await users.selectOneRow(
-  'SELECT * FROM users WHERE name = ?',
-  ['Bobby Badger']
-);
-console.log('Brian:', brian);</code></code></pre>
+const bobby = await users.one(
+  'SELECT * FROM users WHERE email = ?',
+  ['bobby@badgerpower.com']
+);</code></code></pre>
+<p>A SQL query can include references to query fragments.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.one(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE email = ?',
+  ['bobby@badgerpower.com']
+);</code></code></pre>
 <p>You can pass a third argument which can contain the <code>record</code> option if you
 want the data returned as a <a href="manual/record.html">record</a> instead of a row.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.selectOneRow(
-  'selectByName', ['Bobby Badger'],
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.one(
+  'selectByEmail', ['bobby@badgerpower.com'],
   { record: true }
 );</code></code></pre>
-<p>The <code>selectRow()</code> method is provided as an alias to this method.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.selectRow(
-  'selectByName', ['Bobby Badger']
-);</code></code></pre>
-<h2 id="selectanyrow-query--values--options-">selectAnyRow(query, values, options)</h2><p>The <code>selectAnyRow()</code> method is like <a href="#selectonerow-query--values--options-">selectOneRow()</a>
+<h2 id="any-query--values--options-">any(query, values, options)</h2><p>The <code>any()</code> method is like <a href="#one-query--values--options-">one()</a>
 but will return a single row if it exists or <code>undefined</code> if it doesn't.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or undefined
-const brian = await users.selectAnyRow(
-  'selectByName', ['Bobby Badger']
+const bobby = await users.any(
+  'selectByEmail', ['bobby@badgerpower.com']
 );
-if (brian) {
-  console.log('Brian:', brian);
+if (bobby) {
+  console.log('Bobby:', bobby);
 }
 else {
-  console.log('Brian Badger was not found');
+  console.log('Bobby Badger was not found');
 }</code></code></pre>
-<p>As per <a href="#selectonerow-query--values--options-">selectOneRow()</a> you can pass an
-additional object containing the <code>record</code> option to return the row as a record
-object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.selectAnyRow(
-  'selectByName', ['Bobby Badger']
+<p>You can can use a SQL query string in place of a named query and this
+can include query fragments.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.any(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE email = ?',
+  ['bobby@badgerpower.com']
+);</code></code></pre>
+<p>You can also pass an additional object containing the <code>record</code> option to
+return the row as a record object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = await users.any(
+  'selectByEmail', ['bobby@badgerpower.com']
   { record: true }
 );</code></code></pre>
-<h2 id="selectallrows-query--values--options-">selectAllRows(query, values, options)</h2><p>The <code>selectAllRows()</code> method will return an array of all matching rows.</p>
+<h2 id="all-query--values--options-">all(query, values, options)</h2><p>The <code>all()</code> method will return an array of all matching rows.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns an array of all rows (possibly empty)
-const bobbies = await users.selectAllRows(
-  'selectByName', ['Bobby Badger']
+const badgers = await users.all(
+  'selectByEmail', ['bobby@badgerpower.com']
 );
-if (bobbies.length) {
-  console.log("Fetched %s users called 'Bobby Badger':", bobbies.length);
+if (badgers.length) {
+  console.log("Fetched %s Bobby Badger records':", badgers.length);
 }
 else {
-  console.log("There aren't any users called 'Bobby Badger'");
+  console.log("There aren't any badgers with that email address");
 }</code></code></pre>
-<p>The <code>selectRows()</code> method is provided as an alias to this method.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobbies = await users.selectRows(
-  'selectByName', ['Bobby Badger']
+<p>You can can use a SQL query string in place of a named query and this
+can include query fragments.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await users.all(
+  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE animal=?',
+  ['Badger']
+);
+if (badgers.length) {
+  console.log("Fetched %s badgers':", badgers.length);
+}
+else {
+  console.log("There aren't any badgers");
+}
+</code></code></pre>
+<p>You can also pass an additional object containing the <code>record</code> option to
+return the rows as an array of record objects.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.all(
+  'selectByEmail', ['bobby@badgerpower.com']
+  { record: true }
 );</code></code></pre>
-<h2 id="selectonerecord-query--values--options-">selectOneRecord(query, values, options)</h2><p>This method is a wrapper around <a href="#selectonerow-query--values--options-">selectOneRow()</a> which returns
-the row as a record object.  It effectively sets the <code>record</code> option for you.</p>
-<p>Read more about records <a href="manual/records.html">here</a>.</p>
-<h2 id="selectanyrecord-query--values--options-">selectAnyRecord(query, values, options)</h2><p>This method is a wrapper around <a href="#selectanyrow-query--values--options-">selectAnyRow()</a> which returns
-the row as a record object.</p>
-<h2 id="selectallrecords-query--values--options-">selectAllRecords(query, values, options)</h2><p>This method is a wrapper around <a href="#selectallrows-query--values--options-">selectAllRows()</a> which returns
-the rows as an array of record objects.</p>
 <h2 id="onerow-query--args-">oneRow(query, args)</h2><p>This method is a multiplexer around
-<a href="#selectonerow-query--values--options-">selectOneRow()</a>
+<a href="#one-query--values--options-">one()</a>
 and
-<a href="manual/table_methods#fetchonerow-where--options-">fetchOneRow()</a>.  If the first argument
-is a string or query builder object then it calls <code>selectOneRow()</code>
-otherwise it calls <code>fetchOneRow()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.selectOneRow()
-const row = await users.oneRow(
-  'selectByName', ['Bobby Badger']
+<a href="manual/table_methods#fetchone-where--options-">fetchOne()</a>.  If the first argument
+is a string or query builder object then it calls <code>one()</code>
+otherwise it calls <code>fetchOne()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.one()
+const row = await users.one(
+  'selectByEmail', ['bobby@badgerpower.com']
 );</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchOneRow()
-const row = await users.oneRow(
-  { name: 'Bobby Badger' }
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchOne()
+const row = await users.one(
+  { email: 'bobby@badgerpower.com' }
 );</code></code></pre>
 <h2 id="anyrow-query--args-">anyRow(query, args)</h2><p>This method is a multiplexer around
-<a href="#selectanyrow-query--values--options-">selectAnyRow()</a>
+<a href="#any-query--values--options-">any()</a>
 and
-<a href="manual/table_methods#fetchanyrow-where--options-">fetchAnyRow()</a>.  If the first argument
-is a string or query builder object then it calls <code>selectAnyRow()</code>,
-otherwise it calls <code>fetchAnyRow()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.selectAnyRow()
+<a href="manual/table_methods#fetchany-where--options-">fetchAny()</a>.  If the first argument
+is a string or query builder object then it calls <code>any()</code>,
+otherwise it calls <code>fetchAny()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.any()
 const row = await users.anyRow(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAnyRow()
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAny()
 const row = await users.anyRow(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );</code></code></pre>
 <h2 id="allrows-query--args-">allRows(query, args)</h2><p>This method is a multiplexer around
-<a href="#selectallrows-query--values--options-">selectAllRows()</a>
+<a href="#all-query--values--options-">all()</a>
 and
-<a href="manual/table_methods#fetchallrows-where--options-">fetchAllRows()</a>.  If the first argument
-is a string or query builder object then it calls <code>selectAllRows()</code>,
-otherwise it calls <code>fetchAllRows()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.selectAllRows()
+<a href="manual/table_methods#fetchall-where--options-">fetchAll()</a>.  If the first argument
+is a string or query builder object then it calls <code>all()</code>,
+otherwise it calls <code>fetchAll()</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.all()
 const rows = await users.allRows(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAllRows()
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAll()
 const row = await users.allRows(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );</code></code></pre>
-<h2 id="onerecord-query--args-">oneRecord(query, args)</h2><p>This method is a multiplexer around
-<a href="#selectonerecord-query--values--options-">selectOneRecord()</a>
-and
-<a href="manual/table_methods#fetchonerecord-where--options-">fetchOneRecord()</a>.  If the first argument
-is a string or query builder object then it calls <code>selectOneRecord()</code>
-otherwise it calls <code>fetchOneRecord()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.selectOneRecord()
+<h2 id="onerecord-query--args-">oneRecord(query, args)</h2><p>This method is like <a href="#onerow-query--args-">oneRow()</a> but returns the row as a record.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.one() with the record option
 const row = await users.oneRecord(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchOneRecord()
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchOne() with the record option
 const row = await users.oneRecord(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );</code></code></pre>
-<h2 id="anyrecord-query--args-">anyRecord(query, args)</h2><p>This method is a multiplexer around
-<a href="#selectanyrecord-query--values--options-">selectAnyRecord()</a>
-and
-<a href="manual/table_methods#fetchanyrecord-where--options-">fetchAnyRecord()</a>.  If the first argument
-is a string or query builder object then it calls <code>selectAnyRecord()</code>,
-otherwise it calls <code>fetchAnyRecord()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.selectAnyRecord()
+<h2 id="anyrecord-query--args-">anyRecord(query, args)</h2><p>This method is like <a href="#anyrow-query--args-">anyRow()</a> but returns the row as a record.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.any() with the record option
 const row = await users.anyRecord(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAnyRecord()
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAny() with the record options
 const row = await users.anyRecord(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );</code></code></pre>
-<h2 id="allrecords-query--args-">allRecords(query, args)</h2><p>This method is a multiplexer around
-<a href="#selectallrecords-query--values--options-">selectAllRecords()</a>
-and
-<a href="manual/table_methods#fetchallrecords-where--options-">fetchAllRecords()</a>.  If the first argument
-is a string or query builder object then it calls <code>selectAllRecords()</code>,
-otherwise it calls <code>fetchAllRecords()</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.selectAllRecords()
+<h2 id="allrecords-query--args-">allRecords(query, args)</h2><p>This method is like <a href="#allrows-query--args-">allRows()</a> but returns the rows as an
+array of records.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.all() with the record option
 const rows = await users.allRecords(
-  'selectByName', ['Bobby Badger']
+  'selectByEmail', ['bobby@badgerpower.com']
 );</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAllRecords()
+<pre><code class="lang-js"><code class="source-code prettyprint">// same as users.fetchAll() with the record option
 const row = await users.allRecords(
-  { name: 'Bobby Badger' }
+  { email: 'bobby@badgerpower.com' }
 );</code></code></pre>
 <h2 id="run-query--values--options-">run(query, values, options)</h2><p>This is a low-level method for running a named query, or indeed
 any arbitrary SQL query, where you're not expecting to fetch any rows.</p>
@@ -477,39 +561,6 @@ will also be available.</p>
 <p>Or you could define that as a named query called <code>drop</code> which you could run
 like so:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">users.run('drop')</code></code></pre>
-<h2 id="one-query--values--options-">one(query, values, options)</h2><p>This is another low-level method for running an SQL query where you're
-expecting to get exactly one row returned.  It's just like the
-corresponding <a href="manual/basic_queries.html#one-query--values--options-">one()</a>
-database method, with the additional table-specific SQL fragments available, as
-per <a href="#run-query--values--options-">run()</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = users.one(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
-  ['Bobby Badger']
-)</code></code></pre>
-<p>You can also run any pre-defined named <code>queries</code> or include query <code>fragments</code>
-in the queries you run using this method.</p>
-<h2 id="any-query--values--options-">any(query, values, options)</h2><p>This is yet another low-level method for running an SQL query, but where
-you're expecting to get one row returned which may or may not exist.
-It's just like the corresponding
-<a href="manual/basic_queries.html#any-query--values--options-">any()</a>
-database method, with the additional table-specific SQL fragments available,
-as per <a href="#run-query--values--options-">run()</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobby = users.any(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name=?',
-  ['Bobby Badger']
-)</code></code></pre>
-<p>Pre-defined named <code>queries</code> can also be run, or you can include query
-<code>fragments</code> in the SQL.</p>
-<h2 id="all-query--values--options-">all(query, values, options)</h2><p>The final low-level method for running an SQL query where you're expecting to
-get multiple rows.  It's just like the corresponding
-<a href="manual/basic_queries.html#all-query--values--options-">all()</a>
-database method, with the additional table-specific SQL fragments available, as
-per <a href="#run-query--values--options-">run()</a>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rows = users.all(
-  'SELECT &lt;columns&gt; FROM &lt;table&gt;',
-)</code></code></pre>
-<p>Unsurprisingly, this method also allows you to run pre-defined named
-<code>queries</code> or embed query <code>fragments</code> in the SQL.</p>
 </div>
 </div>
 

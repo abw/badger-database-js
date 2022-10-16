@@ -108,6 +108,8 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/tables.html"><a href="manual/tables.html" data-ice="link">Tables</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#insert--update--fetch-and-delete" data-ice="link">Insert, Update, Fetch and Delete</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/tables.html"><a href="manual/tables.html#table-queries" data-ice="link">Table Queries</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -120,36 +122,43 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_methods.html"><a href="manual/table_methods.html" data-ice="link">Table Methods</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateallrows-set--where--options-" data-ice="link">updateAllRows(set, where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerow-where--options-" data-ice="link">fetchOneRow(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrow-where--options-" data-ice="link">fetchAnyRow(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrows-where--options-" data-ice="link">fetchAllRows(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerecord-where--options-" data-ice="link">fetchOneRecord(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-methods" data-ice="link">Insert Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertone-data--options-" data-ice="link">insertOne(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertall-array--options-" data-ice="link">insertAll(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-methods" data-ice="link">Update Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-set--where--options-" data-ice="link">update(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone-set--where--options-" data-ice="link">updateOne(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany-set--where--options-" data-ice="link">updateAny(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall-set--where--options-" data-ice="link">updateAll(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-method" data-ice="link">Delete Method</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-methods" data-ice="link">Fetch Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-where--options-" data-ice="link">fetch(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchone-where--options-" data-ice="link">fetchOne(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchany-where--options-" data-ice="link">fetchAny(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchall-where--options-" data-ice="link">fetchAll(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchonerecord-where--options-" data-ice="link">fetchOneRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-methods" data-ice="link">Record Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_queries.html"><a href="manual/table_queries.html" data-ice="link">Table Queries</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectonerow-query--values--options-" data-ice="link">selectOneRow(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectanyrow-query--values--options-" data-ice="link">selectAnyRow(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectallrows-query--values--options-" data-ice="link">selectAllRows(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectonerecord-query--values--options-" data-ice="link">selectOneRecord(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectanyrecord-query--values--options-" data-ice="link">selectAnyRecord(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#selectallrecords-query--values--options-" data-ice="link">selectAllRecords(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-methods" data-ice="link">Query Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#named-queries" data-ice="link">Named Queries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-fragments" data-ice="link">Query Fragments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#query-builder" data-ice="link">Query Builder</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#onerow-query--args-" data-ice="link">oneRow(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#anyrow-query--args-" data-ice="link">anyRow(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#allrows-query--args-" data-ice="link">allRows(query, args)</a></li>
@@ -157,9 +166,6 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#anyrecord-query--args-" data-ice="link">anyRecord(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#allrecords-query--args-" data-ice="link">allRecords(query, args)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#run-query--values--options-" data-ice="link">run(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#one-query--values--options-" data-ice="link">one(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#any-query--values--options-" data-ice="link">any(query, values, options)</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/table_queries.html"><a href="manual/table_queries.html#all-query--values--options-" data-ice="link">all(query, values, options)</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -263,7 +269,7 @@ const db = connect({
 
 // fetch the users table
 const users = await db.table('users');</code></code></pre>
-<h2 id="insert-data--options-">insert(data, options)</h2><p>The <code>insert()</code> method will construct and run an <code>INSERT</code> SQL query to insert a
+<h2 id="insert-methods">Insert Methods</h2><h3 id="insert-data--options-">insert(data, options)</h3><p>The <code>insert()</code> method will construct and run an <code>INSERT</code> SQL query to insert a
 row from the column data that you provide.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const result = await users.insert({
   name:  'Brian Badger',
@@ -357,17 +363,16 @@ it exists.</p>
 console.log(frank.id);      // e.g. 3
 console.log(frank.name);    // Frank Ferret
 console.log(frank.email);   // frank@ferrets-r-us.com</code></code></pre>
-<h2 id="insertonerow-data--options-">insertOneRow(data, options)</h2><p>Internally, the <a href="#insert-data--options-">insert()</a> method calls either
-<code>insertAllRows()</code>, if the value passed is an array, or <code>insertOneRow()</code>
+<h3 id="insertone-data--options-">insertOne(data, options)</h3><p>Internally, the <a href="#insert-data--options-">insert()</a> method calls either
+<code>insertAll()</code>, if the value passed is an array, or <code>insertOne()</code>
 if it's a single data object. You can call these methods directly if you prefer.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const result = await users.insertOneRow({
+<pre><code class="lang-js"><code class="source-code prettyprint">const result = await users.insertOne({
   name:  'Brian Badger',
   email: 'brian@badgerpower.com'
 });</code></code></pre>
-<p>The <code>insertRow()</code> method is provided as an alias for this method.</p>
-<h2 id="insertallrows-array--options-">insertAllRows(array, options)</h2><p>Here's an example explicitly calling the <code>insertAllRows()</code> method.  It's exactly the
+<h3 id="insertall-array--options-">insertAll(array, options)</h3><p>Here's an example explicitly calling the <code>insertAll()</code> method.  It's exactly the
 same as calling <a href="#insert-data--options-">insert()</a> with an array of rows to insert.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const results = await users.insertAllRows([
+<pre><code class="lang-js"><code class="source-code prettyprint">const results = await users.insertAll([
   {
     name:  'Frank Ferret',
     email: 'frank@badgerpower.com'
@@ -377,8 +382,7 @@ same as calling <a href="#insert-data--options-">insert()</a> with an array of r
     email: 'simon@badgerpower.com'
   }
 ]);</code></code></pre>
-<p>The <code>insertRows()</code> method is provided as an alias for this method.</p>
-<h2 id="insertonerecord-data--options-">insertOneRecord(data, options)</h2><p>This is a wrapper around the <a href="#insertonerow-data--options-">insertOneRow()</a>
+<h3 id="insertonerecord-data--options-">insertOneRecord(data, options)</h3><p>This is a wrapper around the <a href="#insertone-data--options-">insertOne()</a> method
 which automatically sets the <code>record</code> option for you.  The result returned
 will be a record object instead of a result object.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const record = await users.insertOneRecord({
@@ -389,7 +393,7 @@ will be a record object instead of a result object.</p>
 console.log(record.name);   // Brian Badger
 console.log(record.email);  // brian@badgerpower.com</code></code></pre>
 <p>The <code>insertRecord()</code> method is provided as an alias for this method.</p>
-<h2 id="insertallrecords-array--options-">insertAllRecords(array, options)</h2><p>This is a wrapper around the <a href="#insertallrows-array--options-">insertAllRows()</a>
+<h3 id="insertallrecords-array--options-">insertAllRecords(array, options)</h3><p>This is a wrapper around the <a href="#insertall-array--options-">insertAll()</a> method
 which automatically sets the <code>record</code> option for you.  The result returned
 will be an array of record objects instead of an array of results.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const records = await users.insertAllRecords([
@@ -409,7 +413,8 @@ console.log(records[0].email);   // bobby@badgerpower.com
 console.log(records[1].name);    // Brian Badger
 console.log(records[1].email);   // brian@badgerpower.com</code></code></pre>
 <p>The <code>insertRecords()</code> method is provided as an alias for this method.</p>
-<h2 id="update-set--where--options-">update(set, where, options)</h2><p>The <code>update()</code> method, as the name suggests, allows you to update rows.</p>
+<h2 id="update-methods">Update Methods</h2><h3 id="update-set--where--options-">update(set, where, options)</h3><p>The <code>update()</code> method, as the name suggests, allows you to update rows.
+It is an alias for the <a href="#updateall-set--where--options-">updateAll()</a> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
   { name: 'Brian "The Brains" Badger' },  // SET...
   { email: 'brian@badgerpower.com' }      // WHERE...
@@ -438,8 +443,8 @@ SET    name=?
 WHERE  email!=?</code></code></pre>
 <p>Any single value SQL operator can be used, e.g. <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>.
 You can't use operators that expect lists of values, e.g. <code>in (...)</code>.</p>
-<h2 id="updateonerow-set--where--options-">updateOneRow(set, where, options)</h2><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
-<a href="#updateallrows-set--where--options-">updateAllRows()</a> method that has an
+<h3 id="updateone-set--where--options-">updateOne(set, where, options)</h3><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
+<a href="#updateall-set--where--options-">updateAll()</a> method that has an
 additional assertion check that exactly one row is updated.  If zero or more
 rows are updated then an <code>UnexpectedRowCount</code> error will be thrown with a
 message of the form <code>N rows were updated when one was expected</code>.</p>
@@ -447,7 +452,7 @@ message of the form <code>N rows were updated when one was expected</code>.</p>
 automatically reload the row from the database after performing the update.
 This can be useful if you've got a column which is automatically set when the
 record is updated, e.g. a <code>modified</code> column, which you want to inspect.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOne(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -460,7 +465,7 @@ to match all records where the <code>year</code> is greater than <code>2000</cod
 <p>One thing to note: this uses the modification and selection criteria specified
 to reload the data.  If, for example, you change the email address of a row
 then it will correctly reload the record using the new email address.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOne(
   { email: 'brian-badger@badgerpower.com' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -471,7 +476,7 @@ was modified, based on the criteria provided.  Consider this somewhat contrived
 example: if the users table has a <code>friends</code> column and there is exactly one record
 where the <code>friends</code> count is set to <code>0</code>.  You feel sorry for the poor user and
 decide to modify their <code>friends</code> count to be <code>1</code>.  You'll be their friend, right?</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOne(
   { friends: 1 },
   { friends: 0 },
   { reload: true }
@@ -481,20 +486,19 @@ the update, once the update has been applied there may be multiple rows which ha
 the <code>friends</code> count set to <code>1</code>.  The reload will fail with an <code>UnexpectedRowCount</code>
 error.  In these cases you should always provide some other unique attribute to ensure
 that the correct row can be identified and reloaded:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.updateOne(
   { friends: 1 },
   { email: 'bobby@badger.com' },
   { reload: true }
 );</code></code></pre>
-<p>The <code>updateRow()</code> method is provided as an alias for this method.</p>
-<h2 id="updateanyrow-set--where--options-">updateAnyRow(set, where, options)</h2><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
-<a href="#updateallrows-set--where--options-">updateAllRows()</a> method that has an
+<h3 id="updateany-set--where--options-">updateAny(set, where, options)</h3><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
+<a href="#updateall-set--where--options-">updateAll()</a> method that has an
 additional assertion check that no more than one row is updated.  If more
 than one rows are updated then an <code>UnexpectedRowCount</code> error will be thrown
 with a message of the form <code>N rows were updated when one was expected</code>.</p>
 <p>This also supports the <code>reload</code> option.  If a row is updated then the complete
 row data will be returned.  Otherwise it will return <code>undefined</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateAnyRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateAny(
   { name: 'Brian "The Brains" Badger' },
   { email: 'brian@badgerpower.com' },
   { reload: true }
@@ -508,14 +512,13 @@ else {
 <p>You can also use other comparison operator as per the <a href="#update-set--where--options-">update()</a>
 method, e.g. <code>{ year: ['&gt;', 2000] }</code> to match all records where the <code>year</code> is greater
 than <code>2000</code>.</p>
-<h2 id="updateallrows-set--where--options-">updateAllRows(set, where, options)</h2><p>The <a href="#update-set--where--options-">update()</a> method is internally a wrapper
-around <code>updateAllRows()</code>.  If you want additional checks to be performed to
+<h3 id="updateall-set--where--options-">updateAll(set, where, options)</h3><p>The <a href="#update-set--where--options-">update()</a> method is an alias for the
+<code>updateAll()</code> method.  If you want additional checks to be performed to
 ensure that you're only updating one row, or if you want to automatically
 reload a row after an update then you can use the
-<a href="#updateonerow-set--where--options-">updateOneRow()</a> or
-<a href="#updateanyrow-set--where--options-">updateAnyRow()</a> methods.</p>
-<p>The <code>updateRows()</code> method is provided as an alias for this method.</p>
-<h2 id="delete-where-">delete(where)</h2><p>You can probably guess what the <code>delete()</code> method does.</p>
+<a href="#updateone-set--where--options-">updateOne()</a> or
+<a href="#updateany-set--where--options-">updateAny()</a> methods.</p>
+<h2 id="delete-method">Delete Method</h2><h3 id="delete-where-">delete(where)</h3><p>You can probably guess what the <code>delete()</code> method does.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.delete({
   email: 'brian@badgerpower.com'
 });</code></code></pre>
@@ -529,13 +532,14 @@ WHERE email=?</code></code></pre>
 <p>You can also use other comparison operator in the <code>where</code> clause, as per the
 <a href="#update-set--where--options-">update()</a> method, e.g. <code>{ year: ['&gt;', 2000] }</code>
 to match all records where the <code>year</code> is greater than <code>2000</code>.</p>
-<h2 id="fetchonerow-where--options-">fetchOneRow(where, options)</h2><p>There are three different methods for fetching rows from the table using
-selection criteria.  The <code>fetchOneRow()</code> method will return a single row.
+<h2 id="fetch-methods">Fetch Methods</h2><h3 id="fetch-where--options-">fetch(where, options)</h3><p>This is an alias for the <a href="#fetchall-where--options-">fetchAll()</a> method.</p>
+<h3 id="fetchone-where--options-">fetchOne(where, options)</h3><p>There are three different methods for fetching rows from the table using
+selection criteria.  The <code>fetchOne()</code> method will return a single row.
 If the row isn't found or multiple rows match the criteria then an
 <code>UnexpectedRowCount</code> error will be thrown with a message of
 the form <code>N rows were returned when one was expected</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or throws an error
-const brian = await users.fetchOneRow({
+const brian = await users.fetchOne({
   email: 'brian@badgerpower.com'
 });
 console.log('Brian:', brian);</code></code></pre>
@@ -547,32 +551,28 @@ all records where the <code>year</code> is greater than <code>2000</code>.</p>
 the selection.  For example, the <code>columns</code> option can be used to specify
 the columns that you want to select.  They can be specified as a string
 containing the columns names separated by whitespace:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOne(
   { email: 'brian@badgerpower.com' },
   { columns: 'id name' }
 );</code></code></pre>
 <p>Or as an array:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOne(
   { email: 'brian@badgerpower.com' },
   { columns: ['id', 'name'] }
 );</code></code></pre>
 <p>The <code>record</code> option can be specified if you want the data returned as a
 <a href="manual/record.html">record</a> instead of a row.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOneRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchOne(
   { email: 'brian@badgerpower.com' },
   { record: true }
 );</code></code></pre>
-<p>The generated SQL for this method (and also <a href="#fetchanyrow-where--options-">fetchAnyRow()</a>
-and <a href="#fetchallrows-where--options-">fetchAllRows()</a> will look something like this:</p>
+<p>The generated SQL for this method (and also <a href="#fetchany-where--options-">fetchAny()</a>
+and <a href="#fetchall-where--options-">fetchAll()</a> will look something like this:</p>
 <pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "users"."id", "users"."name" FROM users
 WHERE email=?</code></code></pre>
-<p>The <code>fetchRow()</code> method is provided as an alias to this method.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchRow({
-  email: 'brian@badgerpower.com'
-});</code></code></pre>
-<h2 id="fetchanyrow-where--options-">fetchAnyRow(where, options)</h2><p>The <code>fetchAnyRow()</code> method will return a single row if it exists or <code>undefined</code> if it doesn't.</p>
+<h3 id="fetchany-where--options-">fetchAny(where, options)</h3><p>The <code>fetchAny()</code> method will return a single row if it exists or <code>undefined</code> if it doesn't.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns a single row or undefined
-const brian = await users.fetchAnyRow({
+const brian = await users.fetchAny({
   email: 'brian@badgerpower.com'
 });
 if (brian) {
@@ -585,20 +585,20 @@ else {
 other methods described above, you can use other comparison operators e.g.
 <code>{ year: ['&gt;', 2000] }</code> to match all records where the <code>year</code> is greater
 than <code>2000</code>.</p>
-<p>As per <a href="#fetchonerow-where--options-">fetchOneRow()</a> you can pass an additional object
+<p>As per <a href="#fetchone-where--options-">fetchOne()</a> you can pass an additional object
 containing options.  For example, to specify the columns you want returned:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchAnyRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchAny(
   { email: 'brian@badgerpower.com' },
   { columns: 'id email' }
 );</code></code></pre>
 <p>Or to return the row as a record object:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchAnyRow(
+<pre><code class="lang-js"><code class="source-code prettyprint">const brian = await users.fetchAny(
   { email: 'brian@badgerpower.com' },
   { record: true }
 );</code></code></pre>
-<h2 id="fetchallrows-where--options-">fetchAllRows(where, options)</h2><p>The <code>fetchAllRows()</code> method will return an array of all matching rows.</p>
+<h3 id="fetchall-where--options-">fetchAll(where, options)</h3><p>The <code>fetchAll()</code> method will return an array of all matching rows.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// returns an array of all rows (possibly empty)
-const bobbies = await users.fetchAllRows(
+const bobbies = await users.fetchAll(
   { name: 'Bobby Badger' }
 );
 if (bobbies.length) {
@@ -609,47 +609,45 @@ else {
 }</code></code></pre>
 <p>If you want to return all matching rows then you can omit the criteria or
 specify an empty object.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAllRows();</code></code></pre>
-<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAllRows({ });</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAll();</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAll({ });</code></code></pre>
 <p>It shouldn't surprise you to learn that you can use other comparison operators
 in the <code>where</code> clause, e.g. <code>{ year: ['&gt;', 2000] }</code> to match all records where
 the <code>year</code> is greater than <code>2000</code>.</p>
-<p>As per <a href="#fetchonerow-where--options-">fetchOneRow()</a> you can pass an additional objects
+<p>As per <a href="#fetchone-where--options-">fetchOne()</a> you can pass an additional objects
 containing options.  It supports the <code>columns</code> and <code>record</code> options.  You can
 also provide <code>order</code> (or <code>orderBy</code> if you prefer to use a naming convention as
 close as possible to the SQL equivalent of <code>ORDER BY</code>) to specify the order in
 which rows should be returned:</p>
 <p>The <code>order</code> can contain multiple columns and each will be automatically quoted.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAllRows(
+<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAll(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
   { order: 'name, id' }   // -&gt; ORDER BY "name", "id"
 );</code></code></pre>
 <p>If you want to use a raw SQL order then define it as an object with a single <code>sql</code>
 property:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAllRows(
+<pre><code class="lang-js"><code class="source-code prettyprint">const allUsers = await users.fetchAll(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
   { order: { sql: 'name DESC' } }
 );</code></code></pre>
 <p>Or use the <code>sql</code> function to generate it for you from a tagged template literal.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { sql } from '@abw/badger-database'
 
-const allUsers = await users.fetchAllRows(
+const allUsers = await users.fetchAll(
   { },  // you can specify selection criteria or use an empty object to fetch all rows
   { order: sql`name DESC` }
 );</code></code></pre>
-<p>The <code>fetchRows()</code> method is provided as an alias to this method.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const bobbies = await users.fetchRows({
-  { name: 'Bobby Badger' }
-);</code></code></pre>
-<h2 id="fetchonerecord-where--options-">fetchOneRecord(where, options)</h2><p>This method is a wrapper around <a href="#fetchonerow-where--options-">fetchOneRow()</a> which returns
+<h3 id="fetchonerecord-where--options-">fetchOneRecord(where, options)</h3><p>This method is a wrapper around <a href="#fetchone-where--options-">fetchOne()</a> which returns
 the row as a record object.  It effectively sets the <code>record</code> option for you.</p>
 <p>Read more about records <a href="manual/records.html">here</a>.</p>
-<h2 id="fetchanyrecord-where--options-">fetchAnyRecord(where, options)</h2><p>This method is a wrapper around <a href="#fetchanyrow-where--options-">fetchAnyRow()</a> which returns
+<p>The <code>fetchRecord()</code> method is provided as an alias for this method.</p>
+<h3 id="fetchanyrecord-where--options-">fetchAnyRecord(where, options)</h3><p>This method is a wrapper around <a href="#fetchany-where--options-">fetchAny()</a> which returns
 the row as a record object.</p>
-<h2 id="fetchallrecords-where--options-">fetchAllRecords(where, options)</h2><p>This method is a wrapper around <a href="#fetchallrows-where--options-">fetchAllRows()</a> which returns
+<h3 id="fetchallrecords-where--options-">fetchAllRecords(where, options)</h3><p>This method is a wrapper around <a href="#fetchall-where--options-">fetchAll()</a> which returns
 the rows as an array of record objects.</p>
-<h2 id="record-row-">record(row)</h2><p>This methods converts a row of data to a <a href="manual/records.html">record</a> object.</p>
-<h2 id="records-rows-">records(rows)</h2><p>This methods converts an array of rows of data to a an array of <a href="manual/records.html">record</a> objects.</p>
+<p>The <code>fetchRecords()</code> method is provided as an alias for this method.</p>
+<h2 id="record-methods">Record Methods</h2><h3 id="record-row-">record(row)</h3><p>This methods converts a row of data to a <a href="manual/records.html">record</a> object.</p>
+<h3 id="records-rows-">records(rows)</h3><p>This methods converts an array of rows of data to a an array of <a href="manual/records.html">record</a> objects.</p>
 </div>
 </div>
 

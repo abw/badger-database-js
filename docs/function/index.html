@@ -31,6 +31,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Database.js~Database.html">Database</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Query.js~Query.html">Query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Queryable.js~Queryable.html">Queryable</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Record.js~Record.html">Record</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
@@ -123,7 +124,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addQueryMethods">addQueryMethods</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-aliasMethods">aliasMethods</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-expandFragments">expandFragments</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isQuery">isQuery</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseRelationString">parseRelationString</a></span></span></li>
@@ -186,7 +187,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-addQueryMethods">addQueryMethods</a></span></span><span class="code" data-ice="signature">(object: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-aliasMethods">aliasMethods</a></span></span><span class="code" data-ice="signature">(object: <span>*</span>, aliases: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -1325,22 +1326,22 @@ will contained a merged set of the defaults and those options.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-function-addQueryMethods">
+  <h3 data-ice="anchor" id="static-function-aliasMethods">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">addQueryMethods</span><span class="code" data-ice="signature">(object: <span>*</span>)</span>
+    <span class="code" data-ice="name">aliasMethods</span><span class="code" data-ice="signature">(object: <span>*</span>, aliases: <span>*</span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Queries.js.html#lineNumber39">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Methods.js.html#lineNumber3">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {addQueryMethods} from '<span><a href="file/src/Utils/Queries.js.html#lineNumber39">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {aliasMethods} from '<span><a href="file/src/Utils/Methods.js.html#lineNumber3">@abw/badger-database</a></span>'</code></pre></div>
   
   
   
@@ -1357,6 +1358,12 @@ will contained a merged set of the defaults and those options.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">object</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">aliases</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -1947,11 +1954,11 @@ is a string then it is passed to <span><a href="function/index.html#static-funct
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Queries.js.html#lineNumber9">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Queries.js.html#lineNumber7">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {expandFragments} from '<span><a href="file/src/Utils/Queries.js.html#lineNumber9">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {expandFragments} from '<span><a href="file/src/Utils/Queries.js.html#lineNumber7">@abw/badger-database</a></span>'</code></pre></div>
   
   
   
@@ -2298,11 +2305,11 @@ The error message will be of the form <code>Invalid "XXX" specified: YYY</code>.
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Queries.js.html#lineNumber6">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Queries.js.html#lineNumber4">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {isQuery} from '<span><a href="file/src/Utils/Queries.js.html#lineNumber6">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {isQuery} from '<span><a href="file/src/Utils/Queries.js.html#lineNumber4">@abw/badger-database</a></span>'</code></pre></div>
   
   
   
