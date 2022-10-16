@@ -62,7 +62,7 @@ test.serial( 'from',
 
 test.serial( 'fetch',
   async t => {
-    const fetch = users.fetch;
+    const fetch = users.selectFrom;
     const sql = fetch.sql();
     t.is( sql, 'SELECT "users"."id", "users"."name", "users"."email"\nFROM "users"')
   }
@@ -70,7 +70,7 @@ test.serial( 'fetch',
 
 test.serial( 'fetch where',
   async t => {
-    const select = users.fetch.where({ a: 10 });
+    const select = users.selectFrom.where({ a: 10 });
     const sql = select.sql();
     t.is( sql, `SELECT "users"."id", "users"."name", "users"."email"\nFROM "users"\nWHERE "a" = ?`)
   }
