@@ -5,7 +5,13 @@ let db;
 let floydId;
 const dbConfig = {
   database: 'sqlite:memory',
+  fragments: {
+    selectStar: 'SELECT *',
+  },
   queries: {
+    helloWorld:    'SELECT "hello world"',
+    selectTable:   'SELECT * FROM <table>',
+    selectArtists: '<selectStar> FROM artists'
   },
   tables: {
     artists: {
@@ -129,6 +135,38 @@ test.serial( 'fetch album by year',
     t.is( dsotm.year, 1973 );
   }
 );
+
+test.serial( 'use database query from table',
+  async t => {
+    const albums = await db.table('albums');
+    const sql    = albums.sql('helloWorld')
+    t.is( sql, 'SELECT "hello world"' );
+  }
+)
+
+test.serial( 'use database query with table fragments',
+  async t => {
+    const albums = await db.table('albums');
+    const sql    = albums.sql('selectTable')
+    t.is( sql, 'SELECT * FROM "albums"' );
+  }
+)
+
+test.serial( 'use database query with database fragments',
+  async t => {
+    const albums = await db.table('albums');
+    const sql    = albums.sql('selectArtists')
+    t.is( sql, 'SELECT * FROM artists' );
+  }
+)
+
+test.serial( 'use database fragments from table',
+  async t => {
+    const albums = await db.table('albums');
+    const sql    = albums.sql('<selectStar> FROM users')
+    t.is( sql, 'SELECT * FROM users' );
+  }
+)
 
 test.after( 'disconnect',
   () => db.disconnect()

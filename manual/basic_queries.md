@@ -78,7 +78,9 @@ db.run(
 )
 ```
 
-## run(query, values, options)
+## Query Methods
+
+### run(query, values, options)
 
 The `run()` method is used to execute a query where you're not expecting
 to return any rows from the database.  However, the method does return some
@@ -110,7 +112,7 @@ console.log("Rows changed:", insert.changes);
 console.log("Inserted ID:", insert.id);
 ```
 
-## one(query, values, options)
+### one(query, values, options)
 
 The `one()` method should be used when you're expecting to fetch *exactly*
 one row from the database.  The first argument is an SQL query string.  If
@@ -131,7 +133,7 @@ The `one()` method will throw an `UnexpectedRowCount` exception if no rows, or
 more than one row is returned with a message of the form
 `N rows were returned when one was expected`.
 
-## any(query, values, options)
+### any(query, values, options)
 
 The `any()` method can be used if you want to get one row which may or may not exist.
 
@@ -148,7 +150,7 @@ else {
 }
 ```
 
-## all(query, values, options)
+### all(query, values, options)
 
 The `all()` method can be used to return multiple rows.
 
@@ -164,4 +166,7 @@ else {
   console.log("There aren't any users called 'Bobby Badger'");
 }
 ```
+
+
+
 

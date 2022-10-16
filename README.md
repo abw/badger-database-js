@@ -317,7 +317,7 @@ await users.insert({
 });
 
 // fetch one row
-const select = await users.oneRow({
+const select = await users.fetchOne({
   email: 'bobby@badgerpower.com'
 });
 ```
@@ -327,7 +327,7 @@ to perform further operations on rows.
 
 ```js
 // fetch one record
-const record = await users.oneRecord({
+const record = await users.fetchOneRecord({
   email: 'bobby@badgerpower.com'
 });
 console.log(record.name);   // Bobby Badger

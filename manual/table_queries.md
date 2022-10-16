@@ -1,7 +1,5 @@
 # Table Queries
 
-## Query Methods
-
 Table objects implement the [run()](#run-query--values--options-),
 [one()](#one-query--values--options-), [any()](#any-query--values--options-)
 and [all()](#all-query--values--options-) method similar to those
@@ -115,6 +113,39 @@ const user2 = await users.one(
 );
 ```
 
+You can also use any named queries or query fragments defined in the database
+configuration.  Queries defined in the database that include fragment references
+will first try to resolve those fragments from the table definition before looking
+for them in the database.
+
+For example, that allows you to define a query or fragment in the database that
+includes the `<columns>` or `<table>` fragments.  When the query is expanded it
+will include the correct columns and table name for the table.
+
+```js
+const db = connect({
+  database: 'sqlite://users.db',
+  fragments: {
+    allColumns: 'SELECT &lt;columns&gt; FROM &lt;table&gt;',
+    byId:       'WHERE id = ?'
+  },
+  tables: {
+    users: {
+      columns: 'id name email'
+      queries: {
+        selectById:
+          '&lt;allColumns&gt; &lt;byId&gt;'
+      }
+    },
+  }
+});
+const users = await db.table('users')
+console.log( users.sql('selectById') )
+// -> SELECT "users"."id", "users"."name", "users"."email"
+//    FROM "users"
+//    WHERE id = ?
+```
+
 ## Query Builder
 
 You can use the [query builder](manual/query_builder.html) to generate
@@ -189,7 +220,33 @@ const badgers = await db.all(
 );
 ```
 
-## one(query, values, options)
+## Query Methods
+
+### run(query, values, options)
+
+This is a low-level method for running a named query, or indeed
+any arbitrary SQL query, where you're not expecting to fetch any rows.
+
+It's just like the [run()](manual/basic_queries.html#run-query--values--options-)
+method on the database object.  The only difference is that the table-specific
+fragments for `<table>` and `<columns>` are pre-defined.
+Any other `fragments` that you've specified in your table definition
+will also be available.
+
+As a trivial example, you can embed the `<table>` fragment in a query like this:
+
+```js
+users.run('DROP TABLE &lt;table&gt;')
+```
+
+Or you could define that as a named query called `drop` which you could run
+like so:
+
+```js
+users.run('drop')
+```
+
+### one(query, values, options)
 
 There are three different methods for selecting rows from the table using
 SQL queries or named queries.  The `one()` method will return a single row.
@@ -236,7 +293,7 @@ const brian = await users.one(
 );
 ```
 
-## any(query, values, options)
+### any(query, values, options)
 
 The `any()` method is like [one()](#one-query--values--options-)
 but will return a single row if it exists or `undefined` if it doesn't.
@@ -274,7 +331,7 @@ const bobby = await users.any(
 );
 ```
 
-## all(query, values, options)
+### all(query, values, options)
 
 The `all()` method will return an array of all matching rows.
 
@@ -318,7 +375,7 @@ const brian = await users.all(
 );
 ```
 
-## oneRow(query, args)
+### oneRow(query, args)
 
 This method is a multiplexer around
 [one()](#one-query--values--options-)
@@ -341,7 +398,7 @@ const row = await users.one(
 );
 ```
 
-## anyRow(query, args)
+### anyRow(query, args)
 
 This method is a multiplexer around
 [any()](#any-query--values--options-)
@@ -364,7 +421,7 @@ const row = await users.anyRow(
 );
 ```
 
-## allRows(query, args)
+### allRows(query, args)
 
 This method is a multiplexer around
 [all()](#all-query--values--options-)
@@ -387,7 +444,7 @@ const row = await users.allRows(
 );
 ```
 
-## oneRecord(query, args)
+### oneRecord(query, args)
 
 This method is like [oneRow()](#onerow-query--args-) but returns the row as a record.
 
@@ -405,7 +462,7 @@ const row = await users.oneRecord(
 );
 ```
 
-## anyRecord(query, args)
+### anyRecord(query, args)
 
 This method is like [anyRow()](#anyrow-query--args-) but returns the row as a record.
 
@@ -423,7 +480,7 @@ const row = await users.anyRecord(
 );
 ```
 
-## allRecords(query, args)
+### allRecords(query, args)
 
 This method is like [allRows()](#allrows-query--args-) but returns the rows as an
 array of records.
@@ -442,26 +499,15 @@ const row = await users.allRecords(
 );
 ```
 
-## run(query, values, options)
 
-This is a low-level method for running a named query, or indeed
-any arbitrary SQL query, where you're not expecting to fetch any rows.
+### sql(query)
 
-It's just like the [run()](manual/basic_queries.html#run-query--values--options-)
-method on the database object.  The only difference is that the table-specific
-fragments for `<table>` and `<columns>` are pre-defined.
-Any other `fragments` that you've specified in your table definition
-will also be available.
-
-As a trivial example, you can embed the `<table>` fragment in a query like this:
+This method can be used to view the expanded SQL of a named query or
+raw SQL query with embedded fragment references.
 
 ```js
-users.run('DROP TABLE &lt;table&gt;')
-```
-
-Or you could define that as a named query called `drop` which you could run
-like so:
-
-```js
-users.run('drop')
+console.log( users.sql('allBadgers') )
+// -> SELECT "users"."id", "users"."name", "users"."email", "users"."animal"
+//    FROM "users"
+//    WHERE "animal" = ?
 ```
