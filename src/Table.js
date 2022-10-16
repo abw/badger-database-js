@@ -4,13 +4,33 @@ import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils
 import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
 import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
 import { addDebugMethod } from "./Utils/Debug.js";
-import { addQueryMethods, isQuery } from "./Utils/Queries.js";
+import { isQuery } from "./Utils/Queries.js";
+import Queryable from "./Queryable.js";
+import { aliasMethods } from "./Utils/Methods.js";
 
-export class Table {
+const methodAliases = {
+  insertRow:     "insertOneRow",
+  insertRows:    "insertAllRows",
+  insertRecord:  "insertOneRecord",
+  insertRecords: "insertAllRecords",
+  updateRow:     "updateOneRow",
+  updateRows:    "updateAllRows",
+  fetchRow:      "fetchOneRow",
+  fetchRows:     "fetchAllRows",
+  selectRow:     "selectOneRow",
+  selectRows:    "selectAllRows",
+  fetchRecord:   "fetchOneRecord",
+  fetchRecords:  "fetchAllRecords",
+  selectRecord:  "selectOneRecord",
+  selectRecords: "selectAllRecords",
+}
+
+
+export class Table extends Queryable {
   constructor(database, config) {
+    super(database.engine);
     this.config        = this.configure(config) || config;
     this.database      = database || fail("No database specified");
-    this.engine        = database.engine;
     this.table         = config.table;
     this.columns       = prepareColumns(config);
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
@@ -28,23 +48,7 @@ export class Table {
       columns: Object.keys(this.columns)
     }).from(this.table)
 
-    // method aliases
-    this.insertRow     = this.insertOneRow;
-    this.insertRows    = this.insertAllRows;
-    this.insertRecord  = this.insertOneRecord;
-    this.insertRecords = this.insertAllRecords;
-    this.updateRow     = this.updateOneRow;
-    this.updateRows    = this.updateAllRows;
-    this.fetchRow      = this.fetchOneRow;
-    this.fetchRows     = this.fetchAllRows;
-    this.selectRow     = this.selectOneRow;
-    this.selectRows    = this.selectAllRows;
-    this.fetchRecord   = this.fetchOneRecord;
-    this.fetchRecords  = this.fetchAllRecords;
-    this.selectRecord  = this.selectOneRecord;
-    this.selectRecords = this.selectAllRecords;
-
-    addQueryMethods(this);
+    aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
   }
   configure(config) {

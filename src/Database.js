@@ -3,19 +3,19 @@ import Tables from './Tables.js';
 import proxymise from 'proxymise';
 import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
-import { invalid, missing } from './Utils/Error.js';
+import { invalid } from './Utils/Error.js';
 import { addDebugMethod } from './Utils/Debug.js';
 import { databaseBuilder } from './Builders.js';
-import { addQueryMethods } from './Utils/Queries.js';
+import Queryable from './Queryable.js';
 
 const defaults = {
   tablesClass: Tables
 };
 
-export class Database {
-  constructor(engine, params={ }) {
+export class Database extends Queryable {
+  constructor(engine, params) {
+    super(engine);
     const config   = { ...defaults, ...params };
-    this.engine    = engine || missing('engine');
     this.queries   = config.queries;
     this.fragments = config.fragments;
     this.tables    = config.tablesObject || new config.tablesClass(config.tables);
@@ -25,7 +25,7 @@ export class Database {
     this.state     = {
       table: { },
     };
-    addQueryMethods(this);
+    //addQueryMethods(this);
     addDebugMethod(this, 'database', config);
   }
 
