@@ -26,8 +26,11 @@ Using records and defining a custom record class with additional application-spe
 A more complete example of a music database demonstrating custom table and records classes, and the
 use of relations.
 
-* [08_debugging](https://github.com/abw/badger-database-js/tree/master/examples/08_debugging/example.js)
+* [08_products](https://github.com/abw/badger-database-js/tree/master/examples/08_products/example.js).
+An example of a database with customers, products and orders.
+
+* [09_debugging](https://github.com/abw/badger-database-js/tree/master/examples/09_debugging/example.js)
 Enabling debugging to see what's going on behind the scenes.
 
-* [09_custom_builder](https://github.com/abw/badger-database-js/tree/master/examples/09_custom_builder/example.js)
+* [10_custom_builder](https://github.com/abw/badger-database-js/tree/master/examples/10_custom_builder/example.js)
 Adding a custom query builder component
