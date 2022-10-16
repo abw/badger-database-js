@@ -3,23 +3,21 @@ import { Albums, Artists, connectMusicDatabase, Tracks } from '../library/music_
 
 let musicdb;
 
-test.before(
+test.before( 'connect',
   async t => {
     musicdb = await connectMusicDatabase();
     t.pass("connected to music database")
   }
 );
 
-test.serial(
-  'model.artists',
+test.serial( 'model.artists',
   async t => {
     const artists = await musicdb.model.artists;
     t.true( artists instanceof Artists );
   }
 )
 
-test.serial(
-  'model.albums',
+test.serial( 'model.albums',
   async t => {
     const model = musicdb.model;
     const albums = await model.albums;
@@ -27,8 +25,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'model.table("tracks")',
+test.serial( 'model.table("tracks")',
   async t => {
     const model = musicdb.model;
     const tracks = await model.table('tracks');
@@ -36,8 +33,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'model.missing_table',
+test.serial( 'model.missing_table',
   t => {
     const error = t.throws(
       () => {
@@ -49,6 +45,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => musicdb.disconnect()
 )

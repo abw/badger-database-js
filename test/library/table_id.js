@@ -8,8 +8,7 @@ export function runTableIdTests(engine) {
   const create = createUsersIdTableQuery(engine);
   let db;
 
-  test.serial(
-    'connect',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -23,8 +22,7 @@ export function runTableIdTests(engine) {
     }
   )
 
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -33,16 +31,14 @@ export function runTableIdTests(engine) {
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  test.serial(
-    'table insert',
+  test.serial( 'table insert',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -58,7 +54,7 @@ export function runTableIdTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

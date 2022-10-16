@@ -8,9 +8,7 @@ export function runTableFetchTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  // connect to the database
-  test.serial(
-    'database',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -24,9 +22,7 @@ export function runTableFetchTests(engine) {
     }
   )
 
-  // drop any existing users table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -35,18 +31,14 @@ export function runTableFetchTests(engine) {
     }
   )
 
-  // create the table
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  // insert rows
-  test.serial(
-    'insert rows',
+  test.serial( 'insert rows',
     async t => {
       const users = await db.table('users');
       const result = await users.insert([
@@ -70,11 +62,7 @@ export function runTableFetchTests(engine) {
     }
   )
 
-  // fetch rows
-  /*
-  // ARSE: table.fetch is used for base builder
-  test.serial(
-    'fetch() returning many',
+  test.serial( 'fetch() returning many',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetch({
@@ -85,9 +73,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[1].name, 'Brian Badger' );
     }
   )
-  */
-  test.serial(
-    'fetchOne()',
+
+  test.serial( 'fetchOne()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.fetchOne({
@@ -98,8 +85,8 @@ export function runTableFetchTests(engine) {
       t.is( bobby.friends, undefined );
     }
   )
-  test.serial(
-    'fetchAny()',
+
+  test.serial( 'fetchAny()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.fetchAny({
@@ -110,8 +97,8 @@ export function runTableFetchTests(engine) {
       t.is( bobby.friends, undefined );
     }
   )
-  test.serial(
-    'fetchAll() returning one',
+
+  test.serial( 'fetchAll() returning one',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({
@@ -123,8 +110,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[0].friends, undefined );
     }
   )
-  test.serial(
-    'fetchAll() returning many',
+
+  test.serial( 'fetchAll() returning many',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({
@@ -135,8 +122,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[1].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'fetchAll() with no spec',
+
+  test.serial( 'fetchAll() with no spec',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll();
@@ -146,8 +133,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[2].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'fetchAll() with empty spec',
+
+  test.serial( 'fetchAll() with empty spec',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({ });
@@ -157,8 +144,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[2].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'fetchAll() with order',
+
+  test.serial( 'fetchAll() with order',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({ }, { order: 'name' });
@@ -168,8 +155,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[2].name, 'Frank Ferret' );
     }
   )
-  test.serial(
-    'fetchAll() with multiple order columns',
+
+  test.serial( 'fetchAll() with multiple order columns',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({ }, { order: 'animal, name' });
@@ -179,8 +166,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[2].name, 'Frank Ferret' );
     }
   )
-  test.serial(
-    'fetchAll() with order DESC',
+
+  test.serial( 'fetchAll() with order DESC',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({ }, { order: { sql: 'name DESC' } });
@@ -190,8 +177,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[2].name, 'Bobby Badger' );
     }
   )
-  test.serial(
-    'fetchAll() with orderBy',
+
+  test.serial( 'fetchAll() with orderBy',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({ }, { orderBy: { sql: 'name DESC' } });
@@ -201,8 +188,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[2].name, 'Bobby Badger' );
     }
   )
-  test.serial(
-    'fetchAll() with name comparison',
+
+  test.serial( 'fetchAll() with name comparison',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll({
@@ -213,8 +200,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[1].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'fetchAll() with name comparison and order',
+
+  test.serial( 'fetchAll() with name comparison and order',
     async t => {
       const users = await db.table('users');
       const rows  = await users.fetchAll(
@@ -226,8 +213,8 @@ export function runTableFetchTests(engine) {
       t.is( rows[1].name, 'Frank Ferret' );
     }
   )
-  test.serial(
-    'fetchOne() with columns',
+
+  test.serial( 'fetchOne() with columns',
     async t => {
       const users = await db.table('users');
       const bobby = await users.fetchOne(
@@ -244,7 +231,7 @@ export function runTableFetchTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

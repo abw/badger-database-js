@@ -2,8 +2,7 @@ import test from 'ava';
 import { connect } from '../../src/Database.js';
 import { ColumnValidationError } from '../../src/Utils/Error.js';
 
-test(
-  'users table with string of columns',
+test( 'users table with string of columns',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -28,8 +27,7 @@ test(
   }
 )
 
-test(
-  'users table with some required columns',
+test( 'users table with some required columns',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -56,8 +54,7 @@ test(
   }
 )
 
-test(
-  'users table with custom id',
+test( 'users table with custom id',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -88,8 +85,7 @@ test(
   }
 )
 
-test(
-  'users table with custom id marked in columns',
+test( 'users table with custom id marked in columns',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -119,8 +115,7 @@ test(
   }
 )
 
-test(
-  'users table with multiple id columns marked',
+test( 'users table with multiple id columns marked',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -138,8 +133,7 @@ test(
   }
 )
 
-test(
-  'users table with custom keys',
+test( 'users table with custom keys',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -174,8 +168,7 @@ test(
   }
 )
 
-test(
-  'users table with custom keys marked in columns',
+test( 'users table with custom keys marked in columns',
   async t => {
     const db = connect({
       database: 'sqlite:memory',
@@ -209,8 +202,7 @@ test(
   }
 )
 
-test(
-  'users table with expanded columns',
+test( 'users table with expanded columns',
   async t => {
     const db = connect({
       database: 'sqlite:memory',

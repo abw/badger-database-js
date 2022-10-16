@@ -3,8 +3,7 @@ import { connect } from '../../src/Database.js'
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -17,32 +16,28 @@ test.before(
   }
 )
 
-test.serial(
-  'all() first time',
+test.serial( 'all() first time',
   async t => {
     const query = await db.query('selectBobby');
     t.deepEqual(query.values(), ['Bobby Badger'] );
   }
 )
 
-test.serial(
-  'all() second time',
+test.serial( 'all() second time',
   async t => {
     const query = await db.query('selectBobby');
     t.deepEqual(query.values(), ['Bobby Badger'] );
   }
 )
 
-test.serial(
-  'all() third time',
+test.serial( 'all() third time',
   async t => {
     const query = await db.query('selectBobby');
     t.deepEqual(query.values(), ['Bobby Badger'] );
   }
 )
 
-test.after(
-  'destroy',
+test.after( 'disconnect',
   t => {
     db.disconnect();
     t.pass();

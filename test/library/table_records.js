@@ -10,8 +10,7 @@ export function runTableRecordsTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  // connect to the database
-  test.serial( 'database',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -29,7 +28,6 @@ export function runTableRecordsTests(engine) {
     }
   )
 
-  // drop any existing users table
   test.serial( 'drop table',
     async t => {
       await db.run(
@@ -39,7 +37,6 @@ export function runTableRecordsTests(engine) {
     }
   )
 
-  // create the table
   test.serial( 'create table',
     async t => {
       await db.run(create);
@@ -47,7 +44,6 @@ export function runTableRecordsTests(engine) {
     }
   );
 
-  // insert some rows
   test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
@@ -64,6 +60,7 @@ export function runTableRecordsTests(engine) {
       t.is( result.email, 'bobby@badgerpower.com' );
     }
   )
+
   test.serial( 'insert another row',
     async t => {
       const users = await db.table('users');
@@ -80,6 +77,7 @@ export function runTableRecordsTests(engine) {
       t.is( result.email, 'brian@badgerpower.com' );
     }
   )
+
   test.serial( 'insert multiple rows',
     async t => {
       const users = await db.table('users');
@@ -472,7 +470,6 @@ export function runTableRecordsTests(engine) {
     }
   )
 
-
   // record update
   test.serial( 'record update',
     async t => {
@@ -500,7 +497,6 @@ export function runTableRecordsTests(engine) {
       t.is( reload, undefined );
     }
   )
-
   test.serial( 'cannot update deleted record',
     async t => {
       const users = await db.table('users');
@@ -595,7 +591,7 @@ export function runTableRecordsTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

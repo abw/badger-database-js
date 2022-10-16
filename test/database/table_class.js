@@ -10,8 +10,7 @@ class Users extends Table {
   }
 }
 
-test.before(
-  'database',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -23,8 +22,7 @@ test.before(
   }
 )
 
-test.serial(
-  'fetch users',
+test.serial( 'fetch users',
   async t => {
     const users = await db.table('users');
     t.true( users instanceof Table );
@@ -32,6 +30,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

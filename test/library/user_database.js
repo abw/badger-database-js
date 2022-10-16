@@ -93,8 +93,7 @@ export const runUserDatabaseTests = async (engine, options) => {
   let Bobby, Brian, Franky, Felicity;
   let BadgersInc, FerretsLtd;
 
-  test.serial(
-    'drop existing tables',
+  test.serial( 'drop existing tables',
     async t => {
       await userdb.run('dropProductsTable');
       await userdb.run('dropEmployeesTable');
@@ -104,8 +103,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'create tables',
+  test.serial( 'create tables',
     async t => {
       await userdb.run('createUsersTable');
       await userdb.run('createCompaniesTable');
@@ -115,8 +113,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'insert users',
+  test.serial( 'insert users',
     async t => {
       [Bobby, Brian, Franky, Felicity] = await users.insert(
         [
@@ -138,8 +135,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'insert companies',
+  test.serial( 'insert companies',
     async t => {
       [BadgersInc, FerretsLtd] = await companies.insert(
         [
@@ -155,8 +151,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'insert employees',
+  test.serial( 'insert employees',
     async t => {
       const [a, b, c, d] = await employees.insert(
         [
@@ -182,8 +177,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'insert products',
+  test.serial( 'insert products',
     async t => {
       const nProducts = {
         100: 42,  // 42 products for BadgersInc
@@ -199,8 +193,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select all users',
+  test.serial( 'select all users',
     async t => {
       const rows = await userdb
         .select('id name email')
@@ -210,8 +203,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select all users with columns',
+  test.serial( 'select all users with columns',
     async t => {
       const rows = await userdb
         .from('users')
@@ -221,8 +213,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select all users with prefix',
+  test.serial( 'select all users with prefix',
     async t => {
       const rows = await userdb
         .from('users')
@@ -241,8 +232,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select one user by id',
+  test.serial( 'select one user by id',
     async t => {
       const row = await userdb
         .select('name')
@@ -253,8 +243,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select one user by id provided as value',
+  test.serial( 'select one user by id provided as value',
     async t => {
       const row = await userdb
         .select('name')
@@ -265,8 +254,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select one user by id and name provided as values',
+  test.serial( 'select one user by id and name provided as values',
     async t => {
       const row = await userdb
         .select('name')
@@ -277,8 +265,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select all users with id above Bobby',
+  test.serial( 'select all users with id above Bobby',
     async t => {
       const rows = await userdb
         .select('name')
@@ -292,8 +279,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select all users with id above Bobby provided as value',
+  test.serial( 'select all users with id above Bobby provided as value',
     async t => {
       const rows = await userdb
         .select('name')
@@ -307,8 +293,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select with join onto employees',
+  test.serial( 'select with join onto employees',
     async t => {
       const row = await userdb
         .select('users.name, employees.job_title')
@@ -321,8 +306,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select with join onto employees and company',
+  test.serial( 'select with join onto employees and company',
     async t => {
       const row = await userdb
         .select('users.name, employees.job_title')
@@ -338,8 +322,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select with queries built on a base',
+  test.serial( 'select with queries built on a base',
     async t => {
       const employees = userdb
         .select(
@@ -381,8 +364,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
-  test.serial(
-    'select range of products for a company',
+  test.serial( 'select range of products for a company',
     async t => {
       const rows = await userdb
         .select('id name')
@@ -396,8 +378,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   );
 
-  test.serial(
-    'count products by company',
+  test.serial( 'count products by company',
     async t => {
       const rows = await userdb
         .select('companies.id companies.name', sql`COUNT(products.id) AS n_products`)
@@ -416,8 +397,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   );
 
-  test.serial(
-    'count products by company having > 50 products',
+  test.serial( 'count products by company having > 50 products',
     async t => {
       const rows = await userdb
         .select('companies.id companies.name', sql`COUNT(products.id) AS n_products`)
@@ -438,8 +418,7 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   );
 
-  test.after(
-    'disconnect',
+  test.after( 'disconnect',
     async t => {
       await userdb.run('dropProductsTable');
       await userdb.run('dropEmployeesTable');

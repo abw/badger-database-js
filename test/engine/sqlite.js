@@ -12,32 +12,28 @@ const config = {
   }
 };
 
-test.serial(
-  'no engine error',
+test.serial( 'no engine error',
   t => {
     const error = t.throws( () => new Sqlite() );
     t.is( error.message, 'No "engine" specified' )
   }
 )
 
-test.serial(
-  'no database error',
+test.serial( 'no database error',
   t => {
     const error = t.throws( () => new Sqlite({ engine: 'sqlite' }) );
     t.is( error.message, 'No "database" specified' )
   }
 )
 
-test.serial(
-  'no filename error',
+test.serial( 'no filename error',
   t => {
     const error = t.throws( () => new Sqlite({ engine: 'sqlite', database: { } }) );
     t.is( error.message, 'No "filename" specified' )
   }
 )
 
-test.serial(
-  'engine in database',
+test.serial( 'engine in database',
   async t => {
     const sqlite = await engine({ database: { engine: 'sqlite', filename: ':memory:' }});
     const conn = await sqlite.acquire();
@@ -47,8 +43,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'engine outside database',
+test.serial( 'engine outside database',
   async t => {
     const sqlite = await engine({ engine: 'sqlite', database: { filename: ':memory:' }});
     const conn = await sqlite.acquire();
@@ -58,8 +53,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'pool size',
+test.serial( 'pool size',
   async t => {
     const sqlite = await engine(config);
     t.is(sqlite.pool.min, 1);
@@ -68,8 +62,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'acquire and release',
+test.serial( 'acquire and release',
   async t => {
     const sqlite = await engine(config);
     const conn = await sqlite.acquire();
@@ -81,32 +74,28 @@ test.serial(
   }
 )
 
-test.serial(
-  'connect',
+test.serial( 'connect',
   async t => {
     sqlite = await Engines.sqlite(config);
     t.is( sqlite instanceof Sqlite, true )
   }
 )
 
-test.serial(
-  'any',
+test.serial( 'any',
   async t => {
     const result = await sqlite.any('SELECT 99 AS number');
     t.is(result.number, 99);
   }
 )
 
-test.serial(
-  'all',
+test.serial( 'all',
   async t => {
     const result = await sqlite.all('SELECT 99 as number');
     t.is(result[0].number, 99);
   }
 )
 
-test.serial(
-  'create table',
+test.serial( 'create table',
   async t => {
     const create = await sqlite.run(
       `CREATE TABLE user (
@@ -120,8 +109,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row',
+test.serial( 'insert a row',
   async t => {
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
@@ -134,8 +122,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert another row',
+test.serial( 'insert another row',
   async t => {
     const insert = await sqlite.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
@@ -147,8 +134,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch any row',
+test.serial( 'fetch any row',
   async t => {
     const bobby = await sqlite.any(
       'SELECT * FROM user WHERE email=?',
@@ -158,8 +144,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch all rows',
+test.serial( 'fetch all rows',
   async t => {
     const rows = await sqlite.all(
       `SELECT id, name, email FROM user`
@@ -169,8 +154,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row',
+test.serial( 'fetch one row',
   async t => {
     const row = await sqlite.one(
       `SELECT id, name, email FROM user WHERE email=?`,
@@ -180,8 +164,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row but none returned',
+test.serial( 'fetch one row but none returned',
   async t => {
     const error = await t.throwsAsync(
       () => sqlite.one(
@@ -194,8 +177,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row but two returned',
+test.serial( 'fetch one row but two returned',
   async t => {
     const error = await t.throwsAsync(
       () => sqlite.one(
@@ -208,19 +190,14 @@ test.serial(
   }
 )
 
-test.after(
-  'destroy',
+test.after( 'destroy',
   async t => {
     await sqlite.destroy();
     t.pass();
   }
 )
 
-//-----------------------------------------------------------------------------
-// quote()
-//-----------------------------------------------------------------------------
-test(
-  'quote word',
+test( 'quote word',
   async t => {
     const sqlite = new Sqlite(config);
     t.is( sqlite.quote('hello'), '"hello"' )
@@ -228,17 +205,15 @@ test(
   }
 )
 
-test(
-  'quote words',
+test( 'quote words',
   async t => {
     const sqlite = new Sqlite(config);
     t.is( sqlite.quote('hello.world'), '"hello"."world"' )
     await sqlite.destroy();
   }
 )
-test(
 
-  'quote words with escapes',
+test( 'quote words with escapes',
   async t => {
     const sqlite = new Sqlite(config);
     t.is( sqlite.quote('hello "world"'), '"hello \\"world\\""' )

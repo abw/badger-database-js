@@ -15,8 +15,7 @@ class MyTables extends Tables {
   }
 }
 
-test.before(
-  'database',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -31,8 +30,7 @@ test.before(
   }
 )
 
-test.serial(
-  'users table',
+test.serial( 'users table',
   async t => {
     const users = await db.table('users');
     t.true( users instanceof Table );
@@ -40,6 +38,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

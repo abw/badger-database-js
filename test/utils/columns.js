@@ -2,8 +2,7 @@ import test from 'ava';
 import { prepareColumns } from '../../src/Utils/Columns.js';
 import { ColumnValidationError } from '../../src/Utils/Error.js';
 
-test(
-  'string of columns',
+test( 'string of columns',
   t => {
     const columns = prepareColumns(
       { columns: 'id name email', table: 'users' }
@@ -21,8 +20,7 @@ test(
   }
 )
 
-test(
-  'array of columns',
+test( 'array of columns',
   t => {
     const columns = prepareColumns(
       {
@@ -43,8 +41,7 @@ test(
   }
 )
 
-test(
-  'hash of columns',
+test( 'hash of columns',
   t => {
     const columns = prepareColumns(
       {
@@ -70,8 +67,7 @@ test(
   }
 )
 
-test(
-  'users table with hash of columns to strings',
+test( 'users table with hash of columns to strings',
   t => {
     const columns = prepareColumns(
       {
@@ -101,8 +97,7 @@ test(
   }
 )
 
-test(
-  'string of columns with modifiers',
+test( 'string of columns with modifiers',
   t => {
     const columns = prepareColumns(
       {
@@ -124,8 +119,7 @@ test(
   }
 )
 
-test(
-  'no columns',
+test( 'no columns',
   t => {
     const error = t.throws(
       () => prepareColumns({ table: 'users' })
@@ -134,8 +128,8 @@ test(
     t.is(error.message, 'No "columns" specified for the users table');
   }
 )
-test(
-  'invalid columns',
+
+test( 'invalid columns',
   t => {
     const error = t.throws(
       () => prepareColumns({ table: 'users', columns: 99 })

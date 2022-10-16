@@ -1,16 +1,14 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
 
-test(
-  'connect',
+test( 'connect',
   t => {
     const db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' )
   }
 )
 
-test(
-  'connect and create',
+test( 'connect and create',
   t => {
     const db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
@@ -26,8 +24,7 @@ test(
   }
 )
 
-test(
-  'connect, create and insert',
+test( 'connect, create and insert',
   t => {
     const db = connect({ database: 'sqlite:memory' })
     t.is( db.engine.engine, 'sqlite' );
@@ -50,8 +47,7 @@ test(
   }
 )
 
-test(
-  'connect, create, insert and select',
+test( 'connect, create, insert and select',
   t => {
     const db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
@@ -84,8 +80,7 @@ test(
   }
 )
 
-test(
-  'connect, create, insert, select and destroy',
+test( 'connect, create, insert, select and destroy',
   t => {
     const db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );

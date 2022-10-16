@@ -6,16 +6,14 @@ import { QueryBuilderError } from '../../src/Utils/Error.js';
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test(
-  'join object',
+test( 'join object',
   t => {
     const op = db.build.join({ table: 'a', from: 'b', to: 'c' });
     t.true( op instanceof Join )
@@ -23,8 +21,7 @@ test(
   }
 )
 
-test(
-  'join object with combined to',
+test( 'join object with combined to',
   t => {
     const op = db.build.join({ from: 'a.b', to: 'c.d' });
     t.true( op instanceof Join )
@@ -32,8 +29,7 @@ test(
   }
 )
 
-test(
-  'join object with combined to and type',
+test( 'join object with combined to and type',
   t => {
     const op = db.build.join({ from: 'a.b', to: 'c.d', type: 'inner' });
     t.true( op instanceof Join )
@@ -41,159 +37,147 @@ test(
   }
 )
 
-test(
-  'join string',
+test( 'join string',
   t => {
     const op = db.build.join("b=a.c");
     t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
   }
 )
 
-test(
-  'join string with spaces',
+test( 'join string with spaces',
   t => {
     const op = db.build.join("b = a.c");
     t.is( op.sql(), 'JOIN "a" ON "b" = "a"."c"' );
   }
 )
 
-test(
-  'join string with table name',
+test( 'join string with table name',
   t => {
     const op = db.build.join("a.b=c.d");
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'join string with table name and spaces',
+test( 'join string with table name and spaces',
   t => {
     const op = db.build.join("a.b = c.d");
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'left join string',
+test( 'left join string',
   t => {
     const op = db.build.join("a<=b.c");
     t.is( op.sql(), 'LEFT JOIN "b" ON "a" = "b"."c"' );
   }
 )
-test(
-  'left join string with spaces',
+
+test( 'left join string with spaces',
   t => {
     const op = db.build.join("a <= b.c");
     t.is( op.sql(), 'LEFT JOIN "b" ON "a" = "b"."c"' );
   }
 )
-test(
-  'left join string with table name',
+
+test( 'left join string with table name',
   t => {
     const op = db.build.join("a.b<=c.d");
     t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
-test(
-  'left join string with table name and spaces',
+
+test( 'left join string with table name and spaces',
   t => {
     const op = db.build.join("a.b <= c.d");
     t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'right join string',
+test( 'right join string',
   t => {
     const op = db.build.join("a=>b.c");
     t.is( op.sql(), 'RIGHT JOIN "b" ON "a" = "b"."c"' );
   }
 )
-test(
-  'right join string with spaces',
+
+test( 'right join string with spaces',
   t => {
     const op = db.build.join("a => b.c");
     t.is( op.sql(), 'RIGHT JOIN "b" ON "a" = "b"."c"' );
   }
 )
-test(
-  'right join string with table name',
+
+test( 'right join string with table name',
   t => {
     const op = db.build.join("a.b=>c.d");
     t.is( op.sql(), 'RIGHT JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
-test(
-  'right join string with table name and spaces',
+
+test( 'right join string with table name and spaces',
   t => {
     const op = db.build.join("a.b => c.d");
     t.is( op.sql(), 'RIGHT JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'full join string',
+test( 'full join string',
   t => {
     const op = db.build.join("a<=>b.c");
     t.is( op.sql(), 'FULL JOIN "b" ON "a" = "b"."c"' );
   }
 )
-test(
-  'full join string with spaces',
+
+test( 'full join string with spaces',
   t => {
     const op = db.build.join("a <=> b.c");
     t.is( op.sql(), 'FULL JOIN "b" ON "a" = "b"."c"' );
   }
 )
-test(
-  'full join string with table name',
+
+test( 'full join string with table name',
   t => {
     const op = db.build.join("a.b<=>c.d");
     t.is( op.sql(), 'FULL JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
-test(
-  'full join string with table name and spaces',
+
+test( 'full join string with table name and spaces',
   t => {
     const op = db.build.join("a.b <=> c.d");
     t.is( op.sql(), 'FULL JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'join array with four elements',
+test( 'join array with four elements',
   t => {
     const op = db.build.join(['left', 'a.b', 'c', 'd']);
     t.is( op.sql(), 'LEFT JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'join array with three elements',
+test( 'join array with three elements',
   t => {
     const op = db.build.join(['a.b', 'c', 'd']);
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'join array with two elements',
+test( 'join array with two elements',
   t => {
     const op = db.build.join(['a.b', 'c.d']);
     t.is( op.sql(), 'JOIN "c" ON "a"."b" = "c"."d"' );
   }
 )
 
-test(
-  'multiple joins',
+test( 'multiple joins',
   t => {
     const op = db.build.join('users.id=employees.user_id', 'employees.company_id=companies.id');
     t.is( op.sql(), 'JOIN "employees" ON "users"."id" = "employees"."user_id"\nJOIN "companies" ON "employees"."company_id" = "companies"."id"' );
   }
 )
 
-test(
-  'invalid join type',
+test( 'invalid join type',
   t => {
     const error = t.throws(
       () => db.build.join({ type: 'wibble', table: 'a', from: 'b', to: 'c' }).sql()
@@ -206,8 +190,7 @@ test(
   }
 )
 
-test(
-  'invalid join object',
+test( 'invalid join object',
   t => {
     const error = t.throws(
       () => db.build.join({ talbe: 'a', from: 'b', to: 'c' }).sql()
@@ -220,8 +203,7 @@ test(
   }
 )
 
-test(
-  'invalid join string',
+test( 'invalid join string',
   t => {
     const error = t.throws(
       () => db.build.join('wibble=wobble').sql()
@@ -234,8 +216,7 @@ test(
   }
 )
 
-test(
-  'invalid join array',
+test( 'invalid join array',
   t => {
     const error = t.throws(
       () => db.build.join(['wibble', 'wobble']).sql()
@@ -248,20 +229,18 @@ test(
   }
 )
 
-test(
-  'generateSQL() with single value',
+test( 'generateSQL() with single value',
   t => {
     t.is( Join.generateSQL('JOIN a'), 'JOIN a' )
   }
 )
 
-test(
-  'generateSQL() with multiple values',
+test( 'generateSQL() with multiple values',
   t => {
     t.is( Join.generateSQL(['JOIN a', 'JOIN b']), 'JOIN a\nJOIN b' )
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

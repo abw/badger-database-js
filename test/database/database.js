@@ -3,16 +3,14 @@ import { connect } from '../../src/Database.js'
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test.serial(
-  'create',
+test.serial( 'create',
   async t => {
     const create = await db.run(
       `CREATE TABLE user (
@@ -25,8 +23,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row',
+test.serial( 'insert a row',
   async t => {
     const insert = await db.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
@@ -36,8 +33,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch any row',
+test.serial( 'fetch any row',
   async t => {
     const bobby = await db.any(
       'SELECT * FROM user WHERE email=?',
@@ -47,8 +43,7 @@ test.serial(
   }
 )
 
-test.after(
-  'destroy',
+test.after( 'disconnect',
   t => {
     db.disconnect();
     t.pass();

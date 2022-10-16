@@ -8,9 +8,7 @@ export function runTableRowsTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  // connect to the database
-  test.serial(
-    'database',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -24,9 +22,7 @@ export function runTableRowsTests(engine) {
     }
   )
 
-  // drop any existing users table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -35,18 +31,14 @@ export function runTableRowsTests(engine) {
     }
   )
 
-  // create the table
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  // insert a couple of rows
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -63,8 +55,8 @@ export function runTableRowsTests(engine) {
       t.is( result.friends, undefined );
     }
   )
-  test.serial(
-    'insert another row',
+
+  test.serial( 'insert another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -80,9 +72,7 @@ export function runTableRowsTests(engine) {
     }
   )
 
-  // fetch rows
-  test.serial(
-    'oneRow()',
+  test.serial( 'oneRow()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRow({
@@ -93,8 +83,8 @@ export function runTableRowsTests(engine) {
       t.is( bobby.friends, undefined );
     }
   )
-  test.serial(
-    'anyRow()',
+
+  test.serial( 'anyRow()',
     async t => {
       const users = await db.table('users');
       const bobby = await users.anyRow({
@@ -105,8 +95,8 @@ export function runTableRowsTests(engine) {
       t.is( bobby.friends, undefined );
     }
   )
-  test.serial(
-    'allRows()',
+
+  test.serial( 'allRows()',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({
@@ -118,8 +108,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[0].friends, undefined );
     }
   )
-  test.serial(
-    'allRows() with no spec',
+
+  test.serial( 'allRows() with no spec',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows();
@@ -130,8 +120,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[1].friends, undefined );
     }
   )
-  test.serial(
-    'allRows() with empty spec',
+
+  test.serial( 'allRows() with empty spec',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({ });
@@ -142,8 +132,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[1].friends, undefined );
     }
   )
-  test.serial(
-    'allRows() with order',
+
+  test.serial( 'allRows() with order',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({ }, { order: 'name' });
@@ -152,8 +142,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[1].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'allRows() with multiple order columns',
+
+  test.serial( 'allRows() with multiple order columns',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({ }, { order: 'name, id' });
@@ -162,8 +152,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[1].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'allRows() with order DESC',
+
+  test.serial( 'allRows() with order DESC',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({ }, { order: { sql: 'name DESC' } });
@@ -172,8 +162,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[1].name, 'Bobby Badger' );
     }
   )
-  test.serial(
-    'allRows() with orderBy',
+
+  test.serial( 'allRows() with orderBy',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({ }, { orderBy: { sql: 'name DESC' } });
@@ -182,8 +172,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[1].name, 'Bobby Badger' );
     }
   )
-  test.serial(
-    'allRows() with name comparison',
+
+  test.serial( 'allRows() with name comparison',
     async t => {
       const users = await db.table('users');
       const rows  = await users.allRows({
@@ -193,8 +183,8 @@ export function runTableRowsTests(engine) {
       t.is( rows[0].name, 'Brian Badger' );
     }
   )
-  test.serial(
-    'oneRow() with columns',
+
+  test.serial( 'oneRow() with columns',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRow(
@@ -212,7 +202,7 @@ export function runTableRowsTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect()',
     () => db.disconnect()
   )
 }

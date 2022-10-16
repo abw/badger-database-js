@@ -5,16 +5,14 @@ import { QueryBuilderError } from '../../src/Utils/Error.js';
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test(
-  'having',
+test( 'having',
   t => {
     const op = db.build.having('a');
     t.true( op instanceof Having )
@@ -22,25 +20,21 @@ test(
   }
 )
 
-test(
-  'having string',
+test( 'having string',
   t => {
     const query = db.build.having('name');
     t.is( query.sql(), 'HAVING "name" = ?' );
   }
 )
 
-
-test(
-  'having multiple columns as string',
+test( 'having multiple columns as string',
   t => {
     const query = db.build.having('name email');
     t.is( query.sql(), 'HAVING "name" = ? AND "email" = ?' );
   }
 )
 
-test(
-  'array with two elements',
+test( 'array with two elements',
   t => {
     const query = db.build.having(['name', 'Bobby Badger']);
     t.is( query.sql(), 'HAVING "name" = ?' );
@@ -51,8 +45,7 @@ test(
   }
 )
 
-test(
-  'array with three elements',
+test( 'array with three elements',
   t => {
     const query = db.build.having(['name', '!=', 'Bobby Badger']);
     t.is( query.sql(), 'HAVING "name" != ?' );
@@ -61,8 +54,7 @@ test(
   }
 )
 
-test(
-  'array with four elements',
+test( 'array with four elements',
   t => {
     const error = t.throws(
       () => db.build.having(['users', 'email', 'email_address', 'oops']).sql()
@@ -72,16 +64,14 @@ test(
   }
 )
 
-test(
-  'table name',
+test( 'table name',
   t => {
     const query = db.build.having('users.name', 'u.email');
     t.is( query.sql(), 'HAVING "users"."name" = ? AND "u"."email" = ?' );
   }
 )
 
-test(
-  'column with value',
+test( 'column with value',
   t => {
     const query = db.build.having({ name: 'Brian Badger' });
     t.is( query.sql(), 'HAVING "name" = ?' );
@@ -90,8 +80,7 @@ test(
   }
 )
 
-test(
-  'column with comparison',
+test( 'column with comparison',
   t => {
     const query = db.build.having({ id: ['>', 99] });
     t.is( query.sql(), 'HAVING "id" > ?' );
@@ -100,8 +89,7 @@ test(
   }
 )
 
-test(
-  'column with comparison operator',
+test( 'column with comparison operator',
   t => {
     const query = db.build.having({ id: ['>'] });
     t.is( query.sql(), 'HAVING "id" > ?' );
@@ -109,8 +97,7 @@ test(
   }
 )
 
-test(
-  'where() and having()',
+test( 'where() and having()',
   t => {
     const query = db.build.having({ b: 20 }).where({ a: 10 });
     t.is( query.sql(), 'WHERE "a" = ?\nHAVING "b" = ?' );
@@ -121,8 +108,7 @@ test(
   }
 )
 
-test(
-  'where() and having() with interleaved values',
+test( 'where() and having() with interleaved values',
   t => {
     const query = db.build.where({ a: 10 }).where('b').having({ c: 30 }).having('d');
     t.is( query.sql(), 'WHERE "a" = ? AND "b" = ?\nHAVING "c" = ? AND "d" = ?' );
@@ -135,8 +121,7 @@ test(
   }
 )
 
-test(
-  'object with value array with three elements',
+test( 'object with value array with three elements',
   t => {
     const error = t.throws(
       () => db.build.having({ id: ['id', '>', 123] }).sql()
@@ -146,20 +131,18 @@ test(
   }
 )
 
-test(
-  'generateSQL() with single value',
+test( 'generateSQL() with single value',
   t => {
     t.is( Having.generateSQL('a'), 'HAVING a' )
   }
 )
 
-test(
-  'generateSQL() with multiple values',
+test( 'generateSQL() with multiple values',
   t => {
     t.is( Having.generateSQL(['a', 'b']), 'HAVING a AND b' )
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

@@ -1,8 +1,7 @@
 import test from 'ava';
 import { parseRelationString, relationConfig } from "../../src/Utils/Relation.js";
 
-test(
-  'a->b.c',
+test( 'a->b.c',
   t => {
     const config = parseRelationString('a->b.c');
     t.is( config.type,  'one');
@@ -11,8 +10,8 @@ test(
     t.is( config.to,    'c');
   }
 );
-test(
-  'd -> e.f',
+
+test( 'd -> e.f',
   t => {
     const config = parseRelationString('d -> e.f');
     t.is( config.type,  'one');
@@ -21,8 +20,8 @@ test(
     t.is( config.to,    'f');
   }
 );
-test(
-  'gee => aitch.eye',
+
+test( 'gee => aitch.eye',
   t => {
     const config = parseRelationString('gee => aitch.eye');
     t.is( config.type,  'many');
@@ -31,8 +30,8 @@ test(
     t.is( config.to,    'eye');
   }
 );
-test(
-  'invalid relation',
+
+test( 'invalid relation',
   t => {
     const error = t.throws(
       () => parseRelationString('x ==> y.z')
@@ -40,8 +39,8 @@ test(
     t.is( error.message,  'Invalid relation string specified: x ==> y.z' );
   }
 );
-test(
-  'relation config rewriting',
+
+test( 'relation config rewriting',
   t => {
     const config = relationConfig(
       'users',
@@ -60,8 +59,8 @@ test(
     t.is( config.name, 'users.pleasantries' );
   }
 );
-test(
-  'relation config string',
+
+test( 'relation config string',
   t => {
     const config = relationConfig('foo', 'bar', 'a -> b.c');
     t.is( config.from, 'a' );
@@ -71,8 +70,8 @@ test(
     t.is( config.name, 'foo.bar' );
   }
 );
-test(
-  'relation config relation string',
+
+test( 'relation config relation string',
   t => {
     const config = relationConfig(
       'foo', 'bar',
@@ -89,8 +88,8 @@ test(
     t.is( config.order, 'd' );
   }
 );
-test(
-  'relation with missing "from"',
+
+test( 'relation with missing "from"',
   t => {
     const error = t.throws(
       () => relationConfig(
@@ -107,3 +106,4 @@ test(
     t.is( error.message,  'Missing "from" in pleasantries relation for users table' );
   }
 );
+

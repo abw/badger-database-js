@@ -244,8 +244,7 @@ export const runMusicDatabaseTests = async (database, options) => {
   let DSOTM, WYWH;
   let Foxtrot, Selling;
 
-  test.serial(
-    'drop existing tables',
+  test.serial( 'drop existing tables',
     async t => {
       await musicdb.run('dropTracksTable');
       await musicdb.run('dropAlbumsTable');
@@ -254,32 +253,28 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'create artists',
+  test.serial( 'create artists',
     async t => {
       await musicdb.run('createArtistsTable');
       t.pass();
     }
   )
 
-  test.serial(
-    'create albums',
+  test.serial( 'create albums',
     async t => {
       await musicdb.run('createAlbumsTable');
       t.pass();
     }
   )
 
-  test.serial(
-    'create tracks',
+  test.serial( 'create tracks',
     async t => {
       await musicdb.run('createTracksTable');
       t.pass();
     }
   )
 
-  test.serial(
-    'insert artists',
+  test.serial( 'insert artists',
     async t => {
       [PinkFloyd, Genesis] = await artists.insert(
         [
@@ -295,8 +290,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'insert Pink Floyd albums',
+  test.serial( 'insert Pink Floyd albums',
     async t => {
       [DSOTM, WYWH] = await albums.insert(
         [
@@ -312,8 +306,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'insert Genesis albums',
+  test.serial( 'insert Genesis albums',
     async t => {
       [Foxtrot, Selling] = await albums.insert(
         [
@@ -329,8 +322,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'insert tracks',
+  test.serial( 'insert tracks',
     async t => {
       await tracks.insert([
         // The Dark Side of the Moon
@@ -369,8 +361,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'raw SQL query',
+  test.serial( 'raw SQL query',
     async t => {
       const albumList = await albums.all('SELECT * FROM albums WHERE id=2');
       t.is( albumList.length, 1 );
@@ -378,8 +369,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'selectByNumberOfTracks',
+  test.serial( 'selectByNumberOfTracks',
     async t => {
       const albumList = await albums.all('selectByNumberOfTracks');
       t.is( albumList.length, 4 );
@@ -394,16 +384,14 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'theBestAlbumEverRecorded',
+  test.serial( 'theBestAlbumEverRecorded',
     async t => {
       const album = await musicdb.one('theBestAlbumEverRecorded');
       t.is( album.title, 'The Dark Side of the Moon' );
     }
   )
 
-  test.serial(
-    'titleByYear',
+  test.serial( 'titleByYear',
     async t => {
       const albumList = await albums.all('titleByYear');
       t.is( albumList.length, 4 );
@@ -414,8 +402,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'SQL with embedded fragments',
+  test.serial( 'SQL with embedded fragments',
     async t => {
       const albumList = await albums.all('SELECT <columns> FROM <table> ORDER BY year,id');
       t.is( albumList.length, 4 );
@@ -426,8 +413,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'fetch album record',
+  test.serial( 'fetch album record',
     async t => {
       const albums = await musicdb.model.albums;
       const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
@@ -435,8 +421,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'fetch album artist relation',
+  test.serial( 'fetch album artist relation',
     async t => {
       const albums = await musicdb.model.albums;
       const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
@@ -445,8 +430,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'fetch album artist',
+  test.serial( 'fetch album artist',
     async t => {
       const albums = await musicdb.model.albums;
       const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
@@ -455,8 +439,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'fetch album tracks',
+  test.serial( 'fetch album tracks',
     async t => {
       const albums = await musicdb.model.albums;
       const dsotm  = await albums.oneRecord({ title: 'The Dark Side of the Moon' });
@@ -465,8 +448,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'fetch album tracks with sort order',
+  test.serial( 'fetch album tracks with sort order',
     async t => {
       const albums = await musicdb.model.albums;
       const wywh   = await albums.oneRecord({ title: 'Wish You Were Here' });
@@ -478,8 +460,8 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( tracks[3].track_no, 4 );
     }
   )
-  test.serial(
-    'fetch album bonus tracks',
+
+  test.serial( 'fetch album bonus tracks',
     async t => {
       const albums = await musicdb.model.albums;
       const sebtp  = await albums.oneRecord({ title: 'Selling England by the Pound' });
@@ -495,8 +477,7 @@ export const runMusicDatabaseTests = async (database, options) => {
     }
   )
 
-  test.serial(
-    'add album via artist addAlbum() method',
+  test.serial( 'add album via artist addAlbum() method',
     async t => {
       const artists = await musicdb.model.artists;
       const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
@@ -526,8 +507,8 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( tracks[4].title, "Alan's Psychedelic Breakfast" );
     }
   )
-  test.serial(
-    'fetch albums via artist.albums relation',
+
+  test.serial( 'fetch albums via artist.albums relation',
     async t => {
       const artists = await musicdb.model.artists;
       const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
@@ -538,8 +519,8 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( albums[2].title, 'Wish You Were Here' );
     }
   )
-  test.serial(
-    'fetch all album tracks via artists table album_tracks query',
+
+  test.serial( 'fetch all album tracks via artists table album_tracks query',
     async t => {
       const artists = await musicdb.model.artists;
       const floyd   = await artists.oneRecord({ name: 'Pink Floyd' });
@@ -553,8 +534,8 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( tracks[17].year, 1975 );
     }
   )
-  test.serial(
-    'fetch all album tracks via artists record albumTracks method',
+
+  test.serial( 'fetch all album tracks via artists record albumTracks method',
     async t => {
       const artists = await musicdb.model.artists;
       const floyd   = await artists.oneRecord({ name: 'Pink Floyd' });
@@ -568,8 +549,8 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( tracks[17].year, 1975 );
     }
   )
-  test.serial(
-    'fetch all album tracks via artist.album_tracks relation',
+
+  test.serial( 'fetch all album tracks via artist.album_tracks relation',
     async t => {
       const artists = await musicdb.model.artists;
       const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
@@ -584,4 +565,9 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( tracks[17].year, 1975 );
     }
   )
+
+  test.after( 'disconnect()',
+    () => musicdb.disconnect()
+  )
+
 }

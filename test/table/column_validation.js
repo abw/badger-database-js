@@ -5,8 +5,7 @@ import { ColumnValidationError } from '../../src/Utils/Error.js';
 let db;
 let users;
 
-test.before(
-  'database',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -20,8 +19,7 @@ test.before(
   }
 )
 
-test.serial(
-  'create',
+test.serial( 'create',
   async t => {
     const create = await db.run(
       `CREATE TABLE users (
@@ -34,16 +32,14 @@ test.serial(
   }
 )
 
-test.serial(
-  'get users tables',
+test.serial( 'get users tables',
   async t => {
     users = await db.table('users')
     t.is(users.table, 'users');
   }
 )
 
-test.serial(
-  'attempt to insert a row with readonly column',
+test.serial( 'attempt to insert a row with readonly column',
   async t => {
     const error = await t.throwsAsync(
       () => users.insert({
@@ -57,8 +53,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'attempt to insert a row with an unknown column',
+test.serial( 'attempt to insert a row with an unknown column',
   async t => {
     const error = await t.throwsAsync(
       () => users.insert({
@@ -72,8 +67,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'attempt to insert a row without a required column',
+test.serial( 'attempt to insert a row without a required column',
   async t => {
     const error = await t.throwsAsync(
       () => users.insert({
@@ -85,8 +79,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row',
+test.serial( 'insert a row',
   async t => {
     const result = await users.insert(
       {
@@ -101,8 +94,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'attempt to select a row with an unknown column',
+test.serial( 'attempt to select a row with an unknown column',
   async t => {
     const error = await t.throwsAsync(
       () => users.allRows(
@@ -119,8 +111,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'attempt to select a row with an unknown column in the where clause',
+test.serial( 'attempt to select a row with an unknown column in the where clause',
   async t => {
     const error = await t.throwsAsync(
       () => users.oneRow({
@@ -132,6 +123,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

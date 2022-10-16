@@ -8,8 +8,7 @@ import { connect } from '../../src/Database.js'
 
 let db, users;
 
-test.serial(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -23,16 +22,14 @@ test.serial(
   }
 )
 
-test.serial(
-  'users table',
+test.serial( 'users table',
   async t => {
     users = await db.model.users;
     t.is( users.table, 'users' );
   }
 )
 
-test.serial(
-  'build',
+test.serial( 'build',
   async t => {
     const builder = users.build;
     t.true( builder instanceof Database )
@@ -40,16 +37,14 @@ test.serial(
   }
 )
 
-test.serial(
-  'build from',
+test.serial( 'build from',
   async t => {
     const from = users.build.from('wibble');
     t.true( from instanceof From )
   }
 )
 
-test.serial(
-  'select',
+test.serial( 'select',
   async t => {
     const select = users.select('a, b, c');
     const sql = select.sql();
@@ -57,8 +52,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'from',
+test.serial( 'from',
   async t => {
     const from = users.from('a, b, c');
     const sql = from.sql();
@@ -66,8 +60,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch',
+test.serial( 'fetch',
   async t => {
     const fetch = users.fetch;
     const sql = fetch.sql();
@@ -75,8 +68,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch where',
+test.serial( 'fetch where',
   async t => {
     const select = users.fetch.where({ a: 10 });
     const sql = select.sql();
@@ -84,6 +76,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

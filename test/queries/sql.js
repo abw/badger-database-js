@@ -16,32 +16,28 @@ const db = connect({
   }
 });
 
-test(
-  'query("one")',
+test( 'query("one")',
   t => t.is(
     db.sql('one'),
     'SELECT a, b, c, d, e, f FROM badgers WHERE one=1'
   )
 );
 
-test(
-  'query("SELECT a FROM <table>")',
+test( 'query("SELECT a FROM <table>")',
   t => t.is(
     db.sql('SELECT a FROM <table>'),
     'SELECT a FROM badgers'
   )
 );
 
-test(
-  'query("eleven")',
+test( 'query("eleven")',
   t => {
     const error = t.throws( () => db.sql('eleven') );
     t.is( error.message, "Invalid named query specified: eleven" )
   }
 );
 
-test(
-  'query("two")',
+test( 'query("two")',
   t => t.is(
     db.sql('two'),
     'SELECT a, b, c, d, e, f FROM badgers WHERE two=2'

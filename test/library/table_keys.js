@@ -15,8 +15,7 @@ export function runTableKeysTests(engine) {
   )`;
   let db;
 
-  test.serial(
-    'database',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -30,8 +29,7 @@ export function runTableKeysTests(engine) {
     }
   )
 
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -40,16 +38,14 @@ export function runTableKeysTests(engine) {
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  test.serial(
-    'table insert with reload',
+  test.serial( 'table insert with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -66,8 +62,7 @@ export function runTableKeysTests(engine) {
     }
   )
 
-  test.serial(
-    'table insert without reload',
+  test.serial( 'table insert without reload',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -83,7 +78,7 @@ export function runTableKeysTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

@@ -1,8 +1,7 @@
 import test from 'ava';
 import { format } from '../../src/Utils/Format.js';
 
-test(
-  'format()',
+test( 'format()',
   t => t.is(
     format(
       'The <animal> sat on the <place>',
@@ -12,8 +11,7 @@ test(
   )
 )
 
-test(
-  'format() with zero',
+test( 'format() with zero',
   t => t.is(
     format(
       '<n> badger<s>',
@@ -23,8 +21,7 @@ test(
   )
 )
 
-test(
-  'format() with empty string',
+test( 'format() with empty string',
   t => t.is(
     format(
       '<n> badger<s>',
@@ -34,8 +31,7 @@ test(
   )
 )
 
-test(
-  'format() with error from unbraced variable',
+test( 'format() with error from unbraced variable',
   t => {
     const error = t.throws(
       () => format(

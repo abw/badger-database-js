@@ -4,8 +4,7 @@ import Table from '../../src/Table.js'
 
 const db = connect({ database: 'sqlite:memory' })
 
-test(
-  'new Table',
+test( 'new Table',
   t => {
     const t1 = new Table(db, { table: 't1', columns: 'a' });
     t.is( t1.table, 't1' );
@@ -14,8 +13,7 @@ test(
   }
 );
 
-test(
-  'table with implicit id',
+test( 'table with implicit id',
   t => {
     const t2 = new Table(db, { table: 't2', columns: 'a b' });
     t.is( t2.table, 't2' );
@@ -24,8 +22,7 @@ test(
   }
 );
 
-test(
-  'table with explicit id',
+test( 'table with explicit id',
   t => {
     const t3 = new Table(db, { table: 't3', id: 'myId', columns: 'myId a b c' });
     t.is( t3.table, 't3' );
@@ -35,8 +32,7 @@ test(
   }
 );
 
-test(
-  'table with id marked in column',
+test( 'table with id marked in column',
   t => {
     const t3 = new Table(db, { table: 't3', columns: 'myId:id a b c' });
     t.is( t3.table, 't3' );
@@ -46,8 +42,7 @@ test(
   }
 );
 
-test(
-  'table with keys',
+test( 'table with keys',
   t => {
     const t4 = new Table(db, { table: 't4', keys: 'parentId childId', columns: 'parentId childId' });
     t.is( t4.table, 't4' );
@@ -58,8 +53,7 @@ test(
   }
 );
 
-test(
-  'table with keys marked in columns',
+test( 'table with keys marked in columns',
   t => {
     const t4 = new Table(db, { table: 't4', columns: 'parentId:key childId:key' });
     t.is( t4.table, 't4' );

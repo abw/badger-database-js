@@ -6,16 +6,14 @@ import { sql } from '../../src/Utils/Tags.js';
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test(
-  'select',
+test( 'select',
   t => {
     const op = db.select('a');
     t.true( op instanceof Select )
@@ -23,128 +21,112 @@ test(
   }
 )
 
-test(
-  'multiple columns',
+test( 'multiple columns',
   t => {
     const op = db.select('a b c');
     t.is( op.sql(), 'SELECT "a", "b", "c"' );
   }
 )
 
-test(
-  'multiple tables with commas',
+test( 'multiple tables with commas',
   t => {
     const op = db.select('a, b,c, d');
     t.is( op.sql(), 'SELECT "a", "b", "c", "d"' );
   }
 )
 
-test(
-  'star',
+test( 'star',
   t => {
     const op = db.select('*');
     t.is( op.sql(), 'SELECT *' );
   }
 )
 
-test(
-  'table star',
+test( 'table star',
   t => {
     const op = db.select('a.*');
     t.is( op.sql(), 'SELECT "a".*' );
   }
 )
 
-test(
-  'object with columns',
+test( 'object with columns',
   t => {
     const op = db.select({ columns: 'id email company.*' });
     t.is( op.sql(), 'SELECT "id", "email", "company".*' );
   }
 )
 
-test(
-  'object with column and alias',
+test( 'object with column and alias',
   t => {
     const op = db.select({ column: 'email', as: 'email_address' });
     t.is( op.sql(), 'SELECT "email" AS "email_address"' );
   }
 )
 
-test(
-  'object with column, table and alias',
+test( 'object with column, table and alias',
   t => {
     const op = db.select({ table: 'users', column: 'email', as: 'email_address' });
     t.is( op.sql(), 'SELECT "users"."email" AS "email_address"' );
   }
 )
 
-test(
-  'object with table.column and alias',
+test( 'object with table.column and alias',
   t => {
     const op = db.select({ column: 'users.email', as: 'email_address' });
     t.is( op.sql(), 'SELECT "users"."email" AS "email_address"' );
   }
 )
 
-test(
-  'object with columns and table',
+test( 'object with columns and table',
   t => {
     const op = db.select({ table: 'users', columns: 'id email' });
     t.is( op.sql(), 'SELECT "users"."id", "users"."email"' );
   }
 )
 
-test(
-  'object with column and table',
+test( 'object with column and table',
   t => {
     const op = db.select({ table: 'users', column: 'id email' });
     t.is( op.sql(), 'SELECT "users"."id", "users"."email"' );
   }
 )
 
-test(
-  'object with columns and prefix',
+test( 'object with columns and prefix',
   t => {
     const op = db.select({ columns: 'id email', prefix: 'user_' });
     t.is( op.sql(), 'SELECT "id" AS "user_id", "email" AS "user_email"' );
   }
 )
 
-test(
-  'object with columns, table and prefix',
+test( 'object with columns, table and prefix',
   t => {
     const op = db.select({ table: 'users', columns: 'id email', prefix: "user_" });
     t.is( op.sql(), 'SELECT "users"."id" AS "user_id", "users"."email" AS "user_email"' );
   }
 )
 
-test(
-  'two element array',
+test( 'two element array',
   t => {
     const op = db.select(['email', 'email_address']);
     t.is( op.sql(), 'SELECT "email" AS "email_address"' );
   }
 )
 
-test(
-  'two element array with table',
+test( 'two element array with table',
   t => {
     const op = db.select(['users.email', 'email_address']);
     t.is( op.sql(), 'SELECT "users"."email" AS "email_address"' );
   }
 )
 
-test(
-  'three element array',
+test( 'three element array',
   t => {
     const op = db.select(['users', 'email', 'email_address']);
     t.is( op.sql(), 'SELECT "users"."email" AS "email_address"' );
   }
 )
 
-test(
-  'four element array',
+test( 'four element array',
   t => {
     const error = t.throws(
       () => db.select(['users', 'email', 'email_address', 'oops']).sql()
@@ -154,40 +136,35 @@ test(
   }
 )
 
-test(
-  'columns with table name',
+test( 'columns with table name',
   t => {
     const op = db.select('x.b c');
     t.is( op.sql(), 'SELECT "x"."b", "c"' );
   }
 )
 
-test(
-  'sql in object',
+test( 'sql in object',
   t => {
     const op = db.select({ sql: 'b as bravo' });
     t.is( op.sql(), 'SELECT b as bravo' );
   }
 )
 
-test(
-  'tagged sql',
+test( 'tagged sql',
   t => {
     const op = db.select(sql`b as bravo`);
     t.is( op.sql(), 'SELECT b as bravo' );
   }
 )
 
-test(
-  'multiple items',
+test( 'multiple items',
   t => {
     const op = db.select('b', 'c d', ['e', 'f'], { column: 'x', as: 'y' });
     t.is( op.sql(), 'SELECT "b", "c", "d", "e" AS "f", "x" AS "y"' );
   }
 )
 
-test(
-  'columns with table name and prefix in object',
+test( 'columns with table name and prefix in object',
   t => {
     const op = db
       .select(
@@ -201,8 +178,7 @@ test(
   }
 )
 
-test(
-  'invalid object',
+test( 'invalid object',
   t => {
     const error = t.throws(
       () => db.select({ users: 'email email_address', oops: 'This is wrong' }).sql()
@@ -215,20 +191,18 @@ test(
   }
 )
 
-test(
-  'generateSQL() with single value',
+test( 'generateSQL() with single value',
   t => {
     t.is( Select.generateSQL('a'), 'SELECT a' )
   }
 )
 
-test(
-  'generateSQL() with multiple values',
+test( 'generateSQL() with multiple values',
   t => {
     t.is( Select.generateSQL(['a', 'b']), 'SELECT a, b' )
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

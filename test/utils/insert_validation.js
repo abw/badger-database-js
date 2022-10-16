@@ -9,8 +9,7 @@ const throwInsertValidationError = thrower(
   InsertValidationError
 )
 
-test(
-  'unknown insert validation error',
+test( 'unknown insert validation error',
   t => {
     const error = t.throws(
       () => throwInsertValidationError('unknown', { column: 'wibble', table: 'users'} )
@@ -20,8 +19,7 @@ test(
   }
 )
 
-test(
-  'readonly insert validation error',
+test( 'readonly insert validation error',
   t => {
     const error = t.throws(
       () => throwInsertValidationError('readonly', { column: 'wibble', table: 'users'} )
@@ -31,8 +29,7 @@ test(
   }
 )
 
-test(
-  'missing format for insert validation error',
+test( 'missing format for insert validation error',
   t => {
     const error = t.throws(
       () => throwInsertValidationError('missing', { column: 'wibble', table: 'users'} )

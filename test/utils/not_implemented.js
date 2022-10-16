@@ -1,16 +1,14 @@
 import test from 'ava';
 import { notImplemented, notImplementedInBaseClass, notImplementedInModule } from '../../src/Utils/Error.js';
 
-test(
-  'notImplemented()',
+test( 'notImplemented()',
   t => {
     const error = t.throws( () => notImplemented('antigravity()', 'this Universe') );
     t.is( error.message, "antigravity() is not implemented in this Universe" )
   }
 )
 
-test(
-  'notImplementedInModule()',
+test( 'notImplementedInModule()',
   t => {
     const notInThisUniverse = notImplementedInModule('this Universe');
     const error = t.throws( () => notInThisUniverse('antigravity()') );
@@ -18,8 +16,7 @@ test(
   }
 )
 
-test(
-  'notImplementedInBaseClass()',
+test( 'notImplementedInBaseClass()',
   t => {
     const notInThisUniverse = notImplementedInBaseClass('Universe');
     const error = t.throws( () => notInThisUniverse('antigravity()') );

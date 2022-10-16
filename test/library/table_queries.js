@@ -134,7 +134,7 @@ export function runTableQueriesTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

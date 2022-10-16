@@ -8,9 +8,7 @@ export function runTableInsertTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  // connect
-  test.serial(
-    'connect',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -24,9 +22,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  // drop any existing table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -35,18 +31,14 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  // create table
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  // insert rows
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -59,8 +51,8 @@ export function runTableInsertTests(engine) {
       t.is( result.email, undefined );
     }
   )
-  test.serial(
-    'insert another row using insertOne()',
+
+  test.serial( 'insert another row using insertOne()',
     async t => {
       const users = await db.table('users');
       const result = await users.insertOne(
@@ -78,10 +70,9 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  // make sure we can fetch two rows
-  test.serial(
-    'allRows()',
+  test.serial( 'allRows()',
     async t => {
+      // make sure we can fetch two rows
       const users = await db.table('users');
       const badgers = await users.allRows();    // why not all?
       t.is( badgers.length, 2 );
@@ -90,9 +81,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  // insert multiple rows
-  test.serial(
-    'insert multiple rows',
+  test.serial( 'insert multiple rows',
     async t => {
       const users = await db.table('users');
       const result = await users.insert([
@@ -113,9 +102,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  // insert multiple rows with reload
-  test.serial(
-    'insert multiple rows with reload',
+  test.serial( 'insert multiple rows with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -141,8 +128,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  test.serial(
-    'insert multiple rows using insertAll()',
+  test.serial( 'insert multiple rows using insertAll()',
     async t => {
       const users = await db.table('users');
       const result = await users.insertAll([
@@ -163,8 +149,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  test.serial(
-    'insert multiple rows using insertAll() with reload',
+  test.serial( 'insert multiple rows using insertAll() with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.insertAll(
@@ -188,7 +173,7 @@ export function runTableInsertTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

@@ -28,16 +28,14 @@ const dbConfig = {
   }
 }
 
-test.before(
-  'connect to database',
+test.before( 'connect',
   t => {
     db = connect(dbConfig);
     t.pass()
   }
 );
 
-test.serial(
-  'create users table',
+test.serial( 'create users table',
   async t => {
     const users = await db.table('users');
     const create = await users.run('create');
@@ -45,8 +43,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert users',
+test.serial( 'insert users',
   async t => {
     const users = await db.table('users');
     const insert = await users.insert([
@@ -70,8 +67,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch badgers',
+test.serial( 'fetch badgers',
   async t => {
     const users   = await db.table('users');
     const badgers = await users.badgers();
@@ -81,7 +77,7 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )
 

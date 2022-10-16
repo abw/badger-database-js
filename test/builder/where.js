@@ -6,16 +6,14 @@ import { QueryBuilderError } from '../../src/Utils/Error.js';
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test(
-  'where',
+test( 'where',
   t => {
     const op = db.build.where('a');
     t.true( op instanceof Where )
@@ -23,25 +21,21 @@ test(
   }
 )
 
-test(
-  'column',
+test( 'column',
   t => {
     const query = db.from('users').select('id name email').where('name');
     t.is( query.sql(), 'SELECT "id", "name", "email"\nFROM "users"\nWHERE "name" = ?' );
   }
 )
 
-
-test(
-  'columns string',
+test( 'columns string',
   t => {
     const query = db.from('users').select('id email').where('name email');
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ? AND "email" = ?' );
   }
 )
 
-test(
-  'array with two elements',
+test( 'array with two elements',
   t => {
     const query = db.from('users').select('id email').where(['name', 'Bobby Badger']);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ?' );
@@ -50,8 +44,7 @@ test(
   }
 )
 
-test(
-  'array with three elements',
+test( 'array with three elements',
   t => {
     const query = db.from('users').select('id email').where(['name', '!=', 'Bobby Badger']);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
@@ -60,8 +53,7 @@ test(
   }
 )
 
-test(
-  'array with three elements, last one undefined',
+test( 'array with three elements, last one undefined',
   t => {
     const query = db.from('users').select('id email').where(['name', '!=', undefined]);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
@@ -69,8 +61,7 @@ test(
   }
 )
 
-test(
-  'array with two elements, second one is a comparison',
+test( 'array with two elements, second one is a comparison',
   t => {
     const query = db.from('users').select('id email').where(['name', ['!=']]);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
@@ -78,8 +69,7 @@ test(
   }
 )
 
-test(
-  'array with two elements, second one is an array of comparison and value',
+test( 'array with two elements, second one is an array of comparison and value',
   t => {
     const query = db.from('users').select('id email').where(['name', ['!=', 'Bobby Badger']]);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
@@ -88,8 +78,7 @@ test(
   }
 )
 
-test(
-  'array with four elements',
+test( 'array with four elements',
   t => {
     const error = t.throws(
       () => db.from('a').where(['users', 'email', 'email_address', 'oops']).sql()
@@ -99,16 +88,14 @@ test(
   }
 )
 
-test(
-  'table name',
+test( 'table name',
   t => {
     const query = db.from('users').select('id email').where('users.name', 'u.email');
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name" = ? AND "u"."email" = ?' );
   }
 )
 
-test(
-  'column with value',
+test( 'column with value',
   t => {
     const query = db.from('users').select('id email').where({ name: 'Brian Badger' });
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ?' );
@@ -117,8 +104,7 @@ test(
   }
 )
 
-test(
-  'column with comparison',
+test( 'column with comparison',
   t => {
     const query = db.from('users').select('email').where({ id: ['>', 99] });
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" > ?' );
@@ -127,8 +113,7 @@ test(
   }
 )
 
-test(
-  'column with comparison operator',
+test( 'column with comparison operator',
   t => {
     const query = db.from('users').select('email').where({ id: ['>'] });
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" > ?' );
@@ -136,8 +121,7 @@ test(
   }
 )
 
-test(
-  'where sql clause',
+test( 'where sql clause',
   t => {
     const query = db.from('users').select('email').where([sql`COUNT(product_id)`, '>', undefined]);
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE COUNT(product_id) > ?' );
@@ -145,8 +129,7 @@ test(
   }
 )
 
-test(
-  'object with value array with three elements',
+test( 'object with value array with three elements',
   t => {
     const error = t.throws(
       () => db.from('a').where({ id: ['id', '>', 123] }).sql()
@@ -156,20 +139,18 @@ test(
   }
 )
 
-test(
-  'generateSQL() with single value',
+test( 'generateSQL() with single value',
   t => {
     t.is( Where.generateSQL('a'), 'WHERE a' )
   }
 )
 
-test(
-  'generateSQL() with multiple values',
+test( 'generateSQL() with multiple values',
   t => {
     t.is( Where.generateSQL(['a', 'b']), 'WHERE a AND b' )
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

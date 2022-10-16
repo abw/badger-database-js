@@ -15,9 +15,7 @@ export function runRecordClassTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  // connect to the database
-  test.before(
-    'database',
+  test.before( 'connect',
     t => {
       db = connect({
         database,
@@ -40,9 +38,7 @@ export function runRecordClassTests(engine) {
     }
   )
 
-  // drop any existing users table
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -51,18 +47,14 @@ export function runRecordClassTests(engine) {
     }
   )
 
-  // create the table
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  // insert a row
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -78,9 +70,7 @@ export function runRecordClassTests(engine) {
     }
   )
 
-  // fetch records
-  test.serial(
-    'hello() method',
+  test.serial( 'hello() method',
     async t => {
       const users = await db.table('users');
       const bobby = await users.oneRecord({
@@ -96,8 +86,7 @@ export function runRecordClassTests(engine) {
     }
   )
 
-  test.serial(
-    'hello() method with record options',
+  test.serial( 'hello() method with record options',
     async t => {
       const users = await db.table('casual_users');
       const bobby = await users.oneRecord({
@@ -113,8 +102,7 @@ export function runRecordClassTests(engine) {
     }
   )
 
-  // cleanup
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

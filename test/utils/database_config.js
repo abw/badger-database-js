@@ -5,8 +5,7 @@ import { databaseConfig, parseDatabaseString, configEnv } from "../../src/Utils/
 //-----------------------------------------------------------------------------
 // parseDatabaseString()
 //-----------------------------------------------------------------------------
-test(
-  'postgresql://user:password@hostname:3211/database',
+test( 'postgresql://user:password@hostname:3211/database',
   t => {
     const config = parseDatabaseString('postgresql://user:password@hostname:3211/database');
     t.is( config.engine, 'postgres');
@@ -14,8 +13,7 @@ test(
   }
 );
 
-test(
-  'postgres://user:password@hostname:3211/database',
+test( 'postgres://user:password@hostname:3211/database',
   t => {
     const config = parseDatabaseString('postgres://user:password@hostname:3211/database');
     t.is( config.engine, 'postgres');
@@ -23,8 +21,7 @@ test(
   }
 );
 
-test(
-  'sqlite://filename.db',
+test( 'sqlite://filename.db',
   t => {
     const config = parseDatabaseString('sqlite://filename.db');
     t.is( config.engine, 'sqlite');
@@ -32,8 +29,7 @@ test(
   }
 );
 
-test(
-  'sqlite://:memory:',
+test( 'sqlite://:memory:',
   t => {
     const config = parseDatabaseString('sqlite://:memory:');
     t.is( config.engine, 'sqlite');
@@ -41,8 +37,7 @@ test(
   }
 );
 
-test(
-  'sqlite:memory',
+test( 'sqlite:memory',
   t => {
     const config = parseDatabaseString('sqlite:memory');
     t.is( config.engine, 'sqlite');
@@ -50,8 +45,7 @@ test(
   }
 );
 
-test(
-  'driverName://databaseName',
+test( 'driverName://databaseName',
   t => {
     const config = parseDatabaseString('driverName://databaseName');
     t.is( config.engine, 'driverName');
@@ -59,8 +53,7 @@ test(
   }
 );
 
-test(
-  'driverName://hostName/databaseName',
+test( 'driverName://hostName/databaseName',
   t => {
     const config = parseDatabaseString('driverName://hostName/databaseName');
     t.is( config.engine, 'driverName');
@@ -69,8 +62,7 @@ test(
   }
 );
 
-test(
-  'driverName://hostName:1234/databaseName',
+test( 'driverName://hostName:1234/databaseName',
   t => {
     const config = parseDatabaseString('driverName://hostName:1234/databaseName');
     t.is( config.engine, 'driverName');
@@ -80,8 +72,7 @@ test(
   }
 );
 
-test(
-  'driverName://userName@hostName/databaseName',
+test( 'driverName://userName@hostName/databaseName',
   t => {
     const config = parseDatabaseString('driverName://userName@hostName/databaseName');
     t.is( config.engine, 'driverName');
@@ -91,8 +82,7 @@ test(
   }
 );
 
-test(
-  'driverName://userName@hostName:1234/databaseName',
+test( 'driverName://userName@hostName:1234/databaseName',
   t => {
     const config = parseDatabaseString('driverName://userName@hostName:1234/databaseName');
     t.is( config.engine, 'driverName');
@@ -103,8 +93,7 @@ test(
   }
 );
 
-test(
-  'driverName://userName:secretPassword@hostName/databaseName',
+test( 'driverName://userName:secretPassword@hostName/databaseName',
   t => {
     const config = parseDatabaseString('driverName://userName:secretPassword@hostName/databaseName');
     t.is( config.engine, 'driverName');
@@ -115,8 +104,7 @@ test(
   }
 );
 
-test(
-  'driverName://userName:secretPassword@hostName:1234/databaseName',
+test( 'driverName://userName:secretPassword@hostName:1234/databaseName',
   t => {
     const config = parseDatabaseString('driverName://userName:secretPassword@hostName:1234/databaseName');
     t.is( config.engine, 'driverName');
@@ -128,8 +116,7 @@ test(
   }
 );
 
-test(
-  'driverName:databaseName',
+test( 'driverName:databaseName',
   t => {
     const error = t.throws( () => parseDatabaseString('driverName:databaseName') )
     t.is( error.message, 'Invalid "database" specified: driverName:databaseName');
@@ -140,8 +127,7 @@ test(
 // databaseConfig()
 //-----------------------------------------------------------------------------
 
-test(
-  "databaseConfig({ database: 'driverName://userName:secretPassword@hostName:1234/databaseName' })",
+test( "databaseConfig({ database: 'driverName://userName:secretPassword@hostName:1234/databaseName' })",
   t => {
     const config = databaseConfig({ database: 'driverName://userName:secretPassword@hostName:1234/databaseName' });
     t.is( config.engine, 'driverName');
@@ -153,8 +139,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } })",
+test( "databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } })",
   t => {
     const config = databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } });
     t.is( config.engine, 'sqlite');
@@ -162,8 +147,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ database: { engine: 'sqlite', file: 'wibble.db' } })",
+test( "databaseConfig({ database: { engine: 'sqlite', file: 'wibble.db' } })",
   t => {
     const config = databaseConfig({ database: { engine: 'sqlite', file: 'wibble.db' } });
     t.is( config.engine, 'sqlite');
@@ -171,8 +155,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig() - parameter renaming",
+test( "databaseConfig() - parameter renaming",
   t => {
     const config = databaseConfig({
       database: { engine: 'mysql', username: 'fred', pass: 'secret', hostname: 'wibble.com' }
@@ -184,8 +167,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ database: 'sqlite:memory', pool: { min: 1, max: 1 } })",
+test( "databaseConfig({ database: 'sqlite:memory', pool: { min: 1, max: 1 } })",
   t => {
     const config = databaseConfig({ database: 'sqlite:memory', pool: { min: 1, max: 1 } });
     t.is( config.engine, 'sqlite');
@@ -195,40 +177,35 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ database: 'driverName:databaseName' })",
+test( "databaseConfig({ database: 'driverName:databaseName' })",
   t => {
     const error = t.throws( () => databaseConfig({ database: 'driverName:databaseName' }) )
     t.is( error.message, 'Invalid "database" specified: driverName:databaseName');
   }
 );
 
-test(
-  "databaseConfig({ })",
+test( "databaseConfig({ })",
   t => {
     const error = t.throws( () => databaseConfig({ }) )
     t.is( error.message, 'No "database" specified');
   }
 );
 
-test(
-  "configEnv({ DATABASE: '...' })",
+test( "configEnv({ DATABASE: '...' })",
   t => {
     const config = configEnv({ DATABASE: 'sqlite:memory' });
     t.deepEqual(config, { database: 'sqlite:memory' });
   }
 );
 
-test(
-  "configEnv({ DATABASE_ENGINE: '...', DATABASE_HOST: '...' })",
+test( "configEnv({ DATABASE_ENGINE: '...', DATABASE_HOST: '...' })",
   t => {
     const config = configEnv({ DATABASE_ENGINE: 'sqlite', DATABASE_FILENAME: ':memory:' });
     t.deepEqual(config, { database: { engine: 'sqlite', filename: ':memory:' } });
   }
 );
 
-test(
-  "databaseConfig({ env: { DATABASE: ... }})",
+test( "databaseConfig({ env: { DATABASE: ... }})",
   t => {
     const config = databaseConfig({
       env: { DATABASE: 'sqlite:memory' }
@@ -246,8 +223,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ env: { DATABASE_ENGINE, etc., }})",
+test( "databaseConfig({ env: { DATABASE_ENGINE, etc., }})",
   t => {
     const config = databaseConfig({
       env: {
@@ -269,8 +245,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ env: { MY_DB: ... }, envPrefix: 'MY_DB', })",
+test( "databaseConfig({ env: { MY_DB: ... }, envPrefix: 'MY_DB', })",
   t => {
     const config = databaseConfig({
       env: { MY_DB: 'sqlite:memory' },
@@ -290,8 +265,7 @@ test(
   }
 );
 
-test(
-  "databaseConfig({ env: { MY_DB_ENGINE, etc., }, envPrefix: 'MY_DB' })",
+test( "databaseConfig({ env: { MY_DB_ENGINE, etc., }, envPrefix: 'MY_DB' })",
   t => {
     const config = databaseConfig({
       env: {

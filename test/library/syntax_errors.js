@@ -9,15 +9,14 @@ export function runSyntaxErrorTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  test.before(
+  test.before( 'connect',
     t => {
       db = connect({ database });
       t.pass('connected')
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run('DROP TABLE IF EXISTS users');
       await db.run(create);
@@ -25,8 +24,7 @@ export function runSyntaxErrorTests(engine) {
     }
   )
 
-  test.serial(
-    'invalid query',
+  test.serial( 'invalid query',
     async t => {
       const error = await t.throwsAsync(
         () => db.run('SELECT x\nFROM "pants"')
@@ -36,7 +34,7 @@ export function runSyntaxErrorTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

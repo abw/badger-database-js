@@ -39,48 +39,42 @@ registerBuilder(Animal)
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test(
-  'animal',
+test( 'animal',
   t => {
     const op = db.build.animal('badger');
     t.true( op instanceof Animal )
   }
 )
 
-test(
-  "one badger",
+test( "one badger",
   t => {
     const op = db.build.animal('Badger');
     t.is( op.sql(), '# Badger' );
   }
 )
 
-test(
-  "three badgers",
+test( "three badgers",
   t => {
     const op = db.build.animal(['Badger', 3]);
     t.is( op.sql(), '# Badger, Badger, Badger' );
   }
 )
 
-test(
-  "five badgers",
+test( "five badgers",
   t => {
     const op = db.build.animal({ animal: 'Badger', count: 5 });
     t.is( op.sql(), '# Badger, Badger, Badger, Badger, Badger' );
   }
 )
 
-test(
-  "multiple calls",
+test( "multiple calls",
   t => {
     const op = db.build
       .select('foo')
@@ -95,8 +89,7 @@ test(
   }
 )
 
-test(
-  'invalid array',
+test( 'invalid array',
   t => {
     const error = t.throws(
       () => db.build.animal(['Badger', 'Mushroom', 'Snake']).sql()
@@ -109,6 +102,6 @@ test(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

@@ -16,24 +16,21 @@ const config = {
 
 const engineString = `mysql://${database.user}:${database.password}@${database.host}/${database.database}`;
 
-test.serial(
-  'no engine error',
+test.serial( 'no engine error',
   t => {
     const error = t.throws( () => new Mysql() );
     t.is( error.message, 'No "engine" specified' )
   }
 )
 
-test.serial(
-  'no database error',
+test.serial( 'no database error',
   t => {
     const error = t.throws( () => new Mysql({ engine: 'mysql' }) );
     t.is( error.message, 'No "database" specified' )
   }
 )
 
-test.serial(
-  'acquire and release',
+test.serial( 'acquire and release',
   async t => {
     const mysql = new Mysql(config);
     const conn = await mysql.acquire();
@@ -45,8 +42,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'any',
+test.serial( 'any',
   async t => {
     const mysql = new Mysql(config);
     const result = await mysql.any('SELECT 99 AS number');
@@ -56,8 +52,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'all',
+test.serial( 'all',
   async t => {
     const mysql = new Mysql(config);
     const result = await mysql.all('SELECT 99 as number');
@@ -67,8 +62,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'drop existing table',
+test.serial( 'drop existing table',
   async t => {
     const mysql = new Mysql(config);
     const drop = await mysql.run(
@@ -80,8 +74,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'create table',
+test.serial( 'create table',
   async t => {
     const mysql = new Mysql(config);
     const create = await mysql.run(
@@ -97,8 +90,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row',
+test.serial( 'insert a row',
   async t => {
     const mysql = new Mysql(config);
     const insert = await mysql.run(
@@ -112,8 +104,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert another row',
+test.serial( 'insert another row',
   async t => {
     const mysql = new Mysql(config);
     const insert = await mysql.run(
@@ -126,8 +117,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch any row',
+test.serial( 'fetch any row',
   async t => {
     const mysql = new Mysql(config);
     const bobby = await mysql.any(
@@ -139,8 +129,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch all rows',
+test.serial( 'fetch all rows',
   async t => {
     const mysql = new Mysql(config);
     const rows = await mysql.all(
@@ -152,8 +141,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row',
+test.serial( 'fetch one row',
   async t => {
     const mysql = new Mysql(config);
     const row   = await mysql.one(
@@ -165,8 +153,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row but none returned',
+test.serial( 'fetch one row but none returned',
   async t => {
     const mysql = new Mysql(config);
     const error = await t.throwsAsync(
@@ -181,8 +168,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row but two returned',
+test.serial( 'fetch one row but two returned',
   async t => {
     const mysql = new Mysql(config);
     const error = await t.throwsAsync(
@@ -196,11 +182,7 @@ test.serial(
   }
 )
 
-//-----------------------------------------------------------------------------
-// database() function
-//-----------------------------------------------------------------------------
-test.serial(
-  'fetch one row via database()',
+test.serial( 'fetch one row via database()',
   async t => {
     const mysql = await engineFactory({ database: { ...database, engine: 'mysql' } });
     const row   = await mysql.one(
@@ -212,8 +194,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row via database() with string',
+test.serial( 'fetch one row via database() with string',
   async t => {
     const mysql = await engineFactory({ database: engineString });
     const row   = await mysql.one(
@@ -225,11 +206,7 @@ test.serial(
   }
 )
 
-//-----------------------------------------------------------------------------
-// quote()
-//-----------------------------------------------------------------------------
-test(
-  'quote word',
+test( 'quote word',
   async t => {
     const mysql = new Mysql(config);
     t.is( mysql.quote("hello"), "`hello`" )
@@ -237,8 +214,7 @@ test(
   }
 )
 
-test(
-  'quote words',
+test( 'quote words',
   async t => {
     const mysql = new Mysql(config);
     t.is( mysql.quote("hello.world"), "`hello`.`world`" )
@@ -246,8 +222,7 @@ test(
   }
 )
 
-test(
-  'quote words with escapes',
+test( 'quote words with escapes',
   async t => {
     const mysql = new Mysql(config);
     t.is( mysql.quote("foo`bar"), "`foo\\`bar`" )

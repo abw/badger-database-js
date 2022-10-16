@@ -6,38 +6,34 @@ import { connect } from '../../src/Database.js'
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({ database: 'sqlite:memory' });
     t.is( db.engine.engine, 'sqlite' );
   }
 )
 
-test(
-  'builder',
+test( 'builder',
   t => {
     const op = db.build;
     t.true( op instanceof Database );
   }
 )
 
-test(
-  'from',
+test( 'from',
   t => {
     const op = db.from();
     t.true( op instanceof From );
   }
 )
 
-test(
-  'select',
+test( 'select',
   t => {
     const op = db.select();
     t.true( op instanceof Select );
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

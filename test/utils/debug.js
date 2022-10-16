@@ -1,8 +1,7 @@
 import test from 'ava';
 import { debug, setDebug, getDebug } from '../../src/Utils/Debug.js';
 
-test.serial(
-  'inital debugging state',
+test.serial( 'inital debugging state',
   t => {
     const test = debug.test;
     t.is( test.debug, false );
@@ -10,8 +9,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'change debugging state',
+test.serial( 'change debugging state',
   t => {
     const test = debug.test;
     t.is( test.debug, false );
@@ -22,8 +20,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'set debugging options',
+test.serial( 'set debugging options',
   t => {
     const test = debug.test;
     t.is( test.debug, true );
@@ -34,8 +31,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'get debugging options',
+test.serial( 'get debugging options',
   t => {
     const test = debug.test;
     t.is( test.debug, true );

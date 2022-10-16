@@ -10,8 +10,7 @@ setDebug({
   // engine: true,
 })
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -46,16 +45,14 @@ test.before(
   }
 )
 
-test.serial(
-  'hello query',
+test.serial( 'hello query',
   t => {
     const hello = db.query('hello');
     t.is(hello, 'Hello <world>!');
   }
 )
 
-test.serial(
-  'build hello query',
+test.serial( 'build hello query',
   t => {
     const query = db.buildQuery('hello');
     t.is(query.query, 'Hello World!');
@@ -63,8 +60,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'create',
+test.serial( 'create',
   async t => {
     const query = db.buildQuery('create');
     const create = await query.run();
@@ -72,8 +68,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row',
+test.serial( 'insert a row',
   async t => {
     const query = db.buildQuery('insert');
     const insert = await query.run(
@@ -83,8 +78,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row with whereValues',
+test.serial( 'insert a row with whereValues',
   async t => {
     const query = db.buildQuery('insert', { whereValues: ['Brian Badger'] });
     const values = query.allValues(['brian@badgerpower.com']);
@@ -94,8 +88,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch any row',
+test.serial( 'fetch any row',
   async t => {
     const bobby = await db.buildQuery('selectEmail').any(
       ['bobby@badgerpower.com']
@@ -104,8 +97,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row',
+test.serial( 'fetch one row',
   async t => {
     const brian = await db.buildQuery('selectEmail').one(
       ['brian@badgerpower.com']
@@ -114,8 +106,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch all rows',
+test.serial( 'fetch all rows',
   async t => {
     const badgers = await db.buildQuery('selectAll').all();
     t.is(badgers.length, 2);
@@ -124,8 +115,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'select query builder',
+test.serial( 'select query builder',
   async t => {
     const query = db.buildQuery('select');
     t.is( query.sql(), 'SELECT *\nFROM "user"' );
@@ -134,8 +124,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query',
+test.serial( 'selectBobby query',
   async t => {
     const query = db.buildQuery('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
@@ -144,8 +133,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query values',
+test.serial( 'selectBobby query values',
   async t => {
     const query = db.query('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
@@ -154,8 +142,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query values with more',
+test.serial( 'selectBobby query values with more',
   async t => {
     const query = db.query('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
@@ -164,8 +151,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query values with function',
+test.serial( 'selectBobby query values with function',
   async t => {
     const query = db.query('selectBobby').having({ y: 99 });
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?\nHAVING "y" = ?' );
@@ -174,8 +160,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query allValues',
+test.serial( 'selectBobby query allValues',
   async t => {
     const query = db.query('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
@@ -184,8 +169,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query whereValues',
+test.serial( 'selectBobby query whereValues',
   async t => {
     const query = db.query('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
@@ -194,8 +178,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby query havingValues',
+test.serial( 'selectBobby query havingValues',
   async t => {
     const query = db.query('selectBobby');
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?' );
@@ -204,24 +187,21 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectBobby one',
+test.serial( 'selectBobby one',
   async t => {
     const bobby = await db.one('selectBobby');
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.serial(
-  'selectBobby any',
+test.serial( 'selectBobby any',
   async t => {
     const bobby = await db.any('selectBobby');
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.serial(
-  'selectBobby all',
+test.serial( 'selectBobby all',
   async t => {
     const rows = await db.all('selectBobby');
     t.is( rows.length, 1 );
@@ -229,40 +209,35 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectByName one',
+test.serial( 'selectByName one',
   async t => {
     const bobby = await db.one('selectByName', ['Bobby Badger']);
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.serial(
-  'selectByEmail one',
+test.serial( 'selectByEmail one',
   async t => {
     const bobby = await db.one('selectByEmail', ['bobby@badgerpower.com']);
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.serial(
-  'selectByName any',
+test.serial( 'selectByName any',
   async t => {
     const bobby = await db.any('selectByName', ['Bobby Badger']);
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.serial(
-  'selectByEmail any',
+test.serial( 'selectByEmail any',
   async t => {
     const bobby = await db.any('selectByEmail', ['bobby@badgerpower.com']);
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.serial(
-  'selectByName all',
+test.serial( 'selectByName all',
   async t => {
     const rows = await db.all('selectByName', ['Bobby Badger']);
     t.is(rows.length, 1);
@@ -270,8 +245,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'selectByEmail all',
+test.serial( 'selectByEmail all',
   async t => {
     const rows = await db.all('selectByEmail', ['bobby@badgerpower.com']);
     t.is(rows.length, 1);
@@ -279,16 +253,14 @@ test.serial(
   }
 )
 
-test.serial(
-  'extended select query builder',
+test.serial( 'extended select query builder',
   async t => {
     const bobby = await db.query('select').where({ name: 'Bobby Badger' }).one();
     t.is(bobby.name, 'Bobby Badger');
   }
 )
 
-test.after(
-  'destroy',
+test.after( 'disconnect',
   t => {
     db.disconnect();
     t.pass();

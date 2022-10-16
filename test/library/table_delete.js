@@ -8,8 +8,7 @@ export function runTableDeleteTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  test.before(
-    'database',
+  test.before( 'connect',
     t => {
       db = connect({
         database,
@@ -22,8 +21,8 @@ export function runTableDeleteTests(engine) {
       t.pass();
     }
   )
-  test.serial(
-    'drop table',
+
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -32,16 +31,14 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -57,8 +54,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'insert another row',
+  test.serial( 'insert another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -74,8 +70,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'insert yet another row',
+  test.serial( 'insert yet another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert(
@@ -91,8 +86,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'fetch all',
+  test.serial( 'fetch all',
     async t => {
       const users = await db.table('users');
       const rows = await users.allRows();
@@ -100,8 +94,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'delete first row',
+  test.serial( 'delete first row',
     async t => {
       const users = await db.table('users');
       const result = await users.delete({
@@ -111,8 +104,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'fetch two',
+  test.serial( 'fetch two',
     async t => {
       const users = await db.table('users');
       const rows = await users.allRows();
@@ -120,8 +112,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'delete second row with comparison',
+  test.serial( 'delete second row with comparison',
     async t => {
       const users = await db.table('users');
       const result = await users.delete({
@@ -131,8 +122,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'fetch one',
+  test.serial( 'fetch one',
     async t => {
       const users = await db.table('users');
       const rows = await users.allRows();
@@ -140,8 +130,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'delete all rows',
+  test.serial( 'delete all rows',
     async t => {
       const users = await db.table('users');
       const result = await users.delete();
@@ -149,8 +138,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.serial(
-    'fetch none',
+  test.serial( 'fetch none',
     async t => {
       const users = await db.table('users');
       const rows = await users.allRows();
@@ -158,7 +146,7 @@ export function runTableDeleteTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

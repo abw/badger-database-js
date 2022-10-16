@@ -11,9 +11,7 @@ export function runTableWhereTests(engine) {
   const table = 'where_albums';
   let db;
 
-  // connect to the database
-  test.serial(
-    'connect',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -38,24 +36,21 @@ export function runTableWhereTests(engine) {
     }
   )
 
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.waiter.model.albums.run('drop');
       t.pass();
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.waiter.model.albums.run('create');
       t.pass();
     }
   );
 
-  test.serial(
-    'insert some rows',
+  test.serial( 'insert some rows',
     async t => {
       const albums = await db.waiter.model.albums.insertAll([
         { year: 1970, title: 'Atom Heart Mother' },
@@ -68,8 +63,7 @@ export function runTableWhereTests(engine) {
     }
   )
 
-  test.serial(
-    'select a row',
+  test.serial( 'select a row',
     async t => {
       const albums = await db.waiter.model.albums.allRows({
         year: 1973,
@@ -79,8 +73,7 @@ export function runTableWhereTests(engine) {
     }
   )
 
-  test.serial(
-    'select a series of rows',
+  test.serial( 'select a series of rows',
     async t => {
       const albums = await db.waiter.model.albums.allRows({
         year: ['>', 1973],
@@ -92,7 +85,7 @@ export function runTableWhereTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

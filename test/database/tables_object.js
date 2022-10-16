@@ -21,8 +21,7 @@ const tables = {
   }
 };
 
-test.before(
-  'database',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -32,8 +31,7 @@ test.before(
   }
 )
 
-test.serial(
-  'model.artists',
+test.serial( 'model.artists',
   async t => {
     const users = await db.table('users');
     t.true( users instanceof Table );
@@ -41,6 +39,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

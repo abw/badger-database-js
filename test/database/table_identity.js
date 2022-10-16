@@ -3,8 +3,7 @@ import { connect } from '../../src/Database.js';
 
 let db;
 
-test.before(
-  'connect',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -35,8 +34,7 @@ test.before(
   }
 )
 
-test.serial(
-  'users identity',
+test.serial( 'users identity',
   async t => {
     const users = await db.table('users');
     t.deepEqual(
@@ -48,8 +46,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'companies identity',
+test.serial( 'companies identity',
   async t => {
     const companies = await db.table('companies');
     t.deepEqual(
@@ -61,8 +58,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'employees identity',
+test.serial( 'employees identity',
   async t => {
     const employees = await db.table('employees');
     t.deepEqual(
@@ -75,8 +71,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'badgers id and keys',
+test.serial( 'badgers id and keys',
   async t => {
     const badgers = await db.table('badgers');
     t.is( badgers.id, 'id' );
@@ -90,8 +85,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'ferrets id and keys',
+test.serial( 'ferrets id and keys',
   async t => {
     const ferrets = await db.table('ferrets');
     t.is( ferrets.id, 'ferret_id' );
@@ -105,8 +99,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'stoats id and keys',
+test.serial( 'stoats id and keys',
   async t => {
     const stoats = await db.table('stoats');
     t.is( stoats.id, undefined );
@@ -121,6 +114,6 @@ test.serial(
   }
 );
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

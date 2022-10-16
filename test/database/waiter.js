@@ -4,7 +4,7 @@ import { connectMusicDatabase } from '../library/music_database.js';
 
 let musicdb;
 
-test.before(
+test.before( 'connect',
   async t => {
     musicdb = await connectMusicDatabase();
     await musicdb.run('createArtistsTable');
@@ -12,8 +12,7 @@ test.before(
   }
 );
 
-test.serial(
-  'record insert and update',
+test.serial( 'record insert and update',
   async t => {
     const artists = await musicdb.table('artists');
     const record = await artists.insertOneRecord({
@@ -27,8 +26,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'chained record insert and update',
+test.serial( 'chained record insert and update',
   async t => {
     const name = await musicdb
       .waiter
@@ -45,8 +43,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'waiter connect',
+test.serial( 'waiter connect',
   async t => {
     const row = await connect({ database: 'sqlite:memory' })
       .waiter
@@ -55,6 +52,6 @@ test.serial(
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => musicdb.disconnect()
 )

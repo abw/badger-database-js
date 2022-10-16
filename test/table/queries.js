@@ -40,16 +40,14 @@ const dbConfig = {
   }
 }
 
-test.before(
-  'create database',
+test.before( 'connect',
   t => {
     db = connect(dbConfig);
     t.pass("created music database")
   }
 );
 
-test.serial(
-  'create artists table',
+test.serial( 'create artists table',
   async t => {
     const artists = await db.table('artists');
     const result = await artists.run('create');
@@ -57,8 +55,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'create albums table',
+test.serial( 'create albums table',
   async t => {
     const albums = await db.table('albums');
     const result = await albums.run('create');
@@ -66,8 +63,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert artist',
+test.serial( 'insert artist',
   async t => {
     const artists = await db.table('artists');
     const artist  = await artists.insert({ name: 'Pink Floyd'});
@@ -76,8 +72,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert albums',
+test.serial( 'insert albums',
   async t => {
     const albums = await db.table('albums');
 
@@ -97,8 +92,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch albums',
+test.serial( 'fetch albums',
   async t => {
     const albums   = await db.table('albums');
     const pfalbums = await albums.all('byArtistId', [floydId]);
@@ -108,8 +102,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'fetch album by title',
+test.serial( 'fetch album by title',
   async t => {
     const albums = await db.table('albums');
     const dsotm  = await albums.one('byTitle', ['The Dark Side of the Moon']);
@@ -119,8 +112,7 @@ test.serial(
   }
 );
 
-test.serial(
-  'fetch query',
+test.serial( 'fetch query',
   async t => {
     const albums = await db.table('albums');
     const sql    = albums.fetch.sql();
@@ -128,8 +120,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch album by year',
+test.serial( 'fetch album by year',
   async t => {
     const albums = await db.table('albums');
     const dsotm  = await albums.one('byYear', [1973]);
@@ -139,6 +130,6 @@ test.serial(
   }
 );
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )

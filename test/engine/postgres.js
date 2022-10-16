@@ -13,24 +13,21 @@ const config = {
   database
 }
 
-test.serial(
-  'no engine error',
+test.serial( 'no engine error',
   t => {
     const error = t.throws( () => new Postgres() );
     t.is( error.message, 'No "engine" specified' )
   }
 )
 
-test.serial(
-  'no database error',
+test.serial( 'no database error',
   t => {
     const error = t.throws( () => new Postgres({ engine: 'postgres' }) );
     t.is( error.message, 'No "database" specified' )
   }
 )
 
-test.serial(
-  'acquire and release',
+test.serial( 'acquire and release',
   async t => {
     const postgres = new Postgres(config);
     const conn = await postgres.acquire();
@@ -42,9 +39,7 @@ test.serial(
   }
 )
 
-
-test.serial(
-  'any',
+test.serial( 'any',
   async t => {
     const postgres = new Postgres(config);
     const result = await postgres.any('SELECT 99 AS number');
@@ -54,8 +49,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'all',
+test.serial( 'all',
   async t => {
     const postgres = new Postgres(config);
     const result = await postgres.all('SELECT 99 as number');
@@ -65,8 +59,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'drop existing table',
+test.serial( 'drop existing table',
   async t => {
     const postgres = new Postgres(config);
     const drop = await postgres.run(
@@ -78,8 +71,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'create table',
+test.serial( 'create table',
   async t => {
     const postgres = new Postgres(config);
     const create = await postgres.run(
@@ -95,8 +87,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert a row',
+test.serial( 'insert a row',
   async t => {
     const postgres = new Postgres(config);
     const insert = await postgres.run(
@@ -110,8 +101,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'insert another row',
+test.serial( 'insert another row',
   async t => {
     const postgres = new Postgres(config);
     const insert = await postgres.run(
@@ -124,8 +114,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch any row',
+test.serial( 'fetch any row',
   async t => {
     const postgres = new Postgres(config);
     const bobby = await postgres.any(
@@ -137,8 +126,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch all rows',
+test.serial( 'fetch all rows',
   async t => {
     const postgres = new Postgres(config);
     const rows = await postgres.all(
@@ -150,9 +138,7 @@ test.serial(
   }
 )
 
-
-test.serial(
-  'fetch one row',
+test.serial( 'fetch one row',
   async t => {
     const postgres = new Postgres(config);
     const row = await postgres.one(
@@ -164,8 +150,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row but none returned',
+test.serial( 'fetch one row but none returned',
   async t => {
     const postgres = new Postgres(config);
     const error = await t.throwsAsync(
@@ -180,8 +165,7 @@ test.serial(
   }
 )
 
-test.serial(
-  'fetch one row but two returned',
+test.serial( 'fetch one row but two returned',
   async t => {
     const postgres = new Postgres(config);
     const error = await t.throwsAsync(
@@ -195,11 +179,7 @@ test.serial(
   }
 )
 
-//-----------------------------------------------------------------------------
-// quote()
-//-----------------------------------------------------------------------------
-test(
-  'quote word',
+test( 'quote word',
   async t => {
     const postgres = new Postgres(config);
     t.is( postgres.quote('hello'), '"hello"' )
@@ -207,8 +187,7 @@ test(
   }
 )
 
-test(
-  'quote words',
+test( 'quote words',
   async t => {
     const postgres = new Postgres(config);
     t.is( postgres.quote('hello.world'), '"hello"."world"' )
@@ -216,8 +195,7 @@ test(
   }
 )
 
-test(
-  'quote words with escapes',
+test( 'quote words with escapes',
   async t => {
     const postgres = new Postgres(config);
     t.is( postgres.quote('hello "world"'), '"hello \\"world\\""' )

@@ -8,7 +8,7 @@ export function runTableRowQueries(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  test.serial( 'database',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -148,7 +148,7 @@ export function runTableRowQueries(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

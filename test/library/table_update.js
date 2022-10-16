@@ -8,8 +8,7 @@ export function runTableUpdateTests(engine) {
   const create = createUsersTableQuery(engine);
   let db;
 
-  test.serial(
-    'connect',
+  test.serial( 'connect',
     t => {
       db = connect({
         database,
@@ -23,8 +22,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'drop table',
+  test.serial( 'drop table',
     async t => {
       await db.run(
         `DROP TABLE IF EXISTS users`
@@ -33,16 +31,14 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'create table',
+  test.serial( 'create table',
     async t => {
       await db.run(create);
       t.pass();
     }
   );
 
-  test.serial(
-    'insert a row',
+  test.serial( 'insert a row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -55,8 +51,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'update()',
+  test.serial( 'update()',
     async t => {
       const users = await db.table('users');
       const result = await users.update(
@@ -67,8 +62,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateOne()',
+  test.serial( 'updateOne()',
     async t => {
       const users = await db.table('users');
       const result = await users.updateOne(
@@ -79,8 +73,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateOne(), not found',
+  test.serial( 'updateOne(), not found',
     async t => {
       const users = await db.table('users');
       const error = await t.throwsAsync(
@@ -93,8 +86,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateOne() with reload',
+  test.serial( 'updateOne() with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.updateOne(
@@ -109,8 +101,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny()',
+  test.serial( 'updateAny()',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -121,8 +112,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny() not found',
+  test.serial( 'updateAny() not found',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -133,8 +123,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny() with reload',
+  test.serial( 'updateAny() with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -149,8 +138,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny() with reload on changed item',
+  test.serial( 'updateAny() with reload on changed item',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -165,8 +153,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny() with reload on changed item which is 0',
+  test.serial( 'updateAny() with reload on changed item which is 0',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -182,8 +169,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny() not found with reload',
+  test.serial( 'updateAny() not found with reload',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -195,8 +181,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAll() not found',
+  test.serial( 'updateAll() not found',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAll(
@@ -207,8 +192,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAll() not found with reload error',
+  test.serial( 'updateAll() not found with reload error',
     async t => {
       const users = await db.table('users');
       const error = await t.throwsAsync(
@@ -222,8 +206,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'insert another row',
+  test.serial( 'insert another row',
     async t => {
       const users = await db.table('users');
       const result = await users.insert({
@@ -236,8 +219,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.serial(
-    'updateAny() with negative email comparison',
+  test.serial( 'updateAny() with negative email comparison',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
@@ -252,7 +234,7 @@ export function runTableUpdateTests(engine) {
     }
   )
 
-  test.after(
+  test.after( 'disconnect',
     () => db.disconnect()
   )
 }

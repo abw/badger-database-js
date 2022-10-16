@@ -3,8 +3,7 @@ import { connect } from '../../src/Database.js';
 
 let db;
 
-test.before(
-  'create database',
+test.before( 'connect',
   t => {
     db = connect({
       database: 'sqlite:memory',
@@ -22,22 +21,20 @@ test.before(
   }
 )
 
-test(
-  'default name',
+test( 'default name',
   async t => {
     const people = await db.table('people');
     t.is( people.table, 'people' );
   }
 )
 
-test(
-  'custom name',
+test( 'custom name',
   async t => {
     const users = await db.table('users');
     t.is( users.table, 'user' );
   }
 )
 
-test.after(
+test.after( 'disconnect',
   () => db.disconnect()
 )
