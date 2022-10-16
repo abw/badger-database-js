@@ -89,3 +89,80 @@ async function main() {
 }
 
 main();
+
+/*
+Expected Output:
+
+Added Pink Floyd as artist #1
+
+Added The Dark Side of the Moon as album #1
+Track listing for The Dark Side of the Moon:
+  1: Speak to Me / Breathe
+  2: On the Run
+  3: Time
+  4: The Great Gig in the Sky
+  5: Money
+  6: Us and Them
+  7: Any Colour You Like
+  8: Brain Damage
+  9: Eclipse
+
+Added Wish You Were Here as album #2
+Track listing for Wish You Were Here:
+  1: Shine On You Crazy Diamond (Parts I-V)
+  2: Welcome to the Machine
+  3: Have a Cigar
+  4: Shine On You Crazy Diamond (Parts VI-IX)
+
+Added Atom Heart Mother as album #3
+Track listing for Atom Heart Mother:
+  1: Atom Heart Mother
+  2: If
+  3: Summer '68
+  4: Fat Old Sun
+  5: Alan's Psychedelic Breakfast
+
+Albums by Pink Floyd:
+  - Atom Heart Mother (1970)
+  - The Dark Side of the Moon (1973)
+  - Wish You Were Here (1975)
+
+Album tracks by Pink Floyd:
+  - Atom Heart Mother
+    Atom Heart Mother (1970) track 1
+  - If
+    Atom Heart Mother (1970) track 2
+  - Summer '68
+    Atom Heart Mother (1970) track 3
+  - Fat Old Sun
+    Atom Heart Mother (1970) track 4
+  - Alan's Psychedelic Breakfast
+    Atom Heart Mother (1970) track 5
+  - Speak to Me / Breathe
+    The Dark Side of the Moon (1973) track 1
+  - On the Run
+    The Dark Side of the Moon (1973) track 2
+  - Time
+    The Dark Side of the Moon (1973) track 3
+  - The Great Gig in the Sky
+    The Dark Side of the Moon (1973) track 4
+  - Money
+    The Dark Side of the Moon (1973) track 5
+  - Us and Them
+    The Dark Side of the Moon (1973) track 6
+  - Any Colour You Like
+    The Dark Side of the Moon (1973) track 7
+  - Brain Damage
+    The Dark Side of the Moon (1973) track 8
+  - Eclipse
+    The Dark Side of the Moon (1973) track 9
+  - Shine On You Crazy Diamond (Parts I-V)
+    Wish You Were Here (1975) track 1
+  - Welcome to the Machine
+    Wish You Were Here (1975) track 2
+  - Have a Cigar
+    Wish You Were Here (1975) track 3
+  - Shine On You Crazy Diamond (Parts VI-IX)
+    Wish You Were Here (1975) track 4
+
+*/

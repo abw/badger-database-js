@@ -11,3 +11,4 @@
 
 * Query builder - add support for with()
 
+* Update debugging options - queries is no longer valid
