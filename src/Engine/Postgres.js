@@ -1,5 +1,6 @@
 import Engine from '../Engine.js';
 import { defaultIdColumn } from '../Constants.js';
+import { throwEngineDriver } from '../Utils/Error.js';
 
 export class PostgresEngine extends Engine {
   static name  = 'postgres'
@@ -10,7 +11,9 @@ export class PostgresEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { database: this.database });
-    const { default: pg } = await import('pg');
+    const { default: pg } = await import('pg').catch(
+      e => throwEngineDriver('pg', e)
+    );
     const client = new pg.Client(this.database);
     await client.connect();
     return client;

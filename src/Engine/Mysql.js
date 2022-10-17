@@ -1,5 +1,6 @@
 import Engine from '../Engine.js';
 import { backtick, defaultIdColumn } from '../Constants.js';
+import { throwEngineDriver } from '../Utils/Error.js';
 
 export class MysqlEngine extends Engine {
   static name      = 'mysql'
@@ -11,7 +12,9 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { database: this.database });
-    const { default: mysql } = await import('mysql2/promise');
+    const { default: mysql } = await import('mysql2/promise').catch(
+      e => throwEngineDriver('mysql2', e)
+    );
     return mysql.createConnection(this.database);
   }
   async connected() {

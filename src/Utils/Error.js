@@ -88,6 +88,16 @@ export class SQLParseError extends Error {
 }
 
 /**
+ * Error class for reporting failure to load engine driver
+ */
+export class EngineDriverError extends CustomError { }
+export const throwEngineDriver = (module, error) => {
+  throw new EngineDriverError(
+    `Failed to load "${module}" engine driver module.  Have you installed it?\nError: ` + error.message
+  )
+}
+
+/**
  * Error class for reporting unexpected number of rows returned by a
  * database query.
  */

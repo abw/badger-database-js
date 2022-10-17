@@ -1,5 +1,5 @@
 import Engine from '../Engine.js';
-import { missing } from '../Utils/Error.js';
+import { missing, throwEngineDriver } from '../Utils/Error.js';
 import { defaultIdColumn } from '../Constants.js';
 
 export class SqliteEngine extends Engine {
@@ -23,7 +23,10 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { filename: this.filename, options: this.options });
-    const { default: Database } = await import('better-sqlite3');
+    const { default: Database } = await import('better-sqlite3').catch(
+      e => throwEngineDriver('better-sqlite3', e)
+    );
+
     return new Database(this.filename, this.options);
   }
   async connected(db) {
