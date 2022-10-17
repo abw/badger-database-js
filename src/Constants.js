@@ -9,6 +9,9 @@ export const equals           = '='
 export const comma            = ', '
 export const newline          = "\n"
 export const blank            = ''
+export const singleQuote      = "'"
+export const doubleQuote      = '"'
+export const backtick         = '`'
 export const WITH             = 'WITH'
 export const SELECT           = 'SELECT'
 export const FROM             = 'FROM'

@@ -3,7 +3,7 @@ import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount }
 import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, ORDER_BY, space, whereTrue } from './Constants.js';
+import { allColumns, doubleQuote, ORDER_BY, space, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -12,11 +12,6 @@ const poolDefaults = {
   max: 10,
   propagateCreateError: true
 }
-
-const quoteChars = {
-  mysql:   '`',
-  default: '"',
-};
 
 const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
@@ -31,7 +26,8 @@ export class Engine {
     this.database  = config.database || missing('database');
     this.config    = this.configure(config);
     this.pool      = this.initPool(config.pool);
-    this.quoteChar = quoteChars[this.engine||'default'] || quoteChars.default;
+    this.quoteChar = this.constructor.quoteChar || doubleQuote;
+    this.messages  = this.constructor.messages;
     this.escQuote  = `\\${this.quoteChar}`;
     addDebugMethod(this, 'engine', config);
   }

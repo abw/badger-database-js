@@ -1,10 +1,11 @@
 import mysql from 'mysql2/promise';
 import Engine from '../Engine.js';
-import { defaultIdColumn } from '../Constants.js';
+import { backtick, defaultIdColumn } from '../Constants.js';
 
 export class MysqlEngine extends Engine {
-  static name  = 'mysql'
-  static alias = 'maria mariadb'
+  static name      = 'mysql'
+  static alias     = 'maria mariadb'
+  static quoteChar = backtick
 
   //-----------------------------------------------------------------------------
   // Pool connections methods
