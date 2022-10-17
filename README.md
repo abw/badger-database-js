@@ -131,9 +131,6 @@ to install `@abw/badger-database` and at least one of the driver modules.
     $ npm install mysql2
 ```
 
-**NOTE: You may find that you need to install all 3 - this is a limitation
-in the alpha release which should hopefully be fixed soon**
-
 ## Quick Start
 
 Import the [connect()](https://abw.github.io/badger-database-js/docs/manual/connecting.html)

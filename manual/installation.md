@@ -8,9 +8,6 @@ at least one of the database driver modules:
 * `mysql2` for Mysql or MariaDB
 * `better-sqlite3` for Sqlite.
 
-**NOTE: You may find that you need to install all 3 - this is a limitation
-in the alpha release which should hopefully be fixed soon**
-
 ### npm
 
     // postgres
