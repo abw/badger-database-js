@@ -1,4 +1,3 @@
-import mysql from 'mysql2/promise';
 import Engine from '../Engine.js';
 import { backtick, defaultIdColumn } from '../Constants.js';
 
@@ -12,6 +11,7 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { database: this.database });
+    const { default: mysql } = await import('mysql2/promise');
     return mysql.createConnection(this.database);
   }
   async connected() {

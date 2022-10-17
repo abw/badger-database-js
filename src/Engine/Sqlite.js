@@ -1,4 +1,3 @@
-import Database from 'better-sqlite3';
 import Engine from '../Engine.js';
 import { missing } from '../Utils/Error.js';
 import { defaultIdColumn } from '../Constants.js';
@@ -24,6 +23,7 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { filename: this.filename, options: this.options });
+    const { default: Database } = await import('better-sqlite3');
     return new Database(this.filename, this.options);
   }
   async connected(db) {
