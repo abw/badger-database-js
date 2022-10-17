@@ -4,7 +4,7 @@ export class Tables {
   constructor(tables={}) {
     this.tables = tables;
   }
-  table(name) {
+  async table(name) {
     const config = this.tables[name];
     if (isFunction(config) && isFunction(config.constructor)) {
       // table config can be a class

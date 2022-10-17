@@ -40,13 +40,13 @@ export class Database extends Queryable {
   }
   async table(name) {
     return this.state.table[name]
-      ||=  this.initTable(name);
+      ||= await this.initTable(name);
   }
-  hasTable(name) {
-    return this.tables.table(name);
+  async hasTable(name) {
+    return await this.tables.table(name);
   }
-  initTable(name) {
-    const schema = this.hasTable(name) || invalid('table', name);
+  async initTable(name) {
+    const schema = await this.hasTable(name) || invalid('table', name);
     const tclass = schema.tableClass   || Table;
     const topts  = schema.tableOptions || { };
     schema.table ||= name;
