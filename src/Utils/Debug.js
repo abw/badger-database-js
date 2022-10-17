@@ -22,15 +22,15 @@ export let debug = {
     prefix: 'Engine',
     color:  'red',
   },
-  queries: {
-    debug:  false,
-    prefix: 'Queries',
-    color:  'blue',
-  },
   query: {
     debug:  false,
     prefix: 'Query',
     color:  'cyan',
+  },
+  tables: {
+    debug:  false,
+    prefix: 'Tables',
+    color:  'blue',
   },
   table: {
     debug:  false,

@@ -52,8 +52,8 @@ import { connect, setDebug } from '../src/Utils/Debug.js';
 setDebug({
   database: true,   // general database queries
   engine:   true,   // lower level functionality
-  queries:  true,   // query lookup and expansion
   builder:  true,   // query builder
+  tables:   true,   // table provider
   table:    true,   // table methods
   record:   true,   // record methods
 })
