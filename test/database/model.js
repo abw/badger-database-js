@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Albums, Artists, connectMusicDatabase, Tracks } from '../library/music_database.js';
+import { Albums, Artists, connectMusicDatabase } from '../library/music_database.js';
 
 let musicdb;
 
@@ -25,6 +25,7 @@ test.serial( 'model.albums',
   }
 )
 
+/*
 test.serial( 'model.table("tracks")',
   async t => {
     const model = musicdb.model;
@@ -32,14 +33,12 @@ test.serial( 'model.table("tracks")',
     t.true( tracks instanceof Tracks );
   }
 )
+*/
 
 test.serial( 'model.missing_table',
-  t => {
-    const error = t.throws(
-      () => {
-        // eslint-disable-next-line no-unused-vars
-        const missing = musicdb.model.missing_table;
-      }
+  async t => {
+    const error = await t.throwsAsync(
+      () => musicdb.model.missing_table
     )
     t.is( error.message, "Invalid table specified: missing_table" );
   }

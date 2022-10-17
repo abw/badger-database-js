@@ -1,5 +1,3 @@
-import { fail } from "@abw/badger-utils";
-
 export const modelProxy = database =>
   new Proxy(
     database,
@@ -8,11 +6,7 @@ export const modelProxy = database =>
         if (prop === 'then') {
           return Reflect.get(target, prop);
         }
-        if (target.hasTable(prop)) {
-          return target.table(prop);
-        }
-        return target[prop]
-          || fail("Invalid table specified: ", prop);
+        return target.table(prop);
       }
     }
   );

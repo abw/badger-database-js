@@ -3,10 +3,10 @@ import Tables from './Tables.js';
 import proxymise from 'proxymise';
 import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
-import { invalid } from './Utils/Error.js';
 import { addDebugMethod } from './Utils/Debug.js';
 import { databaseBuilder } from './Builders.js';
 import Queryable from './Queryable.js';
+import { fail } from '@abw/badger-utils';
 
 const defaults = {
   tablesClass: Tables
@@ -46,7 +46,7 @@ export class Database extends Queryable {
     return await this.tables.table(name);
   }
   async initTable(name) {
-    const schema = await this.hasTable(name) || invalid('table', name);
+    const schema = await this.hasTable(name) || fail(`Invalid table specified: ${name}`);
     const tclass = schema.tableClass   || Table;
     const topts  = schema.tableOptions || { };
     schema.table ||= name;
