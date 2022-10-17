@@ -279,6 +279,40 @@ function that returns a promise so you have to <code>await</code> it or use
 <code>.then()</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// fetch the users table
 const users = await db.table('users');</code></code></pre>
+<p>The name that you use for the table in your application (e.g. <code>users</code> in
+this example) doesn't necessarily have to match the table name in the database.
+If you want to refer to a table in your application using a plural name as
+I typically do (e.g. <code>users</code>, <code>products</code>, etc.) but the underlying database
+table is named in the singular (e.g. <code>user</code>, <code>product</code>) then you can use the
+<code>table</code> option to set the database table name.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite://test.db',
+  tables: {
+    users: {                // app code refers to table as "users"...
+      table:   'user',      // ...but the actual table name is "user"
+      columns: 'id name email'
+    }
+  }
+});</code></code></pre>
+<p>Any generated queries will use the database table name (e.g. <code>user</code> in this
+example), rather than the name that you assigned to refer to the table
+collection (e.g. <code>users</code>).  If you don't define the <code>table</code> option then
+it defaults to using the name you're indexing it by in <code>table</code> (e.g. <code>users</code>).</p>
+<p>There is no general consensus about whether tables should be named using the
+<a href="https://stackoverflow.com/questions/338156/table-naming-dilemma-singular-vs-plural-names">singular or plural noun</a>.  Most of the databases that
+I've worked with (some designed by me, some by other people) use singular
+names.  The argument goes that it makes more sense when writing a
+query, e.g. <code>...WHERE user.id = ?</code>, although the opposite case is also
+true when selecting from a table, e.g. <code>SELECT ... FROM users</code>.</p>
+<p>In my application code I generally prefer to use plural names for the tables
+because they're conceptually a collection. So my tables will be defined as
+<code>users</code>, <code>products</code>, etc., even if the database table names are in the singular.
+The same is true if I'm defining custom <a href="manual/table_class.html">table classes</a>
+which will usually be in the plural (e.g. <code>Table/Users.js</code>, <code>Table/Products.js</code>).
+For <a href="manual/record_class.html">record classes</a> I use the singular as they
+represent a single record (e.g. <code>Record/User.js</code>, <code>Record/User.js</code>).</p>
+<p>However, you don't have to follow this convention and you can define your
+tables and records any way you like.</p>
 <h2 id="insert--update--fetch-and-delete">Insert, Update, Fetch and Delete</h2><p>The table object provides methods to insert, update, fetch and delete
 rows.  These methods all accept one or more objects specifying the data
 that you want to use.</p>

@@ -360,6 +360,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-database~backtick",
+    "variable/index.html#static-variable-backtick",
+    "<span>backtick</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~bitsplitter",
     "variable/index.html#static-variable-bitSplitter",
     "<span>bitSplitter</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -411,6 +417,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~defaultidcolumn",
     "variable/index.html#static-variable-defaultIdColumn",
     "<span>defaultIdColumn</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~doublequote",
+    "variable/index.html#static-variable-doubleQuote",
+    "<span>doubleQuote</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -568,6 +580,12 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-setDebug",
     "<span>setDebug</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
+  ],
+  [
+    "@abw/badger-database~singlequote",
+    "variable/index.html#static-variable-singleQuote",
+    "<span>singleQuote</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~singleword",
@@ -2244,6 +2262,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine.js~engine#messages",
+    "class/src/Engine.js~Engine.html#instance-member-messages",
+    "src/Engine.js~Engine#messages",
+    "member"
+  ],
+  [
     "src/engine.js~engine#one",
     "class/src/Engine.js~Engine.html#instance-method-one",
     "src/Engine.js~Engine#one",
@@ -2415,6 +2439,12 @@ window.esdocSearchIndex = [
     "src/engine/mysql.js~mysqlengine.name",
     "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-name",
     "src/Engine/Mysql.js~MysqlEngine.name",
+    "member"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine.quotechar",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-quoteChar",
+    "src/Engine/Mysql.js~MysqlEngine.quoteChar",
     "member"
   ],
   [
