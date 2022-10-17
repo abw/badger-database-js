@@ -1,5 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import json from '@rollup/plugin-json';
 import pkg from './package.json';
 import { terser } from 'rollup-plugin-terser'
@@ -28,7 +29,8 @@ export default [
         extensions: ['.js', '.jsx'],
       }),
       commonjs(),
-      json()
+      json(),
+      sourcemaps()
     ],
     external: [
       "node:fs",
