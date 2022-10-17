@@ -34,6 +34,48 @@ function that returns a promise so you have to `await` it or use
 const users = await db.table('users');
 ```
 
+The name that you use for the table in your application (e.g. `users` in
+this example) doesn't necessarily have to match the table name in the database.
+If you want to refer to a table in your application using a plural name as
+I typically do (e.g. `users`, `products`, etc.) but the underlying database
+table is named in the singular (e.g. `user`, `product`) then you can use the
+`table` option to set the database table name.
+
+```js
+const db = connect({
+  database: 'sqlite://test.db',
+  tables: {
+    users: {                // app code refers to table as "users"...
+      table:   'user',      // ...but the actual table name is "user"
+      columns: 'id name email'
+    }
+  }
+});
+```
+
+Any generated queries will use the database table name (e.g. `user` in this
+example), rather than the name that you assigned to refer to the table
+collection (e.g. `users`).  If you don't define the `table` option then
+it defaults to using the name you're indexing it by in `table` (e.g. `users`).
+
+There is no general consensus about whether tables should be named using the
+[singular or plural noun](https://stackoverflow.com/questions/338156/table-naming-dilemma-singular-vs-plural-names).  Most of the databases that
+I've worked with (some designed by me, some by other people) use singular
+names.  The argument goes that it makes more sense when writing a
+query, e.g. `...WHERE user.id = ?`, although the opposite case is also
+true when selecting from a table, e.g. `SELECT ... FROM users`.
+
+In my application code I generally prefer to use plural names for the tables
+because they're conceptually a collection. So my tables will be defined as
+`users`, `products`, etc., even if the database table names are in the singular.
+The same is true if I'm defining custom [table classes](manual/table_class.html)
+which will usually be in the plural (e.g. `Table/Users.js`, `Table/Products.js`).
+For [record classes](manual/record_class.html) I use the singular as they
+represent a single record (e.g. `Record/User.js`, `Record/User.js`).
+
+However, you don't have to follow this convention and you can define your
+tables and records any way you like.
+
 ## Insert, Update, Fetch and Delete
 
 The table object provides methods to insert, update, fetch and delete
