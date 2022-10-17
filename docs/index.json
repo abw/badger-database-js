@@ -5381,7 +5381,7 @@
     "__docId__": 288,
     "kind": "file",
     "name": "src/Database.js",
-    "content": "import Table from './Table.js';\nimport Tables from './Tables.js';\nimport proxymise from 'proxymise';\nimport modelProxy from './Proxy/Model.js';\nimport { engine } from './Engines.js';\nimport { invalid } from './Utils/Error.js';\nimport { addDebugMethod } from './Utils/Debug.js';\nimport { databaseBuilder } from './Builders.js';\nimport Queryable from './Queryable.js';\n\nconst defaults = {\n  tablesClass: Tables\n};\n\nexport class Database extends Queryable {\n  constructor(engine, params) {\n    super(engine);\n    const config   = { ...defaults, ...params };\n    this.queries   = config.queries;\n    this.fragments = config.fragments;\n    this.tables    = config.tablesObject || new config.tablesClass(config.tables);\n    this.build     = databaseBuilder(this);\n    this.model     = modelProxy(this);\n    this.waiter    = proxymise(this);\n    this.state     = {\n      table: { },\n    };\n    //addQueryMethods(this);\n    addDebugMethod(this, 'database', config);\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  acquire() {\n    return this.engine.acquire();\n  }\n  release(connection) {\n    this.engine.release(connection);\n  }\n  async table(name) {\n    return this.state.table[name]\n      ||= await this.initTable(name);\n  }\n  async hasTable(name) {\n    return await this.tables.table(name);\n  }\n  async initTable(name) {\n    const schema = await this.hasTable(name) || invalid('table', name);\n    const tclass = schema.tableClass   || Table;\n    const topts  = schema.tableOptions || { };\n    schema.table ||= name;\n    return new tclass(this, { ...schema, ...topts });\n  }\n  quote(name) {\n    return this.engine.quote(name);\n  }\n  select(...args) {\n    return this.build.select(...args);\n  }\n  from(...args) {\n    return this.build.from(...args);\n  }\n  disconnect() {\n    return this.engine.destroy();\n  }\n  destroy() {\n    console.log('destroy() is deprecated, use disconnect() instead');\n    return this.disconnect();\n  }\n}\n\nexport const connect = config => {\n  const e = engine(config);\n  return new Database(e, config)\n}\n\nexport default Database\n\n",
+    "content": "import Table from './Table.js';\nimport Tables from './Tables.js';\nimport proxymise from 'proxymise';\nimport modelProxy from './Proxy/Model.js';\nimport { engine } from './Engines.js';\nimport { addDebugMethod } from './Utils/Debug.js';\nimport { databaseBuilder } from './Builders.js';\nimport Queryable from './Queryable.js';\nimport { fail } from '@abw/badger-utils';\n\nconst defaults = {\n  tablesClass: Tables\n};\n\nexport class Database extends Queryable {\n  constructor(engine, params) {\n    super(engine);\n    const config   = { ...defaults, ...params };\n    this.queries   = config.queries;\n    this.fragments = config.fragments;\n    this.tables    = config.tablesObject || new config.tablesClass(config.tables);\n    this.build     = databaseBuilder(this);\n    this.model     = modelProxy(this);\n    this.waiter    = proxymise(this);\n    this.state     = {\n      table: { },\n    };\n    //addQueryMethods(this);\n    addDebugMethod(this, 'database', config);\n  }\n\n  //-----------------------------------------------------------------------------\n  // Engine methods\n  //-----------------------------------------------------------------------------\n  acquire() {\n    return this.engine.acquire();\n  }\n  release(connection) {\n    this.engine.release(connection);\n  }\n  async table(name) {\n    return this.state.table[name]\n      ||= await this.initTable(name);\n  }\n  async hasTable(name) {\n    return await this.tables.table(name);\n  }\n  async initTable(name) {\n    const schema = await this.hasTable(name) || fail(`Invalid table specified: ${name}`);\n    const tclass = schema.tableClass   || Table;\n    const topts  = schema.tableOptions || { };\n    schema.table ||= name;\n    return new tclass(this, { ...schema, ...topts });\n  }\n  quote(name) {\n    return this.engine.quote(name);\n  }\n  select(...args) {\n    return this.build.select(...args);\n  }\n  from(...args) {\n    return this.build.from(...args);\n  }\n  disconnect() {\n    return this.engine.destroy();\n  }\n  destroy() {\n    console.log('destroy() is deprecated, use disconnect() instead');\n    return this.disconnect();\n  }\n}\n\nexport const connect = config => {\n  const e = engine(config);\n  return new Database(e, config)\n}\n\nexport default Database\n\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Database.js",
     "access": "public",
@@ -5842,7 +5842,7 @@
     "__docId__": 310,
     "kind": "file",
     "name": "src/Engine/Mysql.js",
-    "content": "import mysql from 'mysql2/promise';\nimport Engine from '../Engine.js';\nimport { backtick, defaultIdColumn } from '../Constants.js';\n\nexport class MysqlEngine extends Engine {\n  static name      = 'mysql'\n  static alias     = 'maria mariadb'\n  static quoteChar = backtick\n\n  //-----------------------------------------------------------------------------\n  // Pool connections methods\n  //-----------------------------------------------------------------------------\n  async connect() {\n    this.debugData(\"connect()\", { database: this.database });\n    return mysql.createConnection(this.database);\n  }\n  async connected() {\n    return true;\n  }\n  async disconnect(connection) {\n    this.debug(\"disconnect()\");\n    connection.destroy();\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query methods\n  //-----------------------------------------------------------------------------\n  async run(sql, params, options) {\n    this.debugData(\"run()\", { sql, params, options });\n    [params, options] = this.optionalParams(params, options);\n    return this\n      .execute(sql, query => query.execute(params), options)\n      .then( ([result]) => result );\n  }\n  async any(sql, params, options) {\n    this.debugData(\"any()\", { sql, params, options });\n    return this\n      .execute(sql, query => query.execute(params), options)\n      .then( ([rows]) => rows[0] );\n  }\n  async all(sql, params, options) {\n    this.debugData(\"all()\", { sql, params, options });\n    return this\n      .execute(sql, query => query.execute(params), options)\n      .then( ([rows]) => rows );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query formatting\n  //-----------------------------------------------------------------------------\n  sanitizeResult(result, options={}) {\n    const keys = options.keys || [defaultIdColumn];\n    const id = keys[0];\n    result[0].changes ||= result[0].affectedRows || 0;\n    result[0].id      ||= result[0].insertId || null;\n    result[0][id]     ||= result[0].insertId || null;\n    return result;\n  }\n}\n\nexport default MysqlEngine",
+    "content": "import Engine from '../Engine.js';\nimport { backtick, defaultIdColumn } from '../Constants.js';\nimport { throwEngineDriver } from '../Utils/Error.js';\n\nexport class MysqlEngine extends Engine {\n  static name      = 'mysql'\n  static alias     = 'maria mariadb'\n  static quoteChar = backtick\n\n  //-----------------------------------------------------------------------------\n  // Pool connections methods\n  //-----------------------------------------------------------------------------\n  async connect() {\n    this.debugData(\"connect()\", { database: this.database });\n    const { default: mysql } = await import('mysql2/promise').catch(\n      e => throwEngineDriver('mysql2', e)\n    );\n    return mysql.createConnection(this.database);\n  }\n  async connected() {\n    return true;\n  }\n  async disconnect(connection) {\n    this.debug(\"disconnect()\");\n    connection.destroy();\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query methods\n  //-----------------------------------------------------------------------------\n  async run(sql, params, options) {\n    this.debugData(\"run()\", { sql, params, options });\n    [params, options] = this.optionalParams(params, options);\n    return this\n      .execute(sql, query => query.execute(params), options)\n      .then( ([result]) => result );\n  }\n  async any(sql, params, options) {\n    this.debugData(\"any()\", { sql, params, options });\n    return this\n      .execute(sql, query => query.execute(params), options)\n      .then( ([rows]) => rows[0] );\n  }\n  async all(sql, params, options) {\n    this.debugData(\"all()\", { sql, params, options });\n    return this\n      .execute(sql, query => query.execute(params), options)\n      .then( ([rows]) => rows );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query formatting\n  //-----------------------------------------------------------------------------\n  sanitizeResult(result, options={}) {\n    const keys = options.keys || [defaultIdColumn];\n    const id = keys[0];\n    result[0].changes ||= result[0].affectedRows || 0;\n    result[0].id      ||= result[0].insertId || null;\n    result[0][id]     ||= result[0].insertId || null;\n    return result;\n  }\n}\n\nexport default MysqlEngine",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Engine/Mysql.js",
     "access": "public",
@@ -5950,7 +5950,7 @@
     "longname": "src/Engine/Mysql.js~MysqlEngine#connected",
     "access": "public",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 20,
     "undocument": true,
     "params": [],
     "return": {
@@ -5970,7 +5970,7 @@
     "longname": "src/Engine/Mysql.js~MysqlEngine#disconnect",
     "access": "public",
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 23,
     "undocument": true,
     "params": [
       {
@@ -5993,7 +5993,7 @@
     "longname": "src/Engine/Mysql.js~MysqlEngine#run",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 31,
     "undocument": true,
     "params": [
       {
@@ -6032,7 +6032,7 @@
     "longname": "src/Engine/Mysql.js~MysqlEngine#any",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 38,
     "undocument": true,
     "params": [
       {
@@ -6071,7 +6071,7 @@
     "longname": "src/Engine/Mysql.js~MysqlEngine#all",
     "access": "public",
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 44,
     "undocument": true,
     "params": [
       {
@@ -6110,7 +6110,7 @@
     "longname": "src/Engine/Mysql.js~MysqlEngine#sanitizeResult",
     "access": "public",
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 54,
     "undocument": true,
     "params": [
       {
@@ -6139,7 +6139,7 @@
     "__docId__": 322,
     "kind": "file",
     "name": "src/Engine/Postgres.js",
-    "content": "import pg from 'pg';\nimport Engine from '../Engine.js';\nimport { defaultIdColumn } from '../Constants.js';\n\nexport class PostgresEngine extends Engine {\n  static name  = 'postgres'\n  static alias = 'postgresql'\n\n  //-----------------------------------------------------------------------------\n  // Pool connections methods\n  //-----------------------------------------------------------------------------\n  async connect() {\n    this.debugData(\"connect()\", { database: this.database });\n    const client = new pg.Client(this.database);\n    await client.connect();\n    return client;\n  }\n\n  async connected() {\n    return true;\n  }\n\n  async disconnect(client) {\n    this.debug(\"disconnect()\");\n    client.end();\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query methods\n  //-----------------------------------------------------------------------------\n  async execute(sql, params, options={}) {\n    this.debugData(\"execute()\", { sql, params, options });\n    const client = await this.acquire();\n    try {\n      const result = await client.query(sql, params).catch( e => this.parseError(sql, e) );\n      return options.sanitizeResult\n        ? this.sanitizeResult(result, options)\n        : result;\n    }\n    finally {\n      this.release(client);\n    }\n  }\n\n  async run(sql, params, options) {\n    this.debugData(\"run()\", { sql, params, options });\n    [params, options] = this.optionalParams(params, options);\n    return this\n      .execute(sql, params, options)\n  }\n\n  async any(sql, params, options) {\n    this.debugData(\"any()\", { sql, params, options });\n    return this\n      .execute(sql, params, options)\n      .then( ({rows}) => rows[0] );\n  }\n\n  async all(sql, params, options) {\n    this.debugData(\"all()\", { sql, params, options });\n    return this\n      .execute(sql, params, options)\n      .then( ({rows}) => rows );\n  }\n\n  parseErrorArgs(e) {\n    return {\n      message:  e.message,\n      type:     e.severity,\n      code:     e.code,\n      position: e.position,\n    };\n  }\n\n  sanitizeResult(result, options={}) {\n    result.changes ||= result.rowCount || 0;\n    if (result.command === 'INSERT' && result.rows?.length) {\n      const keys = options.keys || [defaultIdColumn];\n      keys.forEach(\n        key => result[key] ||= result.rows[0][key]\n      )\n      result.id ||= result[keys[0]];\n    }\n    return result;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query formatting\n  //-----------------------------------------------------------------------------\n  formatPlaceholder(n) {\n    return '$' + n;\n  }\n\n  formatReturning(keys) {\n    return ' RETURNING ' + this.formatColumns(keys);\n  }\n}\n\nexport default PostgresEngine",
+    "content": "import Engine from '../Engine.js';\nimport { defaultIdColumn } from '../Constants.js';\nimport { throwEngineDriver } from '../Utils/Error.js';\n\nexport class PostgresEngine extends Engine {\n  static name  = 'postgres'\n  static alias = 'postgresql'\n\n  //-----------------------------------------------------------------------------\n  // Pool connections methods\n  //-----------------------------------------------------------------------------\n  async connect() {\n    this.debugData(\"connect()\", { database: this.database });\n    const { default: pg } = await import('pg').catch(\n      e => throwEngineDriver('pg', e)\n    );\n    const client = new pg.Client(this.database);\n    await client.connect();\n    return client;\n  }\n\n  async connected() {\n    return true;\n  }\n\n  async disconnect(client) {\n    this.debug(\"disconnect()\");\n    client.end();\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query methods\n  //-----------------------------------------------------------------------------\n  async execute(sql, params, options={}) {\n    this.debugData(\"execute()\", { sql, params, options });\n    const client = await this.acquire();\n    try {\n      const result = await client.query(sql, params).catch( e => this.parseError(sql, e) );\n      return options.sanitizeResult\n        ? this.sanitizeResult(result, options)\n        : result;\n    }\n    finally {\n      this.release(client);\n    }\n  }\n\n  async run(sql, params, options) {\n    this.debugData(\"run()\", { sql, params, options });\n    [params, options] = this.optionalParams(params, options);\n    return this\n      .execute(sql, params, options)\n  }\n\n  async any(sql, params, options) {\n    this.debugData(\"any()\", { sql, params, options });\n    return this\n      .execute(sql, params, options)\n      .then( ({rows}) => rows[0] );\n  }\n\n  async all(sql, params, options) {\n    this.debugData(\"all()\", { sql, params, options });\n    return this\n      .execute(sql, params, options)\n      .then( ({rows}) => rows );\n  }\n\n  parseErrorArgs(e) {\n    return {\n      message:  e.message,\n      type:     e.severity,\n      code:     e.code,\n      position: e.position,\n    };\n  }\n\n  sanitizeResult(result, options={}) {\n    result.changes ||= result.rowCount || 0;\n    if (result.command === 'INSERT' && result.rows?.length) {\n      const keys = options.keys || [defaultIdColumn];\n      keys.forEach(\n        key => result[key] ||= result.rows[0][key]\n      )\n      result.id ||= result[keys[0]];\n    }\n    return result;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query formatting\n  //-----------------------------------------------------------------------------\n  formatPlaceholder(n) {\n    return '$' + n;\n  }\n\n  formatReturning(keys) {\n    return ' RETURNING ' + this.formatColumns(keys);\n  }\n}\n\nexport default PostgresEngine",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Engine/Postgres.js",
     "access": "public",
@@ -6230,7 +6230,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#connected",
     "access": "public",
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 22,
     "undocument": true,
     "params": [],
     "return": {
@@ -6250,7 +6250,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#disconnect",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 26,
     "undocument": true,
     "params": [
       {
@@ -6273,7 +6273,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#execute",
     "access": "public",
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 34,
     "undocument": true,
     "params": [
       {
@@ -6315,7 +6315,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#run",
     "access": "public",
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 48,
     "undocument": true,
     "params": [
       {
@@ -6354,7 +6354,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#any",
     "access": "public",
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 55,
     "undocument": true,
     "params": [
       {
@@ -6393,7 +6393,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#all",
     "access": "public",
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 62,
     "undocument": true,
     "params": [
       {
@@ -6432,7 +6432,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#parseErrorArgs",
     "access": "public",
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 69,
     "undocument": true,
     "params": [
       {
@@ -6459,7 +6459,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#sanitizeResult",
     "access": "public",
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 78,
     "undocument": true,
     "params": [
       {
@@ -6495,7 +6495,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#formatPlaceholder",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 93,
     "undocument": true,
     "params": [
       {
@@ -6522,7 +6522,7 @@
     "longname": "src/Engine/Postgres.js~PostgresEngine#formatReturning",
     "access": "public",
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 97,
     "undocument": true,
     "params": [
       {
@@ -6542,7 +6542,7 @@
     "__docId__": 337,
     "kind": "file",
     "name": "src/Engine/Sqlite.js",
-    "content": "import Database from 'better-sqlite3';\nimport Engine from '../Engine.js';\nimport { missing } from '../Utils/Error.js';\nimport { defaultIdColumn } from '../Constants.js';\n\nexport class SqliteEngine extends Engine {\n  static name = 'sqlite'\n\n  configure(config) {\n    this.filename = config.database.filename || missing('filename');\n    this.options  = config.database.options  || { };\n\n    // better-sqlite3 is synchronous (because Sqlite serialises all\n    // requests anyway), so there's no need/benefit in using a pool\n    config.pool     ||= { };\n    config.pool.min ||= 1;\n    config.pool.max ||= 1;\n\n    return config;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Pool connections methods\n  //-----------------------------------------------------------------------------\n  async connect() {\n    this.debugData(\"connect()\", { filename: this.filename, options: this.options });\n    return new Database(this.filename, this.options);\n  }\n  async connected(db) {\n    return db.open;\n  }\n  async disconnect(db) {\n    this.debug(\"disconnect()\");\n    db.close();\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query methods\n  //-----------------------------------------------------------------------------\n  async run(sql, params=[], options) {\n    this.debugData(\"run()\", { sql, params, options });\n    [params, options] = this.optionalParams(params, options);\n    return this.execute(sql, query => query.run(...params), options);\n  }\n  async any(sql, params=[], options) {\n    this.debugData(\"any()\", { sql, params, options });\n    return this.execute(sql, query => query.get(...params), options);\n  }\n  async all(sql, params=[], options) {\n    this.debugData(\"all()\", { sql, params, options });\n    return this.execute(sql, query => query.all(...params), options);\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query formatting\n  //-----------------------------------------------------------------------------\n  sanitizeResult(result, options={}) {\n    result.changes ||= result.rowCount || 0;\n    const keys = options.keys || [defaultIdColumn];\n    const id = keys[0];\n    result[id] ||= result.lastInsertRowid;\n    result.id  ||= result.lastInsertRowid;\n    return result;\n  }\n}\n\nexport default SqliteEngine",
+    "content": "import Engine from '../Engine.js';\nimport { missing, throwEngineDriver } from '../Utils/Error.js';\nimport { defaultIdColumn } from '../Constants.js';\n\nexport class SqliteEngine extends Engine {\n  static name = 'sqlite'\n\n  configure(config) {\n    this.filename = config.database.filename || missing('filename');\n    this.options  = config.database.options  || { };\n\n    // better-sqlite3 is synchronous (because Sqlite serialises all\n    // requests anyway), so there's no need/benefit in using a pool\n    config.pool     ||= { };\n    config.pool.min ||= 1;\n    config.pool.max ||= 1;\n\n    return config;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Pool connections methods\n  //-----------------------------------------------------------------------------\n  async connect() {\n    this.debugData(\"connect()\", { filename: this.filename, options: this.options });\n    const { default: Database } = await import('better-sqlite3').catch(\n      e => throwEngineDriver('better-sqlite3', e)\n    );\n\n    return new Database(this.filename, this.options);\n  }\n  async connected(db) {\n    return db.open;\n  }\n  async disconnect(db) {\n    this.debug(\"disconnect()\");\n    db.close();\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query methods\n  //-----------------------------------------------------------------------------\n  async run(sql, params=[], options) {\n    this.debugData(\"run()\", { sql, params, options });\n    [params, options] = this.optionalParams(params, options);\n    return this.execute(sql, query => query.run(...params), options);\n  }\n  async any(sql, params=[], options) {\n    this.debugData(\"any()\", { sql, params, options });\n    return this.execute(sql, query => query.get(...params), options);\n  }\n  async all(sql, params=[], options) {\n    this.debugData(\"all()\", { sql, params, options });\n    return this.execute(sql, query => query.all(...params), options);\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query formatting\n  //-----------------------------------------------------------------------------\n  sanitizeResult(result, options={}) {\n    result.changes ||= result.rowCount || 0;\n    const keys = options.keys || [defaultIdColumn];\n    const id = keys[0];\n    result[id] ||= result.lastInsertRowid;\n    result.id  ||= result.lastInsertRowid;\n    return result;\n  }\n}\n\nexport default SqliteEngine",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Engine/Sqlite.js",
     "access": "public",
@@ -6561,7 +6561,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{SqliteEngine}",
     "description": null,
-    "lineNumber": 6,
+    "lineNumber": 5,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -6577,7 +6577,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine.name",
     "access": "public",
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 6,
     "undocument": true,
     "type": {
       "types": [
@@ -6596,7 +6596,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#configure",
     "access": "public",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 8,
     "undocument": true,
     "params": [
       {
@@ -6621,7 +6621,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#filename",
     "access": "public",
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 9,
     "undocument": true,
     "type": {
       "types": [
@@ -6638,7 +6638,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#options",
     "access": "public",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 10,
     "undocument": true,
     "type": {
       "types": [
@@ -6657,7 +6657,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#connect",
     "access": "public",
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 24,
     "undocument": true,
     "params": [],
     "return": {
@@ -6677,7 +6677,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#connected",
     "access": "public",
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 32,
     "undocument": true,
     "params": [
       {
@@ -6704,7 +6704,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#disconnect",
     "access": "public",
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 35,
     "undocument": true,
     "params": [
       {
@@ -6727,7 +6727,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#run",
     "access": "public",
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 43,
     "undocument": true,
     "params": [
       {
@@ -6769,7 +6769,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#any",
     "access": "public",
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 48,
     "undocument": true,
     "params": [
       {
@@ -6811,7 +6811,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#all",
     "access": "public",
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 52,
     "undocument": true,
     "params": [
       {
@@ -6853,7 +6853,7 @@
     "longname": "src/Engine/Sqlite.js~SqliteEngine#sanitizeResult",
     "access": "public",
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 60,
     "undocument": true,
     "params": [
       {
@@ -8448,7 +8448,7 @@
     "__docId__": 408,
     "kind": "file",
     "name": "src/Proxy/Model.js",
-    "content": "import { fail } from \"@abw/badger-utils\";\n\nexport const modelProxy = database =>\n  new Proxy(\n    database,\n    {\n      get(target, prop) {\n        if (prop === 'then') {\n          return Reflect.get(target, prop);\n        }\n        if (target.hasTable(prop)) {\n          return target.table(prop);\n        }\n        return target[prop]\n          || fail(\"Invalid table specified: \", prop);\n      }\n    }\n  );\n\nexport default modelProxy\n",
+    "content": "export const modelProxy = database =>\n  new Proxy(\n    database,\n    {\n      get(target, prop) {\n        if (prop === 'then') {\n          return Reflect.get(target, prop);\n        }\n        return target.table(prop);\n      }\n    }\n  );\n\nexport default modelProxy\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Proxy/Model.js",
     "access": "public",
@@ -8469,7 +8469,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{modelProxy}",
     "description": null,
-    "lineNumber": 3,
+    "lineNumber": 1,
     "undocument": true,
     "params": [
       {
@@ -12348,7 +12348,7 @@
     "__docId__": 550,
     "kind": "file",
     "name": "src/Utils/Error.js",
-    "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\n/**\n * Function to throw a generic error used to report a missing configration item.\n * The error message will be of the form `No \"XXX\" specified`.\n * @param {!String} item - the name of the missing item\n * @example\n * missing('badger');   // throws error: No \"badger\" specified\n */\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\n/**\n * Function to throw a generic error used to report an invalid configration item.\n * The error message will be of the form `Invalid \"XXX\" specified: YYY`.\n * @param {!String} item - the name of the invalid item\n * @param value - the value of the invalid item\n * @example\n * invalid('badger', 99);   // throws error: Invalid \"badger\" specified: 99\n */\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\n/**\n * Function to throw a generic error reporting that a method is not implemented.\n * This is used in base classes (e.g. {@link Engine}) where subclasses are\n * required to implement the method.\n * The error message will be of the form `METHOD is not implemented in MODULE`.\n * @param {!String} method - the name of the method\n * @param {!String} module - the name of the module\n * @example\n * notImplemented('wibble', 'FrussetPouch');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\n/**\n * Currying function used to generate a function that calls {@link notImplemented}\n * with the module name pre-defined.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\n/**\n * Wrapper around {@link notImplementedInModule} which provides a\n * more explicit error message for base classes.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in the FrussetPouch base class\n */\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\n/**\n * Error class for generating custom errors.\n */\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\nexport class SQLParseError extends Error {\n  constructor(query, args) {\n    super(args.message);\n    this.name  = this.constructor.name;\n    this.query = query;\n    this.type  = args.type;\n    this.code  = args.code;\n    this.position = args.position;\n    if (args.stack) {\n      this.stack = args.stack;\n    }\n  }\n}\n\n/**\n * Error class for reporting unexpected number of rows returned by a\n * database query.\n */\nexport class UnexpectedRowCount extends CustomError { }\n\n/**\n * Error class for reporting columns validation errors, e.g. when\n * attempting to update a `readonly` column.\n */\nexport class ColumnValidationError extends CustomError { }\n\n/**\n * Error class for reporting validation errors when inserting a row.\n */\nexport class InsertValidationError extends CustomError { }\n\n/**\n * Error class for reporting attempts to update a deleted record.\n */\nexport class DeletedRecordError extends CustomError { }\n\n/**\n * Error class for reporting query builder errors\n */\nexport class QueryBuilderError extends CustomError { }\n\n/**\n * Function for throwing a {@link UnexpectedRowCount} error when multiple\n * rows were returned or updated when only one was expected.\n * @param {!Integer} n - the number of rows encountered\n * @param {String} [action=returned] - the action that was being performed.\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were returned when one was expected\"\n * unexpectedRowCount(10);\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were updated when one was expected\"\n * unexpectedRowCount(10, 'updated');\n */\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n/**\n * Function to contruct a function for throwing errors of a particular type\n * using message formats.  The function returned expects a format name and\n * an optional object containing values to insert into the message format.\n * @param {!Object} formats - an object mapping short names to message formats\n * @param {Error} [error=Error] - the error type\n * @example\n * const hurl = thrower({ oops => 'Unexpected <animal> encountered });\n * hurl('oops', 'badger');  // throws error: Unexpected badger encountered\n */\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\n/**\n * Error throwing function for column validation errors.\n */\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n\n/**\n * Error throwing function for deleted record errors.\n */\nexport const throwDeletedRecordError = thrower(\n  {\n    action: 'Cannot <action> deleted <table> record #<id>',\n  },\n  DeletedRecordError\n)\n",
+    "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\n/**\n * Function to throw a generic error used to report a missing configration item.\n * The error message will be of the form `No \"XXX\" specified`.\n * @param {!String} item - the name of the missing item\n * @example\n * missing('badger');   // throws error: No \"badger\" specified\n */\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\n/**\n * Function to throw a generic error used to report an invalid configration item.\n * The error message will be of the form `Invalid \"XXX\" specified: YYY`.\n * @param {!String} item - the name of the invalid item\n * @param value - the value of the invalid item\n * @example\n * invalid('badger', 99);   // throws error: Invalid \"badger\" specified: 99\n */\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\n/**\n * Function to throw a generic error reporting that a method is not implemented.\n * This is used in base classes (e.g. {@link Engine}) where subclasses are\n * required to implement the method.\n * The error message will be of the form `METHOD is not implemented in MODULE`.\n * @param {!String} method - the name of the method\n * @param {!String} module - the name of the module\n * @example\n * notImplemented('wibble', 'FrussetPouch');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\n/**\n * Currying function used to generate a function that calls {@link notImplemented}\n * with the module name pre-defined.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\n/**\n * Wrapper around {@link notImplementedInModule} which provides a\n * more explicit error message for base classes.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in the FrussetPouch base class\n */\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\n/**\n * Error class for generating custom errors.\n */\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\nexport class SQLParseError extends Error {\n  constructor(query, args) {\n    super(args.message);\n    this.name  = this.constructor.name;\n    this.query = query;\n    this.type  = args.type;\n    this.code  = args.code;\n    this.position = args.position;\n    if (args.stack) {\n      this.stack = args.stack;\n    }\n  }\n}\n\n/**\n * Error class for reporting failure to load engine driver\n */\nexport class EngineDriverError extends CustomError { }\nexport const throwEngineDriver = (module, error) => {\n  throw new EngineDriverError(\n    `Failed to load \"${module}\" engine driver module.  Have you installed it?\\nError: ` + error.message\n  )\n}\n\n/**\n * Error class for reporting unexpected number of rows returned by a\n * database query.\n */\nexport class UnexpectedRowCount extends CustomError { }\n\n/**\n * Error class for reporting columns validation errors, e.g. when\n * attempting to update a `readonly` column.\n */\nexport class ColumnValidationError extends CustomError { }\n\n/**\n * Error class for reporting validation errors when inserting a row.\n */\nexport class InsertValidationError extends CustomError { }\n\n/**\n * Error class for reporting attempts to update a deleted record.\n */\nexport class DeletedRecordError extends CustomError { }\n\n/**\n * Error class for reporting query builder errors\n */\nexport class QueryBuilderError extends CustomError { }\n\n/**\n * Function for throwing a {@link UnexpectedRowCount} error when multiple\n * rows were returned or updated when only one was expected.\n * @param {!Integer} n - the number of rows encountered\n * @param {String} [action=returned] - the action that was being performed.\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were returned when one was expected\"\n * unexpectedRowCount(10);\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were updated when one was expected\"\n * unexpectedRowCount(10, 'updated');\n */\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n/**\n * Function to contruct a function for throwing errors of a particular type\n * using message formats.  The function returned expects a format name and\n * an optional object containing values to insert into the message format.\n * @param {!Object} formats - an object mapping short names to message formats\n * @param {Error} [error=Error] - the error type\n * @example\n * const hurl = thrower({ oops => 'Unexpected <animal> encountered });\n * hurl('oops', 'badger');  // throws error: Unexpected badger encountered\n */\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\n/**\n * Error throwing function for column validation errors.\n */\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n\n/**\n * Error throwing function for deleted record errors.\n */\nexport const throwDeletedRecordError = thrower(\n  {\n    action: 'Cannot <action> deleted <table> record #<id>',\n  },\n  DeletedRecordError\n)\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Utils/Error.js",
     "access": "public",
@@ -12722,6 +12722,56 @@
   {
     "__docId__": 567,
     "kind": "class",
+    "name": "EngineDriverError",
+    "memberof": "src/Utils/Error.js",
+    "static": true,
+    "longname": "src/Utils/Error.js~EngineDriverError",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{EngineDriverError}",
+    "description": "Error class for reporting failure to load engine driver",
+    "lineNumber": 93,
+    "interface": false,
+    "extends": [
+      "CustomError"
+    ]
+  },
+  {
+    "__docId__": 568,
+    "kind": "function",
+    "name": "throwEngineDriver",
+    "memberof": "src/Utils/Error.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Utils/Error.js~throwEngineDriver",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger-database",
+    "importStyle": "{throwEngineDriver}",
+    "description": null,
+    "lineNumber": 94,
+    "undocument": true,
+    "params": [
+      {
+        "name": "module",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "error",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 569,
+    "kind": "class",
     "name": "UnexpectedRowCount",
     "memberof": "src/Utils/Error.js",
     "static": true,
@@ -12731,14 +12781,14 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{UnexpectedRowCount}",
     "description": "Error class for reporting unexpected number of rows returned by a\ndatabase query.",
-    "lineNumber": 94,
+    "lineNumber": 104,
     "interface": false,
     "extends": [
       "CustomError"
     ]
   },
   {
-    "__docId__": 568,
+    "__docId__": 570,
     "kind": "class",
     "name": "ColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -12749,14 +12799,14 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{ColumnValidationError}",
     "description": "Error class for reporting columns validation errors, e.g. when\nattempting to update a `readonly` column.",
-    "lineNumber": 100,
+    "lineNumber": 110,
     "interface": false,
     "extends": [
       "CustomError"
     ]
   },
   {
-    "__docId__": 569,
+    "__docId__": 571,
     "kind": "class",
     "name": "InsertValidationError",
     "memberof": "src/Utils/Error.js",
@@ -12767,14 +12817,14 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{InsertValidationError}",
     "description": "Error class for reporting validation errors when inserting a row.",
-    "lineNumber": 105,
+    "lineNumber": 115,
     "interface": false,
     "extends": [
       "CustomError"
     ]
   },
   {
-    "__docId__": 570,
+    "__docId__": 572,
     "kind": "class",
     "name": "DeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -12785,14 +12835,14 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{DeletedRecordError}",
     "description": "Error class for reporting attempts to update a deleted record.",
-    "lineNumber": 110,
+    "lineNumber": 120,
     "interface": false,
     "extends": [
       "CustomError"
     ]
   },
   {
-    "__docId__": 571,
+    "__docId__": 573,
     "kind": "class",
     "name": "QueryBuilderError",
     "memberof": "src/Utils/Error.js",
@@ -12803,14 +12853,14 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{QueryBuilderError}",
     "description": "Error class for reporting query builder errors",
-    "lineNumber": 115,
+    "lineNumber": 125,
     "interface": false,
     "extends": [
       "CustomError"
     ]
   },
   {
-    "__docId__": 572,
+    "__docId__": 574,
     "kind": "function",
     "name": "unexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -12827,7 +12877,7 @@
       "// throw UnexpectedRowCount error with message \"10 rows were returned when one was expected\"\nunexpectedRowCount(10);",
       "// throw UnexpectedRowCount error with message \"10 rows were updated when one was expected\"\nunexpectedRowCount(10, 'updated');"
     ],
-    "lineNumber": 129,
+    "lineNumber": 139,
     "params": [
       {
         "nullable": false,
@@ -12855,7 +12905,7 @@
     "return": null
   },
   {
-    "__docId__": 573,
+    "__docId__": 575,
     "kind": "function",
     "name": "thrower",
     "memberof": "src/Utils/Error.js",
@@ -12871,7 +12921,7 @@
     "examples": [
       "const hurl = thrower({ oops => 'Unexpected <animal> encountered });\nhurl('oops', 'badger');  // throws error: Unexpected badger encountered"
     ],
-    "lineNumber": 143,
+    "lineNumber": 153,
     "params": [
       {
         "nullable": false,
@@ -12899,7 +12949,7 @@
     "return": null
   },
   {
-    "__docId__": 574,
+    "__docId__": 576,
     "kind": "variable",
     "name": "throwColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -12910,7 +12960,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{throwColumnValidationError}",
     "description": "Error throwing function for column validation errors.",
-    "lineNumber": 155,
+    "lineNumber": 165,
     "type": {
       "types": [
         "*"
@@ -12918,7 +12968,7 @@
     }
   },
   {
-    "__docId__": 575,
+    "__docId__": 577,
     "kind": "variable",
     "name": "throwDeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -12929,7 +12979,7 @@
     "importPath": "@abw/badger-database",
     "importStyle": "{throwDeletedRecordError}",
     "description": "Error throwing function for deleted record errors.",
-    "lineNumber": 170,
+    "lineNumber": 180,
     "type": {
       "types": [
         "*"
@@ -12937,7 +12987,7 @@
     }
   },
   {
-    "__docId__": 576,
+    "__docId__": 578,
     "kind": "file",
     "name": "src/Utils/Format.js",
     "content": "import { fail, noValue } from \"@abw/badger-utils\";\n\n/**\n * Function to format strings by inserting values into placeholder locations.\n * @param {!String} msg - the source string\n * @param {Object} data - data items to insert into the string\n * @returns {String} - the expanded string\n * @example\n * format('Hello <name>!', { name: 'World'});  // Hello World!\n */\nexport const format = (msg, data) =>\n  msg.replace(\n    /<(\\w+)>/g,\n    (_, key) => {\n      const val = data[key];\n      if (noValue(val)) {\n        fail(`Invalid variable expansion <${key}> in message format: ${msg}`);\n      }\n      return val;\n    }\n  );\n",
@@ -12948,7 +12998,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 577,
+    "__docId__": 579,
     "kind": "function",
     "name": "format",
     "memberof": "src/Utils/Format.js",
@@ -13003,7 +13053,7 @@
     }
   },
   {
-    "__docId__": 578,
+    "__docId__": 580,
     "kind": "file",
     "name": "src/Utils/Methods.js",
     "content": "import { fail } from \"@abw/badger-utils\";\n\nexport const aliasMethods = (object, aliases) =>\n  Object.entries(aliases).map(\n    ([alias, method]) => object[alias] = object[method]\n      || fail(`Invalid alias \"${alias}\" references non-existent method \"${method}\"`)\n  )\n",
@@ -13014,7 +13064,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 579,
+    "__docId__": 581,
     "kind": "function",
     "name": "aliasMethods",
     "memberof": "src/Utils/Methods.js",
@@ -13046,7 +13096,7 @@
     "return": null
   },
   {
-    "__docId__": 580,
+    "__docId__": 582,
     "kind": "file",
     "name": "src/Utils/Queries.js",
     "content": "import Builder from \"../Builder.js\";\nimport { fail, isString } from \"@abw/badger-utils\";\n\nexport const isQuery = query =>\n  isString(query) || (query instanceof Builder)\n\nexport const expandFragments = (query, queryable, maxDepth=16) => {\n  query = query.trim();\n  let sql = query;\n  let runaway = 0;\n  let expanded = [ ];\n\n  // eslint-disable-next-line no-constant-condition\n  while (true) {\n    let replaced = false;\n    sql = sql.replace(\n      /<(\\w+?)>/g,\n      (match, word) => {\n        replaced = true;\n        expanded.push(word);\n        return queryable.fragment(word);\n      }\n    );\n    if (! replaced) {\n      break;\n    }\n    if (++runaway >= maxDepth) {\n      fail(\n        \"Maximum SQL expansion limit (maxDepth=\", maxDepth, \") exceeded: \",\n        expanded.join(' -> ', )\n      )\n    }\n  }\n  return sql;\n}\n",
@@ -13057,7 +13107,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 581,
+    "__docId__": 583,
     "kind": "function",
     "name": "isQuery",
     "memberof": "src/Utils/Queries.js",
@@ -13083,7 +13133,7 @@
     "return": null
   },
   {
-    "__docId__": 582,
+    "__docId__": 584,
     "kind": "function",
     "name": "expandFragments",
     "memberof": "src/Utils/Queries.js",
@@ -13128,7 +13178,7 @@
     }
   },
   {
-    "__docId__": 583,
+    "__docId__": 585,
     "kind": "file",
     "name": "src/Utils/Relation.js",
     "content": "import { fail, hasValue, isString, noValue, remove } from \"@abw/badger-utils\";\n\nconst relationStringRegex = /^(\\w+)\\s*([-=]>)\\s*(\\w+)\\.(\\w+)$/;\nconst relationType = {\n  '->': 'one',\n  '=>': 'many'\n};\nconst relationAliases = {\n  localKey:   'from',\n  local_key:  'from',\n  remoteKey:  'to',\n  remote_key: 'to',\n  orderBy:    'order',\n  order_by:   'order',\n};\n\n/**\n * Function to prepare a relation definition.\n * @param {!String} table - the table name\n * @param {!String} name - the relation name\n * @param {!String|Object} config - the relation configuration\n * @return {Object} a relation specification object\n * @example\n * const relation = relationConfig(\n *   'artists', 'albums', 'id => albums.artist_id'\n * })\n * @example\n * const relation = relationConfig(\n *   'artists', 'albums',\n *   {\n *     from:  'id',\n *     type:  'many',\n *     table: 'albums',\n *     to:    'artist_id'\n *    }\n * )\n */\nexport const relationConfig = (table, name, config) => {\n  if (isString(config)) {\n    config = parseRelationString(config);\n  }\n  else if (isString(config.relation)) {\n    config = {\n      ...parseRelationString(config.relation),\n      ...config\n    }\n  }\n\n  // fix up any aliases\n  Object.entries(relationAliases).map(\n    ([key, value]) => {\n      if (hasValue(config[key])) {\n        config[value] ||= remove(config, key);\n      }\n    }\n  );\n\n  // check for missing parameters\n  if (! config.load) {\n    ['type', 'table', 'to', 'from'].forEach(\n      key => {\n        if (noValue(config[key])) {\n          fail(`Missing \"${key}\" in ${name} relation for ${table} table`);\n        }\n      }\n    );\n  }\n\n  // set the name\n  config.name = `${table}.${name}`;\n\n  return config;\n}\n\n/**\n * Function to parse a relation definition string\n * @param {!String} string - the relation definition string\n * @return {Object} a relation specification object\n * @example\n * const relation = parseRelationString(\n *   'id => albums.artist_id'\n * })\n */\nexport const parseRelationString = string => {\n  let match;\n  return ((match = string.match(relationStringRegex)))\n    ? {\n        from:  match[1],\n        type:  relationType[match[2]] || fail('Invalid type \"', match[2], '\" specified in relation: ', string),\n        table: match[3],\n        to:    match[4],\n      }\n    : fail(\"Invalid relation string specified: \", string);\n}",
@@ -13139,7 +13189,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 584,
+    "__docId__": 586,
     "kind": "variable",
     "name": "relationStringRegex",
     "memberof": "src/Utils/Relation.js",
@@ -13160,7 +13210,7 @@
     "ignore": true
   },
   {
-    "__docId__": 585,
+    "__docId__": 587,
     "kind": "variable",
     "name": "relationType",
     "memberof": "src/Utils/Relation.js",
@@ -13181,7 +13231,7 @@
     "ignore": true
   },
   {
-    "__docId__": 586,
+    "__docId__": 588,
     "kind": "variable",
     "name": "relationAliases",
     "memberof": "src/Utils/Relation.js",
@@ -13202,7 +13252,7 @@
     "ignore": true
   },
   {
-    "__docId__": 587,
+    "__docId__": 589,
     "kind": "function",
     "name": "relationConfig",
     "memberof": "src/Utils/Relation.js",
@@ -13263,7 +13313,7 @@
     }
   },
   {
-    "__docId__": 588,
+    "__docId__": 590,
     "kind": "function",
     "name": "parseRelationString",
     "memberof": "src/Utils/Relation.js",
@@ -13302,7 +13352,7 @@
     }
   },
   {
-    "__docId__": 589,
+    "__docId__": 591,
     "kind": "file",
     "name": "src/Utils/Space.js",
     "content": "import { blank, space } from \"../Constants.js\";\n\nexport const spaceAfter = string =>\n  (string && string.length)\n    ? string + space\n    : blank\n\nexport const spaceBefore = string =>\n  (string && string.length)\n    ? space + string\n    : blank\n\nexport const spaceAround = string =>\n  (string && string.length)\n    ? space + string + space\n    : blank\n",
@@ -13313,7 +13363,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 590,
+    "__docId__": 592,
     "kind": "function",
     "name": "spaceAfter",
     "memberof": "src/Utils/Space.js",
@@ -13339,7 +13389,7 @@
     "return": null
   },
   {
-    "__docId__": 591,
+    "__docId__": 593,
     "kind": "function",
     "name": "spaceBefore",
     "memberof": "src/Utils/Space.js",
@@ -13365,7 +13415,7 @@
     "return": null
   },
   {
-    "__docId__": 592,
+    "__docId__": 594,
     "kind": "function",
     "name": "spaceAround",
     "memberof": "src/Utils/Space.js",
@@ -13391,7 +13441,7 @@
     "return": null
   },
   {
-    "__docId__": 593,
+    "__docId__": 595,
     "kind": "file",
     "name": "src/Utils/Tags.js",
     "content": "export const sql = sql => ({ sql })",
@@ -13402,7 +13452,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 594,
+    "__docId__": 596,
     "kind": "function",
     "name": "sql",
     "memberof": "src/Utils/Tags.js",
@@ -13437,7 +13487,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.11\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"source-map-support\": \"^0.5.21\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"proxymise\": \"^1.0.2\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.12\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-sourcemaps\": \"^0.6.3\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"source-map-support\": \"^0.5.21\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"proxymise\": \"^1.0.2\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-database-js/package.json",
     "name": "package.json",
     "static": true,
@@ -13455,7 +13505,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/installation.md",
     "name": "./manual/installation.md",
-    "content": "# Installation\n\nUse your favourite package manager to install the module\nfrom `@abw/badger-database`.  You should also install\nat least one of the database driver modules:\n\n* `pg` for Postgres\n* `mysql2` for Mysql or MariaDB\n* `better-sqlite3` for Sqlite.\n\n**NOTE: You may find that you need to install all 3 - this is a limitation\nin the alpha release which should hopefully be fixed soon**\n\n### npm\n\n    // postgres\n    npm install @abw/badger-database pg\n    // mysql\n    npm install @abw/badger-database mysql2\n    // sqlite\n    npm install @abw/badger-database better-sqlite3\n\n### pnpm\n\n    // postgres\n    pnpm add @abw/badger-database pg\n    // mysql\n    pnpm add @abw/badger-database mysql2\n    // sqlite\n    pnpm add @abw/badger-database better-sqlite\n\n### yarn\n\n    // postgres\n    yarn add @abw/badger-database pg\n    // mysql\n    yarn add @abw/badger-database mysql\n    // sqlite\n    yarn add @abw/badger-database better-sqlite\n\nOnce you've got it installed you're ready to [connect](manual/connecting.html)\nto a database.",
+    "content": "# Installation\n\nUse your favourite package manager to install the module\nfrom `@abw/badger-database`.  You should also install\nat least one of the database driver modules:\n\n* `pg` for Postgres\n* `mysql2` for Mysql or MariaDB\n* `better-sqlite3` for Sqlite.\n\n### npm\n\n    // postgres\n    npm install @abw/badger-database pg\n    // mysql\n    npm install @abw/badger-database mysql2\n    // sqlite\n    npm install @abw/badger-database better-sqlite3\n\n### pnpm\n\n    // postgres\n    pnpm add @abw/badger-database pg\n    // mysql\n    pnpm add @abw/badger-database mysql2\n    // sqlite\n    pnpm add @abw/badger-database better-sqlite\n\n### yarn\n\n    // postgres\n    yarn add @abw/badger-database pg\n    // mysql\n    yarn add @abw/badger-database mysql\n    // sqlite\n    yarn add @abw/badger-database better-sqlite\n\nOnce you've got it installed you're ready to [connect](manual/connecting.html)\nto a database.",
     "static": true,
     "access": "public"
   },

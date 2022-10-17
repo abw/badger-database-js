@@ -84,6 +84,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~enginedrivererror",
+    "class/src/Utils/Error.js~EngineDriverError.html",
+    "<span>EngineDriverError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
     "@abw/badger-database~engines",
     "variable/index.html#static-variable-Engines",
     "<span>Engines</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -640,6 +646,12 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-throwDeletedRecordError",
     "<span>throwDeletedRecordError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
+  ],
+  [
+    "@abw/badger-database~throwenginedriver",
+    "function/index.html#static-function-throwEngineDriver",
+    "<span>throwEngineDriver</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
   ],
   [
     "@abw/badger-database~thrower",

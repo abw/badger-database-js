@@ -107,6 +107,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~DeletedRecordError.html">DeletedRecordError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~EngineDriverError.html">EngineDriverError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~InsertValidationError.html">InsertValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~QueryBuilderError.html">QueryBuilderError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~SQLParseError.html">SQLParseError</a></span></span></li>
@@ -124,6 +125,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplemented">notImplemented</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInBaseClass">notImplementedInBaseClass</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-notImplementedInModule">notImplementedInModule</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-throwEngineDriver">throwEngineDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-thrower">thrower</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unexpectedRowCount">unexpectedRowCount</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
@@ -1161,6 +1163,34 @@ configuration options.</p>
           
           
           <span class="code" data-ice="name"><span><a href="function/index.html#static-function-tableBuilder">tableBuilder</a></span></span><span class="code" data-ice="signature">(table: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-throwEngineDriver">throwEngineDriver</a></span></span><span class="code" data-ice="signature">(module: <span>*</span>, error: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -2513,11 +2543,11 @@ The error message will be of the form <code>No "XXX" specified</code>.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Proxy/Model.js.html#lineNumber3">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Proxy/Model.js.html#lineNumber1">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {modelProxy} from '<span><a href="file/src/Proxy/Model.js.html#lineNumber3">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {modelProxy} from '<span><a href="file/src/Proxy/Model.js.html#lineNumber1">@abw/badger-database</a></span>'</code></pre></div>
   
   
   
@@ -4076,6 +4106,71 @@ flag, and optionally, a <code>prefix</code> and/or <code>color</code>.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-throwEngineDriver">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">throwEngineDriver</span><span class="code" data-ice="signature">(module: <span>*</span>, error: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Utils/Error.js.html#lineNumber94">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {throwEngineDriver} from '<span><a href="file/src/Utils/Error.js.html#lineNumber94">@abw/badger-database</a></span>'</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">module</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">error</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-function-thrower">
     <span class="access" data-ice="access">public</span>
     
@@ -4087,11 +4182,11 @@ flag, and optionally, a <code>prefix</code> and/or <code>color</code>.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Error.js.html#lineNumber143">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Error.js.html#lineNumber153">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {thrower} from '<span><a href="file/src/Utils/Error.js.html#lineNumber143">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {thrower} from '<span><a href="file/src/Utils/Error.js.html#lineNumber153">@abw/badger-database</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to contruct a function for throwing errors of a particular type
@@ -4166,11 +4261,11 @@ hurl('oops', 'badger');  // throws error: Unexpected badger encountered</code></
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Error.js.html#lineNumber129">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Error.js.html#lineNumber139">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {unexpectedRowCount} from '<span><a href="file/src/Utils/Error.js.html#lineNumber129">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {unexpectedRowCount} from '<span><a href="file/src/Utils/Error.js.html#lineNumber139">@abw/badger-database</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function for throwing a <span><a href="class/src/Utils/Error.js~UnexpectedRowCount.html">UnexpectedRowCount</a></span> error when multiple

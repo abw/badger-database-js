@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">src/Builder/Group.js | Badger Database</title>
+  <title data-ice="title">EngineDriverError | Badger Database</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -144,47 +144,92 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">src/Builder/Group.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Builder from '../Builder.js';
-import { splitList } from '@abw/badger-utils';
-import { comma, GROUP_BY } from '../Constants.js';
+<div class="content" data-ice="content"><div class="header-notice">
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {EngineDriverError} from '<span><a href="file/src/Utils/Error.js.html#lineNumber93">@abw/badger-database</a></span>'</code></pre></div>
+  <span data-ice="access">public</span>
+  <span data-ice="kind">class</span>
+  
+  
+  
+  <span data-ice="source">| <span><a href="file/src/Utils/Error.js.html#lineNumber93">source</a></span></span>
+</div>
 
-export class Group extends Builder {
-  static buildMethod = 'group'
-  static buildAlias  = 'groupBy'
-  static buildOrder  = 60
-  static keyword     = GROUP_BY
-  static joint       = comma
-  static messages    = {
-    array:  'Invalid array with &lt;n&gt; items specified for query builder "&lt;method&gt;" component. Expected [column].',
-    object: 'Invalid object with "&lt;keys&gt;" properties specified for query builder "&lt;method&gt;" component.  Valid properties are "columns" and "column".',
-  }
+<div class="self-detail detail">
+  <h1 data-ice="name">EngineDriverError</h1>
 
-  resolveLinkString(group) {
-    return splitList(group).map(
-      column =&gt; this.quote(column)
-    )
-  }
+  
 
-  resolveLinkArray(group) {
-    if (group.length === 1) {
-      return this.quote(group[0]);
-    }
-    this.errorMsg('array', { n: group.length });
-  }
+  
+  
+  <div class="flat-list" data-ice="extendsChain"><h4>Extends:</h4><div><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span> → <span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span> → EngineDriverError</div></div>
+  
+  
+  
+  
+  
+  
 
-  resolveLinkObject(group) {
-    if (group.column) {
-      return this.quote(group.column);
-    }
-    else if (group.columns) {
-      return this.resolveLinkString(group.columns)
-    }
-    this.errorMsg('object', { keys: Object.keys(group).sort().join(', ') });
-  }
-}
+  
+  
+  <div class="description" data-ice="description"><p>Error class for reporting failure to load engine driver</p>
+</div>
+  
 
-export default Group</code></pre>
+  
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+<div class="inherited-summary" data-ice="inheritedSummary"><h2>Inherited Summary</h2><table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3"><span class="toggle closed"></span> From class <span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html#instance-member-name">name</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+
+
+
+
 
 </div>
 
