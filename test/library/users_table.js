@@ -6,10 +6,10 @@ export const serialTypeFragment = engine =>
 export const dropUsersTableQuery =
   `DROP TABLE IF EXISTS users`
 
-export const createUsersTableQuery = engine => {
+export const createUsersTableQuery = (engine, name="users") => {
   const serial = serialTypeFragment(engine);
   return `
-    CREATE TABLE users (
+    CREATE TABLE ${name} (
       id      ${serial},
       name    TEXT,
       email   TEXT,
