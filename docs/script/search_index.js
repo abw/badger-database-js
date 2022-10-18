@@ -2952,6 +2952,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#checkupdatablecolumns",
+    "class/src/Table.js~Table.html#instance-method-checkUpdatableColumns",
+    "src/Table.js~Table#checkUpdatableColumns",
+    "method"
+  ],
+  [
     "src/table.js~table#checkwherecolumns",
     "class/src/Table.js~Table.html#instance-method-checkWhereColumns",
     "src/Table.js~Table#checkWhereColumns",

@@ -117,6 +117,8 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_columns.html"><a href="manual/table_columns.html" data-ice="link">Table Columns</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_columns.html"><a href="manual/table_columns.html#column-flags" data-ice="link">Column Flags</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_columns.html"><a href="manual/table_columns.html#expanded-form" data-ice="link">Expanded Form</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -480,6 +482,8 @@ and silently ignore the rest.</p>
   { email: 'brian@badgerpower.com' },
   { pick: true }
 );</code></code></pre>
+<p>A <code>ColumnValidationError</code> will also be thrown if you attempt to update a column
+that is marked as <code>readonly</code> or <code>fixed</code>.</p>
 <h3 id="updateone-set--where--options-">updateOne(set, where, options)</h3><p>This is a variant of the <a href="#update-set--where--options-">update()</a> /
 <a href="#updateall-set--where--options-">updateAll()</a> method that has an
 additional assertion check that exactly one row is updated.  If zero or more

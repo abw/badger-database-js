@@ -73,14 +73,16 @@ await users.update(
 ```
 
 There may be times when you want to insert rows with pre-defined ids.  That's fine -
-you don't have to define your id column as being readonly in this case.
+you don't have to define your id column as being `readonly` in this case.  However, you
+might want to mark it as `fixed` so that it's not possible to update at any point in
+the future.
 
 ```js
 const db = connect({
   // ...database, etc...
   tables: {
     users: {
-      columns: 'id name:required email:required'
+      columns: 'id:fixed name:required email:required'
     }
   }
 });

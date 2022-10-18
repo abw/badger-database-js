@@ -117,6 +117,8 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/table_columns.html"><a href="manual/table_columns.html" data-ice="link">Table Columns</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_columns.html"><a href="manual/table_columns.html#column-flags" data-ice="link">Column Flags</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/table_columns.html"><a href="manual/table_columns.html#expanded-form" data-ice="link">Expanded Form</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -270,17 +272,18 @@ const users = await db.table('users');</code></code></pre>
 want to for some reason.  If there are columns that you don't want or need to
 access from your application code then you can omit them.  Just be warned that
 you won't be able to access any columns that aren't defined here.</p>
-<p>You can add flags to the column names.  These include <code>id</code> to denote the unique
+<h2 id="column-flags">Column Flags</h2><p>You can add flags to the column names.  These include <code>id</code> to denote the unique
 identifier (this is optional if the column is already called <code>id</code> as we assume
 that's the default name for the id column), <code>required</code> to indicate
-that a column must be provided when a row is inserted, and <code>readonly</code> to indicate
-that a column cannot be inserted or updated.  Multiple flags can be added, each
-separated by a colon.</p>
+that a column must be provided when a row is inserted, <code>readonly</code> to indicate
+that a column cannot be inserted or updated, and <code>fixed</code> to indicated that the
+column can be inserted but then can't be updated.  Multiple flags can be added,
+each separated by a colon.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
-      columns: 'id:readonly name:required email:required'
+      columns: 'id:readonly name:required email:required:fixed'
     }
   }
 });</code></code></pre>
@@ -297,13 +300,21 @@ await users.insert({
   name:  'Brian Badger',
   email: 'brian@badgerpower.com',
 });</code></code></pre>
+<p>If a column is marked as <code>fixed</code> then you can insert it, but not update it.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// Throws a ColumnValidationError: 'The "email" column is fixed in the users table'
+await users.update(
+  { email: 'brian-the-badger@badgerpower.com' },
+  { id: 999 }
+);</code></code></pre>
 <p>There may be times when you want to insert rows with pre-defined ids.  That's fine -
-you don't have to define your id column as being readonly in this case.</p>
+you don't have to define your id column as being <code>readonly</code> in this case.  However, you
+might want to mark it as <code>fixed</code> so that it's not possible to update at any point in
+the future.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   // ...database, etc...
   tables: {
     users: {
-      columns: 'id name:required email:required'
+      columns: 'id:fixed name:required email:required'
     }
   }
 });
@@ -342,7 +353,7 @@ row regardless.  There certainly are valid cases where you might chose to NOT ha
 a unique id column in a database but they are generally few and far between.
 See <a href="https://stackoverflow.com/questions/1207983/in-general-should-every-table-in-a-database-have-an-identity-field-to-use-as-a">this Stack Overflow post</a> for
 further enlightenment.</p>
-<p>Defining the columns using a string is a convenient short hand for simpler
+<h2 id="expanded-form">Expanded Form</h2><p>Defining the columns using a string is a convenient short hand for simpler
 tables.  The more explicit form is to use an object with the column names as
 keys.  The corresponding values can be strings containing any flags for the
 columns, or an empty string if there aren't any.</p>
