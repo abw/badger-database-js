@@ -146,10 +146,12 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Tables.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { isFunction } from "@abw/badger-utils";
+import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Tables {
   constructor(tables={}) {
     this.tables = tables;
+    addDebugMethod(this, 'tables');
   }
   async table(name) {
     const config = this.tables[name];

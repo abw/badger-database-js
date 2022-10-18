@@ -212,28 +212,34 @@ export class Table extends Queryable {
           || throwColumnValidationError('unknown', { column, table })
     )
   }
-  checkColumns(data={}, cols=[], vals=[], options={}) {
+  checkColumns(data={}, options={}, cols=[], vals=[]) {
+    this.debugData("checkColumns()", { data, options})
     const table = this.table;
     // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
       column =&gt; {
-        const spec = this.columns[column]
-          || throwColumnValidationError('unknown', { column, table });
-        if (options.writable &amp;&amp; spec.readonly) {
-          throwColumnValidationError('readonly', { column, table });
+        const spec = this.columns[column];
+        if (spec) {
+          if (options.writable &amp;&amp; spec.readonly) {
+            throwColumnValidationError('readonly', { column, table });
+          }
+          // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
+          cols.push(spec.column);
+          vals.push(data[column])
         }
-        // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
-        cols.push(spec.column);
-        vals.push(data[column])
+        else if (! options.pick) {
+          throwColumnValidationError('unknown', { column, table });
+        }
       }
     )
+    this.debugData("checkColumns()", { cols, vals })
     return [cols, vals];
   }
-  checkWritableColumns(data, cols=[], vals=[]) {
-    return this.checkColumns(data, cols, vals, { writable: true })
+  checkWritableColumns(data, options={}) {
+    return this.checkColumns(data, { ...options, writable: true })
   }
-  checkWhereColumns(...args) {
-    return this.checkColumns(...args)
+  checkWhereColumns(where, options) {
+    return this.checkColumns(where, options)
   }
   checkRequiredColumns(data) {
     const table = this.table;
@@ -256,7 +262,7 @@ export class Table extends Queryable {
   }
   async insertOne(data, options={}) {
     this.debugData("insertOne()", { data, options });
-    const [cols, vals] = this.checkWritableColumns(data);
+    const [cols, vals] = this.checkWritableColumns(data, options);
     this.checkRequiredColumns(data);
     const insert = await this.engine.insert(this.table, cols, vals, this.keys);
     return options.reload || options.record
@@ -283,38 +289,38 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   // update
   //-----------------------------------------------------------------------------
-  prepareUpdate(set, where) {
-    const [dcols, dvals] = this.checkWritableColumns(set);
-    const [wcols, wvals] = this.checkWhereColumns(where);
+  prepareUpdate(set, where, options) {
+    const [dcols, dvals] = this.checkWritableColumns(set, options);
+    const [wcols, wvals] = this.checkWhereColumns(where, options);
     return [dcols, dvals, wcols, wvals];
   }
   async updateOne(set, where, options={}) {
     this.debugData("updateOne()", { set, where, options });
-    const args = this.prepareUpdate(set, where);
+    const args = this.prepareUpdate(set, where, options);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes !== 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
     return options.reload
-      ? this.updateReload(set, where)
+      ? this.updateReload(set, where, options)
       : update;
   }
   async updateAny(set, where, options={}) {
     this.debugData("updateAny()", { set, where, options });
-    const args = this.prepareUpdate(set, where);
+    const args = this.prepareUpdate(set, where, options);
     const update = await this.engine.update(this.table, ...args);
     if (update.changes &gt; 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
     return options.reload
       ? update.changes === 1
-        ? this.updateReload(set, where)
+        ? this.updateReload(set, where, options)
         : undefined
       : update;
   }
   async updateAll(set, where, options={}) {
     this.debugData("updateAllRows()", { set, where, options });
-    const args   = this.prepareUpdate(set, where);
+    const args   = this.prepareUpdate(set, where, options);
     const update = await this.engine.update(this.table, ...args);
     return options.reload
       ? fail("Cannot reload multiple updated rows")
@@ -324,19 +330,19 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   // delete
   //-----------------------------------------------------------------------------
-  async delete(where) {
+  async delete(where, options) {
     this.debugData("delete()", { where });
-    const [cols, vals] = this.checkWhereColumns(where);
+    const [cols, vals] = this.checkWhereColumns(where, options);
     return this.engine.delete(this.table, cols, vals);
   }
 
   //-----------------------------------------------------------------------------
   // fetch - using where data
   //-----------------------------------------------------------------------------
-  prepareFetch(where, params) {
-    params.columns ||= Object.keys(this.columns);
-    this.checkColumnNames(params.columns);
-    return this.checkWhereColumns(where);
+  prepareFetch(where, options) {
+    options.columns ||= Object.keys(this.columns);
+    this.checkColumnNames(options.columns);
+    return this.checkWhereColumns(where, options);
   }
   async fetchOne(where, options={}) {
     this.debugData("fetchOne()", { where, options });
@@ -473,7 +479,7 @@ export class Table extends Queryable {
       ? this.oneRecord(fetch)
       : this.oneRow(fetch);
   }
-  async updateReload(set, where) {
+  async updateReload(set, where, options) {
     // For update queries things are a little more complicated.  In the
     // usual case we can reload the rows using the original selection
     // criteria (where).  But we might have done an update which changes
@@ -482,7 +488,7 @@ export class Table extends Queryable {
     Object.keys(where).map(
       key =&gt; fetch[key] = firstValue(set[key], where[key])
     );
-    return this.oneRow(fetch);
+    return this.oneRow(fetch, options);
   }
   newRecord(row) {
     return recordProxy(
