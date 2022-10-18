@@ -16,7 +16,7 @@ test.before( 'connect',
       database: 'sqlite:memory',
       tables: {
         users: {
-          columns: 'id:readonly name:required email:required'
+          columns: 'id:readonly name:required email:required:fixed'
         }
       }
     })
@@ -101,6 +101,23 @@ test.serial( 'update a row with an unknown column',
       )
     )
     t.is(error.message, 'Unknown "is_admin" column in the users table');
+    t.is(error instanceof ColumnValidationError, true);
+  }
+)
+
+test.serial( 'update a row with a fixed column',
+  async t => {
+    const error = await t.throwsAsync(
+      () => users.update(
+        {
+          email: 'robert@badgerpower.com',
+        },
+        {
+          name: 'Bobby Badger'
+        }
+      )
+    )
+    t.is(error.message, 'The "email" column is fixed in the users table');
     t.is(error instanceof ColumnValidationError, true);
   }
 )

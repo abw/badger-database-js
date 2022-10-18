@@ -76,6 +76,9 @@ export class Table extends Queryable {
           if (options.writable && spec.readonly) {
             throwColumnValidationError('readonly', { column, table });
           }
+          if (options.fixed && spec.fixed) {
+            throwColumnValidationError('fixed', { column, table });
+          }
           // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
           cols.push(spec.column);
           vals.push(data[column])
@@ -90,6 +93,9 @@ export class Table extends Queryable {
   }
   checkWritableColumns(data, options={}) {
     return this.checkColumns(data, { ...options, writable: true })
+  }
+  checkUpdatableColumns(data, options={}) {
+    return this.checkColumns(data, { ...options, writable: true, fixed: true })
   }
   checkWhereColumns(where, options) {
     return this.checkColumns(where, options)
@@ -143,7 +149,7 @@ export class Table extends Queryable {
   // update
   //-----------------------------------------------------------------------------
   prepareUpdate(set, where, options) {
-    const [dcols, dvals] = this.checkWritableColumns(set, options);
+    const [dcols, dvals] = this.checkUpdatableColumns(set, options);
     const [wcols, wvals] = this.checkWhereColumns(where, options);
     return [dcols, dvals, wcols, wvals];
   }

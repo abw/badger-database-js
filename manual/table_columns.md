@@ -20,19 +20,22 @@ want to for some reason.  If there are columns that you don't want or need to
 access from your application code then you can omit them.  Just be warned that
 you won't be able to access any columns that aren't defined here.
 
+## Column Flags
+
 You can add flags to the column names.  These include `id` to denote the unique
 identifier (this is optional if the column is already called `id` as we assume
 that's the default name for the id column), `required` to indicate
-that a column must be provided when a row is inserted, and `readonly` to indicate
-that a column cannot be inserted or updated.  Multiple flags can be added, each
-separated by a colon.
+that a column must be provided when a row is inserted, `readonly` to indicate
+that a column cannot be inserted or updated, and `fixed` to indicated that the
+column can be inserted but then can't be updated.  Multiple flags can be added,
+each separated by a colon.
 
 ```js
 const db = connect({
   // ...database, etc...
   tables: {
     users: {
-      columns: 'id:readonly name:required email:required'
+      columns: 'id:readonly name:required email:required:fixed'
     }
   }
 });
@@ -57,6 +60,16 @@ await users.insert({
   name:  'Brian Badger',
   email: 'brian@badgerpower.com',
 });
+```
+
+If a column is marked as `fixed` then you can insert it, but not update it.
+
+```js
+// Throws a ColumnValidationError: 'The "email" column is fixed in the users table'
+await users.update(
+  { email: 'brian-the-badger@badgerpower.com' },
+  { id: 999 }
+);
 ```
 
 There may be times when you want to insert rows with pre-defined ids.  That's fine -
@@ -116,6 +129,8 @@ row regardless.  There certainly are valid cases where you might chose to NOT ha
 a unique id column in a database but they are generally few and far between.
 See [this Stack Overflow post](https://stackoverflow.com/questions/1207983/in-general-should-every-table-in-a-database-have-an-identity-field-to-use-as-a) for
 further enlightenment.
+
+## Expanded Form
 
 Defining the columns using a string is a convenient short hand for simpler
 tables.  The more explicit form is to use an object with the column names as

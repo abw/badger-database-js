@@ -329,6 +329,9 @@ await users.update(
 );
 ```
 
+A `ColumnValidationError` will also be thrown if you attempt to update a column
+that is marked as `readonly` or `fixed`.
+
 ### updateOne(set, where, options)
 
 This is a variant of the [update()](#update-set--where--options-) /

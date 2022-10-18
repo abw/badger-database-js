@@ -166,6 +166,7 @@ export const throwColumnValidationError = thrower(
   {
     unknown:        'Unknown "<column>" column in the <table> table',
     readonly:       'The "<column>" column is readonly in the <table> table',
+    fixed:          'The "<column>" column is fixed in the <table> table',
     required:       'Missing required column "<column>" for the <table> table',
     multipleIds:    'Multiple columns are marked as "id" in the <table> table',
     noColumns:      'No "columns" specified for the <table> table',
