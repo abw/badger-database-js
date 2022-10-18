@@ -87,8 +87,8 @@ inspect.
 
 You could easily do it yourself - the `insert()` method will return a result containing
 the generated `id` (or other id field) which you can then use to fetch the record.
-Or even easier, pass a second argument to the method as an object containing the
-`reload` option set to a true value.
+But why do it yourself when we can do it for you?  Pass a second argument to the method
+as an object containing the `reload` option set to a true value.
 
 After inserting a row the table `insert()` method will immediately reload it from the
 database and return the data for the row.
@@ -132,7 +132,7 @@ console.log(animals[1].name);       // Simon Stoat
 console.log(animals[1].email);      // simon@stoats-r-superb.com
 ```
 
-The other option that is supported by the insert methods is `record`.
+Another option that is supported by the insert methods is `record`.
 This will reload the row from the database (as per the `reload` option)
 and return it as a record object.  We'll be talking more about
 [records](manual/records.html) shortly but for now you should know that
@@ -150,6 +150,37 @@ const frank = await users.insert(
 console.log(frank.id);      // e.g. 3
 console.log(frank.name);    // Frank Ferret
 console.log(frank.email);   // frank@ferrets-r-us.com
+```
+
+The final option is `pick`.  If you try and insert data containing fields
+that aren't defined as table columns then a `ColumnValidationError` error
+will be throw.
+
+```js
+const frank = await users.insert(
+  {
+    name:  'Frank Ferret',
+    email: 'frank@ferrets-r-us.com',
+    feet:  4
+  }
+);
+// -> throws ColumnValidationError: Unknown "feet" column in the users table
+```
+
+If you like to throw caution to the wind then you can specify the `pick` option
+to override this.  With it set to a true value, the method will pick out the
+values that are defined as columns and silently ignore everything else.
+
+```js
+const frank = await users.insert(
+  {
+    name:  'Frank Ferret',
+    email: 'frank@ferrets-r-us.com',
+    feet:  4
+  },
+  { pick: true }
+);
+// -> silently ignores invalid "feet" column
 ```
 
 ### insertOne(data, options)
@@ -281,6 +312,22 @@ WHERE  email!=?
 
 Any single value SQL operator can be used, e.g. `=`, `!=`, `<`, `<=`, `>`, `>=`.
 You can't use operators that expect lists of values, e.g. `in (...)`.
+
+This method, and the other update methods, will throw a `ColumnValidationError`
+if you specify a column in either the `set` or `where` data that isn't defined
+as a table column.  The `pick` option can be used to override this.  When set,
+the methods will pick out the data items that do have table column definitions
+and silently ignore the rest.
+
+```js
+await users.update(
+  // "feet" is not a valid column, but the pick
+  // option tells the method to ignore it
+  { name: 'Brian "The Brains" Badger', feet: 4 },
+  { email: 'brian@badgerpower.com' },
+  { pick: true }
+);
+```
 
 ### updateOne(set, where, options)
 
@@ -421,16 +468,42 @@ You can also use other comparison operator in the `where` clause, as per the
 [update()](#update-set--where--options-) method, e.g. `{ year: ['>', 2000] }`
 to match all records where the `year` is greater than `2000`.
 
+If you include any columns in the `where` specification that aren't recognised
+as table columns then the method will throw a `ColumnValidationError`.  Use the
+`pick` option to override this behaviour.
+
+```js
+await users.delete(
+  // "feet" is not a valid table column, but the
+  // pick option tells the method to ignore it
+  { email: 'brian@badgerpower.com', feet: 4 },
+  { pick: true }
+);
+```
+
 ## Fetch Methods
 
 ### fetch(where, options)
 
-This is an alias for the [fetchAll()](#fetchall-where--options-) method.
+There are three different methods for fetching rows from the table using
+selection criteria.  The [fetchOne()](#fetchone-where--options-) method is
+used when you're expecting to get exactly one row returned. The
+[fetchAny()](#fetchany-where--options-) method is for when you're expecting
+to get a single row that may or may not exist.  The
+[fetchAll()](#fetchall-where--options-) method returns an array of all matching
+rows that may be zero or more.
+
+The `fetch()` method is an alias for the [fetchAll()](#fetchall-where--options-)
+method.
+
+All of the methods will throw a `ColumnValidationError` if you specify a data
+item in the `where` criteria that isn't defined as a table column.  Use the `pick`
+option to override this behavious, as per the [insert()](#insert-data--options-),
+[update()](#update-set--where--options) and [delete()](#delete-where-) methods.
 
 ### fetchOne(where, options)
 
-There are three different methods for fetching rows from the table using
-selection criteria.  The `fetchOne()` method will return a single row.
+The `fetchOne()` method will return a single row.
 If the row isn't found or multiple rows match the criteria then an
 `UnexpectedRowCount` error will be thrown with a message of
 the form `N rows were returned when one was expected`.
