@@ -1,8 +1,10 @@
 import { isFunction } from "@abw/badger-utils";
+import { addDebugMethod } from "./Utils/Debug.js";
 
 export class Tables {
   constructor(tables={}) {
     this.tables = tables;
+    addDebugMethod(this, 'tables');
   }
   async table(name) {
     const config = this.tables[name];
