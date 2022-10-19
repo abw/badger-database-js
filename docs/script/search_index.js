@@ -2190,6 +2190,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine.js~engine#driver",
+    "class/src/Engine.js~Engine.html#instance-member-driver",
+    "src/Engine.js~Engine#driver",
+    "member"
+  ],
+  [
     "src/engine.js~engine#engine",
     "class/src/Engine.js~Engine.html#instance-member-engine",
     "src/Engine.js~Engine#engine",
@@ -2277,12 +2283,6 @@ window.esdocSearchIndex = [
     "src/engine.js~engine#messages",
     "class/src/Engine.js~Engine.html#instance-member-messages",
     "src/Engine.js~Engine#messages",
-    "member"
-  ],
-  [
-    "src/engine.js~engine#module",
-    "class/src/Engine.js~Engine.html#instance-member-module",
-    "src/Engine.js~Engine#module",
     "member"
   ],
   [
@@ -2454,9 +2454,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/engine/mysql.js~mysqlengine.module",
-    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-module",
-    "src/Engine/Mysql.js~MysqlEngine.module",
+    "src/engine/mysql.js~mysqlengine.driver",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-driver",
+    "src/Engine/Mysql.js~MysqlEngine.driver",
     "member"
   ],
   [
@@ -2550,9 +2550,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/engine/postgres.js~postgresengine.module",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-module",
-    "src/Engine/Postgres.js~PostgresEngine.module",
+    "src/engine/postgres.js~postgresengine.driver",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-driver",
+    "src/Engine/Postgres.js~PostgresEngine.driver",
     "member"
   ],
   [
@@ -2628,9 +2628,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/sqlite.js~sqliteengine.module",
-    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-module",
-    "src/Engine/Sqlite.js~SqliteEngine.module",
+    "src/engine/sqlite.js~sqliteengine.driver",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-driver",
+    "src/Engine/Sqlite.js~SqliteEngine.driver",
     "member"
   ],
   [

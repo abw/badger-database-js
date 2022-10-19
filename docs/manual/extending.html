@@ -463,12 +463,12 @@ code, so not too much trouble.</p>
 driver module then it's quite simple, as long as the module implements the
 same API.  For example, if you want to use Sqlite with the <code>sqlite3</code> module
 instead of <code>better-sqlite3</code> then you can subclass the <code>SqliteEngine</code> module
-and redefine the static <code>module</code> property.  Of course, you will need to ensure
+and redefine the static <code>driver</code> property.  Of course, you will need to ensure
 that you've installed <code>sqlite</code> as a dependency for your project.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { SqliteEngine, registerEngine } from '@abw/badger-database'
 
 export class MySqliteEngine extends SqliteEngine {
-  static module = 'sqlite3'
+  static driver = 'sqlite3'
 }
 
 registerEngine(MySqliteEngine);</code></code></pre>

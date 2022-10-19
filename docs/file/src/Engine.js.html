@@ -171,7 +171,7 @@ export class Engine {
   constructor(config={}) {
     this.engine    = config.engine || missing('engine');
     this.database  = config.database || missing('database');
-    this.module    = this.constructor.module || missing('module');
+    this.driver    = this.constructor.driver || missing('driver');
     this.quoteChar = this.constructor.quoteChar || doubleQuote;
     this.messages  = this.constructor.messages;
     this.config    = this.configure(config);
