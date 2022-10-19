@@ -240,6 +240,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-query-builder-methods" data-ice="link">Adding Query Builder Methods</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-a-new-database-engine" data-ice="link">Adding a New Database Engine</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#using-a-different-engine-driver" data-ice="link">Using a Different Engine Driver</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -380,8 +381,8 @@ isn't much to it.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { Engine } from '@abw/badger-database'
 
 export class BadgerEngine extends Engine {
-  static name  = 'badger'
-  static alias = 'mushroom'
+  static protocol = 'badger'
+  static alias    = 'mushroom'
 
   configure(config) {
     // any custom configuration option handling
@@ -419,7 +420,7 @@ export class BadgerEngine extends Engine {
     // your code to sanitize a parse error, e.g. message, code, position
   }
 }</code></code></pre>
-<p>It should define the static <code>name</code> property which is used to identify
+<p>It should define the static <code>protocol</code> property which is used to identify
 it.  If you have another name (or names) that you want it to be known
 by (e.g. <code>postgres</code> is also known as <code>postgresql</code>) then you can define
 that as the <code>alias</code> property.  Multiple aliases can be defined as an
@@ -458,6 +459,19 @@ for other people to use.  Or if you prefer you can release it as a
 stand-alone module.  End users would still need to call the
 <code>registerEngine()</code> module to plug it in, but that's only a line of
 code, so not too much trouble.</p>
+<h2 id="using-a-different-engine-driver">Using a Different Engine Driver</h2><p>If you want to use one of the existing engines with a different underlying
+driver module then it's quite simple, as long as the module implements the
+same API.  For example, if you want to use Sqlite with the <code>sqlite3</code> module
+instead of <code>better-sqlite3</code> then you can subclass the <code>SqliteEngine</code> module
+and redefine the static <code>module</code> property.  Of course, you will need to ensure
+that you've installed <code>sqlite</code> as a dependency for your project.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { SqliteEngine, registerEngine } from '@abw/badger-database'
+
+export class MySqliteEngine extends SqliteEngine {
+  static module = 'sqlite3'
+}
+
+registerEngine(MySqliteEngine);</code></code></pre>
 </div>
 </div>
 

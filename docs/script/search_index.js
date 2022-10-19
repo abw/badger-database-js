@@ -2280,6 +2280,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/engine.js~engine#module",
+    "class/src/Engine.js~Engine.html#instance-member-module",
+    "src/Engine.js~Engine#module",
+    "member"
+  ],
+  [
     "src/engine.js~engine#one",
     "class/src/Engine.js~Engine.html#instance-method-one",
     "src/Engine.js~Engine#one",
@@ -2448,9 +2454,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/engine/mysql.js~mysqlengine.name",
-    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-name",
-    "src/Engine/Mysql.js~MysqlEngine.name",
+    "src/engine/mysql.js~mysqlengine.module",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-module",
+    "src/Engine/Mysql.js~MysqlEngine.module",
+    "member"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine.protocol",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-protocol",
+    "src/Engine/Mysql.js~MysqlEngine.protocol",
     "member"
   ],
   [
@@ -2538,9 +2550,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/engine/postgres.js~postgresengine.name",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-name",
-    "src/Engine/Postgres.js~PostgresEngine.name",
+    "src/engine/postgres.js~postgresengine.module",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-module",
+    "src/Engine/Postgres.js~PostgresEngine.module",
+    "member"
+  ],
+  [
+    "src/engine/postgres.js~postgresengine.protocol",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#static-member-protocol",
+    "src/Engine/Postgres.js~PostgresEngine.protocol",
     "member"
   ],
   [
@@ -2610,9 +2628,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/sqlite.js~sqliteengine.name",
-    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-name",
-    "src/Engine/Sqlite.js~SqliteEngine.name",
+    "src/engine/sqlite.js~sqliteengine.module",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-module",
+    "src/Engine/Sqlite.js~SqliteEngine.module",
+    "member"
+  ],
+  [
+    "src/engine/sqlite.js~sqliteengine.protocol",
+    "class/src/Engine/Sqlite.js~SqliteEngine.html#static-member-protocol",
+    "src/Engine/Sqlite.js~SqliteEngine.protocol",
     "member"
   ],
   [

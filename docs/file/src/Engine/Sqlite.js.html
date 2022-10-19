@@ -148,13 +148,17 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Engine from '../Engine.js';
 import { missing, throwEngineDriver } from '../Utils/Error.js';
 import { defaultIdColumn } from '../Constants.js';
+import { remove } from '@abw/badger-utils';
 
 export class SqliteEngine extends Engine {
-  static name = 'sqlite'
+  static module   = 'better-sqlite3'
+  static protocol = 'sqlite'
 
   configure(config) {
-    this.filename = config.database.filename || missing('filename');
-    this.options  = config.database.options  || { };
+    // sqlite expects the filename first and then any options, so we copy
+    // the database configuration into the options and then extract filename
+    this.options  = { ...config.database };
+    this.filename = remove(this.options, 'filename') || missing('filename');
 
     // better-sqlite3 is synchronous (because Sqlite serialises all
     // requests anyway), so there's no need/benefit in using a pool
@@ -170,10 +174,9 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { filename: this.filename, options: this.options });
-    const { default: Database } = await import('better-sqlite3').catch(
-      e =&gt; throwEngineDriver('better-sqlite3', e)
+    const { default: Database } = await import(this.module).catch(
+      e =&gt; throwEngineDriver(this.module, e)
     );
-
     return new Database(this.filename, this.options);
   }
   async connected(db) {

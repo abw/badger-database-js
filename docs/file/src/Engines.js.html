@@ -156,7 +156,7 @@ let Engines = { };
 
 export const registerEngine = engine =&gt; {
   const ructor = config =&gt; new engine(config);
-  [engine.name, ...splitList(engine.alias)].forEach(
+  [engine.protocol, ...splitList(engine.alias)].forEach(
     name =&gt; Engines[name] = ructor
   )
 }

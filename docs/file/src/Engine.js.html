@@ -169,12 +169,13 @@ const queries = {
 
 export class Engine {
   constructor(config={}) {
-    this.engine    = config.engine   || missing('engine');
+    this.engine    = config.engine || missing('engine');
     this.database  = config.database || missing('database');
-    this.config    = this.configure(config);
-    this.pool      = this.initPool(config.pool);
+    this.module    = this.constructor.module || missing('module');
     this.quoteChar = this.constructor.quoteChar || doubleQuote;
     this.messages  = this.constructor.messages;
+    this.config    = this.configure(config);
+    this.pool      = this.initPool(config.pool);
     this.escQuote  = `\\${this.quoteChar}`;
     addDebugMethod(this, 'engine', config);
   }

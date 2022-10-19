@@ -240,6 +240,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#custom-tables-object" data-ice="link">Custom Tables Object</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-query-builder-methods" data-ice="link">Adding Query Builder Methods</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#adding-a-new-database-engine" data-ice="link">Adding a New Database Engine</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/extending.html"><a href="manual/extending.html#using-a-different-engine-driver" data-ice="link">Using a Different Engine Driver</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -309,6 +310,27 @@ port (<code>3306</code> for Mysql and <code>5432</code> for Postgres) and no use
 <pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
   database: 'mysql://database'
 })</code></code></pre>
+<p>If there are any additional configuration options that you want to pass to the
+underlying database engine module (<code>better-sqlite3</code>, <code>mysql2/promise</code> or <code>pg</code>)
+then you can provide them as <code>engineOptions</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'sqlite:memory',
+  engineOptions: {
+    verbose: console.log
+  }
+})</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'mysql://database',
+  engineOptions: {
+    dateStrings: true
+  }
+})</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: 'postgres://database',
+  engineOptions: {
+    queryTimeout: 3000
+  }
+})</code></code></pre>
 <h2 id="connection-parameters">Connection Parameters</h2><p>The connection strings shown in the previous sections are short-hand versions
 for the more verbose form.  If your connection parameters are stored in a file,
 loaded via an API call, or fetched in some other way then it may be more
@@ -349,6 +371,29 @@ you should use <code>mysql</code> (or <code>mariadb</code>) as the engine name.<
   database: {
     engine:   'sqlite',
     filename: ':memory:',
+  }
+})</code></code></pre>
+<p>When using this expanded format, any additional configuration options for the engine
+module can be included directly in the <code>database</code> specification.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: {
+    engine:   'sqlite',
+    filename: ':memory:',
+    verbose:  console.log
+  }
+})</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: {
+    engine:      'mysql',
+    database:    'animals',
+    dateStrings: true
+  }
+})</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  database: {
+    engine:       'postgres',
+    database:     'animals',
+    queryTimeout: 3000
   }
 })</code></code></pre>
 <h2 id="connection-parameter-aliases">Connection Parameter Aliases</h2><p>Whenever I'm writing the code to connect to a database there's a good chance I'll get
@@ -433,6 +478,15 @@ define it using the <code>envPrefix</code> option.</p>
 MY_DB_NAME=animals
 MY_DB_USER=badger
 MY_DB_PASSWORD=s3cr3t</code></code></pre>
+<p>When using environment variables any additional configuration options for the
+database engine should be provided in the <code>engineOptions</code> configuration item.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const db = connect({
+  env: process.env
+  envPrefix: 'MY_DB',
+  engineOptions: {
+    verbose: console.log
+  }
+});</code></code></pre>
 <h2 id="pool-options">Pool Options</h2><p>The Postgres and Mysql database engines use a connection pool for efficiency.
 By default, the minimum number of connections is 2 and the maximum is 10.  You
 can change these values using the <code>pool</code> option.</p>
