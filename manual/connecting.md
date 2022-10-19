@@ -85,7 +85,6 @@ const db = connect({
 })
 ```
 
-
 Most of the elements are optional for Postgres and Mysql databases.
 Here are the minimal versions which assume the default host (`localhost`),
 port (`3306` for Mysql and `5432` for Postgres) and no username or password.
@@ -99,6 +98,37 @@ const db = connect({
 ```js
 const db = connect({
   database: 'mysql://database'
+})
+```
+
+If there are any additional configuration options that you want to pass to the
+underlying database engine module (`better-sqlite3`, `mysql2/promise` or `pg`)
+then you can provide them as `engineOptions`.
+
+```js
+const db = connect({
+  database: 'sqlite:memory',
+  engineOptions: {
+    verbose: console.log
+  }
+})
+```
+
+```js
+const db = connect({
+  database: 'mysql://database',
+  engineOptions: {
+    dateStrings: true
+  }
+})
+```
+
+```js
+const db = connect({
+  database: 'postgres://database',
+  engineOptions: {
+    queryTimeout: 3000
+  }
 })
 ```
 
@@ -158,6 +188,39 @@ const db = connect({
   database: {
     engine:   'sqlite',
     filename: ':memory:',
+  }
+})
+```
+
+When using this expanded format, any additional configuration options for the engine
+module can be included directly in the `database` specification.
+
+```js
+const db = connect({
+  database: {
+    engine:   'sqlite',
+    filename: ':memory:',
+    verbose:  console.log
+  }
+})
+```
+
+```js
+const db = connect({
+  database: {
+    engine:      'mysql',
+    database:    'animals',
+    dateStrings: true
+  }
+})
+```
+
+```js
+const db = connect({
+  database: {
+    engine:       'postgres',
+    database:     'animals',
+    queryTimeout: 3000
   }
 })
 ```
@@ -294,6 +357,19 @@ MY_DB_ENGINE=mysql
 MY_DB_NAME=animals
 MY_DB_USER=badger
 MY_DB_PASSWORD=s3cr3t
+```
+
+When using environment variables any additional configuration options for the
+database engine should be provided in the `engineOptions` configuration item.
+
+```js
+const db = connect({
+  env: process.env
+  envPrefix: 'MY_DB',
+  engineOptions: {
+    verbose: console.log
+  }
+});
 ```
 
 ## Pool Options

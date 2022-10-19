@@ -165,8 +165,8 @@ Your engine module should be a subclass of the `Engine` base class.
 import { Engine } from '@abw/badger-database'
 
 export class BadgerEngine extends Engine {
-  static name  = 'badger'
-  static alias = 'mushroom'
+  static protocol = 'badger'
+  static alias    = 'mushroom'
 
   configure(config) {
     // any custom configuration option handling
@@ -206,7 +206,7 @@ export class BadgerEngine extends Engine {
 }
 ```
 
-It should define the static `name` property which is used to identify
+It should define the static `protocol` property which is used to identify
 it.  If you have another name (or names) that you want it to be known
 by (e.g. `postgres` is also known as `postgresql`) then you can define
 that as the `alias` property.  Multiple aliases can be defined as an
@@ -259,3 +259,23 @@ for other people to use.  Or if you prefer you can release it as a
 stand-alone module.  End users would still need to call the
 `registerEngine()` module to plug it in, but that's only a line of
 code, so not too much trouble.
+
+## Using a Different Engine Driver
+
+If you want to use one of the existing engines with a different underlying
+driver module then it's quite simple, as long as the module implements the
+same API.  For example, if you want to use Sqlite with the `sqlite3` module
+instead of `better-sqlite3` then you can subclass the `SqliteEngine` module
+and redefine the static `module` property.  Of course, you will need to ensure
+that you've installed `sqlite` as a dependency for your project.
+
+```js
+import { SqliteEngine, registerEngine } from '@abw/badger-database'
+
+export class MySqliteEngine extends SqliteEngine {
+  static module = 'sqlite3'
+}
+
+registerEngine(MySqliteEngine);
+```
+
