@@ -53,6 +53,13 @@ test.serial( 'engine outside database',
   }
 )
 
+test.serial( 'extra options',
+  async t => {
+    const sqlite = await engine({ engine: 'sqlite', database: { filename: ':memory:', verbose: 'example' }});
+    t.deepEqual( sqlite.options, { verbose: 'example' })
+  }
+)
+
 test.serial( 'pool size',
   async t => {
     const sqlite = await engine(config);

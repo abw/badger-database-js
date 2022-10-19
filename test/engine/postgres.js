@@ -1,5 +1,6 @@
 import test from 'ava';
 import Postgres from '../../src/Engine/Postgres.js'
+import { engine } from '../../src/Engines.js';
 import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
 const database = {
@@ -24,6 +25,13 @@ test.serial( 'no database error',
   t => {
     const error = t.throws( () => new Postgres({ engine: 'postgres' }) );
     t.is( error.message, 'No "database" specified' )
+  }
+)
+
+test.serial( 'extra options',
+  async t => {
+    const postgres = await engine({ engine: 'postgres', database: { database: 'test', queryTimeout: 3000 }});
+    t.deepEqual( postgres.database, { database: 'test', queryTimeout: 3000 })
   }
 )
 

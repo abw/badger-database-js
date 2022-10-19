@@ -1,6 +1,6 @@
 import test from 'ava';
 import Mysql from '../../src/Engine/Mysql.js'
-import { engine as engineFactory } from '../../src/Engines.js';
+import { engine } from '../../src/Engines.js';
 import { UnexpectedRowCount } from '../../src/Utils/Error.js';
 
 const database = {
@@ -27,6 +27,13 @@ test.serial( 'no database error',
   t => {
     const error = t.throws( () => new Mysql({ engine: 'mysql' }) );
     t.is( error.message, 'No "database" specified' )
+  }
+)
+
+test.serial( 'extra options',
+  async t => {
+    const mysql = await engine({ engine: 'mysql', database: { database: 'test', dateStrings: true }});
+    t.deepEqual( mysql.database, { database: 'test', dateStrings: true })
   }
 )
 
@@ -184,7 +191,7 @@ test.serial( 'fetch one row but two returned',
 
 test.serial( 'fetch one row via database()',
   async t => {
-    const mysql = await engineFactory({ database: { ...database, engine: 'mysql' } });
+    const mysql = await engine({ database: { ...database, engine: 'mysql' } });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']
@@ -196,7 +203,7 @@ test.serial( 'fetch one row via database()',
 
 test.serial( 'fetch one row via database() with string',
   async t => {
-    const mysql = await engineFactory({ database: engineString });
+    const mysql = await engine({ database: engineString });
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']

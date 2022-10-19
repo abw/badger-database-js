@@ -93,6 +93,11 @@ export const databaseConfig = config => {
     }
   )
 
+  // merge in any engineOptions
+  if (config.engineOptions) {
+    Object.assign(database, remove(config, 'engineOptions'));
+  }
+
   return config;
 }
 
@@ -113,7 +118,7 @@ export const configEnv = (env, options={}) => {
       { key: key => key.replace(regex, '').toLowerCase() }
     );
 
-  return { database };
+  return { database }
 }
 
 
