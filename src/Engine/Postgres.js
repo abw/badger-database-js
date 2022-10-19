@@ -3,7 +3,7 @@ import { defaultIdColumn } from '../Constants.js';
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class PostgresEngine extends Engine {
-  static module   = 'pg'
+  static driver   = 'pg'
   static protocol = 'postgres'
   static alias    = 'postgresql'
 
@@ -12,8 +12,8 @@ export class PostgresEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { database: this.database });
-    const { default: pg } = await import(this.module).catch(
-      e => throwEngineDriver(this.module, e)
+    const { default: pg } = await import(this.driver).catch(
+      e => throwEngineDriver(this.driver, e)
     );
     const client = new pg.Client(this.database);
     await client.connect();

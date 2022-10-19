@@ -266,14 +266,14 @@ If you want to use one of the existing engines with a different underlying
 driver module then it's quite simple, as long as the module implements the
 same API.  For example, if you want to use Sqlite with the `sqlite3` module
 instead of `better-sqlite3` then you can subclass the `SqliteEngine` module
-and redefine the static `module` property.  Of course, you will need to ensure
+and redefine the static `driver` property.  Of course, you will need to ensure
 that you've installed `sqlite` as a dependency for your project.
 
 ```js
 import { SqliteEngine, registerEngine } from '@abw/badger-database'
 
 export class MySqliteEngine extends SqliteEngine {
-  static module = 'sqlite3'
+  static driver = 'sqlite3'
 }
 
 registerEngine(MySqliteEngine);

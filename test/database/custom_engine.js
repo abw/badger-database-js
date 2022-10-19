@@ -4,7 +4,7 @@ import { connect, Engine, registerEngine } from '../../src/index.js'
 class BadgerEngine extends Engine {
   static protocol = 'badger'
   static alias    = 'mushroom snake'
-  static module   = 'dummy'
+  static driver   = 'dummy'
 
   async connect() {
     return 'BADGER';

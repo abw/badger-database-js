@@ -4,7 +4,7 @@ import { defaultIdColumn } from '../Constants.js';
 import { remove } from '@abw/badger-utils';
 
 export class SqliteEngine extends Engine {
-  static module   = 'better-sqlite3'
+  static driver   = 'better-sqlite3'
   static protocol = 'sqlite'
 
   configure(config) {
@@ -27,8 +27,8 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { filename: this.filename, options: this.options });
-    const { default: Database } = await import(this.module).catch(
-      e => throwEngineDriver(this.module, e)
+    const { default: Database } = await import(this.driver).catch(
+      e => throwEngineDriver(this.driver, e)
     );
     return new Database(this.filename, this.options);
   }

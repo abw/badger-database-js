@@ -4,7 +4,7 @@ import { connect, SqliteEngine, registerEngine, EngineDriverError } from '../../
 class MySqliteEngine extends SqliteEngine {
   // this will fail because the module doesn't exist, but it
   // demonstrates that the SqliteEngine is trying to load it
-  static module = 'sqlite3-not-found'
+  static driver = 'sqlite3-not-found'
 }
 
 registerEngine(MySqliteEngine)
