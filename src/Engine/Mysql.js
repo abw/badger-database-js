@@ -3,7 +3,8 @@ import { backtick, defaultIdColumn } from '../Constants.js';
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class MysqlEngine extends Engine {
-  static name      = 'mysql'
+  static module    = 'mysql2/promise'
+  static protocol  = 'mysql'
   static alias     = 'maria mariadb'
   static quoteChar = backtick
 
@@ -12,8 +13,8 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   async connect() {
     this.debugData("connect()", { database: this.database });
-    const { default: mysql } = await import('mysql2/promise').catch(
-      e => throwEngineDriver('mysql2', e)
+    const { default: mysql } = await import(this.module).catch(
+      e => throwEngineDriver(this.module, e)
     );
     return mysql.createConnection(this.database);
   }
