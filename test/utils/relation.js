@@ -21,6 +21,26 @@ test( 'd -> e.f',
   }
 );
 
+test( 'a~>b.c',
+  t => {
+    const config = parseRelationString('a~>b.c');
+    t.is( config.type,  'any');
+    t.is( config.from,  'a');
+    t.is( config.table, 'b');
+    t.is( config.to,    'c');
+  }
+);
+
+test( 'd ~> e.f',
+  t => {
+    const config = parseRelationString('d ~> e.f');
+    t.is( config.type,  'any');
+    t.is( config.from,  'd');
+    t.is( config.table, 'e');
+    t.is( config.to,    'f');
+  }
+);
+
 test( 'gee => aitch.eye',
   t => {
     const config = parseRelationString('gee => aitch.eye');

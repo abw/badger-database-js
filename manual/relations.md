@@ -65,6 +65,17 @@ to one" relation.
 Each album can have many tracks, but each track can only appear on a single album.
 Therefore this is a "one to many" relation.
 
+These two relations are given the names `one` and `many`. The `one` relation implies
+that there is exactly one related record, whereas `many` implies there can be multiple
+relations, including zero.  If you have a relation that *may* have one related record
+then you can use the `any` relation.
+
+|Name|Shorthand|Description|
+|-|-|-|
+|one|`from -> table.to`|Exactly one related record|
+|any|`from ~> table.to`|Maybe one related record|
+|many|`from => table.to`|Any number of related records (including zero)|
+
 ## Defining Table Relations
 
 The relations for each table should be added to the `tables` configuration
@@ -286,11 +297,18 @@ using the shorthand syntax.  The general format for the `one` relation is:
 from -> table.to
 ```
 
-For a `many` relation it uses a "fat arrow" instead.
+For an `any` relation it uses a "squiggly arrow" instead.
+
+```js
+from ~> table.to
+```
+
+For a `many` relation it uses a "fat arrow".
 
 ```js
 from => table.to
 ```
+
 
 For example, the `album` relation defined for the `tracks` table looks
 like this:

@@ -1,18 +1,10 @@
+import { whereRelation } from "../Utils/Relation.js";
+
 export const many = async (record, spec={}) => {
-  const lkey  = spec.from;
-  const rkey  = spec.to;
-  const order = spec.order;
-  let where   = spec.where   || { };
-  if (lkey && rkey) {
-    where[rkey] = record.row[lkey];
-  }
+  const where   = whereRelation(record, spec);
+  const order   = spec.order;
   const options = order ? { order } : { };
-  if (spec.debug) {
-    console.log('many() relation: ', spec);
-    console.log('many() relation table: ', spec.table);
-    console.log('many() relation where: ', where);
-  }
-  const table = await record.database.table(spec.table);
+  const table   = await record.database.table(spec.table);
   return await table.allRecords(where, options);
 }
 

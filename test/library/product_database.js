@@ -70,6 +70,7 @@ export function connectProductDatabase(engine='sqlite') {
   const serial   = sqlite ? 'INTEGER' : 'SERIAL';
   const asc      = sqlite ? ' ASC' : '';
   const reftype  = mysql  ? 'BIGINT UNSIGNED NOT NULL' : 'INTEGER';
+  const anyref   = mysql  ? 'BIGINT UNSIGNED NULL' : 'INTEGER';
   const queries  = {
     dropCompaniesTable:  'DROP TABLE IF EXISTS companies',
     dropOrdersTable:     'DROP TABLE IF EXISTS orders',
@@ -85,7 +86,7 @@ export function connectProductDatabase(engine='sqlite') {
     createOrdersTable: `
       CREATE TABLE orders (
         id          ${serial},
-        customer_id TEXT,
+        customer_id ${reftype},
         placed      TEXT,
         total       REAL,
         PRIMARY KEY (id${asc})
@@ -105,7 +106,7 @@ export function connectProductDatabase(engine='sqlite') {
     createUsersTable: `
       CREATE TABLE users (
         id          ${serial},
-        company_id  ${reftype},
+        company_id  ${anyref},
         name        TEXT,
         email       TEXT,
         telephone   TEXT,
@@ -159,7 +160,10 @@ export function connectProductDatabase(engine='sqlite') {
   };
   const users = {
     columns: 'id company_id name email',
-    recordClass: User
+    recordClass: User,
+    relations: {
+      company: 'company_id ~> companies.id',
+    },
   };
   const products = {
     columns: 'id supplier_id name price',
@@ -197,7 +201,7 @@ export async function runProductDatabaseTests(engine='sqlite') {
   const users      = await db.table('users');
   const products   = await db.table('products');
   let BadgersInc, FerretsLtd, StoatsRUs;
-  let Bobby, Brian, Frank, Fiona, Simon, Susan;
+  let Bobby, Brian, Frank, Fiona, Simon, Susan, Terry;
   let Frock, Furs, Socks, Shoes;
 
   test.serial( 'drop existing tables',
@@ -229,13 +233,14 @@ export async function runProductDatabaseTests(engine='sqlite') {
 
   test.serial( 'insert users',
     async t => {
-      [Bobby, Brian, Frank, Fiona, Simon, Susan] = await users.insertRecords([
+      [Bobby, Brian, Frank, Fiona, Simon, Susan, Terry] = await users.insertRecords([
         { name: 'Bobby Badger', company_id: BadgersInc.id },
         { name: 'Brian Badger', company_id: BadgersInc.id },
         { name: 'Frank Ferret', company_id: FerretsLtd.id },
         { name: 'Fiona Ferret', company_id: FerretsLtd.id },
         { name: 'Simon Stoat',  company_id: StoatsRUs.id  },
         { name: 'Susan Stoat',  company_id: StoatsRUs.id  },
+        { name: 'Terry Turtle' },
       ]);
       t.is( Bobby.name, 'Bobby Badger' );
       t.is( Brian.name, 'Brian Badger' );
@@ -314,6 +319,19 @@ export async function runProductDatabaseTests(engine='sqlite') {
       t.is( parseFloat(order.total), 147.94 );
     }
   )
+
+  test.serial( 'Bobby has a company...',
+    async t => {
+      const company = await Bobby.company;
+      t.is( company.name, BadgersInc.name );
+    }
+  );
+  test.serial( "...but Terry doesn't",
+    async t => {
+      const company = await Terry.company;
+      t.is( company, undefined );
+    }
+  );
 
   test.after( 'drop tables',
     async t => {

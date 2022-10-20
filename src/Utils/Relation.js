@@ -1,7 +1,8 @@
 import { fail, hasValue, isString, noValue, remove } from "@abw/badger-utils";
 
-const relationStringRegex = /^(\w+)\s*([-=]>)\s*(\w+)\.(\w+)$/;
+const relationStringRegex = /^(\w+)\s*([-~=]>)\s*(\w+)\.(\w+)$/;
 const relationType = {
+  '~>': 'any',
   '->': 'one',
   '=>': 'many'
 };
@@ -91,4 +92,14 @@ export const parseRelationString = string => {
         to:    match[4],
       }
     : fail("Invalid relation string specified: ", string);
+}
+
+export const whereRelation = (record, spec) => {
+  const lkey  = spec.from;
+  const rkey  = spec.to;
+  let where   = spec.where || { };
+  if (lkey && rkey) {
+    where[rkey] = record.row[lkey];
+  }
+  return where
 }
