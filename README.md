@@ -11,7 +11,7 @@ in the lower levels.
 
 ## Philosophy
 
-It is based on the philosphy that ORMs and SQL query builders are considered
+It is based on the philosophy that ORMs and SQL query builders are considered
 *Mostly Harmful*.  SQL is an industry standard and has been for nearly 40
 years.  Although there are some minor differences between dialects, it is
 the most portable and widely understood way to communicate with a relational
