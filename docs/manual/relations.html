@@ -304,6 +304,34 @@ that an albums can only be released by one artist.  Therefore this is a "many
 to one" relation.</p>
 <p>Each album can have many tracks, but each track can only appear on a single album.
 Therefore this is a "one to many" relation.</p>
+<p>These two relations are given the names <code>one</code> and <code>many</code>. The <code>one</code> relation implies
+that there is exactly one related record, whereas <code>many</code> implies there can be multiple
+relations, including zero.  If you have a relation that <em>may</em> have one related record
+then you can use the <code>any</code> relation.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Shorthand</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>one</td>
+<td><code>from -&gt; table.to</code></td>
+<td>Exactly one related record</td>
+</tr>
+<tr>
+<td>any</td>
+<td><code>from ~&gt; table.to</code></td>
+<td>Maybe one related record</td>
+</tr>
+<tr>
+<td>many</td>
+<td><code>from =&gt; table.to</code></td>
+<td>Any number of related records (including zero)</td>
+</tr>
+</tbody></table>
 <h2 id="defining-table-relations">Defining Table Relations</h2><p>The relations for each table should be added to the <code>tables</code> configuration
 as the <code>relations</code> object.  This is what our main database configuration
 should look like.</p>
@@ -463,7 +491,9 @@ console.log(bonus[1].title);  // Money (Roger Waters Demo)</code></code></pre>
 <h2 id="shorthand-syntax-for-defining-relations">Shorthand Syntax for Defining Relations</h2><p>If you've got a simple relation then you can define it as a string
 using the shorthand syntax.  The general format for the <code>one</code> relation is:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">from -&gt; table.to</code></code></pre>
-<p>For a <code>many</code> relation it uses a "fat arrow" instead.</p>
+<p>For an <code>any</code> relation it uses a "squiggly arrow" instead.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">from ~&gt; table.to</code></code></pre>
+<p>For a <code>many</code> relation it uses a "fat arrow".</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">from =&gt; table.to</code></code></pre>
 <p>For example, the <code>album</code> relation defined for the <code>tracks</code> table looks
 like this:</p>

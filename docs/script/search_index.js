@@ -366,6 +366,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-database~any",
+    "function/index.html#static-function-any",
+    "<span>any</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~backtick",
     "variable/index.html#static-variable-backtick",
     "<span>backtick</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -670,6 +676,12 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-unknown",
     "<span>unknown</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
+  ],
+  [
+    "@abw/badger-database~whererelation",
+    "function/index.html#static-function-whereRelation",
+    "<span>whereRelation</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
   ],
   [
     "@abw/badger-database~wheretrue",
@@ -2908,6 +2920,12 @@ window.esdocSearchIndex = [
     "class/src/Record.js~Record.html#instance-method-update",
     "src/Record.js~Record#update",
     "method"
+  ],
+  [
+    "src/relation/any.js",
+    "file/src/Relation/any.js.html",
+    "src/Relation/any.js",
+    "file"
   ],
   [
     "src/relation/many.js",
