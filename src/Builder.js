@@ -47,28 +47,36 @@ export class Builder {
     // stub for subclasses
   }
 
-  async one(args) {
+  async one(args, options) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
     const values = this.allValues(args);
     this.debugData("one()", { sql, values });
-    return db.one(sql, values);
+    return db.one(sql, values, options);
   }
 
-  async any(args) {
+  async any(args, options) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
     const values = this.allValues(args);
     this.debugData("any()", { sql, values });
-    return db.any(sql, values);
+    return db.any(sql, values, options);
   }
 
-  async all(args) {
+  async all(args, options={}) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
     const values = this.allValues(args);
     this.debugData("all()", { sql, values });
-    return db.all(sql, values);
+    return db.all(sql, values, options);
+  }
+
+  async run(args, options={}) {
+    const sql    = this.sql();
+    const db     = this.lookupDatabase();
+    const values = this.allValues(args);
+    this.debugData("all()", { sql, values });
+    return db.run(sql, values, { ...options, sanitizeResult: true });
   }
 
   contextValues() {

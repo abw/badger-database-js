@@ -193,23 +193,28 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   async delete(where, options) {
     this.debugData("delete()", { where });
-    const [cols, vals] = this.checkWhereColumns(where, options);
-    return this.engine.delete(this.table, cols, vals);
+    const [ , , criteria] = this.checkWhereColumns(where, options);
+    const query = this
+      .build
+      .delete()
+      .from(this.table)
+      .where(criteria)
+    const sql = query.sql();
+    this.debugData("delete()", { where, sql })
+    return await query.run();
   }
 
   //-----------------------------------------------------------------------------
   // fetch - using where data
   //-----------------------------------------------------------------------------
   prepareFetch(where, options) {
-    // this.debugData("prepareFetch()", { where, options})
     const table = this.table;
     const columns = options.columns || Object.keys(this.columns);
     this.checkColumnNames(columns);
     const [ , , criteria] = this.checkWhereColumns(where, options);
-    // return this.checkWhereColumns(where, options);
     const query = this
       .select({ table, columns })
-      .from(this.table)
+      .from(table)
       .where(criteria)
       .order(options.orderBy || options.order);
     const sql = query.sql();

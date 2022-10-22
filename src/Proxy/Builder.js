@@ -21,7 +21,7 @@ export const builderProxy = (builders, parent, valid, keyword) =>
           : builders[prop];
 
         if (bclass) {
-          // console.log('builderProxy builder: %s', prop);
+          // console.log('builderProxy builder: %s =>', prop, bclass);
           return (
             (...args) => {
               const builder   = new bclass(parent, ...args);

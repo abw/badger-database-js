@@ -20,7 +20,8 @@ export function runTableRecordsTests(engine) {
             queries: {
               byName:  table => table.selectFrom.where('name'),
               badgers: table => table.selectFrom.where({ animal: 'Badger' })
-            }
+            },
+            debug: false
           }
         }
       });
@@ -111,6 +112,7 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
+
   test.serial( 'fetchRecord()',
     async t => {
       const users = await db.table('users');
@@ -497,6 +499,7 @@ export function runTableRecordsTests(engine) {
       t.is( reload, undefined );
     }
   )
+
   test.serial( 'cannot update deleted record',
     async t => {
       const users = await db.table('users');
