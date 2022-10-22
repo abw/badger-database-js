@@ -3,7 +3,7 @@ import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount }
 import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, doubleQuote, whereTrue } from './Constants.js';
+import { allColumns, doubleQuote, equals, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -193,8 +193,11 @@ export class Engine {
   formatWherePlaceholder(column, value, n) {
     // value can be an array containing a comparison operator and a value,
     // e.g. ['>' 1973], otherwise we assume it's an equality operator, '='
-    const cmp = isArray(value) ? value[0] : '=';
+    const cmp = isArray(value) ? value[0] : equals;
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
+  }
+  formatSetPlaceholder(column, n) {
+    return `${this.quote(column)} ${equals} ${this.formatPlaceholder(n)}`;
   }
   formatPlaceholders(values, n=1) {
     return values.map(

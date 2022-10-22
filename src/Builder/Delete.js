@@ -6,7 +6,7 @@ import { spaceAfter } from '../Utils/Space.js';
 export class Delete extends Builder {
   static buildMethod = 'delete'
   static buildOrder  = 19
-  static subMethods  = 'from where'
+  static subMethods  = 'from join where order order_by limit'
   static keyword     = DELETE
   static joint       = comma
   static messages    = {

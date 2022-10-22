@@ -19,13 +19,13 @@ export class From extends Builder {
     // array of [table, alias], or an object containing 'table'
     const table = tables.at(-1);
     if (isString(table)) {
-      this.table = splitList(table).at(-1);
+      this.tableName = splitList(table).at(-1);
     }
     else if (isArray(table) && table.length === 2) {
-      this.table = table[1];
+      this.tableName = table[1];
     }
     else if (isObject(table) && table.as) {
-      this.table = table.as;
+      this.tableName = table.as;
     }
   }
 
@@ -33,8 +33,8 @@ export class From extends Builder {
     return super.resolve(
       context,
       // if we've got a table defined then add it to the context
-      this.table
-        ? { table: this.table }
+      this.tableName
+        ? { table: this.tableName }
         : undefined
     )
   }

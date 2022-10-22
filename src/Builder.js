@@ -9,6 +9,7 @@ export let Builders   = { };
 export let Generators = { };
 
 const defaultContext = () => ({
+  setValues:    [ ],
   whereValues:  [ ],
   havingValues: [ ],
   placeholder:  1,
@@ -89,15 +90,25 @@ export class Builder {
   }
 
   allValues(where=[]) {
-    const { whereValues, havingValues } = this.resolveChain();
+    const { setValues, whereValues, havingValues } = this.resolveChain();
 
     // In the usual case we just get one set of extra args and they
     // go at the end.  But if there's some need to jiggle the parameters
     // more then a function can be provided.
     if (isFunction(where)) {
+      // TODO: add in setValues
       return where(whereValues, havingValues);
     }
-    return [...whereValues, ...havingValues, ...where]
+    return [...setValues, ...whereValues, ...havingValues, ...where]
+  }
+
+  setValues(...values) {
+    if (values.length) {
+      this.context.setValues = [
+        ...this.context.setValues, ...values
+      ];
+    }
+    return this.context.setValues;
   }
 
   whereValues(...values) {

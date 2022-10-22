@@ -15,7 +15,9 @@ import Order    from './Builder/Order.js';
 import Prefix   from './Builder/Prefix.js';
 import Range    from './Builder/Range.js';
 import Select   from './Builder/Select.js';
+import Set      from './Builder/Set.js';
 import Table    from './Builder/Table.js';
+import Update   from './Builder/Update.js';
 import Where    from './Builder/Where.js';
 import Proxy    from './Proxy/Builder.js';
 
@@ -56,7 +58,7 @@ export const registerBuilders = (...builders) =>
 
 registerBuilders(
   After, Before, Columns, Delete, From, Group, Having, Join, Limit,
-  Offset, Order, Prefix, Range, Select, Table, Where,
+  Offset, Order, Prefix, Range, Select, Set, Table, Update, Where,
 );
 
 export const databaseBuilder = database =>
