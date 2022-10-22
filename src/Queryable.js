@@ -101,6 +101,21 @@ export class Queryable {
   loadedAll(rows) {
     return rows;
   }
+
+  async transaction(code) {
+    await this.engine.transaction(this, code)
+  }
+  /*
+  async begin() {
+    await this.engine.begin()
+  }
+  async commit() {
+    await this.engine.commit()
+  }
+  async rollback() {
+    await this.engine.rollback()
+  }
+  */
 }
 
 export default Queryable

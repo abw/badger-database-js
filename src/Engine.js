@@ -3,7 +3,7 @@ import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount }
 import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, doubleQuote, ORDER_BY, space, whereTrue } from './Constants.js';
+import { allColumns, BEGIN, COMMIT, doubleQuote, ORDER_BY, ROLLBACK, space, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -14,13 +14,15 @@ const poolDefaults = {
 }
 
 const queries = {
-  insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
-  update: 'UPDATE <table> SET <set> WHERE <where>',
-  delete: 'DELETE FROM <table> WHERE <where>',
-  select: 'SELECT <columns> FROM <table> WHERE <where> <order>',
+  insert:   'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
+  update:   'UPDATE <table> SET <set> WHERE <where>',
+  delete:   'DELETE FROM <table> WHERE <where>',
+  select:   'SELECT <columns> FROM <table> WHERE <where> <order>',
 }
 
 export class Engine {
+  static beginTrans = BEGIN;
+
   constructor(config={}) {
     this.engine    = config.engine || missing('engine');
     this.database  = config.database || missing('database');
@@ -199,6 +201,57 @@ export class Engine {
   }
   async select(...args) {
     return this.selectAll(...args);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Transactions
+  //-----------------------------------------------------------------------------
+  async transaction(queryable, code) {
+    const client = await this.acquire();
+    await this.begin(client);
+    let handled  = false;
+    const commit = async () => {
+      handled = true;
+      console.log('committing');
+      await this.commit(client);
+    }
+    const rollback = async () => {
+      handled = true;
+      console.log('rolling back');
+      await this.rollback(client);
+    }
+
+    try {
+      await code(queryable, commit, rollback)
+      if (! handled) {
+        await commit()
+      }
+    }
+    catch(e) {
+      console.log('caught error: ', e);
+
+      if (! handled) {
+        await rollback()
+      }
+      throw(e)
+    }
+    finally {
+      console.log('releasing');
+
+      this.release(client);
+    }
+  }
+
+  async begin(client) {
+    const query = this.constructor.beginTrans;
+    console.log('begin()');
+    return await client.prepare(query).run();
+  }
+  async commit(client) {
+    return await client.prepare(COMMIT).run();
+  }
+  async rollback(client) {
+    await await client.prepare(ROLLBACK).run();
   }
 
   //-----------------------------------------------------------------------------

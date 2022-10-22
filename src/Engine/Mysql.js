@@ -3,10 +3,11 @@ import { backtick, defaultIdColumn } from '../Constants.js';
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class MysqlEngine extends Engine {
-  static driver    = 'mysql2/promise'
-  static protocol  = 'mysql'
-  static alias     = 'maria mariadb'
-  static quoteChar = backtick
+  static driver     = 'mysql2/promise'
+  static protocol   = 'mysql'
+  static alias      = 'maria mariadb'
+  static quoteChar  = backtick
+  static beginTrans = 'START TRANSACTION'
 
   //-----------------------------------------------------------------------------
   // Pool connections methods
@@ -49,6 +50,18 @@ export class MysqlEngine extends Engine {
       .then( ([rows]) => rows );
   }
 
+  async begin() {
+    const query = this.constructor.beginTrans;
+    await this.run(query);
+  }
+  async commit() {
+    await this.run(COMMIT);
+  }
+  async rollback() {
+    await this.run(ROLLBACK);
+  }
+
+
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
@@ -60,6 +73,10 @@ export class MysqlEngine extends Engine {
     result[0][id]     ||= result[0].insertId || null;
     return result;
   }
+  beginTransactionQuery() {
+    return 'START TRANSACTION';
+  }
+
 }
 
 export default MysqlEngine

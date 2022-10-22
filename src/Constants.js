@@ -30,4 +30,7 @@ export const ON               = 'ON'
 export const AND              = 'AND'
 export const ASC              = 'ASC'
 export const DESC             = 'DESC'
+export const BEGIN            = 'BEGIN'
+export const ROLLBACK         = 'ROLLBACK'
+export const COMMIT           = 'COMMIT'
 
