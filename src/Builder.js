@@ -1,4 +1,4 @@
-import { fail, hasValue, isArray, isFunction, isObject, isString } from "@abw/badger-utils";
+import { fail, hasValue, isArray, isFunction, isObject, isString, noValue } from "@abw/badger-utils";
 import { newline, unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
@@ -144,7 +144,9 @@ export class Builder {
       ...args
     }
     const values = this.resolveLink();
-    this.context[slot] = [...(this.context[slot] || []), ...values];
+    if (values && values.length) {
+      this.context[slot] = [...(this.context[slot] || []), ...values];
+    }
     return this.context;
   }
 
@@ -171,7 +173,10 @@ export class Builder {
     else if (isObject(item)) {
       return this.resolveLinkObject(item);
     }
-    fail("Invalid link item: ", item);
+    else if (noValue(item)) {
+      return [ ];
+    }
+    fail("Invalid query builder method: ", item);
   }
 
   resolveLinkString() {
