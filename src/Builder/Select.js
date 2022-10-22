@@ -1,5 +1,4 @@
 import Builder from '../Builder.js';
-import { splitList } from '@abw/badger-utils';
 import { comma, SELECT } from '../Constants.js';
 
 export class Select extends Builder {
@@ -13,17 +12,7 @@ export class Select extends Builder {
   }
 
   resolveLinkString(columns, table, prefix) {
-    // function to map columns to depends on table and/or prefix being defined
-    const func = table
-      ? prefix
-        ? column => this.quoteTableColumnAs(table, column, prefix + column)
-        : column => this.quoteTableColumn(table, column)
-      : prefix
-        ? column => this.quoteColumnAs(column, prefix + column)
-        : column => this.quote(column)
-    ;
-    // split string into items and apply function
-    return splitList(columns).map(func);
+    return this.quoteTableColumns(table, columns, prefix)
   }
 
   resolveLinkArray(columns) {

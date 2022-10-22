@@ -1,4 +1,4 @@
-import { fail, hasValue, isArray, isFunction, isObject, isString, noValue } from "@abw/badger-utils";
+import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
 import { newline, unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
@@ -174,7 +174,7 @@ export class Builder {
       return this.resolveLinkObject(item);
     }
     else if (noValue(item)) {
-      return [ ];
+      return this.resolveLinkNothing(item);
     }
     fail("Invalid query builder method: ", item);
   }
@@ -189,6 +189,10 @@ export class Builder {
 
   resolveLinkObject() {
     notImplemented("resolveLinkObject()");
+  }
+
+  resolveLinkNothing() {
+    return [ ];
   }
 
   // utility methods
@@ -209,6 +213,20 @@ export class Builder {
 
   quote(item) {
     return this.lookupDatabase().quote(item)
+  }
+
+  quoteTableColumns(table, columns, prefix) {
+    // function to map columns to depends on table and/or prefix being defined
+    const func = table
+      ? prefix
+        ? column => this.quoteTableColumnAs(table, column, prefix + column)
+        : column => this.quoteTableColumn(table, column)
+      : prefix
+        ? column => this.quoteColumnAs(column, prefix + column)
+        : column => this.quote(column)
+    ;
+    // split string into items and apply function
+    return splitList(columns).map(func);
   }
 
   tableColumn(table, column) {

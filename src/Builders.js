@@ -4,6 +4,7 @@ import After    from './Builder/After.js';
 import Before   from './Builder/Before.js';
 import Columns  from './Builder/Columns.js';
 import Database from './Builder/Database.js';
+import Delete   from './Builder/Delete.js';
 import From     from './Builder/From.js';
 import Group    from './Builder/Group.js';
 import Having   from './Builder/Having.js';
@@ -54,7 +55,7 @@ export const registerBuilders = (...builders) =>
   builders.forEach(registerBuilder)
 
 registerBuilders(
-  After, Before, Columns, From, Group, Having, Join, Limit,
+  After, Before, Columns, Delete, From, Group, Having, Join, Limit,
   Offset, Order, Prefix, Range, Select, Table, Where,
 );
 
