@@ -3,7 +3,7 @@ import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount }
 import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, doubleQuote, ORDER_BY, space, whereTrue } from './Constants.js';
+import { allColumns, doubleQuote, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -17,7 +17,7 @@ const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
   update: 'UPDATE <table> SET <set> WHERE <where>',
   delete: 'DELETE FROM <table> WHERE <where>',
-  select: 'SELECT <columns> FROM <table> WHERE <where> <order>',
+  // select: 'SELECT <columns> FROM <table> WHERE <where> <order>',
 }
 
 export class Engine {
@@ -169,39 +169,6 @@ export class Engine {
   }
 
   //-----------------------------------------------------------------------------
-  // Select queries
-  //-----------------------------------------------------------------------------
-  selectQuery(table, wherecols, wherevals, options={}) {
-    this.debugData("selectQuery()", { table, wherecols, options });
-    const columns = this.formatColumns(options.columns);
-    const where   = this.formatWherePlaceholders(wherecols, wherevals);
-    const order   = this.formatOrderBy(options.orderBy || options.order);
-    table = this.quote(table);
-    return [
-      format(queries.select, { table, columns, where, order }),
-      this.prepareValues(wherevals)
-    ]
-  }
-  async selectAll(table, wherecols, wherevals, options={}) {
-    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debugData("selectAll()", { table, wherecols, wherevals, options, sql, values });
-    return this.all(sql, values);
-  }
-  async selectAny(table, wherecols, wherevals, options={}) {
-    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debugData("selectAny()", { table, wherecols, wherevals, options, sql, values });
-    return this.any(sql, values);
-  }
-  async selectOne(table, wherecols, wherevals, options={}) {
-    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debugData("selectOne()", { table, wherecols, wherevals, options, sql, values });
-    return this.one(sql, values);
-  }
-  async select(...args) {
-    return this.selectAll(...args);
-  }
-
-  //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
   sanitizeResult(result) {
@@ -268,11 +235,6 @@ export class Engine {
   }
   formatReturning() {
     return '';
-  }
-  formatOrderBy(order) {
-    return hasValue(order)
-      ? ORDER_BY + space + this.formatColumns(order)
-      : '';
   }
   prepareValues(values) {
     return values.map(

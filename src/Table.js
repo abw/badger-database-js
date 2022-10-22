@@ -68,6 +68,7 @@ export class Table extends Queryable {
   checkColumns(data={}, options={}, cols=[], vals=[]) {
     this.debugData("checkColumns()", { data, options})
     const table = this.table;
+    let result = { };
     // check that all the values supplied correspond to valid columns
     Object.keys(data).forEach(
       column => {
@@ -81,7 +82,8 @@ export class Table extends Queryable {
           }
           // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
           cols.push(spec.column);
-          vals.push(data[column])
+          vals.push(data[column]);
+          result[spec.column] = data[column];
         }
         else if (! options.pick) {
           throwColumnValidationError('unknown', { column, table });
@@ -89,7 +91,7 @@ export class Table extends Queryable {
       }
     )
     this.debugData("checkColumns()", { cols, vals })
-    return [cols, vals];
+    return [cols, vals, result];
   }
   checkWritableColumns(data, options={}) {
     return this.checkColumns(data, { ...options, writable: true })
@@ -199,24 +201,37 @@ export class Table extends Queryable {
   // fetch - using where data
   //-----------------------------------------------------------------------------
   prepareFetch(where, options) {
-    options.columns ||= Object.keys(this.columns);
-    this.checkColumnNames(options.columns);
-    return this.checkWhereColumns(where, options);
+    // this.debugData("prepareFetch()", { where, options})
+    const table = this.table;
+    const columns = options.columns || Object.keys(this.columns);
+    this.checkColumnNames(columns);
+    const [ , , criteria] = this.checkWhereColumns(where, options);
+    // return this.checkWhereColumns(where, options);
+    const query = this
+      .select({ table, columns })
+      .from(this.table)
+      .where(criteria)
+      .order(options.orderBy || options.order);
+    const sql = query.sql();
+    this.debugData("prepareFetch()", { where, sql })
+    return query
   }
   async fetchOne(where, options={}) {
     this.debugData("fetchOne()", { where, options });
-    const params = { ...options };
-    const [wcols, wvals] = this.prepareFetch(where, params);
-    const row = await this.engine.selectOne(this.table, wcols, wvals, params);
+    const row = await this.prepareFetch(where, options).one();
+    //const params = { ...options };
+    //const [wcols, wvals, criteria] = this.prepareFetch(where, params);
+    //const row = await this.engine.selectOne(this.table, wcols, wvals, params);
     return options.record
       ? this.record(row)
       : row;
   }
   async fetchAny(where, options={}) {
     this.debugData("fetchAny()", { where, options });
-    const params = { ...options };
-    const [wcols, wvals] = this.prepareFetch(where, params);
-    const row = await this.engine.selectAny(this.table, wcols, wvals, params);
+    const row = await this.prepareFetch(where, options).any();
+    // const params = { ...options };
+    // const [wcols, wvals] = this.prepareFetch(where, params);
+    // const row = await this.engine.selectAny(this.table, wcols, wvals, params);
     return row
       ? options.record
         ? this.record(row)
@@ -225,9 +240,10 @@ export class Table extends Queryable {
   }
   async fetchAll(where, options={}) {
     this.debugData("fetchAllRows()", { where, options });
-    const params = { ...options };
-    const [wcols, wvals] = this.prepareFetch(where, params);
-    const rows = await this.engine.selectAll(this.table, wcols, wvals, params);
+    const rows = await this.prepareFetch(where, options).all();
+    // const params = { ...options };
+    // const [wcols, wvals] = this.prepareFetch(where, params);
+    // const rows = await this.engine.selectAll(this.table, wcols, wvals, params);
     return options.record
       ? this.records(rows)
       : rows;
