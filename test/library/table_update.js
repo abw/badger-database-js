@@ -14,7 +14,9 @@ export function runTableUpdateTests(engine) {
         database,
         tables: {
           users: {
-            columns: 'id:readonly name:required email:required friends'
+            columns: 'id:readonly name:required email:required friends',
+            debug: false
+
           }
         }
       });

@@ -15,7 +15,6 @@ const poolDefaults = {
 
 const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
-  update: 'UPDATE <table> SET <set> WHERE <where>',
 }
 
 export class Engine {
@@ -149,14 +148,6 @@ export class Engine {
     const sql          = format(queries.insert, { table, columns, placeholders, returning});
     this.debugData("insert()", { table, colnames, values, keys, sql });
     return this.run(sql, values, { keys, sanitizeResult: true });
-  }
-  async update(table, datacols, datavals, wherecols, wherevals) {
-    const set    = this.formatColumnPlaceholders(datacols);
-    const where  = this.formatWherePlaceholders(wherecols, wherevals, datacols.length + 1);
-    const values = this.prepareValues(wherevals);
-    const sql    = format(queries.update, { table, set, where });
-    this.debugData("update()", { table, datacols, datavals, wherecols, wherevals, sql });
-    return this.run(sql, [...datavals, ...values], { sanitizeResult: true });
   }
 
   //-----------------------------------------------------------------------------

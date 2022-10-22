@@ -151,14 +151,20 @@ export class Table extends Queryable {
   // update
   //-----------------------------------------------------------------------------
   prepareUpdate(set, where, options) {
-    const [dcols, dvals] = this.checkUpdatableColumns(set, options);
-    const [wcols, wvals] = this.checkWhereColumns(where, options);
-    return [dcols, dvals, wcols, wvals];
+    const [ , , update] = this.checkUpdatableColumns(set, options);
+    const [ , , criteria] = this.checkWhereColumns(where, options);
+    const query = this
+      .build
+      .update(this.table)
+      .set(update)
+      .where(criteria);
+    const sql = query.sql();
+    this.debugData("prepareUpdate()", { where, sql })
+    return query
   }
   async updateOne(set, where, options={}) {
     this.debugData("updateOne()", { set, where, options });
-    const args = this.prepareUpdate(set, where, options);
-    const update = await this.engine.update(this.table, ...args);
+    const update = await this.prepareUpdate(set, where, options).run();
     if (update.changes !== 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
@@ -168,8 +174,7 @@ export class Table extends Queryable {
   }
   async updateAny(set, where, options={}) {
     this.debugData("updateAny()", { set, where, options });
-    const args = this.prepareUpdate(set, where, options);
-    const update = await this.engine.update(this.table, ...args);
+    const update = await this.prepareUpdate(set, where, options).run()
     if (update.changes > 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
@@ -181,8 +186,7 @@ export class Table extends Queryable {
   }
   async updateAll(set, where, options={}) {
     this.debugData("updateAllRows()", { set, where, options });
-    const args   = this.prepareUpdate(set, where, options);
-    const update = await this.engine.update(this.table, ...args);
+    const update = await this.prepareUpdate(set, where, options).run();
     return options.reload
       ? fail("Cannot reload multiple updated rows")
       : update;
@@ -224,9 +228,6 @@ export class Table extends Queryable {
   async fetchOne(where, options={}) {
     this.debugData("fetchOne()", { where, options });
     const row = await this.prepareFetch(where, options).one();
-    //const params = { ...options };
-    //const [wcols, wvals, criteria] = this.prepareFetch(where, params);
-    //const row = await this.engine.selectOne(this.table, wcols, wvals, params);
     return options.record
       ? this.record(row)
       : row;
@@ -234,9 +235,6 @@ export class Table extends Queryable {
   async fetchAny(where, options={}) {
     this.debugData("fetchAny()", { where, options });
     const row = await this.prepareFetch(where, options).any();
-    // const params = { ...options };
-    // const [wcols, wvals] = this.prepareFetch(where, params);
-    // const row = await this.engine.selectAny(this.table, wcols, wvals, params);
     return row
       ? options.record
         ? this.record(row)
@@ -246,9 +244,6 @@ export class Table extends Queryable {
   async fetchAll(where, options={}) {
     this.debugData("fetchAllRows()", { where, options });
     const rows = await this.prepareFetch(where, options).all();
-    // const params = { ...options };
-    // const [wcols, wvals] = this.prepareFetch(where, params);
-    // const rows = await this.engine.selectAll(this.table, wcols, wvals, params);
     return options.record
       ? this.records(rows)
       : rows;
