@@ -16,8 +16,6 @@ const poolDefaults = {
 const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
   update: 'UPDATE <table> SET <set> WHERE <where>',
-  delete: 'DELETE FROM <table> WHERE <where>',
-  // select: 'SELECT <columns> FROM <table> WHERE <where> <order>',
 }
 
 export class Engine {
@@ -159,13 +157,6 @@ export class Engine {
     const sql    = format(queries.update, { table, set, where });
     this.debugData("update()", { table, datacols, datavals, wherecols, wherevals, sql });
     return this.run(sql, [...datavals, ...values], { sanitizeResult: true });
-  }
-  async delete(table, wherecols, wherevals) {
-    const where  = this.formatWherePlaceholders(wherecols, wherevals);
-    const values = this.prepareValues(wherevals);
-    const sql    = format(queries.delete, { table, where });
-    this.debugData("delete()", { table, wherecols, wherevals, sql });
-    return this.run(sql, values, { sanitizeResult: true });
   }
 
   //-----------------------------------------------------------------------------
