@@ -92,7 +92,10 @@ export class Where extends Builder {
     }
     return result;
   }
+
   addValues(...values) {
+    // Subclasses Having.js and Set.js redefine this to save the values
+    // in different lists (havingValues() and setValues() respectively)
     this.whereValues(...values)
   }
 }

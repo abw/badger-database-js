@@ -42,9 +42,11 @@ export class Table extends Queryable {
     aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
   }
+
   configure(config) {
     return config;
   }
+
   prepareFragments(config) {
     const quote       = this.database.quote.bind(this.database);
     const fragments   = config.fragments ||= { };
@@ -56,64 +58,6 @@ export class Table extends Queryable {
   }
 
   //-----------------------------------------------------------------------------
-  // Column validation
-  //-----------------------------------------------------------------------------
-  checkColumnNames(names) {
-    const table = this.table;
-    splitList(names).forEach(
-      column => this.columns[column]
-          || throwColumnValidationError('unknown', { column, table })
-    )
-  }
-  checkColumns(data={}, options={}, cols=[], vals=[]) {
-    this.debugData("checkColumns()", { data, options})
-    const table = this.table;
-    let result = { };
-    // check that all the values supplied correspond to valid columns
-    Object.keys(data).forEach(
-      column => {
-        const spec = this.columns[column];
-        if (spec) {
-          if (options.writable && spec.readonly) {
-            throwColumnValidationError('readonly', { column, table });
-          }
-          if (options.fixed && spec.fixed) {
-            throwColumnValidationError('fixed', { column, table });
-          }
-          // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
-          cols.push(spec.column);
-          vals.push(data[column]);
-          result[spec.column] = data[column];
-        }
-        else if (! options.pick) {
-          throwColumnValidationError('unknown', { column, table });
-        }
-      }
-    )
-    this.debugData("checkColumns()", { cols, vals })
-    return [cols, vals, result];
-  }
-  checkWritableColumns(data, options={}) {
-    return this.checkColumns(data, { ...options, writable: true })
-  }
-  checkUpdatableColumns(data, options={}) {
-    return this.checkColumns(data, { ...options, writable: true, fixed: true })
-  }
-  checkWhereColumns(where, options) {
-    return this.checkColumns(where, options)
-  }
-  checkRequiredColumns(data) {
-    const table = this.table;
-    this.required.forEach(
-      column => {
-        if (noValue(data[column])) {
-          throwColumnValidationError('required', { column, table });
-        }
-      }
-    );
-  }
-
-  //-----------------------------------------------------------------------------
   // Basic queries - insert
   //-----------------------------------------------------------------------------
   async insert(data, options) {
@@ -121,6 +65,7 @@ export class Table extends Queryable {
       ? this.insertAll(data, options)
       : this.insertOne(data, options)
   }
+
   prepareInsert(data, options) {
     const [cols, vals] = this.checkWritableColumns(data, options);
     const returning = this.engine.returning
@@ -135,12 +80,14 @@ export class Table extends Queryable {
     this.debugData('prepareInsert()', { data, sql: insert.sql() })
     return insert;
   }
+
   async insertOne(data, options={}) {
     const insert = await this.prepareInsert(data, options).run(undefined, { keys: this.keys });
     return options.reload || options.record
       ? this.insertReload(data, insert, options)
       : insert;
   }
+
   async insertAll(data, options) {
     this.debugData("insertAll()", { data, options });
     let rows = [ ];
@@ -149,14 +96,31 @@ export class Table extends Queryable {
     }
     return rows;
   }
+
   async insertOneRecord(data, options) {
     this.debugData("insertOneRecord()", { data, options });
     return this.insertOne(data, this.withRecordOption(options))
   }
+
   async insertAllRecords(data, options) {
     this.debugData("insertAllRecords()", { data, options });
     return this.insertAll(data, this.withRecordOption(options))
   }
+
+  async insertReload(input, output, options={}) {
+    // For insert queries where the input data is used to run the query,
+    // and the output data is returned from the query. We should have
+    // values for each of this.keys because they should always be
+    // either specified in the input data, or returned by the database
+    const fetch = { };
+    this.keys.map(
+      key => fetch[key] = firstValue(output[key], input[key])
+    );
+    return options.record
+      ? this.oneRecord(fetch)
+      : this.oneRow(fetch);
+  }
+
 
   //-----------------------------------------------------------------------------
   // update
@@ -173,6 +137,7 @@ export class Table extends Queryable {
     this.debugData("prepareUpdate()", { where, sql })
     return query
   }
+
   async updateOne(set, where, options={}) {
     this.debugData("updateOne()", { set, where, options });
     const update = await this.prepareUpdate(set, where, options).run();
@@ -183,6 +148,7 @@ export class Table extends Queryable {
       ? this.updateReload(set, where, options)
       : update;
   }
+
   async updateAny(set, where, options={}) {
     this.debugData("updateAny()", { set, where, options });
     const update = await this.prepareUpdate(set, where, options).run()
@@ -195,12 +161,25 @@ export class Table extends Queryable {
         : undefined
       : update;
   }
+
   async updateAll(set, where, options={}) {
     this.debugData("updateAllRows()", { set, where, options });
     const update = await this.prepareUpdate(set, where, options).run();
     return options.reload
       ? fail("Cannot reload multiple updated rows")
       : update;
+  }
+
+  async updateReload(set, where, options) {
+    // For update queries things are a little more complicated.  In the
+    // usual case we can reload the rows using the original selection
+    // criteria (where).  But we might have done an update which changes
+    // that selection criteria (set), so we should use those values instead.
+    const fetch = { };
+    Object.keys(where).map(
+      key => fetch[key] = firstValue(set[key], where[key])
+    );
+    return this.oneRow(fetch, options);
   }
 
   //-----------------------------------------------------------------------------
@@ -236,6 +215,7 @@ export class Table extends Queryable {
     this.debugData("prepareFetch()", { where, sql })
     return query
   }
+
   async fetchOne(where, options={}) {
     this.debugData("fetchOne()", { where, options });
     const row = await this.prepareFetch(where, options).one();
@@ -243,6 +223,7 @@ export class Table extends Queryable {
       ? this.record(row)
       : row;
   }
+
   async fetchAny(where, options={}) {
     this.debugData("fetchAny()", { where, options });
     const row = await this.prepareFetch(where, options).any();
@@ -252,6 +233,7 @@ export class Table extends Queryable {
         : row
       : undefined;
   }
+
   async fetchAll(where, options={}) {
     this.debugData("fetchAllRows()", { where, options });
     const rows = await this.prepareFetch(where, options).all();
@@ -259,14 +241,17 @@ export class Table extends Queryable {
       ? this.records(rows)
       : rows;
   }
+
   async fetchOneRecord(where, options) {
     this.debugData("fetchOneRecord()", { where, options });
     return this.fetchOne(where, this.withRecordOption(options));
   }
+
   async fetchAnyRecord(where, options) {
     this.debugData("fetchAnyRecord()", { where, options });
     return this.fetchAny(where, this.withRecordOption(options));
   }
+
   async fetchAllRecords(where, options) {
     this.debugData("fetchAllRecords()", { where, options });
     return this.fetchAll(where, this.withRecordOption(options));
@@ -283,30 +268,35 @@ export class Table extends Queryable {
       ? this.one(query, ...args)
       : this.fetchOne(query, ...args)
   }
+
   async anyRow(query, ...args) {
     this.debugData("anyRow()", { query, ...args });
     return isQuery(query)
       ? this.any(query, ...args)
       : this.fetchAny(query, ...args)
   }
+
   async allRows(query, ...args) {
     this.debugData("allRows()", { query, ...args });
     return isQuery(query)
       ? this.all(query, ...args)
       : this.fetchAll(query, ...args)
   }
+
   async oneRecord(query, ...args) {
     this.debugData("oneRecord()", { query, args });
     return isQuery(query)
       ? this.one(query, args[0], this.withRecordOption(args[1]))
       : this.fetchOne(query, this.withRecordOption(args[0]))
   }
+
   async anyRecord(query, ...args) {
     this.debugData("anyRecord()", { query, args });
     return isQuery(query)
       ? this.any(query, args[0], this.withRecordOption(args[1]))
       : this.fetchAny(query, this.withRecordOption(args[0]))
   }
+
   async allRecords(query, ...args) {
     this.debugData("allRecords()", { query, args });
     return isQuery(query)
@@ -319,30 +309,129 @@ export class Table extends Queryable {
       ? this.record(row)
       : row;
   }
+
   loadedAny(row, options={}) {
     return row
       ? this.loadedOne(row, options)
       : undefined;
   }
+
   loadedAll(rows, options={}) {
     return options.record
       ? this.records(rows)
       : rows;
   }
+
   withRecordOption(options={}) {
     return { ...options, record: true };
   }
 
+  //-----------------------------------------------------------------------------
+  // Column validation
+  //-----------------------------------------------------------------------------
+  checkColumnNames(names) {
+    const table = this.table;
+    splitList(names).forEach(
+      column => this.columns[column]
+          || throwColumnValidationError('unknown', { column, table })
+    )
+  }
+
+  checkColumns(data={}, options={}, cols=[], vals=[]) {
+    this.debugData("checkColumns()", { data, options})
+    const table = this.table;
+    let result = { };
+    // check that all the values supplied correspond to valid columns
+    Object.keys(data).forEach(
+      column => {
+        const spec = this.columns[column];
+        if (spec) {
+          if (options.writable && spec.readonly) {
+            throwColumnValidationError('readonly', { column, table });
+          }
+          if (options.fixed && spec.fixed) {
+            throwColumnValidationError('fixed', { column, table });
+          }
+          // cols.push(options.tableColumn ? spec.tableColumn : spec.column);
+          cols.push(spec.column);
+          vals.push(data[column]);
+          result[spec.column] = data[column];
+        }
+        else if (! options.pick) {
+          throwColumnValidationError('unknown', { column, table });
+        }
+      }
+    )
+    this.debugData("checkColumns()", { cols, vals })
+    return [cols, vals, result];
+  }
+
+  checkWritableColumns(data, options={}) {
+    return this.checkColumns(data, { ...options, writable: true })
+  }
+
+  checkUpdatableColumns(data, options={}) {
+    return this.checkColumns(data, { ...options, writable: true, fixed: true })
+  }
+
+  checkWhereColumns(where, options) {
+    return this.checkColumns(where, options)
+  }
+
+  checkRequiredColumns(data) {
+    const table = this.table;
+    this.required.forEach(
+      column => {
+        if (noValue(data[column])) {
+          throwColumnValidationError('required', { column, table });
+        }
+      }
+    );
+  }
+
+  //-----------------------------------------------------------------------------
+  // Query builder methods
+  //-----------------------------------------------------------------------------
   select(...args) {
     return this.build.select(...args);
   }
+
   from(...args) {
     return this.build.from(...args);
   }
 
+  //-----------------------------------------------------------------------------
+  // Record methods
+  //-----------------------------------------------------------------------------
+  newRecord(row) {
+    return recordProxy(
+      new this.recordClass(this, row, this.recordConfig)
+    );
+  }
+
+  record(row) {
+    this.debugData("record()", { row });
+    return Promise.resolve(
+      this.newRecord(row)
+    );
+  }
+
+  records(rows) {
+    this.debugData("records()", { rows });
+    return Promise.resolve(
+      rows.map(
+        row => this.newRecord(row)
+      )
+    );
+  }
+
+  //-----------------------------------------------------------------------------
+  // Utility methods
+  //-----------------------------------------------------------------------------
   tableFragments() {
     return this.tableFragments
   }
+
   identity(data) {
     return this.keys.reduce(
       (result, key) => {
@@ -352,49 +441,7 @@ export class Table extends Queryable {
       {}
     );
   }
-  async insertReload(input, output, options={}) {
-    // For insert queries where the input data is used to run the query,
-    // and the output data is returned from the query. We should have
-    // values for each of this.keys because they should always be
-    // either specified in the input data, or returned by the database
-    const fetch = { };
-    this.keys.map(
-      key => fetch[key] = firstValue(output[key], input[key])
-    );
-    return options.record
-      ? this.oneRecord(fetch)
-      : this.oneRow(fetch);
-  }
-  async updateReload(set, where, options) {
-    // For update queries things are a little more complicated.  In the
-    // usual case we can reload the rows using the original selection
-    // criteria (where).  But we might have done an update which changes
-    // that selection criteria (set), so we should use those values instead.
-    const fetch = { };
-    Object.keys(where).map(
-      key => fetch[key] = firstValue(set[key], where[key])
-    );
-    return this.oneRow(fetch, options);
-  }
-  newRecord(row) {
-    return recordProxy(
-      new this.recordClass(this, row, this.recordConfig)
-    );
-  }
-  record(row) {
-    this.debugData("record()", { row });
-    return Promise.resolve(
-      this.newRecord(row)
-    );
-  }
-  records(rows) {
-    this.debugData("records()", { rows });
-    return Promise.resolve(
-      rows.map(
-        row => this.newRecord(row)
-      )
-    );
-  }
+
 }
 
 export default Table;

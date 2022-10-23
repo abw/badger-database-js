@@ -129,10 +129,13 @@ export class Builder {
     return this.context.havingValues;
   }
 
-  // generate SQL
   sql() {
+    // to generate SQL we first generate a context containing all the
+    // information collected from the query builder chain...
     const context = this.resolveChain();
 
+    // ...then we call the generateSQL() static method on each class in
+    // the order determined by their static buildOrder
     return Object.entries(Generators)
       // sort generators by the buildOrder - the second array element in the value
       .sort( (a, b) => a[1][1] - b[1][1] )

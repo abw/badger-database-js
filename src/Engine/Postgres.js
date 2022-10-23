@@ -95,10 +95,6 @@ export class PostgresEngine extends Engine {
   formatPlaceholder(n) {
     return '$' + n;
   }
-
-  //formatReturning(keys) {
-  //  return ' RETURNING ' + this.formatColumns(keys);
-  //}
 }
 
 export default PostgresEngine

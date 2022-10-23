@@ -1,6 +1,5 @@
 import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount } from "./Utils/Error.js";
-// import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
 import { allColumns, doubleQuote, equals, whereTrue } from './Constants.js';
@@ -12,12 +11,6 @@ const poolDefaults = {
   max: 10,
   propagateCreateError: true
 }
-
-/*
-const queries = {
-  insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
-}
-*/
 
 export class Engine {
   static quoteChar = doubleQuote
@@ -106,24 +99,6 @@ export class Engine {
     this.debugData("prepare()", { sql });
     return connection.prepare(sql);
   }
-  parseError(sql, e) {
-    throw new SQLParseError(sql, this.parseErrorArgs(e));
-  }
-  parseErrorArgs(e) {
-    return {
-      message:  e.message,
-      type:     e.code,
-      code:     e.errno,
-      position: e.position,
-    };
-  }
-  optionalParams(params, options) {
-    if (isObject(params)) {
-      options = params;
-      params = [ ];
-    }
-    return [params, options];
-  }
   async run() {
     notImplemented('run()');
   }
@@ -145,25 +120,42 @@ export class Engine {
   }
 
   //-----------------------------------------------------------------------------
-  // Specific queries: insert, update and delete
+  // Query utility methods
   //-----------------------------------------------------------------------------
-  /*
-  async insert(table, colnames, values, keys) {
-    const columns      = this.formatColumns(colnames);
-    const placeholders = this.formatPlaceholders(values);
-    const returning    = this.formatReturning(keys);
-    const sql          = format(queries.insert, { table, columns, placeholders, returning});
-    this.debugData("insert()", { table, colnames, values, keys, sql });
-    return this.run(sql, values, { keys, sanitizeResult: true });
+  parseError(sql, e) {
+    throw new SQLParseError(sql, this.parseErrorArgs(e));
   }
-  */
+  parseErrorArgs(e) {
+    return {
+      message:  e.message,
+      type:     e.code,
+      code:     e.errno,
+      position: e.position,
+    };
+  }
+  optionalParams(params, options) {
+    if (isObject(params)) {
+      options = params;
+      params = [ ];
+    }
+    return [params, options];
+  }
+  prepareValues(values) {
+    return values.map(
+      // values can be arrays with a comparison, e.g. ['>', 1973], in which case
+      // we only want the second element
+      value => isArray(value)
+        ? value[1]
+        : value
+    )
+  }
+  sanitizeResult(result) {
+    return result;
+  }
 
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
-  sanitizeResult(result) {
-    return result;
-  }
   quote(name) {
     if (isObject(name) && name.sql) {
       return name.sql;
@@ -226,25 +218,12 @@ export class Engine {
         .join(', ')
       : allColumns;
   }
-  //formatReturning() {
-  //  return '';
-  //}
-  prepareValues(values) {
-    return values.map(
-      // values can be arrays with a comparison, e.g. ['>', 1973], in which case
-      // we only want the second element
-      value => isArray(value)
-        ? value[1]
-        : value
-    )
-  }
-
 
   //-----------------------------------------------------------------------------
   // Cleanup
   //-----------------------------------------------------------------------------
   async destroy() {
-    this.debug("destroy() ");
+    this.debug("destroy()");
     await this.pool.destroy();
   }
 }

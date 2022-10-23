@@ -13,6 +13,7 @@ export class Record {
     this.config    = config;
     addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}` }, config);
   }
+
   async update(set) {
     this.debugData("update()", { set });
     this.assertNotDeleted('update');
@@ -21,6 +22,7 @@ export class Record {
     Object.assign(this.row, update);
     return this;
   }
+
   async delete() {
     this.debugData("delete()");
     this.assertNotDeleted('delete');
@@ -29,6 +31,7 @@ export class Record {
     this.deleted = true;
     return this;
   }
+
   assertNotDeleted(action) {
     if (this.deleted) {
       throwDeletedRecordError(
@@ -41,11 +44,13 @@ export class Record {
       )
     }
   }
+
   async relation(name) {
     this.debug('relation(%s)', name);
     return this.relations[name]
       ||=  await this.initRelation(name);
   }
+
   async initRelation(name) {
     this.debug('initRelation(%s)', name);
     const table = this.table.table;

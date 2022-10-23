@@ -2,6 +2,9 @@ import { isArray } from '@abw/badger-utils';
 import Builder from '../Builder.js';
 import { spaceAfter } from '../Utils/Space.js';
 
+// Base class for a couple of simple builders that
+// only take a single value: Limit and Offset
+
 export class Simple extends Builder {
   static buildMethod = 'simple'
 

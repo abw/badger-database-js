@@ -4,7 +4,6 @@ import { fail, isFunction, isString } from "@abw/badger-utils";
 import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";
 
-
 export class Queryable {
   constructor(engine) {
     this.engine = engine || missing('engine');
@@ -57,7 +56,6 @@ export class Queryable {
       : query;
   }
 
-
   sql(name, config) {
     this.debugData("sql()", { name, config });
     return this.buildQuery(name, config).sql();
@@ -95,9 +93,11 @@ export class Queryable {
   loadedOne(row) {
     return row;
   }
+
   loadedAny(row) {
     return row;
   }
+
   loadedAll(rows) {
     return rows;
   }

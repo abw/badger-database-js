@@ -10,9 +10,11 @@ export class Insert extends Builder {
   static messages    = {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns" and "column".',
   }
+
   static generateSQL() {
     return this.keyword;
   }
+
   resolveLink() {
     if (this.args.length) {
       return super.resolveLink();
@@ -21,12 +23,15 @@ export class Insert extends Builder {
       this.context.insert = [ ];
     }
   }
+
   resolveLinkString(columns) {
     return this.quoteTableColumns(undefined, columns)
   }
+
   resolveLinkArray(columns) {
     return this.quoteTableColumns(undefined, columns)
   }
+
   resolveLinkObject(column) {
     const cols = column.column || column.columns;
     if (cols) {

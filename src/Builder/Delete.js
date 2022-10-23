@@ -6,12 +6,13 @@ import { spaceAfter } from '../Utils/Space.js';
 export class Delete extends Builder {
   static buildMethod = 'delete'
   static buildOrder  = 19
-  static subMethods  = 'from join where order order_by limit'
+  static subMethods  = 'from join where order order_by limit returning'
   static keyword     = DELETE
   static joint       = comma
   static messages    = {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "table" and "prefix".',
   }
+
   static generateSQL(values) {
     const keyword = this.keyword;
     const joint   = this.joint;
@@ -19,6 +20,7 @@ export class Delete extends Builder {
       ? spaceAfter(keyword) + (isArray(values) ? values.join(joint) : values)
       : keyword;
   }
+
   resolveLink() {
     if (this.args.length) {
       return super.resolveLink();
@@ -27,9 +29,11 @@ export class Delete extends Builder {
       this.context.delete = [ ];
     }
   }
+
   resolveLinkString(columns, table, prefix) {
     return this.quoteTableColumns(table, columns, prefix)
   }
+
   resolveLinkObject(column) {
     const cols = column.column || column.columns;
     if (cols) {

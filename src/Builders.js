@@ -75,16 +75,3 @@ export const databaseBuilder = database =>
 export const tableBuilder = table =>
   Proxy(Builders, new Table(undefined, table))
 
-// We used to pass the factory to each builder component as the first
-// argument, but it wasn't used.  However, it's possible that we might
-// want to use it one day, e.g. if a builder wants to add other builder
-// components.  But I think that's over-complicating things.
-//
-//export const factory = (parent, type, ...args) => {
-//  return new Builders[type](parent, ...args);
-//}
-//
-//export const databaseBuilder = database =>
-//  Proxy(Builders, new Database(factory, undefined, database))
-
-// export default factory;
