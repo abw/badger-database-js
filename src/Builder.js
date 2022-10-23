@@ -85,9 +85,9 @@ export class Builder {
     return { whereValues, havingValues };
   }
 
-  values(...args) {
-    return this.allValues(...args);
-  }
+  //values(...args) {
+  //  return this.allValues(...args);
+  //}
 
   allValues(where=[]) {
     const { setValues, whereValues, havingValues } = this.resolveChain();
@@ -139,7 +139,7 @@ export class Builder {
       // filter out any that don't have slots defined
       .filter( ([slot]) => context[slot] )
       // call the generateSQL() static method
-      .map( ([slot, entry]) => entry[0].generateSQL(context[slot]) )
+      .map( ([slot, entry]) => entry[0].generateSQL(context[slot], context) )
       // filter out any that didn't return a value
       .filter( i => hasValue(i) )
       // join together into a single string
@@ -195,7 +195,7 @@ export class Builder {
     else if (noValue(item)) {
       return this.resolveLinkNothing(item);
     }
-    fail("Invalid query builder method: ", item);
+    fail("Invalid query builder value: ", item);
   }
 
   resolveLinkString() {

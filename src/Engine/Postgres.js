@@ -3,9 +3,10 @@ import { defaultIdColumn } from '../Constants.js';
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class PostgresEngine extends Engine {
-  static driver   = 'pg'
-  static protocol = 'postgres'
-  static alias    = 'postgresql'
+  static driver    = 'pg'
+  static protocol  = 'postgres'
+  static alias     = 'postgresql'
+  static returning = true
 
   //-----------------------------------------------------------------------------
   // Pool connections methods
@@ -95,9 +96,9 @@ export class PostgresEngine extends Engine {
     return '$' + n;
   }
 
-  formatReturning(keys) {
-    return ' RETURNING ' + this.formatColumns(keys);
-  }
+  //formatReturning(keys) {
+  //  return ' RETURNING ' + this.formatColumns(keys);
+  //}
 }
 
 export default PostgresEngine

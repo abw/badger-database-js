@@ -113,7 +113,7 @@ export function runTableQueriesTests(engine) {
   test.serial( 'fetch all badgers once',
     async t => {
       const users = await db.table('users');
-      const values = users.query('allBadgers').values();
+      const values = users.query('allBadgers').allValues();
       t.deepEqual( values, ['Badger'] );
     }
   )
@@ -121,7 +121,7 @@ export function runTableQueriesTests(engine) {
   test.serial( 'fetch all badgers twice',
     async t => {
       const users = await db.table('users');
-      const values = users.query('allBadgers').values();
+      const values = users.query('allBadgers').allValues();
       t.deepEqual( values, ['Badger'] );
     }
   )
@@ -129,7 +129,7 @@ export function runTableQueriesTests(engine) {
   test.serial( 'inspect fetch',
     async t => {
       const users = await db.table('users');
-      const values = users.selectFrom.values();
+      const values = users.selectFrom.allValues();
       t.deepEqual( values, [] );
     }
   )

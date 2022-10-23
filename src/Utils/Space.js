@@ -1,4 +1,4 @@
-import { blank, space } from "../Constants.js";
+import { blank, lparen, rparen, space } from "../Constants.js";
 
 export const spaceAfter = string =>
   (string && string.length)
@@ -13,4 +13,9 @@ export const spaceBefore = string =>
 export const spaceAround = string =>
   (string && string.length)
     ? space + string + space
+    : blank
+
+export const parens = string =>
+  (string && string.length)
+    ? lparen + string + rparen
     : blank

@@ -19,21 +19,21 @@ test.before( 'connect',
 test.serial( 'all() first time',
   async t => {
     const query = await db.query('selectBobby');
-    t.deepEqual(query.values(), ['Bobby Badger'] );
+    t.deepEqual(query.allValues(), ['Bobby Badger'] );
   }
 )
 
 test.serial( 'all() second time',
   async t => {
     const query = await db.query('selectBobby');
-    t.deepEqual(query.values(), ['Bobby Badger'] );
+    t.deepEqual(query.allValues(), ['Bobby Badger'] );
   }
 )
 
 test.serial( 'all() third time',
   async t => {
     const query = await db.query('selectBobby');
-    t.deepEqual(query.values(), ['Bobby Badger'] );
+    t.deepEqual(query.allValues(), ['Bobby Badger'] );
   }
 )
 

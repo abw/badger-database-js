@@ -1,6 +1,6 @@
 import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount } from "./Utils/Error.js";
-import { format } from './Utils/Format.js';
+// import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
 import { allColumns, doubleQuote, equals, whereTrue } from './Constants.js';
@@ -13,16 +13,22 @@ const poolDefaults = {
   propagateCreateError: true
 }
 
+/*
 const queries = {
   insert: 'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
 }
+*/
 
 export class Engine {
+  static quoteChar = doubleQuote
+  static returning = false
+
   constructor(config={}) {
     this.engine    = config.engine || missing('engine');
     this.database  = config.database || missing('database');
     this.driver    = this.constructor.driver || missing('driver');
-    this.quoteChar = this.constructor.quoteChar || doubleQuote;
+    this.quoteChar = this.constructor.quoteChar;
+    this.returning = this.constructor.returning;
     this.messages  = this.constructor.messages;
     this.config    = this.configure(config);
     this.pool      = this.initPool(config.pool);
@@ -141,6 +147,7 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Specific queries: insert, update and delete
   //-----------------------------------------------------------------------------
+  /*
   async insert(table, colnames, values, keys) {
     const columns      = this.formatColumns(colnames);
     const placeholders = this.formatPlaceholders(values);
@@ -149,6 +156,7 @@ export class Engine {
     this.debugData("insert()", { table, colnames, values, keys, sql });
     return this.run(sql, values, { keys, sanitizeResult: true });
   }
+  */
 
   //-----------------------------------------------------------------------------
   // Query formatting
@@ -218,9 +226,9 @@ export class Engine {
         .join(', ')
       : allColumns;
   }
-  formatReturning() {
-    return '';
-  }
+  //formatReturning() {
+  //  return '';
+  //}
   prepareValues(values) {
     return values.map(
       // values can be arrays with a comparison, e.g. ['>', 1973], in which case

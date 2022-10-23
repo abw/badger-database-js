@@ -121,11 +121,22 @@ export class Table extends Queryable {
       ? this.insertAll(data, options)
       : this.insertOne(data, options)
   }
-  async insertOne(data, options={}) {
-    this.debugData("insertOne()", { data, options });
+  prepareInsert(data, options) {
     const [cols, vals] = this.checkWritableColumns(data, options);
+    const returning = this.engine.returning
+      ? { table: this.table, columns: this.keys }
+      : undefined;
     this.checkRequiredColumns(data);
-    const insert = await this.engine.insert(this.table, cols, vals, this.keys);
+    const insert = this.build
+      .insert(cols)
+      .into(this.table)
+      .values(vals)
+      .returning(returning);
+    this.debugData('prepareInsert()', { data, sql: insert.sql() })
+    return insert;
+  }
+  async insertOne(data, options={}) {
+    const insert = await this.prepareInsert(data, options).run(undefined, { keys: this.keys });
     return options.reload || options.record
       ? this.insertReload(data, insert, options)
       : insert;
