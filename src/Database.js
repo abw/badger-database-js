@@ -20,6 +20,7 @@ export class Database extends Queryable {
     this.fragments = config.fragments;
     this.tables    = config.tablesObject || new config.tablesClass(config.tables);
     this.build     = databaseBuilder(this);
+    this.builder   = this.build;  // can't decide on the best name, trying both
     this.model     = modelProxy(this);
     this.waiter    = proxymise(this);
     this.state     = {
@@ -60,10 +61,19 @@ export class Database extends Queryable {
   // Query builder
   //-----------------------------------------------------------------------------
   select(...args) {
-    return this.build.select(...args);
+    return this.builder.select(...args);
+  }
+  insert(...args) {
+    return this.builder.insert(...args);
+  }
+  update(...args) {
+    return this.builder.update(...args);
+  }
+  delete(...args) {
+    return this.builder.delete(...args);
   }
   from(...args) {
-    return this.build.from(...args);
+    return this.builder.from(...args);
   }
 
   //-----------------------------------------------------------------------------

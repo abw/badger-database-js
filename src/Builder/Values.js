@@ -1,20 +1,13 @@
-import { isFloat, isInteger } from '@abw/badger-utils';
 import Builder from '../Builder.js';
-import { comma, VALUES } from '../Constants.js';
-import { parens, spaceAfter } from '../Utils/Space.js';
+import { isFloat, isInteger } from '@abw/badger-utils';
 
 export class Values extends Builder {
   static buildMethod = 'values'
-  static buildOrder  = 45
-  static keyword     = VALUES
-  static joint       = comma
+  static buildOrder  = 0
 
-  static generateSQL(values) {
-    const keyword = this.keyword;
-    const joint   = this.joint;
-    return spaceAfter(keyword)
-      + parens(values.join(joint))
-  }
+  // values() is used to provide pre-defined values for the INSERT INTO clause.
+  // It adds the values to setValues() when the link is resolved but doesn't
+  // generate any output - see Into.js for where the VALUES clause is created
 
   resolveLinkItem(item) {
     if (isInteger(item) || isFloat(item)) {
@@ -24,25 +17,17 @@ export class Values extends Builder {
   }
 
   resolveLinkString(value) {
-    const database = this.lookupDatabase();
     this.setValues(value)
-    return [
-      database.engine.formatPlaceholder(
-        this.context.placeholder++
-      )
-    ];
+    return [];
   }
 
   resolveLinkArray(values) {
-    const database = this.lookupDatabase();
-    return values.map(
+    values.forEach(
       value => {
         this.setValues(value)
-        return database.engine.formatPlaceholder(
-          this.context.placeholder++
-        )
       }
     )
+    return [ ];
   }
 }
 

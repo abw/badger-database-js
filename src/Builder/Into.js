@@ -1,4 +1,4 @@
-import { blank, comma, INTO } from '../Constants.js';
+import { blank, comma, INTO, newline, VALUES } from '../Constants.js';
 import { isArray, isString } from '@abw/badger-utils';
 import Builder from '../Builder.js';
 import { parens, spaceAfter, spaceBefore } from '../Utils/Space.js';
@@ -11,12 +11,21 @@ export class Into extends Builder {
   static joint       = comma
 
   static generateSQL(values, context) {
-    const keyword = this.keyword;
-    const joint   = this.joint;
-    const columns = context.insert;
-    return spaceAfter(keyword)
-      + (isArray(values) ? values.join(joint) : values)
-      + (columns ? spaceBefore(parens(columns.join(comma))) : blank)
+    const keyword  = this.keyword;
+    const joint    = this.joint;
+    const database = context.database;
+    const columns  = context.insert || [ ];
+    let   place    = context.placeholder;
+    const into     = spaceAfter(keyword) + (isArray(values) ? values.join(joint) : values)
+    const cols     = columns.length ? spaceBefore(parens(columns.join(comma))) : blank
+    const vals     = columns.length ? newline + spaceAfter(VALUES) + parens(
+      columns.map(
+        () => database.engine.formatPlaceholder(
+          place++
+        )
+      ).join(comma)
+    ) : blank;
+    return into + cols + vals;
   }
 
   initBuilder(...tables) {

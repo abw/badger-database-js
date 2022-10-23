@@ -36,7 +36,8 @@ test( 'insert into',
 test( 'insert columns into',
   t => {
     const op = db.build.insert('a b c').into('foo');
-    t.is( op.sql(), 'INSERT\nINTO "foo" ("a", "b", "c")' );
+    t.is( op.sql(), 'INSERT\nINTO "foo" ("a", "b", "c")\nVALUES (?, ?, ?)' );
+    t.deepEqual( op.allValues(), [] )
   }
 )
 

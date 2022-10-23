@@ -14,7 +14,8 @@ export function runTableInsertTests(engine) {
         database,
         tables: {
           users: {
-            columns: 'id:readonly name:required email:required'
+            columns: 'id:readonly name:required email:required',
+            debug: false,
           }
         }
       });

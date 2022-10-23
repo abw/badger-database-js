@@ -17,7 +17,7 @@ test( 'values value',
   t => {
     const op = db.build.values(10, 'b');
     t.true( op instanceof Values )
-    t.is( op.sql(), 'VALUES (?, ?)' );
+    t.is( op.sql(), '' );
     t.deepEqual( op.allValues(), [10, 'b'])
   }
 )
@@ -26,7 +26,7 @@ test( 'values',
   t => {
     const op = db.build.values([10, 20]);
     t.true( op instanceof Values )
-    t.is( op.sql(), 'VALUES (?, ?)' );
+    t.is( op.sql(), '' );
     t.deepEqual( op.allValues(), [10, 20] )
   }
 )
