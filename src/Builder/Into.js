@@ -6,7 +6,6 @@ import { parens, spaceAfter, spaceBefore } from '../Utils/Space.js';
 export class Into extends Builder {
   static buildMethod = 'into'
   static buildOrder  = 29
-  static subMethods  = 'values returning'
   static keyword     = INTO
   static joint       = comma
 

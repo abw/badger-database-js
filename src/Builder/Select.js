@@ -4,6 +4,7 @@ import { comma, SELECT } from '../Constants.js';
 export class Select extends Builder {
   static buildMethod = 'select'
   static buildOrder  = 20;
+  static subMethods  = 'select columns from table prefix join where having group groupBy order orderBy limit offset range returning'
   static keyword     = SELECT
   static joint       = comma
   static messages    = {
