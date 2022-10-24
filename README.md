@@ -97,8 +97,8 @@ make it to the top of my TODO list.  Iif you're looking to add a new
 feature then please [discuss it with me](mailto:abw@wardley.org) first.
 
 All that said, it's a relatively simple project totalling less
-than 2,500 lines of code.  It's got an extensive test suite of over
-1,000 tests (adding another 8,000 lines of code) and a comprehensive
+than 3,00 lines of code.  It's got an extensive test suite of over
+1,200 tests (adding another 10,000 lines of code) and a comprehensive
 user manual.  An experienced Javascript programmer with knowledge of SQL
 should be able to grok the code in a few hours.  If you're happy to use
 the source, Luke, then it may be the droids you're looking for.  But
@@ -108,14 +108,14 @@ then it might not be for you - there are *plenty* of other Javascript
 ORMs that might be a better place to start.
 
 If you are using it to develop an application and want to hire me for
-some paid consultancy work, or if you need someone to help with systems
-analysis, database design, application development, etc., then feel to
-[contact me](mailto:abw@wardley.org) to discuss your requirements - it's
-what I do professionally.  That isn't supposed to be an advert, though.
-I'm not actively seeking work, at least, not *full-time* work, as I've
-already got plenty on for a number of different clients. But if you need
-me, and depending on how big a project it is, then I may be able to fit
-you in or recommend someone who can.
+some paid consultancy work, to provide support, or if you need someone
+to help with systems analysis, database design, application development,
+etc., then feel to [contact me](mailto:abw@wardley.org) to discuss your
+requirements - it's what I do professionally.  That isn't supposed to be
+an advert, though.  I'm not actively seeking work, at least, not *full-time*
+work, as I've already got plenty on for a number of different clients. But
+if you need me, and depending on how big a project it is, then I may be
+able to fit you in or recommend someone who can.
 
 ## Installation
 
