@@ -1,5 +1,14 @@
 # Extending
 
+In this section we'll look at how you can customise and extend the
+library.
+
+* [Custom Tables Class](#custom-tables-class)
+* [Custom Tables Object](#custom-tables-object)
+* [Adding Query Builder Methods](#adding-query-builder-methods)
+* [Adding a New Database Engine](#adding-a-new-database-engine)
+* [Using a Different Engine Driver](#using-a-different-engine-driver)
+
 ## Custom Tables Class
 
 You can provide your own implementation of the `Tables` class which
@@ -88,6 +97,7 @@ You should create your module as a subclass of the `Builder` module.
 export class Hello extends Builder {
   static buildMethod = 'hello'
   static buildOrder  = 0
+  static validFor    = 'SELECT INSERT UPDATE DELETE'
   static keyword     = '# GREETINGS: '
   static joint       = ', '
 
@@ -101,7 +111,9 @@ It should define the static `buildMethod` property which is the name of the meth
 that will be callable in a query builder chain.  The `buildOrder` property is a
 number from `0` to `100` which determines where in the generated SQL query it will
 appear (e.g. `0` is at the start, `10` is where `WITH` is placed, `20` for `SELECT`,
-`30` for `FROM`, etc.).  The `keyword` is the SQL keyword that the generated SQL
+`30` for `FROM`, etc.).  The `validFor` property is a list of the keywords for the
+different core query types (`SELECT`, `INSERT`, `UPDATE` and `DELETE`) that your
+method is compatible with.  The `keyword` is the SQL keyword that the generated SQL
 will start with and `joint` is a string used to combine multiple values.
 
 The `resolveLinkString()` method is called when your method is called with a string

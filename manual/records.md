@@ -59,6 +59,8 @@ priority.  For example, `record.update` will resolve to the record
 [update()](manual/record_methods.html#update--) method so if you have a
 column called `update` then you must access it as `record.row.update`.
 
+## Where Next?
+
 In the next few sections we'll look at the [record methods](manual/record_methods.html)
 that are provided, and how to define your own custom [record class](manual/record_class.html)
 where you can put additional functionality relating to a record.

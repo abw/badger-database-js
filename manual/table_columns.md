@@ -178,3 +178,9 @@ const db = connect({
   }
 });
 ```
+
+## Where Next?
+
+In the section we'll look at the [table methods](manual/table_methods.html)
+which are provided to automatically generate queries to insert, update,
+fetch and delete rows.

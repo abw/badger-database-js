@@ -1,5 +1,24 @@
 # Table Queries
 
+* [SQL Queries](#sql-queries)
+* [Named Queries](#named-queries)
+* [Query Fragments](#query-fragments)
+* [Query Builder](#query-builder)
+* [Query Methods](#query-methods)
+  * [run(query, values, options)](#run-query--values--options-)
+  * [one(query, values, options)](#one-query--values--options-)
+  * [any(query, values, options)](#any-query--values--options-)
+  * [all(query, values, options)](#all-query--values--options-)
+  * [oneRow(query, args)](#onerow-query--args-)
+  * [anyRow(query, args)](#anyrow-query--args-)
+  * [allRows(query, args)](#allrows-query--args-)
+  * [oneRecord(query, args)](#onerecord-query--args-)
+  * [anyRecord(query, args)](#anyrecord-query--args-)
+  * [allRecords(query, args)](#allrecords-query--args-)
+  * [sql(query)](#sql-query-)
+
+## SQL Queries
+
 Table objects implement the [run()](#run-query--values--options-),
 [one()](#one-query--values--options-), [any()](#any-query--values--options-)
 and [all()](#all-query--values--options-) method similar to those
@@ -521,3 +540,9 @@ console.log( users.sql('allBadgers') )
 //    FROM "users"
 //    WHERE "animal" = ?
 ```
+
+## Where Next?
+
+In the section we'll show how you can define your own
+[table classes](manual/table_class.html) to help organise larger
+projects and provide custom table functionality.

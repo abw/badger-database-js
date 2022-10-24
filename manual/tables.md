@@ -199,6 +199,8 @@ const user2 = await users.any('selectByEmail', ['brian@badgerpower.com']);
 const user3 = await users.all('allBadgers');
 ```
 
+## Where Next?
+
 In the next few sections we'll look at how [table columns](manual/table_columns.html)
 are defined, the [table methods](manual/table_methods.html) that are provided, how to
 define and use [table queries](manual/table_queries.html), and how

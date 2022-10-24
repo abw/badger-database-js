@@ -2,6 +2,16 @@
 
 Relations are, rather unsurprisingly, at the heart of relational databases.
 
+* [Introduction](#introduction)
+* [Relation Types](#relation-types)
+* [Defining Table Relations](#defining-table-relations)
+* [Fetching Relations](#fetching-relations)
+* [Additional Constraints](#additional-constraints)
+* [Shorthand Syntax for Defining Relations](#shorthand-syntax-for-defining-relations)
+* [Custom Queries](#custom-queries)
+
+## Introduction
+
 To demonstrate the concepts we're going to use an overly simple schema for
 a music database.  We'll assume that the database tables have already been
 created and populated with some sample data.
@@ -51,6 +61,10 @@ CREATE TABLE tracks (
   FOREIGN KEY (album_id) REFERENCES albums(id)
 )
 ```
+
+There's a complete working example of this code in the
+[07_musicdb](https://github.com/abw/badger-database-js/tree/master/examples/07_musicdb/example.js)
+section of the [github repository](https://github.com/abw/badger-database-js).
 
 ## Relation Types
 
@@ -514,3 +528,8 @@ If you've already defined a record class for a table then this might be the
 easier approach.  On the other hand, if you don't already have a record
 class then it might be slightly easier to define a custom relation with a
 `load` method to achieve the same effect.
+
+## Where Next?
+
+The next few sections cover some miscellaneous features,
+include the the [model](manual/model.html) and [waiter](manual/waiter.html).

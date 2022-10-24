@@ -1,6 +1,36 @@
 # Query Builder Methods
 
-This page describes all the query builder methods.
+This page describes all the query builder methods in detail.
+
+* [Select Queries](#select-queries)
+  * [select(columns)](#select-columns-)
+  * [from(table)](#from-table-)
+  * [where(criteria)](#where-criteria-)
+  * [join(table)](#join-table-)
+  * [order(columns)](#order-columns-)
+  * [group(columns)](#group-columns-)
+  * [having(criteria)](#having-criteria-)
+  * [limit(n)](#limit-n-)
+  * [offset(n)](#offset-n-)
+  * [range(from, to)](#range-from--to-)
+  * [columns(columns)](#columns-columns-)
+  * [table(table)](#table-table-)
+  * [prefix(prefix)](#prefix-prefix-)
+* [Insert Queries](#insert-queries)
+  * [insert(columns)](#insert-columns-)
+  * [into(table)](#into-table-)
+  * [values(values)](#values-values-)
+  * [returning(columns)](#returning-columns-)
+* [Update Queries](#update-queries)
+  * [update(table)](#update-table-)
+  * [set(values)](#set-values-)
+* [Delete Queries](#delete-queries)
+  * [delete()](#delete--)
+* [Execution Methods](#execution-methods)
+  * [run(values, options)](#run-values--options-)
+  * [one(values, options)](#one-values--options-)
+  * [any(values, options)](#any-values--options-)
+  * [all(values, options)](#all-values--options-)
 
 They all work in a similar way with respect to the arguments
 they accept.  The short form is to pass a string which may have
@@ -54,7 +84,9 @@ show placeholders also assume Sqlite (and Mysql) which uses question
 marks, e.g. `?`.  For Postgress the placeholders are of the form `$1`,
 `$2`, `$3`, etc.
 
-## select(columns)
+## Select Queries
+
+### select(columns)
 
 This method is used to specify one or more columns that you want to
 select.
@@ -205,7 +237,7 @@ db.select('id email', { table: 'companies', column: 'name', as: 'company_name' }
 // -> SELECT "id", "email", "companies"."name" AS "company_name"
 ```
 
-## from(table)
+### from(table)
 
 This method is used to specify one or more tables that you want to
 select from.
@@ -290,7 +322,7 @@ db.from(['users', 'people'], 'companies', { table: 'employees' })
 // -> FROM "users" AS "people", "companies", "employees"
 ```
 
-## where(criteria)
+### where(criteria)
 
 This method can be used to specify the criteria for matching rows.
 You can specify one or more columns that you want to match against.
@@ -567,7 +599,7 @@ db.select('name email')
 //    WHERE "id" > ? AND "name" = ?
 ```
 
-## join(table)
+### join(table)
 
 This method can be used to join tables.  A string can be passed as
 a shorthand syntax of the form `from = table.to`, where `from` is the
@@ -709,7 +741,7 @@ db.select('name email employee.job_title')
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"
 ```
 
-## order(columns)
+### order(columns)
 
 This method can be used to create an `ORDER BY` clause.  There's also an
 `orderBy()` alias for the method if you prefer something a little closer
@@ -820,7 +852,7 @@ db.select('*')
 //    ORDER BY "name" DESC, "email"
 ```
 
-## group(columns)
+### group(columns)
 
 This method can be used to create a `GROUP BY` clause.  There's also a
 `groupBy()` alias for it.
@@ -894,7 +926,7 @@ db.select('*')
 //    GROUP BY "company_id", "start_year"
 ```
 
-## having(criteria)
+### having(criteria)
 
 This method works exactly like [where()](#where-criteria-) but is used to specify the
 criteria for matching rows with the `HAVING` keyword.
@@ -967,7 +999,7 @@ console.log(query.havingValues())
 The [insert()](#insert-columns-) and [update()](#update-table-) methods also have their
 own array for storing values which can be inspected by calling `setValues()`.
 
-## limit(n)
+### limit(n)
 
 This method can be used to set a `LIMIT` for the number of rows returned.
 
@@ -994,7 +1026,7 @@ db.select('id name')
 //    LIMIT 20
 ```
 
-## offset(n)
+### offset(n)
 
 This method can be used to set an `OFFSET` for the number of rows returned.
 
@@ -1021,7 +1053,7 @@ db.select('id name')
 //    OFFSET 20
 ```
 
-## range(from, to)
+### range(from, to)
 
 This method allows you to set both the `LIMIT` and `OFFSET` at once.
 
@@ -1101,7 +1133,7 @@ db.select('id name')
 //    OFFSET 50
 ```
 
-## columns(columns)
+### columns(columns)
 
 This is just like [select()](#select-columns-) with one important
 distinction.  If you don't explicitly specify a table name then it
@@ -1146,7 +1178,7 @@ db.from({ table: "users", as: "people" })
 //    FROM "users" AS "people"
 ```
 
-## table(name)
+### table(table)
 
 This can be used in conjuction with [columns()](#columns-columns-) to select
 a table to attach columns to.  The table should previously have been specified
@@ -1160,7 +1192,7 @@ db.from('users companies')
 //    FROM "users", "companies"
 ```
 
-## prefix(prefix)
+### prefix(prefix)
 
 This can be used in conjuction with [columns()](#columns-columns-) to define
 a prefix for subsequent columns.
@@ -1175,7 +1207,203 @@ db.from('users companies')
 
 You can clear the current prefix by calling `prefix()` without any arguments.
 
-## one(values)
+## Insert Queries
+
+### insert(columns)
+
+This method is used to generate an `INSERT` query.  The argument(s) specify
+the columns that you want to insert.
+
+```js
+db.insert('name email');
+```
+
+It should be used in conjunction with [into()](#into-table-).
+
+### into(table)
+
+This method is used to specify the name of the table that you want to insert into.
+
+```js
+db.insert('name email')
+  .into('users');
+// -> INSERT INTO "users" ("name", "email") VALUES (?, ?)
+```
+
+### values(values)
+
+This method can be used to provide values for an insert query.
+They can be provided as individual arguments or passed as an
+array.
+
+```js
+await db
+  .insert('name email')
+  .into('users')
+  .values('Brian Badger', 'brian@badgerpowercom')
+  .run();
+```
+
+If you don't specify the values here then you should provide them
+as an array to the [run()](#run-values-) method.
+
+```js
+await db
+  .insert('name email')
+  .into('users')
+  .run(['Brian Badger', 'brian@badgerpowercom'])
+```
+
+### returning(columns)
+
+This methods generate a `RETURNING` clause for Postgres.  The
+argument should be one or more columns that the query should
+return.
+
+```js
+db.insert('name email')
+  .into('users')
+  .returning('id');
+// -> INSERT INTO "users" ("name", "email")
+//    VALUES (?, ?)
+//    RETURING "id"
+```
+
+The method works much like the [select()](#select-columns-) method.
+For example, you can define an alias by passing a two element array.
+
+```js
+db.insert('name email')
+  .into('users')
+  .returning(['id', 'user_id');
+// -> INSERT INTO "users" ("name", "email")
+//    VALUES (?, ?)
+//    RETURING "id" AS "user_id"
+```
+
+## Update Queries
+
+### update(table)
+
+This method is used to start building an `UPDATE` query.  The argument is the
+name of the table you want to update.  It should be used in conjunction
+with [set()](#set-values-).
+
+```js
+db.update("users")
+// -> UPDATE "users"
+```
+
+### set(values)
+
+This method is used to specify the changes that you want to make in an `UPDATE`
+query.  You can specify the values as column names and then provide the values
+when you call the [run()](#run-values-) method.
+
+```js
+await db
+  .update("users")
+  .set('name')
+  .where('id')
+  .run(['Brian the Badger', 12345])
+// -> UPDATE "users"
+//    SET "name" = ?, "email" = ?
+//    WHERE "id" = ?
+```
+
+Or you can provide the values to the `set()` method, in the same way that you can
+for [where()](#where-criteria-).
+
+```js
+await db
+  .update("users")
+  .set({ name: 'Brian the Badger' })
+  .where({ id: 12345 })
+  .run()
+```
+
+## Delete Queries
+
+### delete()
+
+The `delete()` method is used to start a `DELETE` query.  In the usual
+case it doesn't take any arguments, but should be used in conjunction with
+[from()](#from-table-) to specify the table, and optionally [where()](#where-criteria-),
+to select the rows that you want to delete.
+
+```js
+await db
+  .delete()
+  .from('users')
+  .where({ id: 12345 })
+  .run()
+// -> DELETE FROM "users"
+//    WHERE "id" = ?
+```
+
+As usual, values can be specified in the [where()](#where-criteria-)
+method, as shown above, or passed to the [run()](#run-values-) method.
+
+```js
+await db
+  .delete()
+  .from('users')
+  .where('id')
+  .run([12345])
+```
+
+## Execution Methods
+
+### run(values, options)
+
+This method can be used to run query where you're not expecting to get
+any rows returned.  This is typically used for [insert()](#insert-queries),
+[update()](#update-queries) and [delete()](#delete-queries) queries.
+
+If you have any placeholders in the query that you haven't already defined
+values for then you should provide them as an array.
+
+```js
+const result = await db
+  .insert('name email')
+  .into('users')
+  .run(['Brian Badger', 'brian@badgerpower.com'])
+// -> INSERT INTO "users" ("name", "email")
+//    VALUES (?, ?)
+```
+
+Although this method doesn't return any rows from the database is does
+return a result.
+
+You can pass a second argument to the `run()` method as an object containing
+options.  The `sanitizeResult` option standardised the response for different
+database types so that, for example, `changes` always contains the number of
+rows changed.
+
+```js
+const result = await db
+  .insert('name email')
+  .into('users')
+  .run(
+    ['Brian Badger', 'brian@badgerpower.com'],
+    { sanitizeResult: true }
+  )
+console.log("changes: ", result.changes)
+```
+
+If you specify any placeholder values in the query then these will automatically
+be provided to the `run()` method.  For example, the `values()` method can be
+used to provide values to an `insert()` query.
+
+```js
+const result = await db
+  .insert('name email')
+  .into('users')
+  .values('Brian Badger', 'brian@badgerpower.com')
+  .run()
+```
+
+### one(values, options)
 
 This method will execute the query and return exactly one row.  If the query
 returns more than one row or no rows then an error will be thrown.
@@ -1282,14 +1510,19 @@ db.select(...)
 You can also call the `whereValues()` and `havingValues()` to see what the query
 has got stored for them.
 
-## any(values)
+### any(values, options)
 
 This method will execute the query and return one row if it exists or `undefined`
 if it doesn't.  In all other respects it works exactly like [one()](#one-values-).
 
-## all(values)
+### all(values, options)
 
 This method will execute the query and return an array of all matching rows.
 The array may be empty if no rows are matched.  In all other respects it works
 exactly like [one()](#one-values-).
 
+## Where Next?
+
+In the next section we'll look at [tables](manual/tables.html) which provide
+methods to automatically generate queries to insert, update, fetch and delete
+rows.

@@ -1,5 +1,22 @@
 # Query Builder
 
+This page gives a general introduction to generating and running queries
+using the SQL Query Builder.
+
+* [Introduction](#introduction)
+* [Getting Started](#getting-started)
+* [Select Queries](#select-queries)
+* [Insert Queries](#insert-queries)
+* [Update Queries](#update-queries)
+* [Delete Queries](#delete-queries)
+* [Embedding Raw SQL](#embedding-raw-sql)
+* [Placeholder Values](#placeholder-values)
+* [Running Queries](#running-queries)
+* [The Importance of Being Idempotent](#the-importance-of-being-idempotent)
+* [Named Queries Using a Query Builder](#named-queries-using-a-query-builder)
+
+## Introduction
+
 The philosophy of the badger-database library is that ORMs and
 SQL query generators are considered *Mostly Harmful*, especially
 if they're employed as an alternative to using SQL.  But that's
@@ -35,36 +52,32 @@ elements that precede it.  This means that you can create partial
 queries which you can then use to build multiple different queries
 that are variations of it.
 
-** NOTE: We DO now support insert, update and delete queries **
-There are a number of limitations, most of which are intentional.
-The first and most prominent is that we currently only support
-select queries.  The reasoning behind this is that insert, update
-and delete queries are destructive in that they write to the database.
-If you get something wrong because the SQL query is obscured by
-using a query builder then you're going to have a bad day.  We don't
-want you to have a bad day, especially not on our account.
+The query builder is intended to be used to generate simpler queries
+that can be automated, or are otherwise tedious to write by hand.
+For example, the [tables](manual/tables.html) use the query builder
+to automatically generate queries for selecting, inserting, updating
+and deleting records.  In addition, they provide some extra data
+validation.  You can mark table columns as `required` and/or `readonly`
+and the method calls will be sanity checked for you.  An error will
+be thrown if you try to insert or update `readonly` columns, or
+insert records with missing `required` columns.
 
-As described in the [tables](manual/tables.html) documentation,
-there are already methods provided for inserting, updating and
-deleting records and they come with a safety net.  You can mark
-table columns as `required` and/or `readonly` and the method calls
-will be sanity checked for you.  An error will be thrown if you
-try to insert or update `readonly` columns, or insert records
-with missing `required` columns.
+It is possible to use the query builder to generate more complex
+queries involving multi-table joins, sub-queries, and so on.  However,
+you should exercise caution when doing so.  Make sure to check the
+generated output using the `sql()` method to convince yourself that it's
+generating the SQL that you expect.  In the long run you may find it easier
+and more reliable to write complex queries as raw SQL that you can test
+(on a sacrificial copy of your production database, of course) and
+then define as a [named queries](manual/named_queries.html).
 
-If you need to perform an insert, update or delete query that
-is any more complicated than that (e.g. requiring a join to another
-table) then we highly recommend that you write it as an SQL query
-that you can test (on a sacrificial copy of your production database,
-of course) and then define as a [named query](manual/named_queries.html).
-
-Another limitation is that we don't support all the SQL elements that
-you could possibly want to put in a select query.  Again, this is
-deliberate.  We've tried to cover the things that you're likely to
-need most often, and provide an easy way to embed raw SQL for those
-times when you need something else.  This library does not try
-to discourage you from using SQL when you need to.  In fact, it
-positively encourages you to do so.
+The query builder has some limitations in that it doesn't support all
+the SQL elements that you could possibly want to put in a query.
+This is *probably* deliberate.  We've tried to cover the things that
+you're likely to need most often, and provide an easy way to embed raw
+SQL for those times when you need something else.  This library does
+not try to discourage you from using SQL when you need to.  In fact,
+it positively encourages you to do so.
 
 Before we get into too much detail, let's look at some examples.
 
@@ -219,7 +232,7 @@ db.select('id', 'name').from('users')
 ```
 
 For example, the `select()` method allows you to pass an array of
-two element.  The first is the column name, the second is an alias.
+two elements.  The first is the column name, the second is an alias.
 
 ```js
 db.select(['name', 'user_name']).from('users')
@@ -442,7 +455,7 @@ The query generated will still use placeholders.  It will also
 automatically keep track of the values that go with each placeholder.
 
 If you want to see what placeholder values a query has collected then
-you can call the `values()` method.
+you can call the `allValues()` method.
 
 ```js
 const query = db
@@ -450,7 +463,7 @@ const query = db
   .from('users')
   .where({ id: 12345 })
 
-console.log(query.values())
+console.log(query.allValues())
 // -> [12345]
 ```
 
@@ -477,6 +490,9 @@ defined.  For `select()` queries this list will be empty.
 console.log(query.setValues())
 // -> [ ]
 ```
+
+The `allValues()` method returns a concatenated list of all the `setValues()`,
+`whereValues()` and `havingValue()`, *in that order*.
 
 ## Running Queries
 
@@ -714,3 +730,8 @@ q.setValues()     // -> []
 q.whereValues()   // -> ['Badger']
 q.havingValues()  // -> []
 ```
+
+## Where Next?
+
+In the next section we'll go over the
+[query builder methods](manual/builder_methods.html) in detail.

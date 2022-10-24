@@ -167,6 +167,14 @@ else {
 }
 ```
 
+## Where Next?
+
+Read on to find out how to define reusable [named queries](manual/named_queries.html)
+so that you don't have to litter your application code with SQL queries.
+
+If you prefer to generate SQL queries programmatically then the
+[query builder](manual/query_builder.html) might also be of interest.
+
 
 
 

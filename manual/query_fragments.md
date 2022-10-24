@@ -80,3 +80,8 @@ db.sql('&lt;selectEmployee&gt; WHERE companies.name=?');
 //    JOIN companies on users.company_id=companies.id
 //    WHERE companies.name=?
 ```
+
+## Where Next?
+
+You can also generate SQL queries using the
+[query builder](manual/query_builder.html).
