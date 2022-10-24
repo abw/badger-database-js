@@ -1,7 +1,9 @@
 # Table Methods
 
 The table object provides a number of methods for generating and running
-queries on table rows.
+queries on table rows.  These use the [table query builder](manual/table_queries.html#query-builder)
+to automatically generate and run queries for you based on the data
+you provide as arguments.
 
 As per the previous examples, we'll assume the table definition looks
 something like this:

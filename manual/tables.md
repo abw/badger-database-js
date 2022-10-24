@@ -102,8 +102,25 @@ await users.delete({
 });
 ```
 
-These methods have variants for the cases where you're operating on a single
-row or multiple rows.
+Note that we use `fetch()` rather than `select()` to fetch rows out of the database.
+The `fetch()` method(s) generate queries based on the selection criteria that you pass
+an argument.  The [select()](manual/table_queries.html#query-builder) method (which
+the `fetch()` method uses) is used to generate custom queries using the
+[query builder](manual/query_builder.html).
+
+```js
+// using fetch() - specify the selection criteria
+const rows = await users.fetch({
+  email: 'brian@badgerpower.com'
+});
+// equivalent using select() - selection criteria are added via where()
+const rows = await users.select().where({
+  email: 'brian@badgerpower.com'
+});
+```
+
+The `insert()`, `update()`, `fetch()` and `delete()` methods have variants
+for the cases where you're operating on a single row or multiple rows.
 
 For example, the [insert()](manual/table_methods.html#insert-data--options-)
 method will call [insertOne()](manual/table_methods.html#insertone-data--options-)
@@ -163,11 +180,11 @@ const db = connect({
           // SQL query including table-specific fragments
           'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
         selectByEmail:
-          // using a query builder
-          t => t.select('id name email').from('users').where('email'),
+          // query builder with email value to be supplied
+          t => t.select().where('email'),
         allBadgers:
-          // using the .fetch query builder shortcut
-          t => t.fetch.where({ animal: 'Badger' })
+          // query builder with pre-defined values
+          t => t.select().where({ animal: 'Badger' })
       }
     },
   }

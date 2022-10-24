@@ -256,6 +256,128 @@ db.select('id', { table: 'users', columns: 'name email', prefix: 'user_' }).from
 // -> SELECT "id", "users"."name" AS "user_name", "users.email" as "user_email" FROM "users"
 ```
 
+## Insert Queries
+
+Use the `insert()` method to start an `INSERT` query.  The arguments it
+expects are the names of the columns you're inserting.  You should follow
+that with the `into()` method to specify the table you're inserting into.
+Values for the columns can be provided via the `values()` method, either as
+separate arguments or an array.
+
+```js
+await db
+  .insert('name email')
+  .into('users')
+  .values('Bobby Badger', 'bobby@badgerpower.com')
+  .run();
+// -> INSERT INTO "users" ("name", "email")
+//    VALUES (?, ?)
+```
+
+Or you can pass an array of values as the first argument to the `run()` method.
+This is useful when you want to reuse the query to insert multiple rows.
+
+```js
+const insert = db
+  .insert('name email')
+  .into('users');
+
+await insert.run(['Bobby Badger', 'bobby@badgerpower.com'])
+await insert.run(['Brian Badger', 'brian@badgerpower.com'])
+await insert.run(['Frank Ferret', 'frank@ferretfactory.com'])
+```
+
+The second argument to the `run()` method can be an object containing
+options.  The `sanitizeResult` option is useful if you want to inspect
+the result of the insert operation.
+
+```js
+const result = await insert.run(
+  ['Bobby Badger', 'bobby@badgerpower.com'],
+  { sanitizeResult: true }
+);
+console.log("Changes:", result.changes)
+console.log("Inserted ID:", result.id)
+```
+
+If you're using Postgres then you need to add a `RETURNING` clause on the
+end of the query to get the inserted ID returned.
+
+```js
+const insert = await db
+  .insert('name email')
+  .into('users')
+  .returning('id')
+```
+
+## Update Queries
+
+Use the `update()` method to start an `UPDATE` query.  The argument it
+expects is the name of the table that you're updating.  You should follow
+that with the `set()` method to specify the changes you want to make,
+and optionally, a `where()` clause to define which rows you want to change.
+
+The `set()` and `where()` methods can be passed a list of column names with
+the values being provided to the `run()` method:
+
+```js
+await db
+  .update('users')
+  .set('name')
+  .where('email')
+  .run(['Robert Badger', 'bobby@badgerpower.com']);
+// -> UPDATE "users"
+//    SET name = ?
+//    WHERE email = ?
+```
+
+Or you can provide values directly to the `set()` and/or `where()` methods.  In both
+cases placeholders are used for the values so the SQL generated is identical.
+
+```js
+await db
+  .update('users')
+  .set({ name: 'Robert Badger' })
+  .where({ email: 'bobby@badgerpower.com' })
+  .run();
+// -> UPDATE "users"
+//    SET name = ?
+//    WHERE email = ?
+```
+
+## Delete Queries
+
+Use the `delete()` method to start a `DELETE` query.  It usually doesn't
+take any arguments but should be followed with a `from()` call to set the
+name of the table that you're deleting from, and optionally, a `where()`
+clause to define which rows you want to delete.
+
+```js
+await db
+  .delete()
+  .from('users')
+  .where({ email: 'bobby@badgerpower.com' })
+  .run()
+// -> DELETE FROM "users"
+//    WHERE "email" = ?
+```
+
+This also allows you to define parameter values in the `where()` method, as shown
+above, or specify columns names in the `where()` method and pass all values as an
+array to the `run()` method.
+
+```js
+await db
+  .delete()
+  .from('users')
+  .where('email')
+  .run(['bobby@badgerpower.com'])
+// -> DELETE FROM "users"
+//    WHERE "email" = ?
+```
+
+
+
 ## Embedding Raw SQL
 
 The query builder tries to hit the sweet spot by allowing you to generate
@@ -464,125 +586,6 @@ const rows = await employees
   .all(['Chief Badger'])
 ```
 
-## Insert Queries
-
-Use the `insert()` method to start an `INSERT` query.  The arguments it
-expects are the names of the columns you're inserting.  You should follow
-that with the `into()` method to specify the table you're inserting into.
-Values for the columns can be provided via the `values()` method, either as
-separate arguments or an array.
-
-```js
-await db
-  .insert('name email')
-  .into('users')
-  .values('Bobby Badger', 'bobby@badgerpower.com')
-  .run();
-// -> INSERT INTO "users" ("name", "email")
-//    VALUES (?, ?)
-```
-
-Or you can pass an array of values as the first argument to the `run()` method.
-This is useful when you want to reuse the query to insert multiple rows.
-
-```js
-const insert = db
-  .insert('name email')
-  .into('users');
-
-await insert.run(['Bobby Badger', 'bobby@badgerpower.com'])
-await insert.run(['Brian Badger', 'brian@badgerpower.com'])
-await insert.run(['Frank Ferret', 'frank@ferretfactory.com'])
-```
-
-The second argument to the `run()` method can be an object containing
-options.  The `sanitizeResult` option is useful if you want to inspect
-the result of the insert operation.
-
-```js
-const result = await insert.run(
-  ['Bobby Badger', 'bobby@badgerpower.com'],
-  { sanitizeResult: true }
-);
-console.log("Changes:", result.changes)
-console.log("Inserted ID:", result.id)
-```
-
-If you're using Postgres then you need to add a `RETURNING` clause on the
-end of the query to get the inserted ID returned.
-
-```js
-const insert = await db
-  .insert('name email')
-  .into('users')
-  .returning('id')
-```
-
-## Update Queries
-
-Use the `update()` method to start an `UPDATE` query.  The argument it
-expects is the name of the table that you're updating.  You should follow
-that with the `set()` method to specify the changes you want to make,
-and optionally, a `where()` clause to define which rows you want to change.
-
-The `set()` and `where()` methods can be passed a list of column names with
-the values being provided to the `run()` method:
-
-```js
-await db
-  .update('users')
-  .set('name')
-  .where('email')
-  .run(['Robert Badger', 'bobby@badgerpower.com']);
-// -> UPDATE "users"
-//    SET name = ?
-//    WHERE email = ?
-```
-
-Or you can provide values directly to the `set()` and/or `where()` methods.  In both
-cases placeholders are used for the values so the SQL generated is identical.
-
-```js
-await db
-  .update('users')
-  .set({ name: 'Robert Badger' })
-  .where({ email: 'bobby@badgerpower.com' })
-  .run();
-// -> UPDATE "users"
-//    SET name = ?
-//    WHERE email = ?
-```
-
-## Delete Queries
-
-Use the `delete()` method to start a `DELETE` query.  It usually doesn't
-take any arguments but should be followed with a `from()` call to set the
-name of the table that you're deleting from, and optionally, a `where()`
-clause to define which rows you want to delete.
-
-```js
-await db
-  .delete()
-  .from('users')
-  .where({ email: 'bobby@badgerpower.com' })
-  .run()
-// -> DELETE FROM "users"
-//    WHERE "email" = ?
-```
-
-This also allows you to define parameter values in the `where()` method, as shown
-above, or specify columns names in the `where()` method and pass all values as an
-array to the `run()` method.
-
-```js
-await db
-  .delete()
-  .from('users')
-  .where('email')
-  .run(['bobby@badgerpower.com'])
-// -> DELETE FROM "users"
-//    WHERE "email" = ?
-```
 
 ## Named Queries Using a Query Builder
 
