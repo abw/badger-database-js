@@ -4,13 +4,12 @@ export class OrderItems extends Table {
   configure(schema) {
     schema.columns = 'id order_id product_id quantity price total',
     schema.queries = {
-      orderItems: t => t.selectFrom
+      orderItems: t => t.select()
         .select('products.name')
         .join('product_id = products.id')
         .where('order_id'),
       orderTotal: t => t
         .select([sql`SUM(total)`, 'order_total'])
-        .from('order_items')
         .where('order_id')
     },
     schema.relations = {

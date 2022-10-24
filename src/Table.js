@@ -34,10 +34,10 @@ export class Table extends Queryable {
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
     this.build         = this.database.build;
-    this.selectFrom    = this.build.select({
-      table:   this.table,
-      columns: Object.keys(this.columns)
-    }).from(this.table)
+    //this.selectFrom    = this.build.select({
+    //  table:   this.table,
+    //  columns: Object.keys(this.columns)
+    //}).from(this.table)
 
     aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
@@ -208,7 +208,6 @@ export class Table extends Queryable {
     const [ , , criteria] = this.checkWhereColumns(where, options);
     const query = this
       .select({ table, columns })
-      .from(table)
       .where(criteria)
       .order(options.orderBy || options.order);
     const sql = query.sql();
@@ -393,11 +392,13 @@ export class Table extends Queryable {
   // Query builder methods
   //-----------------------------------------------------------------------------
   select(...args) {
-    return this.build.select(...args);
-  }
-
-  from(...args) {
-    return this.build.from(...args);
+    if (args.length === 0) {
+      args.push({
+        table:   this.table,
+        columns: Object.keys(this.columns)
+      })
+    }
+    return this.build.select(...args).from(this.table)
   }
 
   //-----------------------------------------------------------------------------

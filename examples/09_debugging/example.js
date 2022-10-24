@@ -4,9 +4,10 @@ import { connect, setDebug } from '@abw/badger-database';
 setDebug({
   database: true,
   engine:   true,
-  queries:  true,
+  tables:   true,
   table:    true,
   record:   true,
+  builder:  true,
 })
 
 async function main() {

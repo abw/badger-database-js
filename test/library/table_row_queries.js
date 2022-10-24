@@ -16,9 +16,9 @@ export function runTableRowQueries(engine) {
           users: {
             columns: 'id:readonly name:required email:required',
             queries: {
-              all:     t => t.selectFrom,
-              byName:  t => t.selectFrom.where('name'),
-              byEmail: t => t.selectFrom.where('email')
+              all:     t => t.select(),
+              byName:  t => t.select().where('name'),
+              byEmail: t => t.select().where('email')
             }
           },
         }
@@ -79,7 +79,7 @@ export function runTableRowQueries(engine) {
   test.serial( 'all()',
     async t => {
       const users = await db.table('users');
-      const rows  = await users.all(users.selectFrom);
+      const rows  = await users.all(users.select());
       t.is( rows.length, 2 );
       t.is( rows[0].name,  'Bobby Badger' );
       t.is( rows[0].email, 'bobby@badgerpower.com' );

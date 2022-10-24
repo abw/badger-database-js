@@ -38,9 +38,9 @@ const dbConfig = {
         byArtistId:
           `SELECT <columns> FROM <table> WHERE artist_id=?`,
         byTitle:
-          table => table.select('id year title').from('albums').where('title'),
+          table => table.select('id year title').where('title'),
         byYear:
-          table => table.selectFrom.where('year'),
+          table => table.select().where('year'),
       }
     }
   }
@@ -118,10 +118,10 @@ test.serial( 'fetch album by title',
   }
 );
 
-test.serial( 'selectFrom query',
+test.serial( 'select() query',
   async t => {
     const albums = await db.table('albums');
-    const sql    = albums.selectFrom.sql();
+    const sql    = albums.select().sql();
     t.is( sql, 'SELECT "albums"."id", "albums"."year", "albums"."title", "albums"."artist_id"\nFROM "albums"' )
   }
 )

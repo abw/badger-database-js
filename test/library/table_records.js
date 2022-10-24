@@ -18,8 +18,8 @@ export function runTableRecordsTests(engine) {
           users: {
             columns: 'id:readonly name:required email:required animal',
             queries: {
-              byName:  table => table.selectFrom.where('name'),
-              badgers: table => table.selectFrom.where({ animal: 'Badger' })
+              byName:  table => table.select().where('name'),
+              badgers: table => table.select().where({ animal: 'Badger' })
             },
             debug: false
           }

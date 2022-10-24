@@ -30,7 +30,7 @@ export function runTableQueriesTests(engine) {
               selectByEmail:
                 `<select> WHERE email=${placeholder}`,
               allBadgers:
-                table => table.selectFrom.where({ animal: 'Badger' })
+                table => table.select().where({ animal: 'Badger' })
             }
           }
         }
@@ -129,7 +129,7 @@ export function runTableQueriesTests(engine) {
   test.serial( 'inspect fetch',
     async t => {
       const users = await db.table('users');
-      const values = users.selectFrom.allValues();
+      const values = users.select().allValues();
       t.deepEqual( values, [] );
     }
   )
