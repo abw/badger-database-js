@@ -77,7 +77,7 @@ test( 'delete select error',
     () => db.build.delete().select('foo'),
     {
       instanceOf: QueryBuilderError,
-      message: "select() is not a valid builder method for a DELETE query"
+      message: "select() is not a valid builder method for a DELETE query."
     }
   )
 )
