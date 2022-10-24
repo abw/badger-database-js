@@ -20,7 +20,6 @@ export class Database extends Queryable {
     this.fragments = config.fragments;
     this.tables    = config.tablesObject || new config.tablesClass(config.tables);
     this.build     = databaseBuilder(this);
-    //this.builder   = this.build;  // can't decide on the best name, trying both
     this.model     = modelProxy(this);
     this.waiter    = proxymise(this);
     this.state     = {
