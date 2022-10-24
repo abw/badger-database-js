@@ -425,7 +425,7 @@ const row = await db
 ```
 
 If you want to see what placeholder values have been collected in a query then you
-can call the `values()` method.
+can call the `allValues()` method.
 
 ```js
 const query = db
@@ -433,7 +433,7 @@ const query = db
   .from('users')
   .where({ id: 12345 })
 
-console.log(query.values())
+console.log(query.allValues())
 // -> [12345]
 ```
 
@@ -937,7 +937,7 @@ db.select(...)
 ```
 
 You can see what placeholder values have been collected in a query, and the order
-that they will appear, in by calling the `values()` method.  Note that regardless
+that they will appear, in by calling the `allValues()` method.  Note that regardless
 of the order of method calls, all `where()` placeholder values comes before `having()`
 values.
 
@@ -949,7 +949,7 @@ const query = db
   .having({ b: 789 })
   .where({ a: 456 })
 
-console.log(query.values())
+console.log(query.allValues())
 // -> [123, 456, 789]
 ```
 
@@ -963,6 +963,9 @@ console.log(query.whereValues())
 console.log(query.havingValues())
 // -> [789]
 ```
+
+The [insert()](#insert-columns-) and [update()](#update-table-) methods also have their
+own array for storing values which can be inspected by calling `setValues()`.
 
 ## limit(n)
 
@@ -1243,6 +1246,7 @@ in the correct order for the query.
 At this point we could refer you back to the bit where we said that mixing up different
 approaches isn't recommended.  But you already know that.
 
+** NOTE: this is about to change: THREE lists will be returned **/
 If you need to jiggle around with the order of values then you can pass a function
 to the `any()` method.  This will received two lists of placeholder values: those
 that have been collected from `where()` clauses and those that have been collected

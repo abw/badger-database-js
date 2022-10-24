@@ -50,7 +50,7 @@ export function runDatabaseQueryTests(engine) {
       const result = await db
         .insert('name email')
         .into('users')
-        .values(['Brian Badger', 'brian@badgerpower.com' ])
+        .values('Brian Badger', 'brian@badgerpower.com')
         .run([], { sanitizeResult: true })
       t.is( result.changes, 1 );
     }

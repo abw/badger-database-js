@@ -39,7 +39,7 @@ test.serial( 'insert a user',
 
 test.serial( 'select one',
   async t => {
-    const row = await db.from('users').select('id name email').one();
+    const row = await db.build.from('users').select('id name email').one();
     t.is( row.id, 1 );
     t.is( row.name, 'Bobby Badger' );
     t.is( row.email, 'bobby@badgerpower.com' );
@@ -48,7 +48,7 @@ test.serial( 'select one',
 
 test.serial( 'select any',
   async t => {
-    const row = await db.from('users').select('id name email').any();
+    const row = await db.build.from('users').select('id name email').any();
     t.is( row.id, 1 );
     t.is( row.name, 'Bobby Badger' );
     t.is( row.email, 'bobby@badgerpower.com' );
@@ -57,7 +57,7 @@ test.serial( 'select any',
 
 test.serial( 'select all',
   async t => {
-    const rows = await db.from('users').select('id name email').all();
+    const rows = await db.build.from('users').select('id name email').all();
     t.is( rows.length, 1 );
     t.is( rows[0].id, 1 );
     t.is( rows[0].name, 'Bobby Badger' );
@@ -78,7 +78,7 @@ test.serial( 'add another user',
 
 test.serial( 'select one with value',
   async t => {
-    const row = await db.from('users').select('id name email').where('email').one(['brian@badgerpower.com']);
+    const row = await db.build.from('users').select('id name email').where('email').one(['brian@badgerpower.com']);
     t.is( row.id, 2 );
     t.is( row.name, 'Brian Badger' );
     t.is( row.email, 'brian@badgerpower.com' );
@@ -87,7 +87,7 @@ test.serial( 'select one with value',
 
 test.serial( 'select one with where value',
   async t => {
-    const row = await db.from('users').select('id name email').where({ email: 'brian@badgerpower.com' }).one();
+    const row = await db.build.from('users').select('id name email').where({ email: 'brian@badgerpower.com' }).one();
     t.is( row.id, 2 );
     t.is( row.name, 'Brian Badger' );
     t.is( row.email, 'brian@badgerpower.com' );

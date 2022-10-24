@@ -205,7 +205,7 @@ export const runUserDatabaseTests = async (engine, options) => {
 
   test.serial( 'select all users with columns',
     async t => {
-      const rows = await userdb
+      const rows = await userdb.build
         .from('users')
         .columns('id name email')
         .all();
@@ -215,7 +215,7 @@ export const runUserDatabaseTests = async (engine, options) => {
 
   test.serial( 'select all users with prefix',
     async t => {
-      const rows = await userdb
+      const rows = await userdb.build
         .from('users')
         .prefix('user_')
         .columns('id name email')
