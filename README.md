@@ -97,7 +97,7 @@ make it to the top of my TODO list.  Iif you're looking to add a new
 feature then please [discuss it with me](mailto:abw@wardley.org) first.
 
 All that said, it's a relatively simple project totalling less
-than 3,00 lines of code.  It's got an extensive test suite of over
+than 3,000 lines of code.  It's got an extensive test suite of over
 1,200 tests (adding another 10,000 lines of code) and a comprehensive
 user manual.  An experienced Javascript programmer with knowledge of SQL
 should be able to grok the code in a few hours.  If you're happy to use
