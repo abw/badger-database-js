@@ -582,6 +582,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-database~map",
+    "function/index.html#static-function-map",
+    "<span>map</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~missing",
     "function/index.html#static-function-missing",
     "<span>missing</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -3375,6 +3381,12 @@ window.esdocSearchIndex = [
     "src/relation/many.js",
     "file/src/Relation/many.js.html",
     "src/Relation/many.js",
+    "file"
+  ],
+  [
+    "src/relation/map.js",
+    "file/src/Relation/map.js.html",
+    "src/Relation/map.js",
     "file"
   ],
   [

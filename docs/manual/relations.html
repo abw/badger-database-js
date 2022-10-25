@@ -243,6 +243,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#defining-table-relations" data-ice="link">Defining Table Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#the-map-relation" data-ice="link">The Map Relation</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#custom-queries" data-ice="link">Custom Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#where-next-" data-ice="link">Where Next?</a></li>
@@ -300,6 +301,7 @@
 <li><a href="#defining-table-relations">Defining Table Relations</a></li>
 <li><a href="#fetching-relations">Fetching Relations</a></li>
 <li><a href="#additional-constraints">Additional Constraints</a></li>
+<li><a href="#the-map-relation">The Map Relation</a></li>
 <li><a href="#shorthand-syntax-for-defining-relations">Shorthand Syntax for Defining Relations</a></li>
 <li><a href="#custom-queries">Custom Queries</a></li>
 </ul>
@@ -378,7 +380,16 @@ then you can use the <code>any</code> relation.</p>
 <td><code>from =&gt; table.to</code></td>
 <td>Any number of related records (including zero)</td>
 </tr>
+<tr>
+<td>map</td>
+<td><code>from #&gt; table.to</code></td>
+<td>Mapping any number of related records (including zero)</td>
+</tr>
 </tbody></table>
+<p>The final type <code>map</code> is a variant of the <code>many</code> relation.  Instead of returning an array
+of related records, this relation returns them as an object mapping from the record id
+(or another key of your choosing) to the record (or a value within it).  See
+<a href="#the-map-relation">The Map Relation</a> below for further information.</p>
 <h2 id="defining-table-relations">Defining Table Relations</h2><p>The relations for each table should be added to the <code>tables</code> configuration
 as the <code>relations</code> object.  This is what our main database configuration
 should look like.</p>
@@ -535,6 +546,56 @@ same thing).</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const bonus = await dsotm.bonus_tracks;
 console.log(bonus[0].title);  // Us and Them (Richard Wright Demo)
 console.log(bonus[1].title);  // Money (Roger Waters Demo)</code></code></pre>
+<h2 id="the-map-relation">The Map Relation</h2><p>The <code>map</code> relation is a special case of the <code>many</code> relation.  Instead of returning
+an array of matching records, it returns an object mapping each record id to the record.</p>
+<p>For example, if the <code>albums</code> relation for the <code>artists</code> table returns these records
+for a particular artist:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">[
+  { id: 123, year: 1973, title: 'The Dark Side of the Moon' },
+  { id: 456, year: 1975, title: 'Wish You Were Here' },
+  { id: 789, year: 1970, title: 'Atom Heart Mother' },
+]</code></code></pre>
+<p>Then the same relation defined as a <code>map</code> instead of <code>many</code> would return:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">{
+  123: { id: 123, year: 1973, title: 'The Dark Side of the Moon' },
+  456: { id: 456, year: 1975, title: 'Wish You Were Here' },
+  789: { id: 789, year: 1970, title: 'Atom Heart Mother' },
+}</code></code></pre>
+<p>You can specify an additional <code>key</code> which will be used as the object key
+instead of the record id.  For example, you might want to index the albums
+by year:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.artists.relations...
+albums: {
+  type:  'map',
+  from:  'id',
+  to:    'artist_id',
+  table: 'albums',
+  key:   'year',
+}</code></code></pre>
+<p>Now the relation will return:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">{
+  1973: { id: 123, year: 1973, title: 'The Dark Side of the Moon' },
+  1975: { id: 456, year: 1975, title: 'Wish You Were Here' },
+  1970: { id: 789, year: 1970, title: 'Atom Heart Mother' },
+}</code></code></pre>
+<p>You can also specify a <code>value</code> property.  Instead of mapping to the whole record,
+it will extract that value from the record.  So if the relation is defined
+like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.artists.relations...
+albums: {
+  type:  'map',
+  from:  'id',
+  to:    'artist_id',
+  table: 'albums',
+  key:   'year',
+  value: 'title',
+}</code></code></pre>
+<p>Then the relation will return:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">{
+  1973: 'The Dark Side of the Moon',
+  1975: 'Wish You Were Here',
+  1970: 'Atom Heart Mother',
+}</code></code></pre>
 <h2 id="shorthand-syntax-for-defining-relations">Shorthand Syntax for Defining Relations</h2><p>If you've got a simple relation then you can define it as a string
 using the shorthand syntax.  The general format for the <code>one</code> relation is:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">from -&gt; table.to</code></code></pre>
@@ -542,6 +603,9 @@ using the shorthand syntax.  The general format for the <code>one</code> relatio
 <pre><code class="lang-js"><code class="source-code prettyprint">from ~&gt; table.to</code></code></pre>
 <p>For a <code>many</code> relation it uses a "fat arrow".</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">from =&gt; table.to</code></code></pre>
+<p>For a <code>map</code> relation it uses a "hash arrow" (because another name for a object
+mapping keys to values is a "hash array").</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">from #&gt; table.to</code></code></pre>
 <p>For example, the <code>album</code> relation defined for the <code>tracks</code> table looks
 like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">// tables.tracks.relations...
@@ -581,6 +645,13 @@ as additional items.</p>
 albums: {
   relation: 'id =&gt; albums.artist_id',
   order:    'year',
+}</code></code></pre>
+<p>The same applies for the <code>key</code> and <code>value</code> properties that go with the <code>map</code> relation.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// tables.artists.relations...
+albumsByYear: {
+  relation: 'id #&gt; albums.artist_id',
+  key:      'year',
+  value:    'title',
 }</code></code></pre>
 <h2 id="custom-queries">Custom Queries</h2><p>If you want to define a more complex relation then you can provide your own
 <code>load</code> function to take care of it.</p>

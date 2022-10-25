@@ -120,6 +120,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-any">any</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map">map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
@@ -167,11 +168,12 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Utils/Relation.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { fail, hasValue, isString, noValue, remove } from "@abw/badger-utils";
 
-const relationStringRegex = /^(\w+)\s*([-~=]&gt;)\s*(\w+)\.(\w+)$/;
+const relationStringRegex = /^(\w+)\s*([-~=#]&gt;)\s*(\w+)\.(\w+)$/;
 const relationType = {
   '~&gt;': 'any',
   '-&gt;': 'one',
-  '=&gt;': 'many'
+  '=&gt;': 'many',
+  '#&gt;': 'map',
 };
 const relationAliases = {
   localKey:   'from',

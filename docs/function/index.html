@@ -120,6 +120,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-any">any</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map">map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-one">one</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~ColumnValidationError.html">ColumnValidationError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/Error.js~CustomError.html">CustomError</a></span></span></li>
@@ -610,6 +611,34 @@
           <span data-ice="async">async</span>
           
           <span class="code" data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span><span class="code" data-ice="signature">(record: <span>*</span>, spec: {}): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          <span data-ice="async">async</span>
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-map">map</a></span></span><span class="code" data-ice="signature">(record: <span>*</span>, spec: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2739,6 +2768,84 @@ The error message will be of the form <code>Invalid "XXX" specified: YYY</code>.
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-map">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    <span data-ice="async">async</span>
+    
+    <span class="code" data-ice="name">map</span><span class="code" data-ice="signature">(record: <span>*</span>, spec: {}): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Relation/map.js.html#lineNumber3">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {map} from '<span><a href="file/src/Relation/map.js.html#lineNumber3">@abw/badger-database</a></span>'</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">record</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">spec</td>
+      <td data-ice="type" class="code">{}</td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: {}</li></ul></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-function-missing">
     <span class="access" data-ice="access">public</span>
     
@@ -3343,11 +3450,11 @@ configuration options.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Relation.js.html#lineNumber85">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Relation.js.html#lineNumber86">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseRelationString} from '<span><a href="file/src/Utils/Relation.js.html#lineNumber85">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseRelationString} from '<span><a href="file/src/Utils/Relation.js.html#lineNumber86">@abw/badger-database</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to parse a relation definition string</p>
@@ -3966,11 +4073,11 @@ If no keys or id is defined then we assume it's an <code>id</code> column.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Relation.js.html#lineNumber39">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Relation.js.html#lineNumber40">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {relationConfig} from '<span><a href="file/src/Utils/Relation.js.html#lineNumber39">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {relationConfig} from '<span><a href="file/src/Utils/Relation.js.html#lineNumber40">@abw/badger-database</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to prepare a relation definition.</p>
@@ -4679,11 +4786,11 @@ unexpectedRowCount(10, 'updated');</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Utils/Relation.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Utils/Relation.js.html#lineNumber98">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {whereRelation} from '<span><a href="file/src/Utils/Relation.js.html#lineNumber97">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {whereRelation} from '<span><a href="file/src/Utils/Relation.js.html#lineNumber98">@abw/badger-database</a></span>'</code></pre></div>
   
   
   

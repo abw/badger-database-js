@@ -243,6 +243,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#defining-table-relations" data-ice="link">Defining Table Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#fetching-relations" data-ice="link">Fetching Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#additional-constraints" data-ice="link">Additional Constraints</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#the-map-relation" data-ice="link">The Map Relation</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#shorthand-syntax-for-defining-relations" data-ice="link">Shorthand Syntax for Defining Relations</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#custom-queries" data-ice="link">Custom Queries</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/relations.html"><a href="manual/relations.html#where-next-" data-ice="link">Where Next?</a></li>
@@ -445,7 +446,7 @@ can build queries on.</p>
 //    FROM "users"
 //    WHERE "email" = ?
 const user = await byEmail.one(['bobby@badgerpower.com'])</code></code></pre>
-<p>The <code>select()</code> method is a short hand which automatcally selects the current
+<p>The <code>select()</code> method is a short hand which automatically selects the current
 table (i.e. it calls <code>from(table.name)</code>) for you.  You can specify the columns
 that you want to select as arguments.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const byEmail = users
