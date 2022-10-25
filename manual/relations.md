@@ -7,6 +7,7 @@ Relations are, rather unsurprisingly, at the heart of relational databases.
 * [Defining Table Relations](#defining-table-relations)
 * [Fetching Relations](#fetching-relations)
 * [Additional Constraints](#additional-constraints)
+* [The Map Relation](#the-map-relation)
 * [Shorthand Syntax for Defining Relations](#shorthand-syntax-for-defining-relations)
 * [Custom Queries](#custom-queries)
 
@@ -359,7 +360,7 @@ Now the relation will return:
 }
 ```
 
-You can also specify a `value` key.  Instead of mapping to the whole record,
+You can also specify a `value` property.  Instead of mapping to the whole record,
 it will extract that value from the record.  So if the relation is defined
 like this:
 
