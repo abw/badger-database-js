@@ -20,6 +20,11 @@ class Artists extends Table {
         relation: 'id => albums.artist_id',
         order:    'year'
       },
+      albumsByYear: {
+        relation: 'id #> albums.artist_id',
+        key:      'year',
+        value:    'title'
+      },
       album_tracks: {
         load: async (record) => {
           const artists = record.table;
