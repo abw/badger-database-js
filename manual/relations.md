@@ -89,6 +89,12 @@ then you can use the `any` relation.
 |one|`from -> table.to`|Exactly one related record|
 |any|`from ~> table.to`|Maybe one related record|
 |many|`from => table.to`|Any number of related records (including zero)|
+|map|`from #> table.to`|Mapping any number of related records (including zero)|
+
+The final type `map` is a variant of the `many` relation.  Instead of returning an array
+of related records, this relation returns them as an object mapping from the record id
+(or another key of your choosing) to the record (or a value within it).  See
+[The Map Relation](#the-map-relation) below for further information.
 
 ## Defining Table Relations
 
@@ -302,6 +308,83 @@ console.log(bonus[0].title);  // Us and Them (Richard Wright Demo)
 console.log(bonus[1].title);  // Money (Roger Waters Demo)
 ```
 
+## The Map Relation
+
+The `map` relation is a special case of the `many` relation.  Instead of returning
+an array of matching records, it returns an object mapping each record id to the record.
+
+For example, if the `albums` relation for the `artists` table returns these records
+for a particular artist:
+
+```js
+[
+  { id: 123, year: 1973, title: 'The Dark Side of the Moon' },
+  { id: 456, year: 1975, title: 'Wish You Were Here' },
+  { id: 789, year: 1970, title: 'Atom Heart Mother' },
+]
+```
+
+Then the same relation defined as a `map` instead of `many` would return:
+
+```js
+{
+  123: { id: 123, year: 1973, title: 'The Dark Side of the Moon' },
+  456: { id: 456, year: 1975, title: 'Wish You Were Here' },
+  789: { id: 789, year: 1970, title: 'Atom Heart Mother' },
+}
+```
+
+You can specify an additional `key` which will be used as the object key
+instead of the record id.  For example, you might want to index the albums
+by year:
+
+```js
+// tables.artists.relations...
+albums: {
+  type:  'map',
+  from:  'id',
+  to:    'artist_id',
+  table: 'albums',
+  key:   'year',
+}
+```
+
+Now the relation will return:
+
+```js
+{
+  1973: { id: 123, year: 1973, title: 'The Dark Side of the Moon' },
+  1975: { id: 456, year: 1975, title: 'Wish You Were Here' },
+  1970: { id: 789, year: 1970, title: 'Atom Heart Mother' },
+}
+```
+
+You can also specify a `value` key.  Instead of mapping to the whole record,
+it will extract that value from the record.  So if the relation is defined
+like this:
+
+```js
+// tables.artists.relations...
+albums: {
+  type:  'map',
+  from:  'id',
+  to:    'artist_id',
+  table: 'albums',
+  key:   'year',
+  value: 'title',
+}
+```
+
+Then the relation will return:
+
+```js
+{
+  1973: 'The Dark Side of the Moon',
+  1975: 'Wish You Were Here',
+  1970: 'Atom Heart Mother',
+}
+```
+
 ## Shorthand Syntax for Defining Relations
 
 If you've got a simple relation then you can define it as a string
@@ -323,6 +406,12 @@ For a `many` relation it uses a "fat arrow".
 from => table.to
 ```
 
+For a `map` relation it uses a "hash arrow" (because another name for a object
+mapping keys to values is a "hash array").
+
+```js
+from #> table.to
+```
 
 For example, the `album` relation defined for the `tracks` table looks
 like this:
@@ -385,6 +474,17 @@ as additional items.
 albums: {
   relation: 'id => albums.artist_id',
   order:    'year',
+}
+```
+
+The same applies for the `key` and `value` properties that go with the `map` relation.
+
+```js
+// tables.artists.relations...
+albumsByYear: {
+  relation: 'id #> albums.artist_id',
+  key:      'year',
+  value:    'title',
 }
 ```
 
