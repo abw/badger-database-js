@@ -1,10 +1,11 @@
 import { fail, hasValue, isString, noValue, remove } from "@abw/badger-utils";
 
-const relationStringRegex = /^(\w+)\s*([-~=]>)\s*(\w+)\.(\w+)$/;
+const relationStringRegex = /^(\w+)\s*([-~=#]>)\s*(\w+)\.(\w+)$/;
 const relationType = {
   '~>': 'any',
   '->': 'one',
-  '=>': 'many'
+  '=>': 'many',
+  '#>': 'map',
 };
 const relationAliases = {
   localKey:   'from',
