@@ -56,7 +56,7 @@ const db = connect({
 Any generated queries will use the database table name (e.g. `user` in this
 example), rather than the name that you assigned to refer to the table
 collection (e.g. `users`).  If you don't define the `table` option then
-it defaults to using the name you're indexing it by in `table` (e.g. `users`).
+it defaults to using the name you're indexing it by in `tables` (e.g. `users`).
 
 There is no general consensus about whether tables should be named using the
 [singular or plural noun](https://stackoverflow.com/questions/338156/table-naming-dilemma-singular-vs-plural-names).  Most of the databases that

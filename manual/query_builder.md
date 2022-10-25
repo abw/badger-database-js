@@ -492,7 +492,7 @@ console.log(query.setValues())
 ```
 
 The `allValues()` method returns a concatenated list of all the `setValues()`,
-`whereValues()` and `havingValue()`, *in that order*.
+`whereValues()` and `havingValues()`, *in that order*.
 
 ## Running Queries
 

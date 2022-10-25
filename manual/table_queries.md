@@ -183,7 +183,7 @@ const byEmail = users
 const user = await byEmail.one(['bobby@badgerpower.com'])
 ```
 
-The `select()` method is a short hand which automatcally selects the current
+The `select()` method is a short hand which automatically selects the current
 table (i.e. it calls `from(table.name)`) for you.  You can specify the columns
 that you want to select as arguments.
 
