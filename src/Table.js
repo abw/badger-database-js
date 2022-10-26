@@ -8,6 +8,7 @@ import { isQuery } from "./Utils/Queries.js";
 import Queryable from "./Queryable.js";
 import { aliasMethods } from "./Utils/Methods.js";
 import { databaseBuilder } from "./Builders.js";
+import { cyan, green, red } from "./Utils/Color.js";
 
 const methodAliases = {
   insertRow:     "insertOneRow",
@@ -38,7 +39,10 @@ export class Table extends Queryable {
     this.relations     = config.relations || { };
     this.build         = databaseBuilder(this.database);
 
-    console.log('%s table created with database (%s) - is proxy? ', this.table, database.tmpId(), database.isProxy ? 'YES' : 'NO');
+    console.log(
+      cyan('%s table created with database (%s) - is proxy?'), this.table,
+      database.tmpId(), database.isProxy ? green('YES') : red('NO')
+    );
 
     aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);

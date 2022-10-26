@@ -35,7 +35,8 @@ const p = q => new Proxy(
       if (isFunction(method)) {
         return (
           function(a) {
-            method.apply(p(target), [a?.toUpperCase()])
+            // method.apply(p(target), [a?.toUpperCase()])
+            method.apply(this, [a?.toUpperCase()])
           }
         )
       }
