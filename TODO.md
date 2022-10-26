@@ -1,38 +1,48 @@
-# TODO List
+# TODO
 
-* Add transactions
+## Features
 
-* should table insert() have option to return data (with id added) instead of
-  re-fetching row?
+* should table `insert()` have option to return data (with id added) instead of
+re-fetching row?
 
-* table fetch columns with aliases: { alias: column } ???
-
-* waiter is not throwing errors (or the test aren't picking them up)
+* table fetch columns with aliases: `{ alias: column }` ???
 
 * database inspection to grok tables automagically?
 
-* API documentation
-
 * Query builder - add support for with()
 
-* Update debugging options - queries is no longer valid
-
-* Fix rollup/terser problems with source map (or is this node?)
-
 * ability to fetch a single column, e.g. as an option
-  ...all([], { column: 'x' })
+`...all([], { column: 'x' })`
 
 * Add cross join `<=x=>` or `<x>`
 
+* See if it's possible to rationalise table methods insert(), update(),
+select() and delete() to work as both data query constructors (e.g.
+`insert({ name: 'Andy' })`) and as the start of a query chain.
+
+## Fixes
+
 * functions for munging allValues must be updated to include setValues
 
-* document the above
+## Bugs
 
-* document query builder for insert, update and delete
+* waiter is not throwing errors (or the test aren't picking them up)
 
-* See if it's possible to rationalise table methods insert(), update(),
-  select() and delete() to work as both data query constructors (e.g.
-  `insert({ name: 'Andy' })`) and as the start of a query chain.
+* Fix rollup/terser problems with source map (or is this node?)
+
+## Documentation
 
 * Document table insertRow()/insertOneRow() and insertRows()/insertAllRows()
-  which automatically set reload option, and look into adding to updateXXX
+which automatically set reload option, and look into adding to updateXXX
+
+* API documentation
+
+* Change documentation for setValues/whereValues/havingValues once changed
+
+## Transactions
+
+* Have engine detect a transaction option and use its connection instead of
+taking a new one from the pool
+
+* Database must NOT reuse any cached table to ensure a new table is created
+with Queryable proxy
