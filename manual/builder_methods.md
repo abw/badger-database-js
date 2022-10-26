@@ -1474,9 +1474,19 @@ in the correct order for the query.
 At this point we could refer you back to the bit where we said that mixing up different
 approaches isn't recommended.  But you already know that.
 
-** NOTE: this is about to change: THREE lists will be returned **/
 If you need to jiggle around with the order of values then you can pass a function
-to the `any()` method.  This will received two lists of placeholder values: those
+to the `any()` method.  This will received three lists of placeholder values:
+
+* `setValues` contains any placeholder values provided via the [values()](#values-values-)
+method as part of an [insert()](#insert-queries) query, or via the [set()](#set-values-)
+method as part of an [update()](#update-queries) query.
+
+* `whereValues` contains any placeholder values provided via the [where()](#where-criteria-)
+method.
+
+* `havingValues` contains any placeholder values provided via the [having()](#having-criteria-)
+method.
+
 that have been collected from `where()` clauses and those that have been collected
 from `having()` clauses.  The function should return a new array containing the
 values in the right order.
@@ -1520,6 +1530,34 @@ if it doesn't.  In all other respects it works exactly like [one()](#one-values-
 This method will execute the query and return an array of all matching rows.
 The array may be empty if no rows are matched.  In all other respects it works
 exactly like [one()](#one-values-).
+
+### sql()
+
+This methods generates and returns the SQL for the query.
+
+## Placeholder Value Methods
+
+### setValues()
+
+This returns any array of any placeholder values provided to the
+[values()](#values-values-) or
+[set()](#set-values-) methods.
+
+### whereValues()
+
+This returns any array of any placeholder values provided to the
+[where()](#where-criteria-) method.
+
+### havingValues()
+
+This returns any array of any placeholder values provided to the
+[having()](#having-criteria-) method.
+
+### allValues()
+
+This returns an array of all placeholder values.  It is the concatenated
+list of [setValues()](setvalues--), [whereValues()](wherevalues--)
+and [havingValues()](havingvalues--)
 
 ## Where Next?
 

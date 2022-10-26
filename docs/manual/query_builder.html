@@ -126,6 +126,12 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#one-values--options-" data-ice="link">one(values, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#any-values--options-" data-ice="link">any(values, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#all-values--options-" data-ice="link">all(values, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#sql--" data-ice="link">sql()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#placeholder-value-methods" data-ice="link">Placeholder Value Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#setvalues--" data-ice="link">setValues()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#wherevalues--" data-ice="link">whereValues()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#havingvalues--" data-ice="link">havingValues()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#allvalues--" data-ice="link">allValues()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#where-next-" data-ice="link">Where Next?</a></li>
 </ul>
   </div>
@@ -357,7 +363,7 @@ insert records with missing <code>required</code> columns.</p>
 <p>It is possible to use the query builder to generate more complex
 queries involving multi-table joins, sub-queries, and so on.  However,
 you should exercise caution when doing so.  Make sure to check the
-generated output using the <code>sql()</code> method to convince yourself that it's
+generated output using the <a href="manual/builder_methods.html#sql--">sql()</a> method to convince yourself that it's
 generating the SQL that you expect.  In the long run you may find it easier
 and more reliable to write complex queries as raw SQL that you can test
 (on a sacrificial copy of your production database, of course) and
@@ -383,41 +389,50 @@ async function main() {
 
 main()</code></code></pre>
 <p>The database object provides four methods for creating different
-query types: <code>select()</code>, <code>insert()</code>, <code>update()</code> and <code>delete()</code>.</p>
-<p>Here's a <code>select()</code> query.</p>
+query types:</p>
+<ul>
+<li><a href="manual/builder_methods.html#select-columns-">select()</a></li>
+<li><a href="manual/builder_methods.html#insert-columns-">insert()</a></li>
+<li><a href="manual/builder_methods.html#update-table-">update()</a></li>
+<li><a href="manual/builder_methods.html#delete--">delete()</a></li>
+</ul>
+<p>Here's a <a href="manual/builder_methods.html#select-columns-">select()</a> query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .select('name email')
   .from('users')
   .where({ id: 12345 })
   .one();</code></code></pre>
-<p>Here's an <code>insert()</code> query.</p>
+<p>Here's an <a href="manual/builder_methods.html#insert-columns-">insert()</a> query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .insert('name email')
   .into('users')
   .values('Bobby Badger', 'bobby@badgerpower.com')
   .run();</code></code></pre>
-<p>Here's an <code>update()</code> query.</p>
+<p>Here's an <a href="manual/builder_methods.html#update-table-">update()</a> query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .update('users')
   .set({ name: 'Roberto Badger' })
   .where({ email: 'bobby@badgerpower.com' })
   .run();</code></code></pre>
-<p>And here's a <code>delete()</code> query.</p>
+<p>And here's a <a href="manual/builder_methods.html#delete--">delete()</a> query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .delete()
   .from('users')
   .where({ email: 'bobby@badgerpower.com' })
   .run();</code></code></pre>
 <p>When you create a query, or part of a query, you can call the
-<code>sql()</code> method to see what the generated SQL looks like.</p>
+<a href="manual/builder_methods.html#sql--">sql()</a> method to see what the
+generated SQL looks like.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">console.log(
   db.select('hello').from('world').sql()
 );  // -&gt; SELECT "hello" FROM "world"</code></code></pre>
-<p>In these examples we'll omit the <code>console.log()</code> and <code>sql()</code> call
-for brevity.</p>
-<h2 id="select-queries">Select Queries</h2><p>The main database object has a <code>select()</code> method which allows you to
-start a query by specifying the columns you want to select.  You can
-then chain further methods onto it, e.g. <code>from()</code> to specify one or
+<p>In these examples we'll omit the <code>console.log()</code> and
+<a href="manual/builder_methods.html#sql--">sql()</a> calls for brevity.</p>
+<h2 id="select-queries">Select Queries</h2><p>The main database object has a
+<a href="manual/builder_methods.html#select-columns-">select()</a> method which
+allows you to start a query by specifying the columns you want to select.
+You can then chain further methods onto it, e.g.
+<a href="manual/builder_methods.html#from-table-">from()</a> to specify one or
 more tables that you want to select from.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('hello').from('world')
 // -&gt; SELECT "hello" FROM "world"</code></code></pre>
@@ -445,8 +460,12 @@ the same as <code>id name</code>.</p>
 The query builder will construct the SQL query in the correct order.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name').where({ id: 12345 }).from('users')
 // -&gt; SELECT "name" FROM "users" WHERE id = ?</code></code></pre>
-<p>If you want to start a query with anything other than <code>select()</code>, <code>insert()</code>,
-<code>update()</code>,  or <code>delete()</code> then you should prefix it with <code>.build</code>.</p>
+<p>If you want to start a query with anything other than
+<a href="manual/builder_methods.html#select-columns-">select()</a>,
+<a href="manual/builder_methods.html#insert-columns-">insert()</a>,
+<a href="manual/builder_methods.html#update-table-">update()</a>,  or
+<a href="manual/builder_methods.html#delete--">delete()</a>
+then you should prefix it with <code>.build</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.build.where('c').from('b').select('a')
 // -&gt; SELECT "a" FROM "b" WHERE "c" = ?</code></code></pre>
 <p>You can call methods multiple times.</p>
@@ -457,11 +476,14 @@ in turn as if you had called the method multiple times.  We'll see how
 this can be useful with more complex parameters.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id', 'name').from('users')
 // -&gt; SELECT "id", "name" FROM "users"</code></code></pre>
-<p>For example, the <code>select()</code> method allows you to pass an array of
+<p>For example, the
+<a href="manual/builder_methods.html#select-columns-">select()</a>
+method allows you to pass an array of
 two elements.  The first is the column name, the second is an alias.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select(['name', 'user_name']).from('users')
 // -&gt; SELECT "name" AS "user_name" FROM "users"</code></code></pre>
-<p>The <code>from()</code> method supports the same syntax for creating a table alias.</p>
+<p>The <a href="manual/builder_methods.html#from-table-">from()</a> method
+supports the same syntax for creating a table alias.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('name').from(['users', 'people'])
 // -&gt; SELECT "name" FROM "users" AS "people"</code></code></pre>
 <p>You can also pass objects to the methods to provide named parameters.</p>
@@ -475,10 +497,13 @@ columns and add a prefix to the returned values.</p>
 in a single call.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id', { table: 'users', columns: 'name email', prefix: 'user_' }).from('users')
 // -&gt; SELECT "id", "users"."name" AS "user_name", "users.email" as "user_email" FROM "users"</code></code></pre>
-<h2 id="insert-queries">Insert Queries</h2><p>Use the <code>insert()</code> method to start an <code>INSERT</code> query.  The arguments it
-expects are the names of the columns you're inserting.  You should follow
-that with the <code>into()</code> method to specify the table you're inserting into.
-Values for the columns can be provided via the <code>values()</code> method, either as
+<h2 id="insert-queries">Insert Queries</h2><p>Use the
+<a href="manual/builder_methods.html#insert-columns-">insert()</a>
+method to start an <code>INSERT</code> query.  The arguments it expects are the names
+of the columns you're inserting.  You should follow that with the
+<a href="manual/builder_methods.html#into-table-">into()</a> method to specify the table
+you're inserting into.  Values for the columns can be provided via the
+<a href="manual/builder_methods.html#values-values-">values()</a> method, either as
 separate arguments or an array.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .insert('name email')
@@ -487,7 +512,8 @@ separate arguments or an array.</p>
   .run();
 // -&gt; INSERT INTO "users" ("name", "email")
 //    VALUES (?, ?)</code></code></pre>
-<p>Or you can pass an array of values as the first argument to the <code>run()</code> method.
+<p>Or you can pass an array of values as the first argument to the
+<a href="manual/builder_methods.html#run-values--options-">run()</a> method.
 This is useful when you want to reuse the query to insert multiple rows.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const insert = db
   .insert('name email')
@@ -496,27 +522,36 @@ This is useful when you want to reuse the query to insert multiple rows.</p>
 await insert.run(['Bobby Badger', 'bobby@badgerpower.com'])
 await insert.run(['Brian Badger', 'brian@badgerpower.com'])
 await insert.run(['Frank Ferret', 'frank@ferretfactory.com'])</code></code></pre>
-<p>The second argument to the <code>run()</code> method can be an object containing
-options.  The <code>sanitizeResult</code> option is useful if you want to inspect
-the result of the insert operation.</p>
+<p>The second argument to the
+<a href="manual/builder_methods.html#run-values--options-">run()</a> method can be
+an object containing options.  The <code>sanitizeResult</code> option is useful if
+you want to inspect the result of the insert operation.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const result = await insert.run(
   ['Bobby Badger', 'bobby@badgerpower.com'],
   { sanitizeResult: true }
 );
 console.log("Changes:", result.changes)
 console.log("Inserted ID:", result.id)</code></code></pre>
-<p>If you're using Postgres then you need to add a <code>RETURNING</code> clause on the
-end of the query to get the inserted ID returned.</p>
+<p>If you're using Postgres then you should use the
+<a href="manual/builder_methods.html#returning-columns-">returning()</a> method
+to add a <code>RETURNING</code> clause on the end of the query to get the
+inserted ID returned.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const insert = await db
   .insert('name email')
   .into('users')
   .returning('id')</code></code></pre>
-<h2 id="update-queries">Update Queries</h2><p>Use the <code>update()</code> method to start an <code>UPDATE</code> query.  The argument it
-expects is the name of the table that you're updating.  You should follow
-that with the <code>set()</code> method to specify the changes you want to make,
-and optionally, a <code>where()</code> clause to define which rows you want to change.</p>
-<p>The <code>set()</code> and <code>where()</code> methods can be passed a list of column names with
-the values being provided to the <code>run()</code> method:</p>
+<h2 id="update-queries">Update Queries</h2><p>Use the
+<a href="manual/builder_methods.html#update-table-">update()</a> method to start an
+<code>UPDATE</code> query.  The argument it expects is the name of the table that you're
+updating.  You should follow that with the
+<a href="manual/builder_methods.html#set-values-">set()</a> method to specify the changes
+you want to make, and optionally, a
+<a href="manual/builder_methods.html#where-criteria-">where()</a> clause to define which
+rows you want to change.</p>
+<p>The <a href="manual/builder_methods.html#set-values-">set()</a> and
+<a href="manual/builder_methods.html#where-criteria-">where()</a> methods can be passed a list
+of column names with the values being provided to the
+<a href="manual/builder_methods.html#run-values--options-">run()</a> method:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .update('users')
   .set('name')
@@ -525,7 +560,9 @@ the values being provided to the <code>run()</code> method:</p>
 // -&gt; UPDATE "users"
 //    SET name = ?
 //    WHERE email = ?</code></code></pre>
-<p>Or you can provide values directly to the <code>set()</code> and/or <code>where()</code> methods.  In both
+<p>Or you can provide values directly to the
+<a href="manual/builder_methods.html#set-values-">set()</a> and/or
+<a href="manual/builder_methods.html#where-criteria-">where()</a> methods.  In both
 cases placeholders are used for the values so the SQL generated is identical.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .update('users')
@@ -535,9 +572,11 @@ cases placeholders are used for the values so the SQL generated is identical.</p
 // -&gt; UPDATE "users"
 //    SET name = ?
 //    WHERE email = ?</code></code></pre>
-<h2 id="delete-queries">Delete Queries</h2><p>Use the <code>delete()</code> method to start a <code>DELETE</code> query.  It usually doesn't
-take any arguments but should be followed with a <code>from()</code> call to set the
-name of the table that you're deleting from, and optionally, a <code>where()</code>
+<h2 id="delete-queries">Delete Queries</h2><p>Use the <a href="manual/builder_methods.html#delete--">delete()</a> method to start a
+<code>DELETE</code> query.  It usually doesn't take any arguments but should be followed
+with a <a href="manual/builder_methods.html#from-table-">from()</a> call to set the
+name of the table that you're deleting from, and optionally, a
+<a href="manual/builder_methods.html#where-criteria-">where()</a>
 clause to define which rows you want to delete.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .delete()
@@ -546,9 +585,12 @@ clause to define which rows you want to delete.</p>
   .run()
 // -&gt; DELETE FROM "users"
 //    WHERE "email" = ?</code></code></pre>
-<p>This also allows you to define parameter values in the <code>where()</code> method, as shown
-above, or specify columns names in the <code>where()</code> method and pass all values as an
-array to the <code>run()</code> method.</p>
+<p>This also allows you to define parameter values in the
+<a href="manual/builder_methods.html#where-criteria-">where()</a> method, as
+shown above, or specify columns names in the
+<a href="manual/builder_methods.html#where-criteria-">where()</a> method and pass all
+values as an array to the <a href="manual/builder_methods.html#run-values--options-">run()</a>
+method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db
   .delete()
   .from('users')
@@ -570,10 +612,11 @@ You can pass an object with a single <code>sql</code> property:</p>
 <p>The benefit here is that you can use SQL for some parts of a query when you
 need it, but still rely on the convenience of automatic generation for
 other parts that don't.</p>
-<h2 id="placeholder-values">Placeholder Values</h2><p>The <code>where()</code> method is used to specify selection criteria.  Any user
-supplied values are embedded into the query using placeholders.</p>
-<p>The SQL query generated will use placeholders for any <code>where()</code> clauses
-included.</p>
+<h2 id="placeholder-values">Placeholder Values</h2><p>The <a href="manual/builder_methods.html#where-criteria-">where()</a> method is used to specify
+selection criteria.  Any user supplied values are embedded into the query using
+placeholders.</p>
+<p>The SQL query generated will use placeholders for any
+<a href="manual/builder_methods.html#where-criteria-">where()</a> clauses included.</p>
 <p>For example, this query:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name')
   .from('users')
@@ -582,7 +625,8 @@ included.</p>
 <pre><code class="lang-sql"><code class="source-code prettyprint">SELECT "id", "name"
 FROM "users"
 WHERE "id"=?</code></code></pre>
-<p>You can also define values in the <code>where()</code> clause.</p>
+<p>You can also define values in the <a href="manual/builder_methods.html#where-criteria-">where()</a>
+clause.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = db
   .select('id name')
   .from('users')
@@ -591,7 +635,7 @@ WHERE "id"=?</code></code></pre>
 <p>The query generated will still use placeholders.  It will also
 automatically keep track of the values that go with each placeholder.</p>
 <p>If you want to see what placeholder values a query has collected then
-you can call the <code>allValues()</code> method.</p>
+you can call the <a href="manual/builder_methods.html#allvalues--">allValues()</a> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const query = db
   .select('id name')
   .from('users')
@@ -604,27 +648,51 @@ method which works in a similar way.  The query builder collects placeholder val
 associated with <code>WHERE</code> clauses separately from those associated with <code>HAVING</code> clauses.
 This is because any <code>WHERE</code> clauses come before any <code>HAVING</code> clauses and the placeholder
 values must be ordered in that way.</p>
-<p>You can call the <code>whereValues()</code> and <code>havingValues()</code> method to see what values have
+<p>You can call the <a href="manual/builder_methods.html#wherevalues--">whereValues()</a> and
+<a href="manual/builder_methods.html#havingvalues--">havingValues()</a> methods to see what values have
 been collected for them separately.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">console.log(query.whereValues())
 // -&gt; [12345]
 console.log(query.havingValues())
 // -&gt; []</code></code></pre>
-<p>If you're running an <code>insert()</code> or <code>update()</code> queries then you may also have <code>setValues()</code>
-defined.  For <code>select()</code> queries this list will be empty.</p>
+<p>If you're building an <a href="manual/builder_methods.html#insert-columns-">insert()</a>
+or <a href="manual/builder_methods.html#update-table-">update()</a> queries then you may also
+have <a href="manual/builder_methods.html#setvalues--">setValues()</a> defined.
+This will contain placeholders values provided via
+the <a href="manual/builder_methods.html#values-values-">values()</a> or
+<a href="manual/builder_methods.html#set-values-">set()</a> methods.
+For <a href="manual/builder_methods.html#select-columns-">select()</a>
+queries this list will be empty.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">console.log(query.setValues())
 // -&gt; [ ]</code></code></pre>
-<p>The <code>allValues()</code> method returns a concatenated list of all the <code>setValues()</code>,
-<code>whereValues()</code> and <code>havingValues()</code>, <em>in that order</em>.</p>
-<h2 id="running-queries">Running Queries</h2><p>When you've constructed a query you can add the <code>all()</code> method to the end to
-fetch all rows matching the query.  It's an asynchronous method so you'll need
+<p>The <a href="manual/builder_methods.html#allvalues--">allValues()</a> method returns a
+concatenated list of all the
+<a href="manual/builder_methods.html#setvalues--">setValues()</a>,
+<a href="manual/builder_methods.html#wherevalues--">whereValues()</a> and
+<a href="manual/builder_methods.html#havingvalues--">havingValues()</a>,
+<em>in that order</em>.</p>
+<p>Instead of baking placeholder values into a query using the above methods you can
+provider them all in one go when you run the query.</p>
+<h2 id="running-queries">Running Queries</h2><p>When you've constructed a query you can call the
+<a href="manual/builder_methods.html#run-values--options-">run()</a> method to execute
+the query. This is used for queries that aren't expected to return any rows
+from the database, e.g. for <code>INSERT</code>, <code>UPDATE</code> or <code>DELETE</code> queries.  It's an
+asynchronous method (as are all the other execution methods) so you'll need
 to <code>await</code> the response (or use <code>.then(...)</code> if you prefer).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db
+  .delete()
+  .from('users')
+  .where({ id: 12345 })
+  .run();</code></code></pre>
+<p>The <a href="manual/builder_methods.html#all-values--options-">all()</a> method can be used
+to fetch all rows matching the query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = await db
   .select('id name')
   .from('users')
   .all();</code></code></pre>
 <p>The method returns an array of rows that match the query.</p>
-<p>The <code>any()</code> method can be used to return a single row.</p>
+<p>The <a href="manual/builder_methods.html#any-values--options-">any()</a>
+method can be used to return a single row.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .select('id name')
   .from('users')
@@ -633,16 +701,51 @@ to <code>await</code> the response (or use <code>.then(...)</code> if you prefer
 <p>The method will return a single row or <code>undefined</code> if it doesn't
 match a row.</p>
 <p>If you're expecting to get one and only one row returned then use the
-<code>one()</code> method instead.  This will throw an error if the row isn't
-found or if the query returns multiple rows.</p>
-<p>You can provide values for placeholders in <code>where()</code> clauses as shown
-above, or you can save them all up and pass them as an array to the
-<code>one()</code>, <code>any()</code> or <code>all()</code> methods.</p>
+<a href="manual/builder_methods.html#one-values--options-">one()</a> method instead.
+This will throw an error if the row isn't found or if the query returns multiple rows.</p>
+<p>You can provide values for placeholders when you're building queries,
+as shown in the exampels above.  Or you can save them all up and pass
+them as an array to the
+<a href="manual/builder_methods.html#run-values--options-">run()</a>,
+<a href="manual/builder_methods.html#one-values--options-">one()</a>,
+<a href="manual/builder_methods.html#any-values--options-">any()</a> or
+<a href="manual/builder_methods.html#all-values--options-">all()</a> methods.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .select('id name')
   .from('users')
   .where('id')
   .any([12345]);</code></code></pre>
+<p>Although it's possible to provide some placeholder values in methods where
+you're building the query (e.g. in <a href="manual/builder_methods.html#where-criteria-">where()</a>)
+and others when you run the query (e.g. in
+<a href="manual/builder_methods.html#all-values--options-">all()</a>), you do have to be
+careful to ensure the placeholder values end up in the right order.</p>
+<p>When the query is executed, the default order for placeholder values is the
+concatenation of
+<a href="manual/builder_methods.html#setvalues--">setValues()</a>,
+<a href="manual/builder_methods.html#wherevalues--">whereValues()</a>,
+<a href="manual/builder_methods.html#havingvalues--">havingValues()</a>,
+and finally any values you provide to the execution methods:
+<a href="manual/builder_methods.html#run-values--options-">run()</a>,
+<a href="manual/builder_methods.html#one-values--options-">one()</a>,
+<a href="manual/builder_methods.html#any-values--options-">any()</a> or
+<a href="manual/builder_methods.html#all-values--options-">all()</a>.</p>
+<p>If you need to re-arrange the order of placeholder values then you can
+pass a function to any of the query execution methods.  This will be
+passed three arrays: the
+<a href="manual/builder_methods.html#setvalues--">setValues()</a>,
+<a href="manual/builder_methods.html#wherevalues--">whereValues()</a> and
+<a href="manual/builder_methods.html#havingvalues--">havingValues()</a>.  Your
+function should return an array containing the concatenated values
+including any other placeholder values you need to provide.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
+  .select('id name')
+  .from('users')
+  .where('id')
+  .any(
+    // add any other placeholder values into the returned array
+    (sv, wv, hv) =&gt; [...sv, ...wv, ...hv]
+  );</code></code></pre>
 <h2 id="the-importance-of-being-idempotent">The Importance of Being Idempotent</h2><p>One benefit of this implementation over some others is that the query
 builder chains are <em>idempotent</em>.  That's a fancy way of saying that
 adding new links in the chain doesn't affect any of the previous links.</p>
@@ -675,7 +778,8 @@ For example, to fetch an employee by user id:</p>
 <p>Each query is entirely independent from the others.</p>
 <p>Furthermore, the fact that the query builder allows you to call methods
 out of sequence means that you're not limited to tagging new method calls
-onto the end of the base query.  For example, you can <code>select()</code> additional
+onto the end of the base query.  For example, you can
+<a href="manual/builder_methods.html#select-columns-">select()</a> additional
 columns in one of the new queries if there's something extra you need that
 isn't in the base query.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = await employees
@@ -756,21 +860,27 @@ you come to run the query.</p>
 });
 
 const badgers = await db.all('fetchAllBadgers')</code></code></pre>
-<p>The <code>sql()</code> method can be used to view the SQL generated by a named
+<p>The <a href="manual/builder_methods.html#sql--">sql()</a> method can be used to view the SQL generated by a named
 query builder.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.sql('fetchAllBadgers')
 // -&gt; SELECT "name", "email"
 //    FROM "users"
 //    WHERE "animal" = ?</code></code></pre>
 <p>If you want to see what placeholder values the query has got defined then
-you can call the <code>allValues()</code> method.</p>
+you can call the <a href="manual/builder_methods.html#allvalues--">allValues()</a> method.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.query('fetchAllBadgers').allValues()
 // -&gt; ['Badger']</code></code></pre>
 <p>Placeholder values are stored in three separate arrays internally: one
-for any values being set via an <code>insert()</code> or <code>update()</code> query (<code>setValues</code>),
-another for any values set via <code>where()</code> and the third for values set via
-<code>having()</code>.  The <code>allValues()</code> method returns the concatenation of these
-three arrays.</p>
+for any values being set via an <a href="manual/builder_methods.html#insert-columns-">insert()</a>
+or <a href="manual/builder_methods.html#update-table-">update()</a> query
+(<a href="manual/builder_methods.html#setvalues--">setValues()</a>),
+another for any values set via <a href="manual/builder_methods.html#where-criteria-">where()</a>
+(<a href="manual/builder_methods.html#wherevalues--">whereValues()</a>),
+and the third for values set via
+<a href="manual/builder_methods.html#having-criteria-">having()</a>
+(<a href="manual/builder_methods.html#havingvalues--">havingValues()</a>).
+The <a href="manual/builder_methods.html#allvalues--">allValues()</a>
+method returns the concatenation of these three arrays.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const q = db.query('fetchAllBadgers')
 q.setValues()     // -&gt; []
 q.whereValues()   // -&gt; ['Badger']

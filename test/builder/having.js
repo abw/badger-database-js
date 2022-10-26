@@ -112,7 +112,7 @@ test( 'where() and having() with interleaved values',
   t => {
     const query = db.build.where({ a: 10 }).where('b').having({ c: 30 }).having('d');
     t.is( query.sql(), 'WHERE "a" = ? AND "b" = ?\nHAVING "c" = ? AND "d" = ?' );
-    const values = query.allValues((w, h) => [...w, 20, ...h, 40]);
+    const values = query.allValues((s, w, h) => [...s, ...w, 20, ...h, 40]);
     t.is( values.length, 4 );
     t.is( values[0], 10 );
     t.is( values[1], 20 );

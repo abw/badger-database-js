@@ -65,7 +65,7 @@ insert records with missing `required` columns.
 It is possible to use the query builder to generate more complex
 queries involving multi-table joins, sub-queries, and so on.  However,
 you should exercise caution when doing so.  Make sure to check the
-generated output using the `sql()` method to convince yourself that it's
+generated output using the [sql()](manual/builder_methods.html#sql--) method to convince yourself that it's
 generating the SQL that you expect.  In the long run you may find it easier
 and more reliable to write complex queries as raw SQL that you can test
 (on a sacrificial copy of your production database, of course) and
@@ -100,9 +100,14 @@ main()
 ```
 
 The database object provides four methods for creating different
-query types: `select()`, `insert()`, `update()` and `delete()`.
+query types:
 
-Here's a `select()` query.
+* [select()](manual/builder_methods.html#select-columns-)
+* [insert()](manual/builder_methods.html#insert-columns-)
+* [update()](manual/builder_methods.html#update-table-)
+* [delete()](manual/builder_methods.html#delete--)
+
+Here's a [select()](manual/builder_methods.html#select-columns-) query.
 
 ```js
 const row = await db
@@ -112,7 +117,7 @@ const row = await db
   .one();
 ```
 
-Here's an `insert()` query.
+Here's an [insert()](manual/builder_methods.html#insert-columns-) query.
 
 ```js
 await db
@@ -122,7 +127,7 @@ await db
   .run();
 ```
 
-Here's an `update()` query.
+Here's an [update()](manual/builder_methods.html#update-table-) query.
 
 ```js
 await db
@@ -132,7 +137,7 @@ await db
   .run();
 ```
 
-And here's a `delete()` query.
+And here's a [delete()](manual/builder_methods.html#delete--) query.
 
 ```js
 await db
@@ -143,7 +148,8 @@ await db
 ```
 
 When you create a query, or part of a query, you can call the
-`sql()` method to see what the generated SQL looks like.
+[sql()](manual/builder_methods.html#sql--) method to see what the
+generated SQL looks like.
 
 ```js
 console.log(
@@ -151,14 +157,16 @@ console.log(
 );  // -> SELECT "hello" FROM "world"
 ```
 
-In these examples we'll omit the `console.log()` and `sql()` call
-for brevity.
+In these examples we'll omit the `console.log()` and
+[sql()](manual/builder_methods.html#sql--) calls for brevity.
 
 ## Select Queries
 
-The main database object has a `select()` method which allows you to
-start a query by specifying the columns you want to select.  You can
-then chain further methods onto it, e.g. `from()` to specify one or
+The main database object has a
+[select()](manual/builder_methods.html#select-columns-) method which
+allows you to start a query by specifying the columns you want to select.
+You can then chain further methods onto it, e.g.
+[from()](manual/builder_methods.html#from-table-) to specify one or
 more tables that you want to select from.
 
 ```js
@@ -207,8 +215,12 @@ db.select('name').where({ id: 12345 }).from('users')
 // -> SELECT "name" FROM "users" WHERE id = ?
 ```
 
-If you want to start a query with anything other than `select()`, `insert()`,
-`update()`,  or `delete()` then you should prefix it with `.build`.
+If you want to start a query with anything other than
+[select()](manual/builder_methods.html#select-columns-),
+[insert()](manual/builder_methods.html#insert-columns-),
+[update()](manual/builder_methods.html#update-table-),  or
+[delete()](manual/builder_methods.html#delete--)
+then you should prefix it with `.build`.
 
 ```js
 db.build.where('c').from('b').select('a')
@@ -231,7 +243,9 @@ db.select('id', 'name').from('users')
 // -> SELECT "id", "name" FROM "users"
 ```
 
-For example, the `select()` method allows you to pass an array of
+For example, the
+[select()](manual/builder_methods.html#select-columns-)
+method allows you to pass an array of
 two elements.  The first is the column name, the second is an alias.
 
 ```js
@@ -239,7 +253,8 @@ db.select(['name', 'user_name']).from('users')
 // -> SELECT "name" AS "user_name" FROM "users"
 ```
 
-The `from()` method supports the same syntax for creating a table alias.
+The [from()](manual/builder_methods.html#from-table-) method
+supports the same syntax for creating a table alias.
 
 ```js
 db.select('name').from(['users', 'people'])
@@ -271,10 +286,13 @@ db.select('id', { table: 'users', columns: 'name email', prefix: 'user_' }).from
 
 ## Insert Queries
 
-Use the `insert()` method to start an `INSERT` query.  The arguments it
-expects are the names of the columns you're inserting.  You should follow
-that with the `into()` method to specify the table you're inserting into.
-Values for the columns can be provided via the `values()` method, either as
+Use the
+[insert()](manual/builder_methods.html#insert-columns-)
+method to start an `INSERT` query.  The arguments it expects are the names
+of the columns you're inserting.  You should follow that with the
+[into()](manual/builder_methods.html#into-table-) method to specify the table
+you're inserting into.  Values for the columns can be provided via the
+[values()](manual/builder_methods.html#values-values-) method, either as
 separate arguments or an array.
 
 ```js
@@ -287,7 +305,8 @@ await db
 //    VALUES (?, ?)
 ```
 
-Or you can pass an array of values as the first argument to the `run()` method.
+Or you can pass an array of values as the first argument to the
+[run()](manual/builder_methods.html#run-values--options-) method.
 This is useful when you want to reuse the query to insert multiple rows.
 
 ```js
@@ -300,9 +319,10 @@ await insert.run(['Brian Badger', 'brian@badgerpower.com'])
 await insert.run(['Frank Ferret', 'frank@ferretfactory.com'])
 ```
 
-The second argument to the `run()` method can be an object containing
-options.  The `sanitizeResult` option is useful if you want to inspect
-the result of the insert operation.
+The second argument to the
+[run()](manual/builder_methods.html#run-values--options-) method can be
+an object containing options.  The `sanitizeResult` option is useful if
+you want to inspect the result of the insert operation.
 
 ```js
 const result = await insert.run(
@@ -313,8 +333,10 @@ console.log("Changes:", result.changes)
 console.log("Inserted ID:", result.id)
 ```
 
-If you're using Postgres then you need to add a `RETURNING` clause on the
-end of the query to get the inserted ID returned.
+If you're using Postgres then you should use the
+[returning()](manual/builder_methods.html#returning-columns-) method
+to add a `RETURNING` clause on the end of the query to get the
+inserted ID returned.
 
 ```js
 const insert = await db
@@ -325,13 +347,19 @@ const insert = await db
 
 ## Update Queries
 
-Use the `update()` method to start an `UPDATE` query.  The argument it
-expects is the name of the table that you're updating.  You should follow
-that with the `set()` method to specify the changes you want to make,
-and optionally, a `where()` clause to define which rows you want to change.
+Use the
+[update()](manual/builder_methods.html#update-table-) method to start an
+`UPDATE` query.  The argument it expects is the name of the table that you're
+updating.  You should follow that with the
+[set()](manual/builder_methods.html#set-values-) method to specify the changes
+you want to make, and optionally, a
+[where()](manual/builder_methods.html#where-criteria-) clause to define which
+rows you want to change.
 
-The `set()` and `where()` methods can be passed a list of column names with
-the values being provided to the `run()` method:
+The [set()](manual/builder_methods.html#set-values-) and
+[where()](manual/builder_methods.html#where-criteria-) methods can be passed a list
+of column names with the values being provided to the
+[run()](manual/builder_methods.html#run-values--options-) method:
 
 ```js
 await db
@@ -344,7 +372,9 @@ await db
 //    WHERE email = ?
 ```
 
-Or you can provide values directly to the `set()` and/or `where()` methods.  In both
+Or you can provide values directly to the
+[set()](manual/builder_methods.html#set-values-) and/or
+[where()](manual/builder_methods.html#where-criteria-) methods.  In both
 cases placeholders are used for the values so the SQL generated is identical.
 
 ```js
@@ -360,9 +390,11 @@ await db
 
 ## Delete Queries
 
-Use the `delete()` method to start a `DELETE` query.  It usually doesn't
-take any arguments but should be followed with a `from()` call to set the
-name of the table that you're deleting from, and optionally, a `where()`
+Use the [delete()](manual/builder_methods.html#delete--) method to start a
+`DELETE` query.  It usually doesn't take any arguments but should be followed
+with a [from()](manual/builder_methods.html#from-table-) call to set the
+name of the table that you're deleting from, and optionally, a
+[where()](manual/builder_methods.html#where-criteria-)
 clause to define which rows you want to delete.
 
 ```js
@@ -375,9 +407,12 @@ await db
 //    WHERE "email" = ?
 ```
 
-This also allows you to define parameter values in the `where()` method, as shown
-above, or specify columns names in the `where()` method and pass all values as an
-array to the `run()` method.
+This also allows you to define parameter values in the
+[where()](manual/builder_methods.html#where-criteria-) method, as
+shown above, or specify columns names in the
+[where()](manual/builder_methods.html#where-criteria-) method and pass all
+values as an array to the [run()](manual/builder_methods.html#run-values--options-)
+method.
 
 ```js
 await db
@@ -388,8 +423,6 @@ await db
 // -> DELETE FROM "users"
 //    WHERE "email" = ?
 ```
-
-
 
 ## Embedding Raw SQL
 
@@ -419,11 +452,12 @@ other parts that don't.
 
 ## Placeholder Values
 
-The `where()` method is used to specify selection criteria.  Any user
-supplied values are embedded into the query using placeholders.
+The [where()](manual/builder_methods.html#where-criteria-) method is used to specify
+selection criteria.  Any user supplied values are embedded into the query using
+placeholders.
 
-The SQL query generated will use placeholders for any `where()` clauses
-included.
+The SQL query generated will use placeholders for any
+[where()](manual/builder_methods.html#where-criteria-) clauses included.
 
 For example, this query:
 
@@ -441,7 +475,8 @@ FROM "users"
 WHERE "id"=?
 ```
 
-You can also define values in the `where()` clause.
+You can also define values in the [where()](manual/builder_methods.html#where-criteria-)
+clause.
 
 ```js
 const row = db
@@ -455,7 +490,7 @@ The query generated will still use placeholders.  It will also
 automatically keep track of the values that go with each placeholder.
 
 If you want to see what placeholder values a query has collected then
-you can call the `allValues()` method.
+you can call the [allValues()](manual/builder_methods.html#allvalues--) method.
 
 ```js
 const query = db
@@ -473,7 +508,8 @@ associated with `WHERE` clauses separately from those associated with `HAVING` c
 This is because any `WHERE` clauses come before any `HAVING` clauses and the placeholder
 values must be ordered in that way.
 
-You can call the `whereValues()` and `havingValues()` method to see what values have
+You can call the [whereValues()](manual/builder_methods.html#wherevalues--) and
+[havingValues()](manual/builder_methods.html#havingvalues--) methods to see what values have
 been collected for them separately.
 
 ```js
@@ -483,22 +519,49 @@ console.log(query.havingValues())
 // -> []
 ```
 
-If you're running an `insert()` or `update()` queries then you may also have `setValues()`
-defined.  For `select()` queries this list will be empty.
+If you're building an [insert()](manual/builder_methods.html#insert-columns-)
+or [update()](manual/builder_methods.html#update-table-) queries then you may also
+have [setValues()](manual/builder_methods.html#setvalues--) defined.
+This will contain placeholders values provided via
+the [values()](manual/builder_methods.html#values-values-) or
+[set()](manual/builder_methods.html#set-values-) methods.
+For [select()](manual/builder_methods.html#select-columns-)
+queries this list will be empty.
 
 ```js
 console.log(query.setValues())
 // -> [ ]
 ```
 
-The `allValues()` method returns a concatenated list of all the `setValues()`,
-`whereValues()` and `havingValues()`, *in that order*.
+The [allValues()](manual/builder_methods.html#allvalues--) method returns a
+concatenated list of all the
+[setValues()](manual/builder_methods.html#setvalues--),
+[whereValues()](manual/builder_methods.html#wherevalues--) and
+[havingValues()](manual/builder_methods.html#havingvalues--),
+*in that order*.
+
+Instead of baking placeholder values into a query using the above methods you can
+provider them all in one go when you run the query.
 
 ## Running Queries
 
-When you've constructed a query you can add the `all()` method to the end to
-fetch all rows matching the query.  It's an asynchronous method so you'll need
+When you've constructed a query you can call the
+[run()](manual/builder_methods.html#run-values--options-) method to execute
+the query. This is used for queries that aren't expected to return any rows
+from the database, e.g. for `INSERT`, `UPDATE` or `DELETE` queries.  It's an
+asynchronous method (as are all the other execution methods) so you'll need
 to `await` the response (or use `.then(...)` if you prefer).
+
+```js
+await db
+  .delete()
+  .from('users')
+  .where({ id: 12345 })
+  .run();
+```
+
+The [all()](manual/builder_methods.html#all-values--options-) method can be used
+to fetch all rows matching the query.
 
 ```js
 const rows = await db
@@ -509,7 +572,8 @@ const rows = await db
 
 The method returns an array of rows that match the query.
 
-The `any()` method can be used to return a single row.
+The [any()](manual/builder_methods.html#any-values--options-)
+method can be used to return a single row.
 
 ```js
 const row = await db
@@ -523,12 +587,16 @@ The method will return a single row or `undefined` if it doesn't
 match a row.
 
 If you're expecting to get one and only one row returned then use the
-`one()` method instead.  This will throw an error if the row isn't
-found or if the query returns multiple rows.
+[one()](manual/builder_methods.html#one-values--options-) method instead.
+This will throw an error if the row isn't found or if the query returns multiple rows.
 
-You can provide values for placeholders in `where()` clauses as shown
-above, or you can save them all up and pass them as an array to the
-`one()`, `any()` or `all()` methods.
+You can provide values for placeholders when you're building queries,
+as shown in the exampels above.  Or you can save them all up and pass
+them as an array to the
+[run()](manual/builder_methods.html#run-values--options-),
+[one()](manual/builder_methods.html#one-values--options-),
+[any()](manual/builder_methods.html#any-values--options-) or
+[all()](manual/builder_methods.html#all-values--options-) methods.
 
 ```js
 const row = await db
@@ -536,6 +604,43 @@ const row = await db
   .from('users')
   .where('id')
   .any([12345]);
+```
+
+Although it's possible to provide some placeholder values in methods where
+you're building the query (e.g. in [where()](manual/builder_methods.html#where-criteria-))
+and others when you run the query (e.g. in
+[all()](manual/builder_methods.html#all-values--options-)), you do have to be
+careful to ensure the placeholder values end up in the right order.
+
+When the query is executed, the default order for placeholder values is the
+concatenation of
+[setValues()](manual/builder_methods.html#setvalues--),
+[whereValues()](manual/builder_methods.html#wherevalues--),
+[havingValues()](manual/builder_methods.html#havingvalues--),
+and finally any values you provide to the execution methods:
+[run()](manual/builder_methods.html#run-values--options-),
+[one()](manual/builder_methods.html#one-values--options-),
+[any()](manual/builder_methods.html#any-values--options-) or
+[all()](manual/builder_methods.html#all-values--options-).
+
+If you need to re-arrange the order of placeholder values then you can
+pass a function to any of the query execution methods.  This will be
+passed three arrays: the
+[setValues()](manual/builder_methods.html#setvalues--),
+[whereValues()](manual/builder_methods.html#wherevalues--) and
+[havingValues()](manual/builder_methods.html#havingvalues--).  Your
+function should return an array containing the concatenated values
+including any other placeholder values you need to provide.
+
+```js
+const row = await db
+  .select('id name')
+  .from('users')
+  .where('id')
+  .any(
+    // add any other placeholder values into the returned array
+    (sv, wv, hv) => [...sv, ...wv, ...hv]
+  );
 ```
 
 ## The Importance of Being Idempotent
@@ -591,7 +696,8 @@ Each query is entirely independent from the others.
 
 Furthermore, the fact that the query builder allows you to call methods
 out of sequence means that you're not limited to tagging new method calls
-onto the end of the base query.  For example, you can `select()` additional
+onto the end of the base query.  For example, you can
+[select()](manual/builder_methods.html#select-columns-) additional
 columns in one of the new queries if there's something extra you need that
 isn't in the base query.
 
@@ -700,7 +806,7 @@ const db = connect({
 const badgers = await db.all('fetchAllBadgers')
 ```
 
-The `sql()` method can be used to view the SQL generated by a named
+The [sql()](manual/builder_methods.html#sql--) method can be used to view the SQL generated by a named
 query builder.
 
 ```js
@@ -711,7 +817,7 @@ db.sql('fetchAllBadgers')
 ```
 
 If you want to see what placeholder values the query has got defined then
-you can call the `allValues()` method.
+you can call the [allValues()](manual/builder_methods.html#allvalues--) method.
 
 ```js
 db.query('fetchAllBadgers').allValues()
@@ -719,10 +825,16 @@ db.query('fetchAllBadgers').allValues()
 ```
 
 Placeholder values are stored in three separate arrays internally: one
-for any values being set via an `insert()` or `update()` query (`setValues`),
-another for any values set via `where()` and the third for values set via
-`having()`.  The `allValues()` method returns the concatenation of these
-three arrays.
+for any values being set via an [insert()](manual/builder_methods.html#insert-columns-)
+or [update()](manual/builder_methods.html#update-table-) query
+([setValues()](manual/builder_methods.html#setvalues--)),
+another for any values set via [where()](manual/builder_methods.html#where-criteria-)
+([whereValues()](manual/builder_methods.html#wherevalues--)),
+and the third for values set via
+[having()](manual/builder_methods.html#having-criteria-)
+([havingValues()](manual/builder_methods.html#havingvalues--)).
+The [allValues()](manual/builder_methods.html#allvalues--)
+method returns the concatenation of these three arrays.
 
 ```js
 const q = db.query('fetchAllBadgers')

@@ -2598,6 +2598,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/database.js~database#tmpid",
+    "class/src/Database.js~Database.html#instance-method-tmpId",
+    "src/Database.js~Database#tmpId",
+    "method"
+  ],
+  [
     "src/database.js~database#update",
     "class/src/Database.js~Database.html#instance-method-update",
     "src/Database.js~Database#update",
@@ -2631,6 +2637,12 @@ window.esdocSearchIndex = [
     "src/engine.js~engine#any",
     "class/src/Engine.js~Engine.html#instance-method-any",
     "src/Engine.js~Engine#any",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#clientexecute",
+    "class/src/Engine.js~Engine.html#instance-method-clientExecute",
+    "src/Engine.js~Engine#clientExecute",
     "method"
   ],
   [
@@ -2772,12 +2784,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine.js~engine#optionalparams",
-    "class/src/Engine.js~Engine.html#instance-method-optionalParams",
-    "src/Engine.js~Engine#optionalParams",
-    "method"
-  ],
-  [
     "src/engine.js~engine#parseerror",
     "class/src/Engine.js~Engine.html#instance-method-parseError",
     "src/Engine.js~Engine#parseError",
@@ -2796,15 +2802,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/engine.js~engine#prepare",
-    "class/src/Engine.js~Engine.html#instance-method-prepare",
-    "src/Engine.js~Engine#prepare",
-    "method"
-  ],
-  [
     "src/engine.js~engine#preparevalues",
     "class/src/Engine.js~Engine.html#instance-method-prepareValues",
     "src/Engine.js~Engine#prepareValues",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#queryargs",
+    "class/src/Engine.js~Engine.html#instance-method-queryArgs",
+    "src/Engine.js~Engine#queryArgs",
     "method"
   ],
   [
@@ -2886,12 +2892,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine/mysql.js~mysqlengine#connected",
-    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-connected",
-    "src/Engine/Mysql.js~MysqlEngine#connected",
-    "method"
-  ],
-  [
     "src/engine/mysql.js~mysqlengine#disconnect",
     "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-disconnect",
     "src/Engine/Mysql.js~MysqlEngine#disconnect",
@@ -2952,27 +2952,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine/postgres.js~postgresengine#clientexecute",
+    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-clientExecute",
+    "src/Engine/Postgres.js~PostgresEngine#clientExecute",
+    "method"
+  ],
+  [
     "src/engine/postgres.js~postgresengine#connect",
     "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-connect",
     "src/Engine/Postgres.js~PostgresEngine#connect",
     "method"
   ],
   [
-    "src/engine/postgres.js~postgresengine#connected",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-connected",
-    "src/Engine/Postgres.js~PostgresEngine#connected",
-    "method"
-  ],
-  [
     "src/engine/postgres.js~postgresengine#disconnect",
     "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-disconnect",
     "src/Engine/Postgres.js~PostgresEngine#disconnect",
-    "method"
-  ],
-  [
-    "src/engine/postgres.js~postgresengine#execute",
-    "class/src/Engine/Postgres.js~PostgresEngine.html#instance-method-execute",
-    "src/Engine/Postgres.js~PostgresEngine#execute",
     "method"
   ],
   [
@@ -3180,16 +3174,34 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/query.js~query#queryargs",
+    "class/src/Query.js~Query.html#instance-method-queryArgs",
+    "src/Query.js~Query#queryArgs",
+    "method"
+  ],
+  [
     "src/query.js~query#run",
     "class/src/Query.js~Query.html#instance-method-run",
     "src/Query.js~Query#run",
     "method"
   ],
   [
+    "src/query.js~query#setvalues",
+    "class/src/Query.js~Query.html#instance-member-setValues",
+    "src/Query.js~Query#setValues",
+    "member"
+  ],
+  [
     "src/query.js~query#sql",
     "class/src/Query.js~Query.html#instance-method-sql",
     "src/Query.js~Query#sql",
     "method"
+  ],
+  [
+    "src/query.js~query#transaction",
+    "class/src/Query.js~Query.html#instance-member-transaction",
+    "src/Query.js~Query#transaction",
+    "member"
   ],
   [
     "src/query.js~query#wherevalues",
@@ -3576,6 +3588,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#insertallrows",
+    "class/src/Table.js~Table.html#instance-method-insertAllRows",
+    "src/Table.js~Table#insertAllRows",
+    "method"
+  ],
+  [
     "src/table.js~table#insertone",
     "class/src/Table.js~Table.html#instance-method-insertOne",
     "src/Table.js~Table#insertOne",
@@ -3585,6 +3603,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#insertonerecord",
     "class/src/Table.js~Table.html#instance-method-insertOneRecord",
     "src/Table.js~Table#insertOneRecord",
+    "method"
+  ],
+  [
+    "src/table.js~table#insertonerow",
+    "class/src/Table.js~Table.html#instance-method-insertOneRow",
+    "src/Table.js~Table#insertOneRow",
     "method"
   ],
   [
@@ -3726,6 +3750,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#tmpid",
+    "class/src/Table.js~Table.html#instance-method-tmpId",
+    "src/Table.js~Table#tmpId",
+    "method"
+  ],
+  [
     "src/table.js~table#updateall",
     "class/src/Table.js~Table.html#instance-method-updateAll",
     "src/Table.js~Table#updateAll",
@@ -3753,6 +3783,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#withrecordoption",
     "class/src/Table.js~Table.html#instance-method-withRecordOption",
     "src/Table.js~Table#withRecordOption",
+    "method"
+  ],
+  [
+    "src/table.js~table#withreloadoption",
+    "class/src/Table.js~Table.html#instance-method-withReloadOption",
+    "src/Table.js~Table#withReloadOption",
     "method"
   ],
   [

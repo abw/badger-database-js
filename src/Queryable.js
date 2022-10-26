@@ -3,7 +3,7 @@ import { singleWord } from "./Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
 import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";
-import Transaction from "./Transaction.js";
+// import Transaction from "./Transaction.js";
 
 export class Queryable {
   constructor(engine) {
@@ -103,10 +103,12 @@ export class Queryable {
     return rows;
   }
 
+  /*
   async transaction(code) {
     const trans = new Transaction(this);
     await trans.run(code);
   }
+  */
 }
 
 export default Queryable

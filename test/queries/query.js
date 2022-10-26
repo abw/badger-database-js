@@ -155,7 +155,7 @@ test.serial( 'selectBobby query values with function',
   async t => {
     const query = db.query('selectBobby').having({ y: 99 });
     t.is( query.sql(), 'SELECT *\nFROM "user"\nWHERE "name" = ?\nHAVING "y" = ?' );
-    const values = query.allValues((w, h) => ['foo', ...w, 'bar', ...h]);
+    const values = query.allValues((s, w, h) => [...s, 'foo', ...w, 'bar', ...h]);
     t.deepEqual(values, ['foo', 'Bobby Badger', 'bar', 99]);
   }
 )

@@ -662,6 +662,34 @@
       <div>
         <p>
           
+          <span data-ice="async">async</span>
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-clientExecute">clientExecute</a></span></span><span class="code" data-ice="signature">(client: <span>*</span>, sql: <span>*</span>, action: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-configure">configure</a></span></span><span class="code" data-ice="signature">(config: <span>*</span>): <span>*</span></span>
@@ -720,7 +748,7 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-connected">connected</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-connected">connected</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -1084,35 +1112,7 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-one">one</a></span></span><span class="code" data-ice="signature">(sql: <span>*</span>, params: <span>*</span>, options: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-optionalParams">optionalParams</a></span></span><span class="code" data-ice="signature">(params: <span>*</span>, options: <span>*</span>): <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span><span>[]</span></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-one">one</a></span></span><span class="code" data-ice="signature">(sql: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1194,9 +1194,9 @@
       <div>
         <p>
           
-          <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-prepare">prepare</a></span></span><span class="code" data-ice="signature">(connection: <span>*</span>, sql: <span>*</span>): <span>*</span></span>
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-prepareValues">prepareValues</a></span></span><span class="code" data-ice="signature">(values: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1224,7 +1224,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-prepareValues">prepareValues</a></span></span><span class="code" data-ice="signature">(values: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-queryArgs">queryArgs</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span><span>[]</span></span></span>
         </p>
       </div>
       <div>
@@ -1924,7 +1924,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber72">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber66">source</a></span></span>
     </span>
   </h3>
 
@@ -1979,7 +1979,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber108">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber114">source</a></span></span>
     </span>
   </h3>
 
@@ -2022,7 +2022,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber105">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber113">source</a></span></span>
     </span>
   </h3>
 
@@ -2037,6 +2037,89 @@
 </div>
 
   
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-clientExecute">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    <span data-ice="async">async</span>
+    
+    <span class="code" data-ice="name">clientExecute</span><span class="code" data-ice="signature">(client: <span>*</span>, sql: <span>*</span>, action: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber79">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">client</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">sql</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">action</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -2175,11 +2258,11 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">connected</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">connected</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber62">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber60">source</a></span></span>
     </span>
   </h3>
 
@@ -2193,7 +2276,19 @@
   <div data-ice="properties">
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -2222,7 +2317,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber225">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber234">source</a></span></span>
     </span>
   </h3>
 
@@ -2265,7 +2360,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber65">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 
@@ -2392,7 +2487,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber181">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber184">source</a></span></span>
     </span>
   </h3>
 
@@ -2469,7 +2564,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber198">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber205">source</a></span></span>
     </span>
   </h3>
 
@@ -2554,7 +2649,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber209">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber218">source</a></span></span>
     </span>
   </h3>
 
@@ -2625,7 +2720,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber178">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber180">source</a></span></span>
     </span>
   </h3>
 
@@ -2680,7 +2775,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber193">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber199">source</a></span></span>
     </span>
   </h3>
 
@@ -2758,7 +2853,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber190">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber195">source</a></span></span>
     </span>
   </h3>
 
@@ -2835,7 +2930,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber184">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber188">source</a></span></span>
     </span>
   </h3>
 
@@ -2918,7 +3013,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber203">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber211">source</a></span></span>
     </span>
   </h3>
 
@@ -3077,11 +3172,11 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">one</span><span class="code" data-ice="signature">(sql: <span>*</span>, params: <span>*</span>, options: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">one</span><span class="code" data-ice="signature">(sql: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber111">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber100">source</a></span></span>
     </span>
   </h3>
 
@@ -3107,14 +3202,8 @@
       <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">params</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">options</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="name" class="code" data-depth="0">args</td>
+      <td data-ice="type" class="code">...<span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -3153,83 +3242,6 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-optionalParams">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">optionalParams</span><span class="code" data-ice="signature">(params: <span>*</span>, options: <span>*</span>): <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span><span>[]</span></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber136">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">params</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">options</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type code" data-ice="returnType"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span><span>[]</span></span></td>
-          
-        </tr>
-      </tbody>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-parseError">
     <span class="access" data-ice="access">public</span>
     
@@ -3241,7 +3253,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber125">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber119">source</a></span></span>
     </span>
   </h3>
 
@@ -3306,7 +3318,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber128">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -3366,18 +3378,18 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-prepare">
+  <h3 data-ice="anchor" id="instance-method-prepareValues">
     <span class="access" data-ice="access">public</span>
     
     
     
-    <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">prepare</span><span class="code" data-ice="signature">(connection: <span>*</span>, sql: <span>*</span>): <span>*</span></span>
+    
+    <span class="code" data-ice="name">prepareValues</span><span class="code" data-ice="signature">(values: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber98">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber142">source</a></span></span>
     </span>
   </h3>
 
@@ -3397,13 +3409,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">connection</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">sql</td>
+      <td data-ice="name" class="code" data-depth="0">values</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -3443,18 +3449,18 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-prepareValues">
+  <h3 data-ice="anchor" id="instance-method-queryArgs">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">prepareValues</span><span class="code" data-ice="signature">(values: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">queryArgs</span><span class="code" data-ice="signature">(args: <span>*</span>): <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span><span>[]</span></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber143">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber132">source</a></span></span>
     </span>
   </h3>
 
@@ -3474,7 +3480,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">values</td>
+      <td data-ice="name" class="code" data-depth="0">args</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -3489,7 +3495,7 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          <td class="return-type code" data-ice="returnType"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span><span>[]</span></span></td>
           
         </tr>
       </tbody>
@@ -3596,7 +3602,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber171">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber172">source</a></span></span>
     </span>
   </h3>
 
@@ -3673,7 +3679,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber76">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber71">source</a></span></span>
     </span>
   </h3>
 
@@ -3732,7 +3738,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber102">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Engine.js.html#lineNumber112">source</a></span></span>
     </span>
   </h3>
 
