@@ -126,6 +126,12 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#one-values--options-" data-ice="link">one(values, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#any-values--options-" data-ice="link">any(values, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#all-values--options-" data-ice="link">all(values, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#sql--" data-ice="link">sql()</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#placeholder-value-methods" data-ice="link">Placeholder Value Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#setvalues--" data-ice="link">setValues()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#wherevalues--" data-ice="link">whereValues()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#havingvalues--" data-ice="link">havingValues()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#allvalues--" data-ice="link">allValues()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#where-next-" data-ice="link">Where Next?</a></li>
 </ul>
   </div>
@@ -1237,10 +1243,21 @@ then you'll end up with a complete list of values set to <code>[10, 30, 20, 40]<
 in the correct order for the query.</p>
 <p>At this point we could refer you back to the bit where we said that mixing up different
 approaches isn't recommended.  But you already know that.</p>
-<p>** NOTE: this is about to change: THREE lists will be returned **/
-If you need to jiggle around with the order of values then you can pass a function
-to the <code>any()</code> method.  This will received two lists of placeholder values: those
-that have been collected from <code>where()</code> clauses and those that have been collected
+<p>If you need to jiggle around with the order of values then you can pass a function
+to the <code>any()</code> method.  This will received three lists of placeholder values:</p>
+<ul>
+<li><p><code>setValues</code> contains any placeholder values provided via the <a href="#values-values-">values()</a>
+method as part of an <a href="#insert-queries">insert()</a> query, or via the <a href="#set-values-">set()</a>
+method as part of an <a href="#update-queries">update()</a> query.</p>
+</li>
+<li><p><code>whereValues</code> contains any placeholder values provided via the <a href="#where-criteria-">where()</a>
+method.</p>
+</li>
+<li><p><code>havingValues</code> contains any placeholder values provided via the <a href="#having-criteria-">having()</a>
+method.</p>
+</li>
+</ul>
+<p>that have been collected from <code>where()</code> clauses and those that have been collected
 from <code>having()</code> clauses.  The function should return a new array containing the
 values in the right order.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select(...)
@@ -1268,6 +1285,17 @@ if it doesn't.  In all other respects it works exactly like <a href="#one-values
 <h3 id="all-values--options-">all(values, options)</h3><p>This method will execute the query and return an array of all matching rows.
 The array may be empty if no rows are matched.  In all other respects it works
 exactly like <a href="#one-values-">one()</a>.</p>
+<h3 id="sql--">sql()</h3><p>This methods generates and returns the SQL for the query.</p>
+<h2 id="placeholder-value-methods">Placeholder Value Methods</h2><h3 id="setvalues--">setValues()</h3><p>This returns any array of any placeholder values provided to the
+<a href="#values-values-">values()</a> or
+<a href="#set-values-">set()</a> methods.</p>
+<h3 id="wherevalues--">whereValues()</h3><p>This returns any array of any placeholder values provided to the
+<a href="#where-criteria-">where()</a> method.</p>
+<h3 id="havingvalues--">havingValues()</h3><p>This returns any array of any placeholder values provided to the
+<a href="#having-criteria-">having()</a> method.</p>
+<h3 id="allvalues--">allValues()</h3><p>This returns an array of all placeholder values.  It is the concatenated
+list of <a href="setvalues--">setValues()</a>, <a href="wherevalues--">whereValues()</a>
+and <a href="havingvalues--">havingValues()</a></p>
 <h2 id="where-next-">Where Next?</h2><p>In the next section we'll look at <a href="manual/tables.html">tables</a> which provide
 methods to automatically generate queries to insert, update, fetch and delete
 rows.</p>

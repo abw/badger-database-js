@@ -167,15 +167,26 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Query.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Builder from './Builder.js'
-import { fail, isFunction, isString } from "@abw/badger-utils";
+import { fail, isArray, isFunction, isString } from "@abw/badger-utils";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { missing } from "./Utils/Error.js";
 
 export class Query {
   constructor(engine, query, config={}) {
     this.engine       = engine || missing('engine');
+    this.setValues    = config.setValues    || [ ];
     this.whereValues  = config.whereValues  || [ ];
     this.havingValues = config.havingValues || [ ];
+    this.transaction  = config.transaction;
+
+    /*
+    if (config.transaction) {
+      console.log('query has a transaction!');
+    }
+    else {
+      console.log('query does NOT have a transaction');
+    }
+    */
 
     if (isString(query)) {
       this.query = query;
@@ -201,32 +212,45 @@ export class Query {
     return this.query;
   }
 
-  run(params, options) {
-    const sql    = this.sql();
-    const values = this.allValues(params);
+  run(...args) {
+    const sql = this.sql();
+    const [values, options] = this.queryArgs(args);
     this.debugData("run()", { sql, values, options });
     return this.engine.run(sql, values, options)
   }
 
-  any(params, options) {
+  one(...args) {
     const sql    = this.sql();
-    const values = this.allValues(params);
+    const [values, options] = this.queryArgs(args);
+    this.debugData("one()", { sql, values, options });
+    return this.engine.one(sql, values, options)
+  }
+
+  any(...args) {
+    const sql = this.sql();
+    const [values, options] = this.queryArgs(args);
     this.debugData("any()", { sql, values, options });
     return this.engine.any(sql, values, options)
   }
 
-  all(params, options) {
-    const sql    = this.sql();
-    const values = this.allValues(params);
+  all(...args) {
+    const sql = this.sql();
+    const [values, options] = this.queryArgs(args);
     this.debugData("all()", { sql, values, options });
     return this.engine.all(sql, values, options)
   }
 
-  one(params, options) {
-    const sql    = this.sql();
-    const values = this.allValues(params);
-    this.debugData("one()", { sql, values, options });
-    return this.engine.one(sql, values, options)
+  queryArgs(args) {
+    const params = isArray(args[0])
+      ? args.shift()
+      : [ ];
+    const options = args.length
+      ? args.shift()
+      : { };
+    return [
+      this.allValues(params),
+      options
+    ];
   }
 
   allValues(where=[]) {
