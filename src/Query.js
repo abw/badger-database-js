@@ -6,6 +6,7 @@ import { missing } from "./Utils/Error.js";
 export class Query {
   constructor(engine, query, config={}) {
     this.engine       = engine || missing('engine');
+    this.setValues    = config.setValues    || [ ];
     this.whereValues  = config.whereValues  || [ ];
     this.havingValues = config.havingValues || [ ];
     this.transaction  = config.transaction;

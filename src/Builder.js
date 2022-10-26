@@ -1,9 +1,6 @@
-import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
 import { newline, unknown } from "./Constants.js";
-import { addDebugMethod } from "./Utils/Debug.js";
-import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
-import { format } from "./Utils/Format.js";
-import { spaceAfter } from "./Utils/Space.js";
+import { addDebugMethod, format, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from "./Utils/index.js";
+import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
 
 export let Builders   = { };
 export let Generators = { };
@@ -26,7 +23,6 @@ export class Builder {
   }
 
   constructor(parent, ...args) {
-    // this.factory  = factory;
     this.parent   = parent;
     this.args     = args;
 
@@ -81,13 +77,9 @@ export class Builder {
   }
 
   contextValues() {
-    const { whereValues, havingValues } = this.resolveChain();
-    return { whereValues, havingValues };
+    const { setValues, whereValues, havingValues } = this.resolveChain();
+    return { setValues, whereValues, havingValues };
   }
-
-  //values(...args) {
-  //  return this.allValues(...args);
-  //}
 
   allValues(where=[]) {
     const { setValues, whereValues, havingValues } = this.resolveChain();
@@ -96,8 +88,7 @@ export class Builder {
     // go at the end.  But if there's some need to jiggle the parameters
     // more then a function can be provided.
     if (isFunction(where)) {
-      // TODO: add in setValues
-      return where(whereValues, havingValues);
+      return where(setValues, whereValues, havingValues);
     }
     return [...setValues, ...whereValues, ...havingValues, ...where]
   }
