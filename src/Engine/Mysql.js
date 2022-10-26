@@ -19,9 +19,7 @@ export class MysqlEngine extends Engine {
     );
     return mysql.createConnection(this.database);
   }
-  async connected() {
-    return true;
-  }
+
   async disconnect(connection) {
     this.debug("disconnect()");
     connection.destroy();
@@ -30,24 +28,37 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, params, options) {
+  async run(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("run()", { sql, params, options });
-    [params, options] = this.optionalParams(params, options);
     return this
-      .execute(sql, query => query.execute(params), options)
-      .then( ([result]) => result );
+      .execute(
+        sql,
+        query => query.execute(params).then(([result]) => result),
+        options
+      )
   }
-  async any(sql, params, options) {
+
+  async any(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("any()", { sql, params, options });
     return this
-      .execute(sql, query => query.execute(params), options)
-      .then( ([rows]) => rows[0] );
+      .execute(
+        sql,
+        query => query.execute(params).then(([rows]) => rows[0]),
+        options
+      )
   }
-  async all(sql, params, options) {
+
+  async all(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("all()", { sql, params, options });
     return this
-      .execute(sql, query => query.execute(params), options)
-      .then( ([rows]) => rows );
+      .execute(
+        sql,
+        query => query.execute(params).then(([rows]) => rows),
+        options
+      )
   }
 
   async begin() {
@@ -68,9 +79,9 @@ export class MysqlEngine extends Engine {
   sanitizeResult(result, options={}) {
     const keys = options.keys || [defaultIdColumn];
     const id = keys[0];
-    result[0].changes ||= result[0].affectedRows || 0;
-    result[0].id      ||= result[0].insertId || null;
-    result[0][id]     ||= result[0].insertId || null;
+    result.changes ||= result.affectedRows || 0;
+    result.id      ||= result.insertId || null;
+    result[id]     ||= result.insertId || null;
     return result;
   }
   beginTransactionQuery() {

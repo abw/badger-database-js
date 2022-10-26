@@ -9,6 +9,17 @@ export class Query {
     this.whereValues  = config.whereValues  || [ ];
     this.havingValues = config.havingValues || [ ];
 
+    /*
+    this.transaction  = config.transaction;
+
+    if (config.transaction) {
+      console.log('query has a transaction!');
+    }
+    else {
+      console.log('query does NOT have a transaction');
+    }
+    */
+
     if (isString(query)) {
       this.query = query;
     }

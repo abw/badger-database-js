@@ -3,6 +3,7 @@ import { singleWord } from "./Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
 import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";
+import Transaction from "./Transaction.js";
 
 export class Queryable {
   constructor(engine) {
@@ -103,19 +104,9 @@ export class Queryable {
   }
 
   async transaction(code) {
-    await this.engine.transaction(this, code)
+    const trans = new Transaction(this);
+    await trans.run(code);
   }
-  /*
-  async begin() {
-    await this.engine.begin()
-  }
-  async commit() {
-    await this.engine.commit()
-  }
-  async rollback() {
-    await this.engine.rollback()
-  }
-  */
 }
 
 export default Queryable

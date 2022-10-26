@@ -57,15 +57,9 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Pool connections methods - must be implemented by subclasses
   //-----------------------------------------------------------------------------
-  async connect() {
-    notImplemented("connect()")
-  }
-  async connected() {
-    notImplemented("connected()")
-  }
-  async disconnect() {
-    notImplemented("disconnect()")
-  }
+  async connect()    { notImplemented("connect()")    }
+  async connected()  { return true }
+  async disconnect() { notImplemented("disconnect()") }
 
   //-----------------------------------------------------------------------------
   // Methods to acquire and release connections from the pool
@@ -74,6 +68,7 @@ export class Engine {
     this.debug("acquire()");
     return this.pool.acquire().promise;
   }
+
   async release(connection) {
     this.debug("release()");
     await this.pool.release(connection);
@@ -82,12 +77,18 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Generic query methods
   //-----------------------------------------------------------------------------
+  async clientExecute(client, sql, action) {
+    const query = await client.prepare(sql)
+    return await action(query);
+  }
+
   async execute(sql, action, options={}) {
     this.debugData("execute()", { sql, options });
     const client = await this.acquire();
     try {
-      const query  = await this.prepare(client, sql).catch( e => this.parseError(sql, e) )
-      const result = await action(query);
+      const result = await this
+        .clientExecute(client, sql, action)
+        .catch( e => this.parseError(sql, e) );
       return options.sanitizeResult
         ? this.sanitizeResult(result, options)
         : result;
@@ -96,20 +97,9 @@ export class Engine {
       this.release(client);
     }
   }
-  async prepare(connection, sql) {
-    this.debugData("prepare()", { sql });
-    return connection.prepare(sql);
-  }
-  async run() {
-    notImplemented('run()');
-  }
-  async any() {
-    notImplemented('any()');
-  }
-  async all() {
-    notImplemented('all()');
-  }
-  async one(sql, params, options) {
+
+  async one(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("one()", { sql, params, options });
     const rows = await this.all(sql, params, options);
     if (rows.length === 1) {
@@ -120,12 +110,17 @@ export class Engine {
     }
   }
 
+  async run() { notImplemented('run()') }
+  async any() { notImplemented('any()') }
+  async all() { notImplemented('all()') }
+
   //-----------------------------------------------------------------------------
   // Query utility methods
   //-----------------------------------------------------------------------------
   parseError(sql, e) {
     throw new SQLParseError(sql, this.parseErrorArgs(e));
   }
+
   parseErrorArgs(e) {
     return {
       message:  e.message,
@@ -134,13 +129,17 @@ export class Engine {
       position: e.position,
     };
   }
-  optionalParams(params, options) {
-    if (isObject(params)) {
-      options = params;
-      params = [ ];
-    }
+
+  queryArgs(args) {
+    const params = isArray(args[0])
+      ? args.shift()
+      : [ ];
+    const options = args.length
+      ? args.shift()
+      : { };
     return [params, options];
   }
+
   prepareValues(values) {
     return values.map(
       // values can be arrays with a comparison, e.g. ['>', 1973], in which case
@@ -150,6 +149,7 @@ export class Engine {
         : value
     )
   }
+
   sanitizeResult(result) {
     return result;
   }
@@ -220,6 +220,7 @@ export class Engine {
           : this.quoteChar + part.replaceAll(this.quoteChar, this.escQuote) + this.quoteChar)
       .join('.');
   }
+
   quoteTableColumn(table, column) {
     // if the column already has a dot then we quote it as is,
     // otherwise we explicitly add the table name
@@ -227,37 +228,45 @@ export class Engine {
       ? this.quote(column)
       : this.quote(`${table}.${column}`);
   }
+
   formatPlaceholder() {
     return '?';
   }
+
   formatColumnPlaceholder(column, n) {
     return `${this.quote(column)}=${this.formatPlaceholder(n)}`;
   }
+
   formatWherePlaceholder(column, value, n) {
     // value can be an array containing a comparison operator and a value,
     // e.g. ['>' 1973], otherwise we assume it's an equality operator, '='
     const cmp = isArray(value) ? value[0] : equals;
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
   }
+
   formatSetPlaceholder(column, n) {
     return `${this.quote(column)} ${equals} ${this.formatPlaceholder(n)}`;
   }
+
   formatPlaceholders(values, n=1) {
     return values.map(
       () => this.formatPlaceholder(n++)
     ).join(', ');
   }
+
   formatColumnPlaceholders(columns, n=1, joint=', ') {
     return columns.map(
       column => this.formatColumnPlaceholder(column, n++)
     ).join(joint);
   }
+
   formatWherePlaceholders(columns, values, n=1, joint=' AND ') {
     let i = 0;
     return columns.map(
       column => this.formatWherePlaceholder(column, values[i++], n++)
     ).join(joint) || whereTrue;
   }
+
   formatColumns(columns) {
     if (isObject(columns) && columns.sql) {
       return columns.sql;

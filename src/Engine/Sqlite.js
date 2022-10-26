@@ -32,9 +32,11 @@ export class SqliteEngine extends Engine {
     );
     return new Database(this.filename, this.options);
   }
+
   async connected(db) {
     return db.open;
   }
+
   async disconnect(db) {
     this.debug("disconnect()");
     db.close();
@@ -43,18 +45,34 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, params=[], options) {
+  async run(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("run()", { sql, params, options });
-    [params, options] = this.optionalParams(params, options);
-    return this.execute(sql, query => query.run(...params), options);
+    return this.execute(
+      sql,
+      query => query.run(...params),
+      options
+    );
   }
-  async any(sql, params=[], options) {
+
+  async any(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("any()", { sql, params, options });
-    return this.execute(sql, query => query.get(...params), options);
+    return this.execute(
+      sql,
+      query => query.get(...params),
+      options
+    );
   }
-  async all(sql, params=[], options) {
+
+  async all(sql, ...args) {
+    const [params, options] = this.queryArgs(args);
     this.debugData("all()", { sql, params, options });
-    return this.execute(sql, query => query.all(...params), options);
+    return this.execute(
+      sql,
+      query => query.all(...params),
+      options
+    );
   }
 
   //-----------------------------------------------------------------------------
