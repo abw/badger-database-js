@@ -2,7 +2,7 @@ import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount } from "./Utils/Error.js";
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, BEGIN, COMMIT, doubleQuote, ORDER_BY, ROLLBACK, space, equals, whereTrue } from './Constants.js';
+import { allColumns, BEGIN, COMMIT, doubleQuote, ROLLBACK, equals, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
