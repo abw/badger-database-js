@@ -19,15 +19,7 @@ named query allows it to be hidden away somewhere in a library file
 so that your application code can remain simple and treat it like a
 black box.
 
-The query builder doesn't support the construction of insert, update or
-delete queries.  Again, this is quite deliberate.  The methods provided
-by [tables](manual/table_methods.html) should be sufficient to insert,
-update and delete rows for *most* simple cases.  If you need a more complex
-query involving joins, subqueries, etc., then, once again, writing a
-custom SQL query and saving it as a named query is probably the best
-solution.
-
-Similarly, the support for [relations](manual/relations.html) has some
+The support for [relations](manual/relations.html) has some
 shortcomings.  For example, you can't define many-to-many relations that
 use intermediate link tables. However, you can define your own load method
 with a custom SQL query when you need to.

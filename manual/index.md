@@ -44,8 +44,10 @@ This is a brief summary of the object methods available.
 | [any(query, values, options)](manual/basic_queries.html#any-query--values--options-) | Run a raw SQL query or named query to fetch any single row |
 | [all(query, values, options)](manual/basic_queries.html#all-query--values--options-) | Run a raw SQL query or named query to fetch all rows |
 | [build](manual/query_builder.html) | Start a query builder chain |
-| [select(columns)](manual/query_builder.html#selecting-columns-from-tables) | Start a query builder chain with a column selection |
-| [from(table)](manual/query_builder.html#selecting-columns-from-tables) | Start a query builder chain with a table selection |
+| [select(columns)](manual/query_builder.html#select-queries) | Start a `SELECT` query builder chain with a column selection |
+| [insert(columns)](manual/query_builder.html#insert-queries) | Start an `INSERT` query builder chain with a column selection |
+| [update(table)](manual/query_builder.html#update-queries) | Start an `UPDATE` query builder chain with a table name |
+| [delete(columns)](manual/query_builder.html#delete-queries) | Start an `DELETE` query builder chain with optional column specification |
 | [table(name)](manual/tables.html) | Lookup a named table and return a `Table` object|
 
 ### Table Methods
@@ -84,9 +86,7 @@ This is a brief summary of the object methods available.
 | [anyRecord(query, args)](manual/table_queries.html#anyrecord-query--args-) | Select any single row using [fetchAny()](manual/table_methods.html#fetchany-where--options-) or [any()](manual/table_queries.html#any-query--values--options-) as appropriate and return as a record|
 | [allRecords(query, args)](manual/table_queries.html#allrecords-query--args-) | Select all rows using [fetchAll()](manual/table_methods.html#fetchall-where--options-) or [all()](manual/table_queries.html#all-query--values--options-) as appropriate and return as a record|
 | [build](manual/table_queries.html#query-builder) | Start a query builder chain |
-| [selectFrom](manual/table_queries.html#query-builder) | Start a query builder chain by selecting all columns from the table |
-| [select(columns)](manual/table_queries.html#query-builder) | Start a query builder chain with a column selection |
-| [from(table)](manual/table_queries.html#query-builder) | Start a query builder chain with a table selection |
+| [select(columns)](manual/table_queries.html#query-builder) | Start a query builder chain with column selection and table pre-defined|
 | [record(row)](manual/table_methods.html#record-row-) | Convert a row to a record object |
 | [records(rows)](manual/table_methods.html#records-rows-) | Convert an array of rows to an array of record objects |
 

@@ -1,5 +1,24 @@
 # Table Queries
 
+* [SQL Queries](#sql-queries)
+* [Named Queries](#named-queries)
+* [Query Fragments](#query-fragments)
+* [Query Builder](#query-builder)
+* [Query Methods](#query-methods)
+  * [run(query, values, options)](#run-query--values--options-)
+  * [one(query, values, options)](#one-query--values--options-)
+  * [any(query, values, options)](#any-query--values--options-)
+  * [all(query, values, options)](#all-query--values--options-)
+  * [oneRow(query, args)](#onerow-query--args-)
+  * [anyRow(query, args)](#anyrow-query--args-)
+  * [allRows(query, args)](#allrows-query--args-)
+  * [oneRecord(query, args)](#onerecord-query--args-)
+  * [anyRecord(query, args)](#anyrecord-query--args-)
+  * [allRecords(query, args)](#allrecords-query--args-)
+  * [sql(query)](#sql-query-)
+
+## SQL Queries
+
 Table objects implement the [run()](#run-query--values--options-),
 [one()](#one-query--values--options-), [any()](#any-query--values--options-)
 and [all()](#all-query--values--options-) method similar to those
@@ -149,15 +168,45 @@ console.log( users.sql('selectById') )
 ## Query Builder
 
 You can use the [query builder](manual/query_builder.html) to generate
-queries.  Call the `select()` or `from()` methods to start a query
-and then chain further methods calls to build the query.
+queries.  The `build` property contains a query builder node that you
+can build queries on.
+
+```js
+const byEmail = users
+  .build
+  .select('id name')
+  .from('users')
+  .where('email')
+// -> SELECT "id", "name"
+//    FROM "users"
+//    WHERE "email" = ?
+const user = await byEmail.one(['bobby@badgerpower.com'])
+```
+
+The `select()` method is a short hand which automatically selects the current
+table (i.e. it calls `from(table.name)`) for you.  You can specify the columns
+that you want to select as arguments.
 
 ```js
 const byEmail = users
   .select('id name')
-  .from('users')
   .where('email')
+// -> SELECT "id", "name"
+//    FROM "users"
+//    WHERE "email" = ?
+const user = await byEmail.one(['bobby@badgerpower.com'])
+```
 
+If you don't specify any columns to select then it will automatically select
+all columns.
+
+```js
+const byEmail = users
+  .select()
+  .where('email')
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "email" = ?
 const user = await byEmail.one(['bobby@badgerpower.com'])
 ```
 
@@ -167,26 +216,6 @@ to the [run()](#run-query--values--options-), [one()](#one-query--values--option
 
 ```js
 const user = await users.one(byEmail, ['bobby@badgerpower.com'])
-```
-
-If you want to start a query with a method other than `select()` or `from()`
-then prefix it with `.build`.
-
-```js
-const byEmail = users.build
-  .where('email')
-  .from('users')
-  .select('id name')
-```
-
-The table `.selectFrom` property contains a query builder that has been
-pre-initialised to select all the table columns from the table.
-
-```js
-const byEmail = users.selectFrom.where('email')
-// -> SELECT "users"."id", "users"."name", "users"."email"
-//    FROM "users"
-//    WHERE "email" = ?
 ```
 
 You can use the query builder to generate named queries.  The query
@@ -201,11 +230,11 @@ const db = connect({
       columns: 'id name email'
       queries: {
         selectByEmail:
-          // using the query builder
-          t => t.select('name email').from('users').where('email'),
+          // using the query builder with a placeholder for email
+          t => t.select().where('email'),
         allBadgers:
-          // using the .selectFrom query builder shortcut
-          t => t.selectFrom.where({ animal: 'Badger' })
+          // using the query builder with pre-defined values
+          t => t.select().where({ animal: 'Badger' })
       }
     },
   }
@@ -511,3 +540,9 @@ console.log( users.sql('allBadgers') )
 //    FROM "users"
 //    WHERE "animal" = ?
 ```
+
+## Where Next?
+
+In the section we'll show how you can define your own
+[table classes](manual/table_class.html) to help organise larger
+projects and provide custom table functionality.

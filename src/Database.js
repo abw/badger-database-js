@@ -1,3 +1,4 @@
+import Queryable from './Queryable.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
 import proxymise from 'proxymise';
@@ -5,7 +6,6 @@ import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
 import { addDebugMethod } from './Utils/Debug.js';
 import { databaseBuilder } from './Builders.js';
-import Queryable from './Queryable.js';
 import { fail } from '@abw/badger-utils';
 
 const defaults = {
@@ -25,12 +25,11 @@ export class Database extends Queryable {
     this.state     = {
       table: { },
     };
-    //addQueryMethods(this);
     addDebugMethod(this, 'database', config);
   }
 
   //-----------------------------------------------------------------------------
-  // Engine methods
+  // acquire/release a connection from the engine
   //-----------------------------------------------------------------------------
   acquire() {
     return this.engine.acquire();
@@ -38,6 +37,10 @@ export class Database extends Queryable {
   release(connection) {
     this.engine.release(connection);
   }
+
+  //-----------------------------------------------------------------------------
+  // Tables
+  //-----------------------------------------------------------------------------
   async table(name) {
     return this.state.table[name]
       ||= await this.initTable(name);
@@ -52,21 +55,31 @@ export class Database extends Queryable {
     schema.table ||= name;
     return new tclass(this, { ...schema, ...topts });
   }
-  quote(name) {
-    return this.engine.quote(name);
-  }
+
+  //-----------------------------------------------------------------------------
+  // Query builder
+  //-----------------------------------------------------------------------------
   select(...args) {
     return this.build.select(...args);
   }
-  from(...args) {
-    return this.build.from(...args);
+  insert(...args) {
+    return this.build.insert(...args);
+  }
+  update(...args) {
+    return this.build.update(...args);
+  }
+  delete(...args) {
+    return this.build.delete(...args);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Delegates to engine methods
+  //-----------------------------------------------------------------------------
+  quote(name) {
+    return this.engine.quote(name);
   }
   disconnect() {
     return this.engine.destroy();
-  }
-  destroy() {
-    console.log('destroy() is deprecated, use disconnect() instead');
-    return this.disconnect();
   }
 }
 

@@ -14,6 +14,8 @@ class Animal extends Builder {
   static buildMethod = 'animal'
   // where it appears in the SQL query, between 0 and 100
   static buildOrder  = 0
+  // top-level query types that this is compatible with
+  static validFor    = 'SELECT INSERT UPDATE DELETE'
   // opening keyword, in this case a comment
   static keyword     = '#'
   // string to join multiple items

@@ -140,3 +140,7 @@ const db = connect({
 });
 ```
 
+## Where Next?
+
+In the section we'll look at [records](manual/records.html) which to help organise larger
+projects and provide custom table functionality.

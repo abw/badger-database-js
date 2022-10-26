@@ -121,3 +121,8 @@ export class User extends Record {
   }
 }
 ```
+
+## Where Next?
+
+In the next section we'll look at how you can define [relations](manual/relations.html)
+between different records in your database.

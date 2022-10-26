@@ -1,4 +1,4 @@
-import { fail, hasValue, isArray, isFunction, isObject, isString } from "@abw/badger-utils";
+import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
 import { newline, unknown } from "./Constants.js";
 import { addDebugMethod } from "./Utils/Debug.js";
 import { notImplementedInBaseClass, QueryBuilderError } from "./Utils/Error.js";
@@ -9,6 +9,7 @@ export let Builders   = { };
 export let Generators = { };
 
 const defaultContext = () => ({
+  setValues:    [ ],
   whereValues:  [ ],
   havingValues: [ ],
   placeholder:  1,
@@ -47,28 +48,36 @@ export class Builder {
     // stub for subclasses
   }
 
-  async one(args) {
+  async one(args, options) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
     const values = this.allValues(args);
     this.debugData("one()", { sql, values });
-    return db.one(sql, values);
+    return db.one(sql, values, options);
   }
 
-  async any(args) {
+  async any(args, options) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
     const values = this.allValues(args);
     this.debugData("any()", { sql, values });
-    return db.any(sql, values);
+    return db.any(sql, values, options);
   }
 
-  async all(args) {
+  async all(args, options={}) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
     const values = this.allValues(args);
     this.debugData("all()", { sql, values });
-    return db.all(sql, values);
+    return db.all(sql, values, options);
+  }
+
+  async run(args, options={}) {
+    const sql    = this.sql();
+    const db     = this.lookupDatabase();
+    const values = this.allValues(args);
+    this.debugData("all()", { sql, values });
+    return db.run(sql, values, { ...options, sanitizeResult: true });
   }
 
   contextValues() {
@@ -76,20 +85,30 @@ export class Builder {
     return { whereValues, havingValues };
   }
 
-  values(...args) {
-    return this.allValues(...args);
-  }
+  //values(...args) {
+  //  return this.allValues(...args);
+  //}
 
   allValues(where=[]) {
-    const { whereValues, havingValues } = this.resolveChain();
+    const { setValues, whereValues, havingValues } = this.resolveChain();
 
     // In the usual case we just get one set of extra args and they
     // go at the end.  But if there's some need to jiggle the parameters
     // more then a function can be provided.
     if (isFunction(where)) {
+      // TODO: add in setValues
       return where(whereValues, havingValues);
     }
-    return [...whereValues, ...havingValues, ...where]
+    return [...setValues, ...whereValues, ...havingValues, ...where]
+  }
+
+  setValues(...values) {
+    if (values.length) {
+      this.context.setValues = [
+        ...this.context.setValues, ...values
+      ];
+    }
+    return this.context.setValues;
   }
 
   whereValues(...values) {
@@ -110,17 +129,20 @@ export class Builder {
     return this.context.havingValues;
   }
 
-  // generate SQL
   sql() {
+    // to generate SQL we first generate a context containing all the
+    // information collected from the query builder chain...
     const context = this.resolveChain();
 
+    // ...then we call the generateSQL() static method on each class in
+    // the order determined by their static buildOrder
     return Object.entries(Generators)
       // sort generators by the buildOrder - the second array element in the value
       .sort( (a, b) => a[1][1] - b[1][1] )
       // filter out any that don't have slots defined
       .filter( ([slot]) => context[slot] )
       // call the generateSQL() static method
-      .map( ([slot, entry]) => entry[0].generateSQL(context[slot]) )
+      .map( ([slot, entry]) => entry[0].generateSQL(context[slot], context) )
       // filter out any that didn't return a value
       .filter( i => hasValue(i) )
       // join together into a single string
@@ -144,7 +166,9 @@ export class Builder {
       ...args
     }
     const values = this.resolveLink();
-    this.context[slot] = [...(this.context[slot] || []), ...values];
+    if (values && values.length) {
+      this.context[slot] = [...(this.context[slot] || []), ...values];
+    }
     return this.context;
   }
 
@@ -171,7 +195,10 @@ export class Builder {
     else if (isObject(item)) {
       return this.resolveLinkObject(item);
     }
-    fail("Invalid link item: ", item);
+    else if (noValue(item)) {
+      return this.resolveLinkNothing(item);
+    }
+    fail("Invalid query builder value: ", item);
   }
 
   resolveLinkString() {
@@ -184,6 +211,10 @@ export class Builder {
 
   resolveLinkObject() {
     notImplemented("resolveLinkObject()");
+  }
+
+  resolveLinkNothing() {
+    return [ ];
   }
 
   // utility methods
@@ -204,6 +235,20 @@ export class Builder {
 
   quote(item) {
     return this.lookupDatabase().quote(item)
+  }
+
+  quoteTableColumns(table, columns, prefix) {
+    // function to map columns to depends on table and/or prefix being defined
+    const func = table
+      ? prefix
+        ? column => this.quoteTableColumnAs(table, column, prefix + column)
+        : column => this.quoteTableColumn(table, column)
+      : prefix
+        ? column => this.quoteColumnAs(column, prefix + column)
+        : column => this.quote(column)
+    ;
+    // split string into items and apply function
+    return splitList(columns).map(func);
   }
 
   tableColumn(table, column) {

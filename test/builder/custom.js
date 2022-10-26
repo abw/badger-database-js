@@ -5,6 +5,7 @@ import { range } from '@abw/badger-utils';
 class Animal extends Builder {
   static buildMethod = 'animal'
   static buildOrder  = 0
+  static validFor    = 'SELECT INSERT'
   static keyword     = '#'
   static joint       = comma
   static messages = {
@@ -100,6 +101,38 @@ test( 'invalid array',
       'Invalid array with 3 items specified for query builder "animal" component. Expected [animal, count].'
     );
   }
+)
+
+test( "valid method for insert",
+  t => {
+    const op = db.build
+      .insert('name')
+      .into('animals')
+      .animal(['Badger', 3])
+    t.is(
+      op.sql(), '# Badger, Badger, Badger\nINSERT\nINTO "animals" ("name")\nVALUES (?)'
+    )
+  }
+)
+
+test( 'invalid method for update',
+  t => t.throws(
+    () => db.build.update('name').animal(['Badger', 'Mushroom', 'Snake']).sql(),
+    {
+      instanceOf: QueryBuilderError,
+      message: 'animal() is not a valid builder method for an UPDATE query.'
+    }
+  )
+)
+
+test( 'invalid method for delete',
+  t => t.throws(
+    () => db.build.delete().animal(['Badger', 'Mushroom', 'Snake']).sql(),
+    {
+      instanceOf: QueryBuilderError,
+      message: 'animal() is not a valid builder method for a DELETE query.'
+    }
+  )
 )
 
 test.after( 'disconnect',

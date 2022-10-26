@@ -51,6 +51,16 @@ test( 'gee => aitch.eye',
   }
 );
 
+test( 'jay #> kay.el',
+  t => {
+    const config = parseRelationString('jay #> kay.el');
+    t.is( config.type,  'map');
+    t.is( config.from,  'jay');
+    t.is( config.table, 'kay');
+    t.is( config.to,    'el');
+  }
+);
+
 test( 'invalid relation',
   t => {
     const error = t.throws(
@@ -106,6 +116,26 @@ test( 'relation config relation string',
     t.is( config.type, 'one' );
     t.is( config.name, 'foo.bar' );
     t.is( config.order, 'd' );
+  }
+);
+
+test( 'relation config relation map string',
+  t => {
+    const config = relationConfig(
+      'foo', 'bar',
+      {
+        relation: 'a #> b.c',
+        key: 'e',
+        value: 'f'
+      }
+    );
+    t.is( config.from, 'a' );
+    t.is( config.table, 'b' );
+    t.is( config.to, 'c' );
+    t.is( config.type, 'map' );
+    t.is( config.name, 'foo.bar' );
+    t.is( config.key, 'e' );
+    t.is( config.value, 'f' );
   }
 );
 

@@ -6,6 +6,7 @@ export class Tables {
     this.tables = tables;
     addDebugMethod(this, 'tables');
   }
+
   async table(name) {
     const config = this.tables[name];
     if (isFunction(config) && isFunction(config.constructor)) {

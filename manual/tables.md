@@ -56,7 +56,7 @@ const db = connect({
 Any generated queries will use the database table name (e.g. `user` in this
 example), rather than the name that you assigned to refer to the table
 collection (e.g. `users`).  If you don't define the `table` option then
-it defaults to using the name you're indexing it by in `table` (e.g. `users`).
+it defaults to using the name you're indexing it by in `tables` (e.g. `users`).
 
 There is no general consensus about whether tables should be named using the
 [singular or plural noun](https://stackoverflow.com/questions/338156/table-naming-dilemma-singular-vs-plural-names).  Most of the databases that
@@ -102,8 +102,25 @@ await users.delete({
 });
 ```
 
-These methods have variants for the cases where you're operating on a single
-row or multiple rows.
+Note that we use `fetch()` rather than `select()` to fetch rows out of the database.
+The `fetch()` method(s) generate queries based on the selection criteria that you pass
+an argument.  The [select()](manual/table_queries.html#query-builder) method (which
+the `fetch()` method uses) is used to generate custom queries using the
+[query builder](manual/query_builder.html).
+
+```js
+// using fetch() - specify the selection criteria
+const rows = await users.fetch({
+  email: 'brian@badgerpower.com'
+});
+// equivalent using select() - selection criteria are added via where()
+const rows = await users.select().where({
+  email: 'brian@badgerpower.com'
+});
+```
+
+The `insert()`, `update()`, `fetch()` and `delete()` methods have variants
+for the cases where you're operating on a single row or multiple rows.
 
 For example, the [insert()](manual/table_methods.html#insert-data--options-)
 method will call [insertOne()](manual/table_methods.html#insertone-data--options-)
@@ -163,11 +180,11 @@ const db = connect({
           // SQL query including table-specific fragments
           'SELECT &lt;columns&gt; FROM &lt;table&gt; WHERE name = ?',
         selectByEmail:
-          // using a query builder
-          t => t.select('id name email').from('users').where('email'),
+          // query builder with email value to be supplied
+          t => t.select().where('email'),
         allBadgers:
-          // using the .fetch query builder shortcut
-          t => t.fetch.where({ animal: 'Badger' })
+          // query builder with pre-defined values
+          t => t.select().where({ animal: 'Badger' })
       }
     },
   }
@@ -181,6 +198,8 @@ const user1 = await users.one('selectByName', ['Bobby Badger']);
 const user2 = await users.any('selectByEmail', ['brian@badgerpower.com']);
 const user3 = await users.all('allBadgers');
 ```
+
+## Where Next?
 
 In the next few sections we'll look at how [table columns](manual/table_columns.html)
 are defined, the [table methods](manual/table_methods.html) that are provided, how to

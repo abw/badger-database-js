@@ -173,6 +173,11 @@ export async function connectMusicDatabase(engine='sqlite') {
         relation: 'id => albums.artist_id',
         order: 'year'
       },
+      albumsByYear: {
+        relation: 'id #> albums.artist_id',
+        key: 'year',
+        value: 'title'
+      },
       album_tracks: {
         load: async (record) => {
           const artists = record.table;
@@ -517,6 +522,17 @@ export const runMusicDatabaseTests = async (database, options) => {
       t.is( albums[0].title, 'Atom Heart Mother' );
       t.is( albums[1].title, 'The Dark Side of the Moon' );
       t.is( albums[2].title, 'Wish You Were Here' );
+    }
+  )
+
+  test.serial( 'fetch albums via artist.albumsByYear map relation',
+    async t => {
+      const artists = await musicdb.model.artists;
+      const floyd = await artists.oneRecord({ name: 'Pink Floyd' });
+      const albums = await floyd.albumsByYear;
+      t.is( albums[1970], 'Atom Heart Mother' );
+      t.is( albums[1973], 'The Dark Side of the Moon' );
+      t.is( albums[1975], 'Wish You Were Here' );
     }
   )
 

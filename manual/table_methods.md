@@ -1,7 +1,34 @@
 # Table Methods
 
 The table object provides a number of methods for generating and running
-queries on table rows.
+queries on table rows.  These use the [table query builder](manual/table_queries.html#query-builder)
+to automatically generate and run queries for you based on the data
+you provide as arguments.
+
+* [Insert Methods](#insert-methods)
+  * [insert(data, options)](#insert-data--options-)
+  * [insertOne(data, options)](#insertone-data--options-)
+  * [insertAll(array, options)](#insertall-array--options-)
+  * [insertOneRecord(data, options)](#insertonerecord-data--options-)
+  * [insertAllRecords(array, options)](#insertallrecords-array--options-)
+* [Update Methods](#update-methods)
+  * [update(set, where, options)](#update-set--where--options-)
+  * [updateOne(set, where, options)](#updateone-set--where--options-)
+  * [updateAny(set, where, options)](#updateany-set--where--options-)
+  * [updateAll(set, where, options)](#updateall-set--where--options-)
+* [Delete Method](#delete-method)
+  * [delete(where)](#delete-where-)
+* [Fetch Methods](#fetch-methods)
+  * [fetch(where, options)](#fetch-where--options-)
+  * [fetchOne(where, options)](#fetchone-where--options-)
+  * [fetchAny(where, options)](#fetchany-where--options-)
+  * [fetchAll(where, options)](#fetchall-where--options-)
+  * [fetchOneRecord(where, options)](#fetchonerecord-where--options-)
+  * [fetchAnyRecord(where, options)](#fetchanyrecord-where--options-)
+  * [fetchAllRecord(where, options)](#fetchallrecords-where--options-)
+* [Record Methods](#record-methods)
+  * [record(row)](#record-row-)
+  * [records(rows)](#records-rows-)
 
 As per the previous examples, we'll assume the table definition looks
 something like this:
@@ -702,3 +729,8 @@ This methods converts a row of data to a [record](manual/records.html) object.
 ### records(rows)
 
 This methods converts an array of rows of data to a an array of [record](manual/records.html) objects.
+
+## Where Next?
+
+In the section we'll look at how you can define your own custom
+[table queries](manual/table_queries.html).

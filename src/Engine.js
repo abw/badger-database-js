@@ -1,9 +1,8 @@
 import { Pool } from 'tarn';
 import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount } from "./Utils/Error.js";
-import { format } from './Utils/Format.js';
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, BEGIN, COMMIT, doubleQuote, ORDER_BY, ROLLBACK, space, whereTrue } from './Constants.js';
+import { allColumns, BEGIN, COMMIT, doubleQuote, ORDER_BY, ROLLBACK, space, equals, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -13,21 +12,17 @@ const poolDefaults = {
   propagateCreateError: true
 }
 
-const queries = {
-  insert:   'INSERT INTO <table> (<columns>) VALUES (<placeholders>) <returning>',
-  update:   'UPDATE <table> SET <set> WHERE <where>',
-  delete:   'DELETE FROM <table> WHERE <where>',
-  select:   'SELECT <columns> FROM <table> WHERE <where> <order>',
-}
-
 export class Engine {
-  static beginTrans = BEGIN;
+  static beingTrans = BEGIN
+  static quoteChar = doubleQuote
+  static returning = false
 
   constructor(config={}) {
     this.engine    = config.engine || missing('engine');
     this.database  = config.database || missing('database');
     this.driver    = this.constructor.driver || missing('driver');
-    this.quoteChar = this.constructor.quoteChar || doubleQuote;
+    this.quoteChar = this.constructor.quoteChar;
+    this.returning = this.constructor.returning;
     this.messages  = this.constructor.messages;
     this.config    = this.configure(config);
     this.pool      = this.initPool(config.pool);
@@ -105,24 +100,6 @@ export class Engine {
     this.debugData("prepare()", { sql });
     return connection.prepare(sql);
   }
-  parseError(sql, e) {
-    throw new SQLParseError(sql, this.parseErrorArgs(e));
-  }
-  parseErrorArgs(e) {
-    return {
-      message:  e.message,
-      type:     e.code,
-      code:     e.errno,
-      position: e.position,
-    };
-  }
-  optionalParams(params, options) {
-    if (isObject(params)) {
-      options = params;
-      params = [ ];
-    }
-    return [params, options];
-  }
   async run() {
     notImplemented('run()');
   }
@@ -144,63 +121,37 @@ export class Engine {
   }
 
   //-----------------------------------------------------------------------------
-  // Specific queries: insert, update and delete
+  // Query utility methods
   //-----------------------------------------------------------------------------
-  async insert(table, colnames, values, keys) {
-    const columns      = this.formatColumns(colnames);
-    const placeholders = this.formatPlaceholders(values);
-    const returning    = this.formatReturning(keys);
-    const sql          = format(queries.insert, { table, columns, placeholders, returning});
-    this.debugData("insert()", { table, colnames, values, keys, sql });
-    return this.run(sql, values, { keys, sanitizeResult: true });
+  parseError(sql, e) {
+    throw new SQLParseError(sql, this.parseErrorArgs(e));
   }
-  async update(table, datacols, datavals, wherecols, wherevals) {
-    const set    = this.formatColumnPlaceholders(datacols);
-    const where  = this.formatWherePlaceholders(wherecols, wherevals, datacols.length + 1);
-    const values = this.prepareValues(wherevals);
-    const sql    = format(queries.update, { table, set, where });
-    this.debugData("update()", { table, datacols, datavals, wherecols, wherevals, sql });
-    return this.run(sql, [...datavals, ...values], { sanitizeResult: true });
+  parseErrorArgs(e) {
+    return {
+      message:  e.message,
+      type:     e.code,
+      code:     e.errno,
+      position: e.position,
+    };
   }
-  async delete(table, wherecols, wherevals) {
-    const where  = this.formatWherePlaceholders(wherecols, wherevals);
-    const values = this.prepareValues(wherevals);
-    const sql    = format(queries.delete, { table, where });
-    this.debugData("delete()", { table, wherecols, wherevals, sql });
-    return this.run(sql, values, { sanitizeResult: true });
+  optionalParams(params, options) {
+    if (isObject(params)) {
+      options = params;
+      params = [ ];
+    }
+    return [params, options];
   }
-
-  //-----------------------------------------------------------------------------
-  // Select queries
-  //-----------------------------------------------------------------------------
-  selectQuery(table, wherecols, wherevals, options={}) {
-    this.debugData("selectQuery()", { table, wherecols, options });
-    const columns = this.formatColumns(options.columns);
-    const where   = this.formatWherePlaceholders(wherecols, wherevals);
-    const order   = this.formatOrderBy(options.orderBy || options.order);
-    table = this.quote(table);
-    return [
-      format(queries.select, { table, columns, where, order }),
-      this.prepareValues(wherevals)
-    ]
+  prepareValues(values) {
+    return values.map(
+      // values can be arrays with a comparison, e.g. ['>', 1973], in which case
+      // we only want the second element
+      value => isArray(value)
+        ? value[1]
+        : value
+    )
   }
-  async selectAll(table, wherecols, wherevals, options={}) {
-    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debugData("selectAll()", { table, wherecols, wherevals, options, sql, values });
-    return this.all(sql, values);
-  }
-  async selectAny(table, wherecols, wherevals, options={}) {
-    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debugData("selectAny()", { table, wherecols, wherevals, options, sql, values });
-    return this.any(sql, values);
-  }
-  async selectOne(table, wherecols, wherevals, options={}) {
-    const [sql, values] = this.selectQuery(table, wherecols, wherevals, options);
-    this.debugData("selectOne()", { table, wherecols, wherevals, options, sql, values });
-    return this.one(sql, values);
-  }
-  async select(...args) {
-    return this.selectAll(...args);
+  sanitizeResult(result) {
+    return result;
   }
 
   //-----------------------------------------------------------------------------
@@ -257,9 +208,6 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
-  sanitizeResult(result) {
-    return result;
-  }
   quote(name) {
     if (isObject(name) && name.sql) {
       return name.sql;
@@ -288,8 +236,11 @@ export class Engine {
   formatWherePlaceholder(column, value, n) {
     // value can be an array containing a comparison operator and a value,
     // e.g. ['>' 1973], otherwise we assume it's an equality operator, '='
-    const cmp = isArray(value) ? value[0] : '=';
+    const cmp = isArray(value) ? value[0] : equals;
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
+  }
+  formatSetPlaceholder(column, n) {
+    return `${this.quote(column)} ${equals} ${this.formatPlaceholder(n)}`;
   }
   formatPlaceholders(values, n=1) {
     return values.map(
@@ -319,30 +270,12 @@ export class Engine {
         .join(', ')
       : allColumns;
   }
-  formatReturning() {
-    return '';
-  }
-  formatOrderBy(order) {
-    return hasValue(order)
-      ? ORDER_BY + space + this.formatColumns(order)
-      : '';
-  }
-  prepareValues(values) {
-    return values.map(
-      // values can be arrays with a comparison, e.g. ['>', 1973], in which case
-      // we only want the second element
-      value => isArray(value)
-        ? value[1]
-        : value
-    )
-  }
-
 
   //-----------------------------------------------------------------------------
   // Cleanup
   //-----------------------------------------------------------------------------
   async destroy() {
-    this.debug("destroy() ");
+    this.debug("destroy()");
     await this.pool.destroy();
   }
 }

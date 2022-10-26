@@ -15,7 +15,7 @@ test.before( 'connect',
 
 test( 'from',
   t => {
-    const op = db.from('a');
+    const op = db.build.from('a');
     t.true( op instanceof From )
     t.is( op.sql(), 'FROM "a"' );
   }
@@ -23,21 +23,21 @@ test( 'from',
 
 test( 'tables string',
   t => {
-    const op = db.from('a, b c');
+    const op = db.build.from('a, b c');
     t.is( op.sql(), 'FROM "a", "b", "c"' );
   }
 )
 
 test( 'multiple tables as arguments',
   t => {
-    const op = db.from('a', 'b', 'c');
+    const op = db.build.from('a', 'b', 'c');
     t.is( op.sql(), 'FROM "a", "b", "c"' );
   }
 )
 
 test( 'table with alias',
   t => {
-    const op = db.from(['a', 'b']);
+    const op = db.build.from(['a', 'b']);
     t.is( op.sql(), 'FROM "a" AS "b"' );
   }
 )
@@ -45,7 +45,7 @@ test( 'table with alias',
 test( 'three element array',
   t => {
     const error = t.throws(
-      () => db.from(['users', 'email', 'email_address']).sql()
+      () => db.build.from(['users', 'email', 'email_address']).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid array with 3 items specified for query builder "from" component. Expected [table, alias].' );
@@ -54,42 +54,42 @@ test( 'three element array',
 
 test( 'from sql in object',
   t => {
-    const op = db.from({ sql: 'a as alpha' });
+    const op = db.build.from({ sql: 'a as alpha' });
     t.is( op.sql(), 'FROM a as alpha' );
   }
 )
 
 test( 'from tagged sql',
   t => {
-    const op = db.from(sql`a as alpha`);
+    const op = db.build.from(sql`a as alpha`);
     t.is( op.sql(), 'FROM a as alpha' );
   }
 )
 
 test( 'from multiple items',
   t => {
-    const op = db.from('a', ['b', 'c'], { sql: 'd as delta'});
+    const op = db.build.from('a', ['b', 'c'], { sql: 'd as delta'});
     t.is( op.sql(), 'FROM "a", "b" AS "c", d as delta' );
   }
 )
 
 test( 'from table in object',
   t => {
-    const op = db.from({ table: 'a' });
+    const op = db.build.from({ table: 'a' });
     t.is( op.sql(), 'FROM "a"' );
   }
 )
 
 test( 'from tables in object',
   t => {
-    const op = db.from({ tables: 'a b c' });
+    const op = db.build.from({ tables: 'a b c' });
     t.is( op.sql(), 'FROM "a", "b", "c"' );
   }
 )
 
 test( 'from aliased table',
   t => {
-    const op = db.from({ table: 'a', as: 'b' });
+    const op = db.build.from({ table: 'a', as: 'b' });
     t.is( op.sql(), 'FROM "a" AS "b"' );
   }
 )
@@ -97,7 +97,7 @@ test( 'from aliased table',
 test( 'invalid object',
   t => {
     const error = t.throws(
-      () => db.from({ users: 'email email_address', oops: 'This is wrong' }).sql()
+      () => db.build.from({ users: 'email email_address', oops: 'This is wrong' }).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is(

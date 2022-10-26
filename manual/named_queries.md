@@ -53,8 +53,11 @@ async function main() {
 main()
 ```
 
+## Where Next?
+
 In the next section we'll look at how you can define reusable
 [query fragments](manual/query_fragments.html) that can be
 embedded into your named queries.
 
-You can also define named queries using the [query builder](manual/query_builder.html).
+You can also define named queries using the
+[query builder](manual/query_builder.html).

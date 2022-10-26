@@ -405,3 +405,7 @@ it.
 ```js
 db.disconnect()
 ```
+
+## Where Next?
+
+Once you're connected to a database you're ready to run some [basic queries](manual/basic_queries.html).

@@ -23,21 +23,21 @@ test( 'where',
 
 test( 'column',
   t => {
-    const query = db.from('users').select('id name email').where('name');
+    const query = db.build.from('users').select('id name email').where('name');
     t.is( query.sql(), 'SELECT "id", "name", "email"\nFROM "users"\nWHERE "name" = ?' );
   }
 )
 
 test( 'columns string',
   t => {
-    const query = db.from('users').select('id email').where('name email');
+    const query = db.build.from('users').select('id email').where('name email');
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ? AND "email" = ?' );
   }
 )
 
 test( 'array with two elements',
   t => {
-    const query = db.from('users').select('id email').where(['name', 'Bobby Badger']);
+    const query = db.build.from('users').select('id email').where(['name', 'Bobby Badger']);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
@@ -46,7 +46,7 @@ test( 'array with two elements',
 
 test( 'array with three elements',
   t => {
-    const query = db.from('users').select('id email').where(['name', '!=', 'Bobby Badger']);
+    const query = db.build.from('users').select('id email').where(['name', '!=', 'Bobby Badger']);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
@@ -55,7 +55,7 @@ test( 'array with three elements',
 
 test( 'array with three elements, last one undefined',
   t => {
-    const query = db.from('users').select('id email').where(['name', '!=', undefined]);
+    const query = db.build.from('users').select('id email').where(['name', '!=', undefined]);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
     t.is( query.allValues().length, 0 );
   }
@@ -63,7 +63,7 @@ test( 'array with three elements, last one undefined',
 
 test( 'array with two elements, second one is a comparison',
   t => {
-    const query = db.from('users').select('id email').where(['name', ['!=']]);
+    const query = db.build.from('users').select('id email').where(['name', ['!=']]);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
     t.is( query.allValues().length, 0 );
   }
@@ -71,7 +71,7 @@ test( 'array with two elements, second one is a comparison',
 
 test( 'array with two elements, second one is an array of comparison and value',
   t => {
-    const query = db.from('users').select('id email').where(['name', ['!=', 'Bobby Badger']]);
+    const query = db.build.from('users').select('id email').where(['name', ['!=', 'Bobby Badger']]);
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" != ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Bobby Badger' );
@@ -81,7 +81,7 @@ test( 'array with two elements, second one is an array of comparison and value',
 test( 'array with four elements',
   t => {
     const error = t.throws(
-      () => db.from('a').where(['users', 'email', 'email_address', 'oops']).sql()
+      () => db.build.from('a').where(['users', 'email', 'email_address', 'oops']).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid array with 4 items specified for query builder "where" component. Expected [column, value] or [column, operator, value].' );
@@ -90,14 +90,14 @@ test( 'array with four elements',
 
 test( 'table name',
   t => {
-    const query = db.from('users').select('id email').where('users.name', 'u.email');
+    const query = db.build.from('users').select('id email').where('users.name', 'u.email');
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "users"."name" = ? AND "u"."email" = ?' );
   }
 )
 
 test( 'column with value',
   t => {
-    const query = db.from('users').select('id email').where({ name: 'Brian Badger' });
+    const query = db.build.from('users').select('id email').where({ name: 'Brian Badger' });
     t.is( query.sql(), 'SELECT "id", "email"\nFROM "users"\nWHERE "name" = ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 'Brian Badger' );
@@ -106,7 +106,7 @@ test( 'column with value',
 
 test( 'column with comparison',
   t => {
-    const query = db.from('users').select('email').where({ id: ['>', 99] });
+    const query = db.build.from('users').select('email').where({ id: ['>', 99] });
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" > ?' );
     t.is( query.allValues().length, 1 );
     t.is( query.allValues()[0], 99 );
@@ -115,7 +115,7 @@ test( 'column with comparison',
 
 test( 'column with comparison operator',
   t => {
-    const query = db.from('users').select('email').where({ id: ['>'] });
+    const query = db.build.from('users').select('email').where({ id: ['>'] });
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" > ?' );
     t.is( query.allValues().length, 0 );
   }
@@ -123,7 +123,7 @@ test( 'column with comparison operator',
 
 test( 'where sql clause',
   t => {
-    const query = db.from('users').select('email').where([sql`COUNT(product_id)`, '>', undefined]);
+    const query = db.build.from('users').select('email').where([sql`COUNT(product_id)`, '>', undefined]);
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE COUNT(product_id) > ?' );
     t.is( query.allValues().length, 0 );
   }
@@ -132,7 +132,7 @@ test( 'where sql clause',
 test( 'object with value array with three elements',
   t => {
     const error = t.throws(
-      () => db.from('a').where({ id: ['id', '>', 123] }).sql()
+      () => db.build.from('a').where({ id: ['id', '>', 123] }).sql()
     );
     t.true( error instanceof QueryBuilderError );
     t.is( error.message, 'Invalid value array with 3 items specified for query builder "where" component. Expected [value] or [operator, value].' );

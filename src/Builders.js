@@ -1,30 +1,40 @@
 import { hasValue, splitList } from '@abw/badger-utils';
 import { Builders, Generators } from './Builder.js';
-import After    from './Builder/After.js';
-import Before   from './Builder/Before.js';
-import Columns  from './Builder/Columns.js';
-import Database from './Builder/Database.js';
-import From     from './Builder/From.js';
-import Group    from './Builder/Group.js';
-import Having   from './Builder/Having.js';
-import Join     from './Builder/Join.js';
-import Limit    from './Builder/Limit.js';
-import Offset   from './Builder/Offset.js';
-import Order    from './Builder/Order.js';
-import Prefix   from './Builder/Prefix.js';
-import Range    from './Builder/Range.js';
-import Select   from './Builder/Select.js';
-import Table    from './Builder/Table.js';
-import Where    from './Builder/Where.js';
-import Proxy    from './Proxy/Builder.js';
+import After     from './Builder/After.js';
+import Before    from './Builder/Before.js';
+import Columns   from './Builder/Columns.js';
+import Database  from './Builder/Database.js';
+import Delete    from './Builder/Delete.js';
+import From      from './Builder/From.js';
+import Group     from './Builder/Group.js';
+import Having    from './Builder/Having.js';
+import Insert    from './Builder/Insert.js';
+import Into      from './Builder/Into.js';
+import Join      from './Builder/Join.js';
+import Limit     from './Builder/Limit.js';
+import Offset    from './Builder/Offset.js';
+import Order     from './Builder/Order.js';
+import Prefix    from './Builder/Prefix.js';
+import Range     from './Builder/Range.js';
+import Returning from './Builder/Returning.js';
+import Select    from './Builder/Select.js';
+import Set       from './Builder/Set.js';
+import Table     from './Builder/Table.js';
+import Update    from './Builder/Update.js';
+import Values    from './Builder/Values.js';
+import Where     from './Builder/Where.js';
+import Proxy     from './Proxy/Builder.js';
 
 export const registerBuilder = module => {
   const slot  = module.contextSlot || module.buildMethod;
   const order = module.buildOrder;
-  // const method = module.buildMethod;
-  // const alias  = splitList(module.buildAlias);
-  // console.log('register [%s] as', name, [method, ...alias]);
-  // console.log('register [%s] => [slot:%s] [order:%s]', method, slot, order);
+
+  /*
+  const method = module.buildMethod;
+  const alias  = splitList(module.buildAlias);
+  console.log('register [%s] as', [method, ...alias]);
+  console.log('register [%s] => [slot:%s] [order:%s]', method, slot, order);
+  */
 
   // Register the main buildMethod and any buildAlias in the Builders table.
   // Multiple aliases can be specified in buildAlias as an array or string which
@@ -54,8 +64,9 @@ export const registerBuilders = (...builders) =>
   builders.forEach(registerBuilder)
 
 registerBuilders(
-  After, Before, Columns, From, Group, Having, Join, Limit,
-  Offset, Order, Prefix, Range, Select, Table, Where,
+  After, Before, Columns, Delete, From, Group, Having,
+  Insert, Into, Join, Limit, Offset, Order, Prefix, Range,
+  Returning, Select, Set, Table, Update, Values, Where,
 );
 
 export const databaseBuilder = database =>
@@ -64,16 +75,3 @@ export const databaseBuilder = database =>
 export const tableBuilder = table =>
   Proxy(Builders, new Table(undefined, table))
 
-// We used to pass the factory to each builder component as the first
-// argument, but it wasn't used.  However, it's possible that we might
-// want to use it one day, e.g. if a builder wants to add other builder
-// components.  But I think that's over-complicating things.
-//
-//export const factory = (parent, type, ...args) => {
-//  return new Builders[type](parent, ...args);
-//}
-//
-//export const databaseBuilder = database =>
-//  Proxy(Builders, new Database(factory, undefined, database))
-
-// export default factory;

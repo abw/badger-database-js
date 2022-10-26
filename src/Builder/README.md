@@ -1,3 +1,3 @@
-# Warning
+# Query Builder Component
 
-This is an experiment in progress.
+This directory contains the modules used to build queries.

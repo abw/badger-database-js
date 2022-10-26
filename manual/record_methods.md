@@ -78,6 +78,8 @@ The Proxy wrapper also allows you to access it more succinctly as:
 const orders = await record.orders;
 ```
 
+## Where Next?
 
-
-
+In the next few section we'll look at how you can define your own
+custom [record class](manual/record_class.html) where you can put
+additional functionality relating to a record.

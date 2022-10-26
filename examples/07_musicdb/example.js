@@ -84,6 +84,12 @@ async function main() {
   // now list all album tracks
   await floyd.trackList();
 
+  console.log('\nPink Floyd Albums by year:');
+  const aby = await floyd.albumsByYear;
+  console.log('  - 1970:', aby[1970]);
+  console.log('  - 1973:', aby[1973]);
+  console.log('  - 1975:', aby[1975]);
+
   // disconnect
   musicdb.disconnect();
 }
@@ -165,4 +171,8 @@ Album tracks by Pink Floyd:
   - Shine On You Crazy Diamond (Parts VI-IX)
     Wish You Were Here (1975) track 4
 
+Pink Floyd Albums by year:
+  - 1970: Atom Heart Mother
+  - 1973: The Dark Side of the Moon
+  - 1975: Wish You Were Here
 */
