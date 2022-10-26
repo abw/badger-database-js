@@ -38,7 +38,7 @@ export class Table extends Queryable {
     this.relations     = config.relations || { };
     this.build         = databaseBuilder(this.database);
 
-    // console.log('%s table created with database:', this.table, this.database.tmpId());
+    console.log('%s table created with database (%s) - is proxy? ', this.table, database.tmpId(), database.isProxy ? 'YES' : 'NO');
 
     aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);

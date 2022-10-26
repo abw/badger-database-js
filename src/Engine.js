@@ -84,6 +84,10 @@ export class Engine {
 
   async execute(sql, action, options={}) {
     this.debugData("execute()", { sql, options });
+    if (options.transaction) {
+      console.log('ENGINE got a transaction: ', options.transaction.tmpId());
+
+    }
     const client = await this.acquire();
     try {
       const result = await this

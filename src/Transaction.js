@@ -2,13 +2,15 @@ import transactionProxy from "./Proxy/Transaction.js";
 import { missing } from "./Utils/Error.js";
 
 export class Transaction {
-  constructor(queryable) {
-    this.queryable = queryable || missing('queryable');
-    // this.engine    = queryable.engine || missing('engine');
+  constructor(database) {
+    this.database = database || missing('database');
   }
   async run(code) {
-    const proxy = transactionProxy(this.queryable, this);
+    const proxy = transactionProxy(this.database, this);
     await code(proxy);
+  }
+  tmpId() {
+    return "TRANSACTION";
   }
 }
 

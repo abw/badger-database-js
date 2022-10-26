@@ -3,7 +3,7 @@ import { singleWord } from "./Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
 import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";
-// import Transaction from "./Transaction.js";
+import { green, red } from "./Utils/Color.js";
 
 export class Queryable {
   constructor(engine) {
@@ -31,6 +31,7 @@ export class Queryable {
 
   buildQuery(source, config) {
     this.debugData("buildQuery()", { source });
+    console.log('buildQuery() database (%s) is proxy? %s', this.tmpId(), this.isProxy ? green('YES') : red('NO'));
     return new Query(
       this.engine,
       isString(source) ? this.expandQuery(source) : source,
@@ -102,13 +103,6 @@ export class Queryable {
   loadedAll(rows) {
     return rows;
   }
-
-  /*
-  async transaction(code) {
-    const trans = new Transaction(this);
-    await trans.run(code);
-  }
-  */
 }
 
 export default Queryable

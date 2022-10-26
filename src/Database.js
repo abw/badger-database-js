@@ -1,10 +1,11 @@
 import Queryable from './Queryable.js';
 import Table from './Table.js';
 import Tables from './Tables.js';
+import Transaction from "./Transaction.js";
 import proxymise from 'proxymise';
 import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
-import { addDebugMethod } from './Utils/Debug.js';
+import { addDebugMethod, green, red } from './Utils/index.js';
 import { databaseBuilder } from './Builders.js';
 import { fail } from '@abw/badger-utils';
 
@@ -45,7 +46,12 @@ export class Database extends Queryable {
   //-----------------------------------------------------------------------------
   // Tables
   //-----------------------------------------------------------------------------
-  async table(name) {
+  async table(name, options={}) {
+    if (options.nocache) {
+      console.log(green('creating new table (nocache is set)'));
+      console.log('database (%s) is proxy? %s', this.tmpId(), this.isProxy ? green('YES') : red('NO'));
+      return await this.initTable(name);
+    }
     return this.state.table[name]
       ||= await this.initTable(name);
   }
@@ -74,6 +80,14 @@ export class Database extends Queryable {
   }
   delete(...args) {
     return this.build.delete(...args);
+  }
+
+  //-----------------------------------------------------------------------------
+  // Transactions
+  //-----------------------------------------------------------------------------
+  async transaction(code) {
+    const trans = new Transaction(this);
+    await trans.run(code);
   }
 
   //-----------------------------------------------------------------------------
