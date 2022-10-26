@@ -8,6 +8,8 @@ export class Query {
     this.engine       = engine || missing('engine');
     this.whereValues  = config.whereValues  || [ ];
     this.havingValues = config.havingValues || [ ];
+
+    /*
     this.transaction  = config.transaction;
 
     if (config.transaction) {
@@ -15,8 +17,8 @@ export class Query {
     }
     else {
       console.log('query does NOT have a transaction');
-
     }
+    */
 
     if (isString(query)) {
       this.query = query;
