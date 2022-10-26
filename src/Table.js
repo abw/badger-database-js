@@ -7,8 +7,11 @@ import { addDebugMethod } from "./Utils/Debug.js";
 import { isQuery } from "./Utils/Queries.js";
 import Queryable from "./Queryable.js";
 import { aliasMethods } from "./Utils/Methods.js";
+import { databaseBuilder } from "./Builders.js";
 
 const methodAliases = {
+  insertRow:     "insertOneRow",
+  insertRows:    "insertAllRows",
   insertRecord:  "insertOneRecord",
   insertRecords: "insertAllRecords",
   update:        "updateAll",
@@ -33,14 +36,16 @@ export class Table extends Queryable {
     this.queries       = config.queries || { };
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
-    this.build         = this.database.build;
-    //this.selectFrom    = this.build.select({
-    //  table:   this.table,
-    //  columns: Object.keys(this.columns)
-    //}).from(this.table)
+    this.build         = databaseBuilder(this.database);
+
+    console.log('%s table created with database:', this.table, this.database.tmpId());
 
     aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
+  }
+
+  tmpId() {
+    return `${this.table} table`;
   }
 
   configure(config) {
@@ -95,6 +100,16 @@ export class Table extends Queryable {
       rows.push(await this.insertOne(row, options));
     }
     return rows;
+  }
+
+  async insertOneRow(data, options) {
+    this.debugData("insertOneRow()", { data, options });
+    return this.insertOne(data, this.withReloadOption(options))
+  }
+
+  async insertAllRows(data, options) {
+    this.debugData("insertAllRows()", { data, options });
+    return this.insertAll(data, this.withReloadOption(options))
   }
 
   async insertOneRecord(data, options) {
@@ -319,6 +334,10 @@ export class Table extends Queryable {
     return options.record
       ? this.records(rows)
       : rows;
+  }
+
+  withReloadOption(options={}) {
+    return { ...options, reload: true };
   }
 
   withRecordOption(options={}) {
