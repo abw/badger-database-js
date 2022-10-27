@@ -451,7 +451,6 @@ export const runTransactionTests = async (engine) => {
     }
   );
 
-
   test.serial( 'table named query with rollback',
     async t => {
       await db.transaction(
@@ -480,7 +479,8 @@ export const runTransactionTests = async (engine) => {
     }
   )
 
-  // named table queries using database builder
+  // TODO
+  // records
   // database.model
   // database.waiter
 
