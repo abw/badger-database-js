@@ -179,7 +179,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Engine/Mysql.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Engine from '../Engine.js';
-import { backtick, defaultIdColumn } from '../Constants.js';
+import { backtick, defaultIdColumn, COMMIT, ROLLBACK } from '../Constants.js';
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class MysqlEngine extends Engine {
@@ -241,17 +241,23 @@ export class MysqlEngine extends Engine {
       )
   }
 
-  async begin() {
-    const query = this.constructor.beginTrans;
-    await this.run(query);
-  }
-  async commit() {
-    await this.run(COMMIT);
-  }
-  async rollback() {
-    await this.run(ROLLBACK);
+  //-----------------------------------------------------------------------------
+  // Transaction methods - MySQL requires special handling
+  //-----------------------------------------------------------------------------
+  async begin(transaction) {
+    this.debug("begin() - START TRANSACTION")
+    return await transaction.connection.query('START TRANSACTION')
   }
 
+  async commit(transaction) {
+    this.debug('commit() - ', COMMIT);
+    return await transaction.connection.query(COMMIT);
+  }
+
+  async rollback(transaction) {
+    this.debug('rollback() - ', ROLLBACK);
+    return await transaction.connection.query(ROLLBACK);
+  }
 
   //-----------------------------------------------------------------------------
   // Query formatting
@@ -264,10 +270,6 @@ export class MysqlEngine extends Engine {
     result[id]     ||= result.insertId || null;
     return result;
   }
-  beginTransactionQuery() {
-    return 'START TRANSACTION';
-  }
-
 }
 
 export default MysqlEngine</code></pre>

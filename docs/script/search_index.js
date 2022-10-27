@@ -2670,12 +2670,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/database.js~database#tmpid",
-    "class/src/Database.js~Database.html#instance-method-tmpId",
-    "src/Database.js~Database#tmpId",
-    "method"
-  ],
-  [
     "src/database.js~database#transaction",
     "class/src/Database.js~Database.html#instance-method-transaction",
     "src/Database.js~Database#transaction",
@@ -2952,18 +2946,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/engine.js~engine#transaction",
-    "class/src/Engine.js~Engine.html#instance-method-transaction",
-    "src/Engine.js~Engine#transaction",
-    "method"
-  ],
-  [
-    "src/engine.js~engine.beingtrans",
-    "class/src/Engine.js~Engine.html#static-member-beingTrans",
-    "src/Engine.js~Engine.beingTrans",
-    "member"
-  ],
-  [
     "src/engine.js~engine.quotechar",
     "class/src/Engine.js~Engine.html#static-member-quoteChar",
     "src/Engine.js~Engine.quoteChar",
@@ -2997,12 +2979,6 @@ window.esdocSearchIndex = [
     "src/engine/mysql.js~mysqlengine#begin",
     "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-begin",
     "src/Engine/Mysql.js~MysqlEngine#begin",
-    "method"
-  ],
-  [
-    "src/engine/mysql.js~mysqlengine#begintransactionquery",
-    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-beginTransactionQuery",
-    "src/Engine/Mysql.js~MysqlEngine#beginTransactionQuery",
     "method"
   ],
   [
@@ -3588,6 +3564,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/table.js~table#buildquery",
+    "class/src/Table.js~Table.html#instance-method-buildQuery",
+    "src/Table.js~Table#buildQuery",
+    "method"
+  ],
+  [
     "src/table.js~table#checkcolumnnames",
     "class/src/Table.js~Table.html#instance-method-checkColumnNames",
     "src/Table.js~Table#checkColumnNames",
@@ -3894,10 +3876,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#tmpid",
-    "class/src/Table.js~Table.html#instance-method-tmpId",
-    "src/Table.js~Table#tmpId",
-    "method"
+    "src/table.js~table#transaction",
+    "class/src/Table.js~Table.html#instance-member-transaction",
+    "src/Table.js~Table#transaction",
+    "member"
   ],
   [
     "src/table.js~table#updateall",
@@ -3984,6 +3966,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/transaction.js~transaction#begin",
+    "class/src/Transaction.js~Transaction.html#instance-method-begin",
+    "src/Transaction.js~Transaction#begin",
+    "method"
+  ],
+  [
     "src/transaction.js~transaction#commit",
     "class/src/Transaction.js~Transaction.html#instance-method-commit",
     "src/Transaction.js~Transaction#commit",
@@ -4002,6 +3990,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/transaction.js~transaction#connection",
+    "class/src/Transaction.js~Transaction.html#instance-member-connection",
+    "src/Transaction.js~Transaction#connection",
+    "member"
+  ],
+  [
     "src/transaction.js~transaction#constructor",
     "class/src/Transaction.js~Transaction.html#instance-constructor-constructor",
     "src/Transaction.js~Transaction#constructor",
@@ -4012,6 +4006,18 @@ window.esdocSearchIndex = [
     "class/src/Transaction.js~Transaction.html#instance-member-database",
     "src/Transaction.js~Transaction#database",
     "member"
+  ],
+  [
+    "src/transaction.js~transaction#engine",
+    "class/src/Transaction.js~Transaction.html#instance-member-engine",
+    "src/Transaction.js~Transaction#engine",
+    "member"
+  ],
+  [
+    "src/transaction.js~transaction#fail",
+    "class/src/Transaction.js~Transaction.html#instance-method-fail",
+    "src/Transaction.js~Transaction#fail",
+    "method"
   ],
   [
     "src/transaction.js~transaction#release",
@@ -4029,12 +4035,6 @@ window.esdocSearchIndex = [
     "src/transaction.js~transaction#run",
     "class/src/Transaction.js~Transaction.html#instance-method-run",
     "src/Transaction.js~Transaction#run",
-    "method"
-  ],
-  [
-    "src/transaction.js~transaction#tmpid",
-    "class/src/Transaction.js~Transaction.html#instance-method-tmpId",
-    "src/Transaction.js~Transaction#tmpId",
     "method"
   ],
   [

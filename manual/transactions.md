@@ -19,8 +19,8 @@ commit function and a rollback function.
 
 ```js
 await db.transaction(
-  async (db, commit, rollback) => {
-    await db.run('...some query...');
+  async (tdb, commit, rollback) => {
+    await tdb.run('...some query...');
     if (...some condition...) {
       await commit();
     }
@@ -32,24 +32,26 @@ await db.transaction(
 ```
 
 You **MUST** use the database reference provided to the function for
-all database operations.  Call the `commit()` function to commit the
-changes made in the transaction, or `rollback()` to roll them back.
+all database operations (shown as `tbd` in these examples).  Call
+the `commit()` function to commit the changes made in the transaction,
+or `rollback()` to roll them back.
+
 You can only call `commit()` or `rollback()`, not both, and you must
 call at least one of them.  If your code throws an error then the
 transaction will automatically be rolled back.
 
-You can also call the `db.commit()` or `db.rollback()` methods if you
+You can also call the `tdb.commit()` or `tdb.rollback()` methods if you
 prefer.
 
 ```js
 await db.transaction(
-  async db => {
-    await db.run('...some query...');
+  async tdb => {
+    await tdb.run('...some query...');
     if (...some condition...) {
-      await db.commit();
+      await tdb.commit();
     }
     else {
-      await db.rollback();
+      await tdb.rollback();
     }
   }
 )
@@ -65,10 +67,10 @@ regardless of these settings.
 
 ```js
 await db.transaction(
-  async db => {
-    await db.run('...some query...');
+  async tdb => {
+    await tdb.run('...some query...');
     if (...some condition...) {
-      await db.rollback();
+      await tdb.rollback();
     }
     // else transaction will automatically be committed
   },
@@ -78,14 +80,26 @@ await db.transaction(
 
 ```js
 await db.transaction(
-  async db => {
-    await db.run('...some query...');
+  async tdb => {
+    await tdb.run('...some query...');
     if (...some condition...) {
-      await db.commit();
+      await tdb.commit();
     }
     // else transaction will automatically be rolled back
   },
   { autoRollback: true }
+)
+```
+
+You can also add the `debug` option to generating debugging messages
+for the transaction.
+
+```js
+await db.transaction(
+  async tdb => {
+    // your transaction code
+  },
+  { debug: true }
 )
 ```
 
@@ -96,13 +110,13 @@ code.
 
 ```js
 await db.transaction(
-  async db => {
-    const users = await db.table('users');
+  async tdb => {
+    const users = await tdb.table('users');
     await users.insert({
       name: 'Brian Badger',
       email: 'brian@badgerpower.com',
     });
-    await db.commit();
+    await tdb.commit();
   }
 )
 ```
@@ -115,14 +129,14 @@ the database reference passed to your code.
 const users = await db.table('users');
 
 await db.transaction(
-  async db => {
+  async tdb => {
     // DO NOT DO THIS! - the existing users reference will not
     // execute queries in the context of the transaction
     await users.insert({
       name: 'Brian Badger',
       email: 'brian@badgerpower.com',
     });
-    await db.commit();
+    await tdb.commit();
   }
 )
 ```
@@ -133,15 +147,15 @@ to your transaction function.
 
 ```js
 await db.transaction(
-  async db => {
-    const users = await db.table('users');
+  async tdb => {
+    const users = await tdb.table('users');
     const brian = await users.fetchRecord({
       email: 'brian@badgerpower.com',
     });
     await brian.update({
       name: 'Brian the Badger'
     })
-    await db.commit();
+    await tdb.commit();
   }
 )
 ```

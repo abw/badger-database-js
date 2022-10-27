@@ -307,69 +307,128 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="query-fragments">Query Fragments</h1><p>You might want to define a number of different queries for fetching user
-rows using different search terms.  For example, to select a user by
-<code>email</code> or <code>name</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
-  database: 'sqlite://test.db',
-  queries: {
-    selectUserByEmail:
-      'SELECT * FROM users WHERE email=?',
-    selectUserByName:
-      'SELECT * FROM users WHERE name=?'
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="transactions">Transactions</h1><p><strong>WARNING</strong> Transactions are a work in progress.  There are some known
+loose ends, possible bugs, and the implementation is subject to change.</p>
+<p>We'll start by connecting to a database in the usual way.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
+
+const db = connect({ database: 'sqlite:memory' });</code></code></pre>
+<p>A transaction is run by calling the <code>transaction()</code> method on the
+database.  You should pass it a function which will contain all
+the code that will be run inside the transaction.  The function
+will be passed three parameters: a reference to the database, a
+commit function and a rollback function.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async (tdb, commit, rollback) =&gt; {
+    await tdb.run('...some query...');
+    if (...some condition...) {
+      await commit();
+    }
+    else {
+      await rollback();
+    }
   }
-};</code></code></pre>
-<p>To avoid repetition, you can define named SQL <code>fragments</code> that can be embedded
-into other queries.  Named fragments can be embedded into queries inside angle
-brackets, e.g. <code>&lt;fragmentName&gt;</code>.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
-  database: 'sqlite://test.db',
-  fragments: {
-    selectUser:
-      'SELECT * FROM users'
+)</code></code></pre>
+<p>You <strong>MUST</strong> use the database reference provided to the function for
+all database operations (shown as <code>tbd</code> in these examples).  Call
+the <code>commit()</code> function to commit the changes made in the transaction,
+or <code>rollback()</code> to roll them back.</p>
+<p>You can only call <code>commit()</code> or <code>rollback()</code>, not both, and you must
+call at least one of them.  If your code throws an error then the
+transaction will automatically be rolled back.</p>
+<p>You can also call the <code>tdb.commit()</code> or <code>tdb.rollback()</code> methods if you
+prefer.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    await tdb.run('...some query...');
+    if (...some condition...) {
+      await tdb.commit();
+    }
+    else {
+      await tdb.rollback();
+    }
+  }
+)</code></code></pre>
+<p>You can pass an object containing configuration options as a second
+argument to the <code>transaction()</code> method.  This can contain the <code>autoCommit</code>
+or <code>autoRollback</code> options which will causes the transaction to be automatically
+committed or rolled back, respectively.  This will only happen if you don't
+manually call either <code>commit()</code> or <code>rollback()</code> within your transaction code.
+If an error is thrown then the transaction will always be rolled back,
+regardless of these settings.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    await tdb.run('...some query...');
+    if (...some condition...) {
+      await tdb.rollback();
+    }
+    // else transaction will automatically be committed
   },
-  queries: {
-    selectUserByEmail:
-      '&lt;selectUser&gt; WHERE email=?',
-    selectUserByName:
-      '&lt;selectUser&gt; WHERE name=?'
-  }
-};</code></code></pre>
-<p>Fragments can reference other fragments.  This can be useful when you're building
-more complex queries, as shown in this somewhat contrived example:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const dbConfig = {
-  database: 'sqlite://test.db',
-  fragments: {
-    selectUserCompany:
-      'SELECT users.*, companies.* FROM users',
-    joinUserCompany:
-      'JOIN companies on users.company_id=companies.id',
-    selectEmployee:
-      '&lt;selectUserCompany&gt; &lt;joinUserCompany&gt;',
+  { autoCommit: true }
+)</code></code></pre>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    await tdb.run('...some query...');
+    if (...some condition...) {
+      await tdb.commit();
+    }
+    // else transaction will automatically be rolled back
   },
-  queries: {
-    selectEmployeeByEmail:
-      '&lt;selectEmployee&gt; WHERE email=?',
-    selectEmployeeByName:
-      '&lt;selectEmployee&gt; WHERE name=?'
+  { autoRollback: true }
+)</code></code></pre>
+<p>You can also add the <code>debug</code> option to generating debugging messages
+for the transaction.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    // your transaction code
+  },
+  { debug: true }
+)</code></code></pre>
+<p>You can use all of the database methods inside the transaction.
+You can also load tables and call their methods, but you <strong>MUST</strong>
+fetch the table using the database reference passed to the transaction
+code.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    const users = await tdb.table('users');
+    await users.insert({
+      name: 'Brian Badger',
+      email: 'brian@badgerpower.com',
+    });
+    await tdb.commit();
   }
-};</code></code></pre>
-<p>You can also embed fragments into ad-hoc queries passed to the
-<code>run()</code>, <code>one()</code>, <code>any()</code> and <code>all()</code> methods.  For example,
-given the above configuration you could write a custom query that
-includes the <code>selectEmployee</code> fragment like so:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const badgers = await db.all(
-  '&lt;selectEmployee&gt; WHERE companies.name=?',
-  ['Badgers Inc.']
-);</code></code></pre>
-<p>If you want to see how a query is expanded you can call the <code>sql()</code>
-method.  This will return the expanded SQL query.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">db.sql('&lt;selectEmployee&gt; WHERE companies.name=?');
-// -&gt; SELECT users.*, companies.* FROM users
-//    JOIN companies on users.company_id=companies.id
-//    WHERE companies.name=?</code></code></pre>
-<h2 id="where-next-">Where Next?</h2><p>You can also generate SQL queries using the
-<a href="manual/query_builder.html">query builder</a>.</p>
+)</code></code></pre>
+<p>You <strong>MUST NOT</strong> use any database or table references from outside
+of the transaction code.  All references must be accessed through
+the database reference passed to your code.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const users = await db.table('users');
+
+await db.transaction(
+  async tdb =&gt; {
+    // DO NOT DO THIS! - the existing users reference will not
+    // execute queries in the context of the transaction
+    await users.insert({
+      name: 'Brian Badger',
+      email: 'brian@badgerpower.com',
+    });
+    await tdb.commit();
+  }
+)</code></code></pre>
+<p>You can also use records within a transaction, but they <strong>MUST</strong>
+be fetch from tables accessed through the database reference passed
+to your transaction function.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    const users = await tdb.table('users');
+    const brian = await users.fetchRecord({
+      email: 'brian@badgerpower.com',
+    });
+    await brian.update({
+      name: 'Brian the Badger'
+    })
+    await tdb.commit();
+  }
+)</code></code></pre>
 </div>
 </div>
 

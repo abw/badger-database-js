@@ -209,10 +209,6 @@ export class Database extends Queryable {
     addDebugMethod(this, 'database', config);
   }
 
-  tmpId() {
-    return 'database';
-  }
-
   //-----------------------------------------------------------------------------
   // acquire/release a connection from the engine
   //-----------------------------------------------------------------------------
@@ -230,20 +226,20 @@ export class Database extends Queryable {
     if (options.nocache) {
       //console.log(green('creating new table (nocache is set)'));
       //console.log('database (%s) is proxy? %s', this.tmpId(), this.isProxy ? green('YES') : red('NO'));
-      return await this.initTable(name);
+      return await this.initTable(name, options);
     }
     return this.state.table[name]
-      ||= await this.initTable(name);
+      ||= await this.initTable(name, options);
   }
   async hasTable(name) {
     return await this.tables.table(name);
   }
-  async initTable(name) {
+  async initTable(name, options) {
     const schema = await this.hasTable(name) || fail(`Invalid table specified: ${name}`);
     const tclass = schema.tableClass   || Table;
     const topts  = schema.tableOptions || { };
     schema.table ||= name;
-    return new tclass(this, { ...schema, ...topts });
+    return new tclass(this, { ...schema, ...topts, ...options });
   }
 
   //-----------------------------------------------------------------------------
