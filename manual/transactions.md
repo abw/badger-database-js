@@ -21,6 +21,7 @@ commit function and a rollback function.
 await db.transaction(
   async (tdb, commit, rollback) => {
     await tdb.run('...some query...');
+
     if (...some condition...) {
       await commit();
     }
@@ -38,7 +39,8 @@ or `rollback()` to roll them back.
 
 You can only call `commit()` or `rollback()`, not both, and you must
 call at least one of them.  If your code throws an error then the
-transaction will automatically be rolled back.
+transaction will automatically be rolled back, as long as you haven't
+already called `commit()` or `rollback()`.
 
 You can also call the `tdb.commit()` or `tdb.rollback()` methods if you
 prefer.
@@ -47,6 +49,7 @@ prefer.
 await db.transaction(
   async tdb => {
     await tdb.run('...some query...');
+
     if (...some condition...) {
       await tdb.commit();
     }
@@ -69,6 +72,7 @@ regardless of these settings.
 await db.transaction(
   async tdb => {
     await tdb.run('...some query...');
+
     if (...some condition...) {
       await tdb.rollback();
     }
@@ -82,6 +86,7 @@ await db.transaction(
 await db.transaction(
   async tdb => {
     await tdb.run('...some query...');
+
     if (...some condition...) {
       await tdb.commit();
     }
