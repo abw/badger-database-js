@@ -5,17 +5,14 @@ import { setDebug } from '../../src/Utils/Debug.js';
 
 setDebug({
   // engine: true,
+  // transaction: true,
 })
+// test.todo( 'transaction support is a work in progress ');
 
-export const runTransactionTests = async (engine) => {
-  test.todo( 'transaction support is a work in progress ');
-}
-
-/*
 export const runTransactionTests = async (engine) => {
   const database = databaseConfig(engine);
   const sqlite   = engine === 'sqlite';
-  const mysql    = engine === 'mysql';
+  // const mysql    = engine === 'mysql';
   const postgres = engine === 'postgres';
   const ph1      = postgres ? '$1' : '?';
   const ph2      = postgres ? '$2' : '?';
@@ -65,23 +62,11 @@ export const runTransactionTests = async (engine) => {
     }
   )
 
-  test.serial( 'begin transaction query',
-    async t => {
-      const trans = db.engine.constructor.beginTrans;
-      if (mysql) {
-        t.is( trans, 'START TRANSACTION' );
-      }
-      else {
-        t.is( trans, 'BEGIN' )
-      }
-    }
-  )
-
-  test.serial( 'db transaction with rollback',
+  test.serial( 'transaction with rollback',
     async t => {
       await db.transaction(
         async (db, commit, rollback) => {
-          console.log('running transaction code');
+          // console.log('running transaction code');
           await db.run('insertAnimal', ['Badger', 'Foraging']);
           await db.run('insertAnimal', ['Ferret', 'Ferreting']);
           const animals = await db.all('fetchAnimals');
@@ -95,52 +80,88 @@ export const runTransactionTests = async (engine) => {
           await rollback();
         }
       );
-      const commited = await db.all('fetchAnimals')
-      t.is( commited.length, 0 )
+      const committed = await db.all('fetchAnimals')
+      t.is( committed.length, 0 )
     }
   )
-  */
 
-  /*
-  test.serial( 'db begin...rollback',
+  test.serial( 'transaction with autoRollback',
     async t => {
-      await db.begin();
-      await db.run('insertAnimal', ['Badger', 'Foraging']);
-      await db.run('insertAnimal', ['Ferret', 'Ferreting']);
-      const animals = await db.all('fetchAnimals');
+      await db.transaction(
+        async db => {
+          await db.run('insertAnimal', ['Badger', 'Foraging']);
+          await db.run('insertAnimal', ['Ferret', 'Ferreting']);
+          const animals = await db.all('fetchAnimals');
+          t.deepEqual(
+            animals,
+            [
+              { name: 'Badger', skill: 'Foraging' },
+              { name: 'Ferret', skill: 'Ferreting' },
+            ]
+          )
+        },
+        { autoRollback: true }
+      );
+      const committed = await db.all('fetchAnimals')
+      t.is( committed.length, 0 )
+    }
+  )
+
+  test.serial( 'transaction with commit',
+    async t => {
+      await db.transaction(
+        async (db, commit) => {
+          await db.run('insertAnimal', ['Badger', 'Foraging']);
+          await db.run('insertAnimal', ['Ferret', 'Ferreting']);
+          const animals = await db.all('fetchAnimals');
+          t.deepEqual(
+            animals,
+            [
+              { name: 'Badger', skill: 'Foraging' },
+              { name: 'Ferret', skill: 'Ferreting' },
+            ]
+          )
+          await commit();
+        }
+      );
+      const committed = await db.all('fetchAnimals')
       t.deepEqual(
-        animals,
+        committed,
         [
           { name: 'Badger', skill: 'Foraging' },
           { name: 'Ferret', skill: 'Ferreting' },
         ]
       )
-      await db.rollback();
-      const commited = await db.all('fetchAnimals')
-      t.is( commited.length, 0 )
     }
   )
 
-  test.serial( 'db begin...commit',
+  test.serial( 'transaction with autoCommit',
     async t => {
-      await db.begin();
-      await db.run('insertAnimal', ['Badger', 'Foraging']);
-      await db.run('insertAnimal', ['Ferret', 'Ferreting']);
-      const animals = await db.all('fetchAnimals');
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          await db.run('insertAnimal', ['Badger', 'Foraging']);
+          await db.run('insertAnimal', ['Ferret', 'Ferreting']);
+          await db.run('insertAnimal', ['Stoat',  'Stoating']);
+          const animals = await db.all('fetchAnimals');
+          t.deepEqual(
+            animals,
+            [
+              { name: 'Badger', skill: 'Foraging' },
+              { name: 'Ferret', skill: 'Ferreting' },
+              { name: 'Stoat',  skill: 'Stoating' },
+            ]
+          )
+        },
+        { autoCommit: true }
+      );
+      const committed = await db.all('fetchAnimals')
       t.deepEqual(
-        animals,
+        committed,
         [
           { name: 'Badger', skill: 'Foraging' },
           { name: 'Ferret', skill: 'Ferreting' },
-        ]
-      )
-      await db.commit();
-      const commited = await db.all('fetchAnimals')
-      t.deepEqual(
-        commited,
-        [
-          { name: 'Badger', skill: 'Foraging' },
-          { name: 'Ferret', skill: 'Ferreting' },
+          { name: 'Stoat',  skill: 'Stoating' },
         ]
       )
     }
@@ -153,47 +174,97 @@ export const runTransactionTests = async (engine) => {
     }
   );
 
-  test.serial( 'table begin...rollback',
+  test.serial( 'transaction with table rollback',
     async t => {
-      await animals.begin();
-      await animals.insert({ name: 'Badger', skill: 'Foraging'  });
-      await animals.insert({ name: 'Ferret', skill: 'Ferreting' });
-      const allAnimals = await animals.fetchAll({}, { columns: 'name skill' });
-      t.deepEqual(
-        allAnimals,
-        [
-          { name: 'Badger', skill: 'Foraging' },
-          { name: 'Ferret', skill: 'Ferreting' },
-        ]
+      await db.transaction(
+        async (db, commit, rollback) => {
+          const animals = await db.table('animals');
+          await animals.insert({ name: 'Badger', skill: 'Foraging'  });
+          await animals.insert({ name: 'Ferret', skill: 'Ferreting' });
+          const allAnimals = await animals.fetchAll({}, { columns: 'name skill' });
+          t.deepEqual(
+            allAnimals,
+            [
+              { name: 'Badger', skill: 'Foraging' },
+              { name: 'Ferret', skill: 'Ferreting' },
+            ]
+          )
+          await rollback();
+        }
       )
-      await db.rollback();
-      const commited = await animals.fetchAll()
-      t.is( commited.length, 0 )
+      const committed = await animals.fetchAll()
+      t.is( committed.length, 0 )
     }
   )
 
-  test.serial( 'table begin...rollback',
+  test.serial( 'transaction with table commit',
     async t => {
-      await animals.begin();
-      await animals.insert({ name: 'Badger', skill: 'Foraging'  });
-      await animals.insert({ name: 'Ferret', skill: 'Ferreting' });
-      const allAnimals = await animals.fetchAll({}, { columns: 'name skill' });
+      await db.transaction(
+        async (db, commit) => {
+          const animals = await db.table('animals');
+          await animals.insert({ name: 'Monkey', skill: 'Monkeying' });
+          await animals.insert({ name: 'Donkey', skill: 'Donkeying' });
+          const allAnimals = await animals.fetchAll({}, { columns: 'name skill' });
+          t.deepEqual(
+            allAnimals,
+            [
+              { name: 'Monkey', skill: 'Monkeying' },
+              { name: 'Donkey', skill: 'Donkeying' },
+            ]
+          )
+          await commit();
+        }
+      )
+      const committed = await db.all('fetchAnimals')
       t.deepEqual(
-        allAnimals,
+        committed,
         [
-          { name: 'Badger', skill: 'Foraging' },
-          { name: 'Ferret', skill: 'Ferreting' },
+          { name: 'Monkey', skill: 'Monkeying' },
+          { name: 'Donkey', skill: 'Donkeying' },
         ]
       )
-      await db.rollback();
-      const commited = await animals.fetchAll()
-      t.is( commited.length, 0 )
     }
   )
-  */
-/*
+
+  test.serial( 'transaction with db.rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          await db.rollback();
+        }
+      )
+      const committed = await db.all('fetchAnimals')
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Monkey', skill: 'Monkeying' },
+          { name: 'Donkey', skill: 'Donkeying' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'transaction with db.commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          await db.commit();
+        }
+      )
+      const committed = await db.all('fetchAnimals')
+      t.is( committed.length, 0 )
+    }
+  )
+
+  // TODO: database.build..., database.insert(), database.update(), etc.
+  // named queries using database builder
+  // named table queries using database builder
+  // database.model
+  // database.waiter
+
   test.after(
     () => db.disconnect()
   )
 }
-*/
