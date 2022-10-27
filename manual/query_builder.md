@@ -561,19 +561,20 @@ await db
 ```
 
 The [all()](manual/builder_methods.html#all-values--options-) method can be used
-to fetch all rows matching the query.
+to fetch all rows matching the query.  It will return an array of objects containing
+the data for each row.
 
 ```js
 const rows = await db
   .select('id name')
   .from('users')
   .all();
+console.log(rows.length, 'rows returned')
 ```
 
-The method returns an array of rows that match the query.
-
 The [any()](manual/builder_methods.html#any-values--options-)
-method can be used to return a single row.
+method can be used to return a single row.  The method will return
+an object containing the row data or `undefined` if it doesn't match a row.
 
 ```js
 const row = await db
@@ -581,14 +582,22 @@ const row = await db
   .from('users')
   .where({ id: 12345 })
   .any();
+console.log(row ? 'got a row' : 'row not found')
 ```
 
-The method will return a single row or `undefined` if it doesn't
-match a row.
 
 If you're expecting to get one and only one row returned then use the
 [one()](manual/builder_methods.html#one-values--options-) method instead.
 This will throw an error if the row isn't found or if the query returns multiple rows.
+
+```js
+const row = await db
+  .select('id name')
+  .from('users')
+  .where({ id: 12345 })
+  .any();
+console.log('got a row:', row)
+```
 
 You can provide values for placeholders when you're building queries,
 as shown in the exampels above.  Or you can save them all up and pass
