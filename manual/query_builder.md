@@ -520,7 +520,7 @@ console.log(query.havingValues())
 ```
 
 If you're building an [insert()](manual/builder_methods.html#insert-columns-)
-or [update()](manual/builder_methods.html#update-table-) queries then you may also
+or [update()](manual/builder_methods.html#update-table-) query then you may also
 have [setValues()](manual/builder_methods.html#setvalues--) defined.
 This will contain placeholders values provided via
 the [values()](manual/builder_methods.html#values-values-) or
