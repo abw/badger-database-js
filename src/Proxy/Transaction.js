@@ -1,7 +1,13 @@
 /*
   This is a proxy around the database for processing transactions.
+  It's an elegant hack, or an ugly hack, depending on how you look at
+  it.  But either way, it's a hack.
+
   All requests in a transaction must be run using the same database
-  connection.
+  connection.  This is a problem because we use a connection pool.
+  When a query is run the engine takes a connection from the pool,
+  runs the query and then releases the connection back to the pool.
+  This proxy exists to convince the engine to do something different.
 
   The database transaction() method creates a Transaction object and
   then calls its run() method.  The run() method acquires a database
@@ -20,12 +26,23 @@
   acquiring one from the connection pool.
 
   We also need to catch any calls to the table() method and add in the
-  nocache option.  This ensures that a NEW table object is created using
-  the proxy wrapper for the database.  Table objects are cached so if
-  we didn't do this then there's the chance we'd get a cached table which
-  had a reference to the unwrapped database.
+  nocache option.  This ensures that a NEW table object is created with
+  a database reference that is the proxy wrapper for the database rather
+  than the database itself.  This ensures that any database queries that
+  are run by the table object inside a transaction are also run the
+  same way using the transaction's connection.  Table objects are cached
+  so if we didn't do this then there's the chance we'd get a cached table
+  which had a reference to the unwrapped database.
 
-  TODO: we also need to intercept the build (DONE), model and waiter.
+  We also need to intercept any access to database.build which contains
+  a "root node" for using the query builder.  The select(), insert(),
+  update() and delete() methods all use this, and end users can also use
+  it to construct new queries.  Instead of returning the cached
+  database.build (which contains a reference to the database), we create
+  a new builder object which contains a reference to the database proxy
+  wrapper.
+
+  (DONE), model and waiter.
   TODO: I've got a nasty suspicion that we could have problems with named
   queries or fragments that are built using the query builder as they
   are all rooted on a Builder/Database node that contains the database
@@ -33,13 +50,13 @@
 */
 
 import { databaseBuilder } from "../Builders.js"
-import { yellow } from "../Utils/Color.js";
+// import { yellow } from "../Utils/Color.js";
 
 const handlers = {
   // When the database buildQuery() method is called we add the
   // transaction reference into the configuration options
-  buildQuery: (target, method, transaction) => function (source, config={}) {
-    console.log(yellow('adding transaction to buildQuery() config - '), this.tmpId());
+  buildQuery: (_, method, transaction) => function (source, config={}) {
+    // console.log(yellow('adding transaction to buildQuery() config'));
     return method.apply(this, [source, { ...config, transaction }])
   },
 
@@ -47,24 +64,25 @@ const handlers = {
   // so that it always returns a new table with the database set to the
   // proxy wrapper around the database
   table: (target, method) => function (name, options={}) {
-    console.log(yellow('adding nocache option to table - '), target.tmpId());
+    // console.log(yellow('adding nocache option to table - '));
     return method.apply(this, [name, { ...options, nocache: true }])
   },
 
   // The database.build is pre-defined as a wrapper around the database
   // so we need to provide a version that is a wrapper around a proxy
   build: (target, _, transaction) => {
-    console.log(yellow('generating new database.build - '), target.tmpId());
+    // console.log(yellow('generating new database.build'));
     return databaseBuilder(
       transactionProxy(target, transaction)
     )
   },
 
-  // debugging methods
-  tmpId: (target) => function () {
-    const id = target.tmpId();
-    return `proxy [${id}]`;
-  },
+  commit: (target, method, transaction) =>
+    () => transaction.commit(),
+
+  rollback: (target, method, transaction) =>
+    () => transaction.rollback(),
+
   isProxy: () => true
 }
 
