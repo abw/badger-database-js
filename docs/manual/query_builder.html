@@ -97,6 +97,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html" data-ice="link">Query Builder Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#introduction" data-ice="link">Introduction</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#select-queries" data-ice="link">Select Queries</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#select-columns-" data-ice="link">select(columns)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#from-table-" data-ice="link">from(table)</a></li>
@@ -685,24 +686,31 @@ to <code>await</code> the response (or use <code>.then(...)</code> if you prefer
   .where({ id: 12345 })
   .run();</code></code></pre>
 <p>The <a href="manual/builder_methods.html#all-values--options-">all()</a> method can be used
-to fetch all rows matching the query.</p>
+to fetch all rows matching the query.  It will return an array of objects containing
+the data for each row.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const rows = await db
   .select('id name')
   .from('users')
-  .all();</code></code></pre>
-<p>The method returns an array of rows that match the query.</p>
+  .all();
+console.log(rows.length, 'rows returned')</code></code></pre>
 <p>The <a href="manual/builder_methods.html#any-values--options-">any()</a>
-method can be used to return a single row.</p>
+method can be used to return a single row.  The method will return
+an object containing the row data or <code>undefined</code> if it doesn't match a row.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
   .select('id name')
   .from('users')
   .where({ id: 12345 })
-  .any();</code></code></pre>
-<p>The method will return a single row or <code>undefined</code> if it doesn't
-match a row.</p>
+  .any();
+console.log(row ? 'got a row' : 'row not found')</code></code></pre>
 <p>If you're expecting to get one and only one row returned then use the
 <a href="manual/builder_methods.html#one-values--options-">one()</a> method instead.
 This will throw an error if the row isn't found or if the query returns multiple rows.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await db
+  .select('id name')
+  .from('users')
+  .where({ id: 12345 })
+  .any();
+console.log('got a row:', row)</code></code></pre>
 <p>You can provide values for placeholders when you're building queries,
 as shown in the exampels above.  Or you can save them all up and pass
 them as an array to the

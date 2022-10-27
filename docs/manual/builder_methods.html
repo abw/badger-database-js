@@ -97,6 +97,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html" data-ice="link">Query Builder Methods</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#introduction" data-ice="link">Introduction</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#select-queries" data-ice="link">Select Queries</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#select-columns-" data-ice="link">select(columns)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/builder_methods.html"><a href="manual/builder_methods.html#from-table-" data-ice="link">from(table)</a></li>
@@ -302,6 +303,7 @@
 
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="query-builder-methods">Query Builder Methods</h1><p>This page describes all the query builder methods in detail.</p>
 <ul>
+<li><a href="#introduction">Introduction</a></li>
 <li><a href="#select-queries">Select Queries</a><ul>
 <li><a href="#select-columns-">select(columns)</a></li>
 <li><a href="#from-table-">from(table)</a></li>
@@ -339,12 +341,20 @@
 <li><a href="#one-values--options-">one(values, options)</a></li>
 <li><a href="#any-values--options-">any(values, options)</a></li>
 <li><a href="#all-values--options-">all(values, options)</a></li>
+<li><a href="#sql--">sql()</a></li>
+</ul>
+</li>
+<li><a href="#placeholder-value-methods">Placeholder Value Methods</a><ul>
+<li><a href="#setvalues--">setValues()</a></li>
+<li><a href="#wherevalues--">whereValues()</a></li>
+<li><a href="#havingvalues--">havingValues()</a></li>
+<li><a href="#allvalues--">allValues()</a></li>
 </ul>
 </li>
 </ul>
-<p>They all work in a similar way with respect to the arguments
-they accept.  The short form is to pass a string which may have
-some additional processing applied to it (typically splitting
+<h2 id="introduction">Introduction</h2><p>The main query builder methods all work in a similar way with respect
+to the arguments they accept.  The short form is to pass a string which
+may have some additional processing applied to it (typically splitting
 a whitespace delimited string into multiple tokens).  Where there
 are two, three or four possible arguments, an array can be passed.
 Or an object can be passed with explicit properties for the different

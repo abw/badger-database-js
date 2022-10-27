@@ -18,6 +18,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~begin",
+    "variable/index.html#static-variable-BEGIN",
+    "<span>BEGIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~before",
     "class/src/Builder/Before.js~Before.html",
     "<span>Before</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -33,6 +39,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~builders",
     "variable/index.html#static-variable-Builders",
     "<span>Builders</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~commit",
+    "variable/index.html#static-variable-COMMIT",
+    "<span>COMMIT</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -300,6 +312,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-database~rollback",
+    "variable/index.html#static-variable-ROLLBACK",
+    "<span>ROLLBACK</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~range",
     "class/src/Builder/Range.js~Range.html",
     "<span>Range</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -375,6 +393,18 @@ window.esdocSearchIndex = [
     "@abw/badger-database~tables",
     "class/src/Tables.js~Tables.html",
     "<span>Tables</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~transaction",
+    "class/src/Transaction.js~Transaction.html",
+    "<span>Transaction</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
+    "@abw/badger-database~transactionerror",
+    "class/src/Utils/Error.js~TransactionError.html",
+    "<span>TransactionError</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "class"
   ],
   [
@@ -480,6 +510,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger-database~blue",
+    "variable/index.html#static-variable-blue",
+    "<span>blue</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~builderproxy",
     "function/index.html#static-function-builderProxy",
     "<span>builderProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -502,6 +538,12 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-connect",
     "<span>connect</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
+  ],
+  [
+    "@abw/badger-database~cyan",
+    "variable/index.html#static-variable-cyan",
+    "<span>cyan</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~databasebuilder",
@@ -558,6 +600,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-database~green",
+    "variable/index.html#static-variable-green",
+    "<span>green</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~invalid",
     "function/index.html#static-function-invalid",
     "<span>invalid</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -573,6 +621,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~lparen",
     "variable/index.html#static-variable-lparen",
     "<span>lparen</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~magenta",
+    "variable/index.html#static-variable-magenta",
+    "<span>magenta</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -664,6 +718,12 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-recordProxy",
     "<span>recordProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
+  ],
+  [
+    "@abw/badger-database~red",
+    "variable/index.html#static-variable-red",
+    "<span>red</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
   ],
   [
     "@abw/badger-database~registerbuilder",
@@ -780,6 +840,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger-database~transactionproxy",
+    "function/index.html#static-function-transactionProxy",
+    "<span>transactionProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "function"
+  ],
+  [
     "@abw/badger-database~unexpectedrowcount",
     "function/index.html#static-function-unexpectedRowCount",
     "<span>unexpectedRowCount</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -801,6 +867,12 @@ window.esdocSearchIndex = [
     "@abw/badger-database~wheretrue",
     "variable/index.html#static-variable-whereTrue",
     "<span>whereTrue</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger-database~yellow",
+    "variable/index.html#static-variable-yellow",
+    "<span>yellow</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "variable"
   ],
   [
@@ -2604,6 +2676,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/database.js~database#transaction",
+    "class/src/Database.js~Database.html#instance-method-transaction",
+    "src/Database.js~Database#transaction",
+    "method"
+  ],
+  [
     "src/database.js~database#update",
     "class/src/Database.js~Database.html#instance-method-update",
     "src/Database.js~Database#update",
@@ -2640,9 +2718,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine.js~engine#begin",
+    "class/src/Engine.js~Engine.html#instance-method-begin",
+    "src/Engine.js~Engine#begin",
+    "method"
+  ],
+  [
     "src/engine.js~engine#clientexecute",
     "class/src/Engine.js~Engine.html#instance-method-clientExecute",
     "src/Engine.js~Engine#clientExecute",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#commit",
+    "class/src/Engine.js~Engine.html#instance-method-commit",
+    "src/Engine.js~Engine#commit",
     "method"
   ],
   [
@@ -2844,6 +2934,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/engine.js~engine#rollback",
+    "class/src/Engine.js~Engine.html#instance-method-rollback",
+    "src/Engine.js~Engine#rollback",
+    "method"
+  ],
+  [
     "src/engine.js~engine#run",
     "class/src/Engine.js~Engine.html#instance-method-run",
     "src/Engine.js~Engine#run",
@@ -2854,6 +2950,18 @@ window.esdocSearchIndex = [
     "class/src/Engine.js~Engine.html#instance-method-sanitizeResult",
     "src/Engine.js~Engine#sanitizeResult",
     "method"
+  ],
+  [
+    "src/engine.js~engine#transaction",
+    "class/src/Engine.js~Engine.html#instance-method-transaction",
+    "src/Engine.js~Engine#transaction",
+    "method"
+  ],
+  [
+    "src/engine.js~engine.beingtrans",
+    "class/src/Engine.js~Engine.html#static-member-beingTrans",
+    "src/Engine.js~Engine.beingTrans",
+    "member"
   ],
   [
     "src/engine.js~engine.quotechar",
@@ -2886,6 +2994,24 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine/mysql.js~mysqlengine#begin",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-begin",
+    "src/Engine/Mysql.js~MysqlEngine#begin",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#begintransactionquery",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-beginTransactionQuery",
+    "src/Engine/Mysql.js~MysqlEngine#beginTransactionQuery",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#commit",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-commit",
+    "src/Engine/Mysql.js~MysqlEngine#commit",
+    "method"
+  ],
+  [
     "src/engine/mysql.js~mysqlengine#connect",
     "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-connect",
     "src/Engine/Mysql.js~MysqlEngine#connect",
@@ -2895,6 +3021,12 @@ window.esdocSearchIndex = [
     "src/engine/mysql.js~mysqlengine#disconnect",
     "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-disconnect",
     "src/Engine/Mysql.js~MysqlEngine#disconnect",
+    "method"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine#rollback",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-rollback",
+    "src/Engine/Mysql.js~MysqlEngine#rollback",
     "method"
   ],
   [
@@ -2913,6 +3045,12 @@ window.esdocSearchIndex = [
     "src/engine/mysql.js~mysqlengine.alias",
     "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-alias",
     "src/Engine/Mysql.js~MysqlEngine.alias",
+    "member"
+  ],
+  [
+    "src/engine/mysql.js~mysqlengine.begintrans",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#static-member-beginTrans",
+    "src/Engine/Mysql.js~MysqlEngine.beginTrans",
     "member"
   ],
   [
@@ -3117,6 +3255,12 @@ window.esdocSearchIndex = [
     "src/proxy/record.js",
     "file/src/Proxy/Record.js.html",
     "src/Proxy/Record.js",
+    "file"
+  ],
+  [
+    "src/proxy/transaction.js",
+    "file/src/Proxy/Transaction.js.html",
+    "src/Proxy/Transaction.js",
     "file"
   ],
   [
@@ -3816,9 +3960,93 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/transaction.js",
+    "file/src/Transaction.js.html",
+    "src/Transaction.js",
+    "file"
+  ],
+  [
+    "src/transaction.js~transaction#acquire",
+    "class/src/Transaction.js~Transaction.html#instance-method-acquire",
+    "src/Transaction.js~Transaction#acquire",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#autocommit",
+    "class/src/Transaction.js~Transaction.html#instance-member-autoCommit",
+    "src/Transaction.js~Transaction#autoCommit",
+    "member"
+  ],
+  [
+    "src/transaction.js~transaction#autorollback",
+    "class/src/Transaction.js~Transaction.html#instance-member-autoRollback",
+    "src/Transaction.js~Transaction#autoRollback",
+    "member"
+  ],
+  [
+    "src/transaction.js~transaction#commit",
+    "class/src/Transaction.js~Transaction.html#instance-method-commit",
+    "src/Transaction.js~Transaction#commit",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#complete",
+    "class/src/Transaction.js~Transaction.html#instance-method-complete",
+    "src/Transaction.js~Transaction#complete",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#completed",
+    "class/src/Transaction.js~Transaction.html#instance-member-completed",
+    "src/Transaction.js~Transaction#completed",
+    "member"
+  ],
+  [
+    "src/transaction.js~transaction#constructor",
+    "class/src/Transaction.js~Transaction.html#instance-constructor-constructor",
+    "src/Transaction.js~Transaction#constructor",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#database",
+    "class/src/Transaction.js~Transaction.html#instance-member-database",
+    "src/Transaction.js~Transaction#database",
+    "member"
+  ],
+  [
+    "src/transaction.js~transaction#release",
+    "class/src/Transaction.js~Transaction.html#instance-method-release",
+    "src/Transaction.js~Transaction#release",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#rollback",
+    "class/src/Transaction.js~Transaction.html#instance-method-rollback",
+    "src/Transaction.js~Transaction#rollback",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#run",
+    "class/src/Transaction.js~Transaction.html#instance-method-run",
+    "src/Transaction.js~Transaction#run",
+    "method"
+  ],
+  [
+    "src/transaction.js~transaction#tmpid",
+    "class/src/Transaction.js~Transaction.html#instance-method-tmpId",
+    "src/Transaction.js~Transaction#tmpId",
+    "method"
+  ],
+  [
     "src/utils/article.js",
     "file/src/Utils/Article.js.html",
     "src/Utils/Article.js",
+    "file"
+  ],
+  [
+    "src/utils/color.js",
+    "file/src/Utils/Color.js.html",
+    "src/Utils/Color.js",
     "file"
   ],
   [

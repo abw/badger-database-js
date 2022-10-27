@@ -46,3 +46,12 @@ taking a new one from the pool
 
 * Database must NOT reuse any cached table to ensure a new table is created
 with Queryable proxy
+
+* database.build, database.model and database.waiter must be reconstituted as
+wrappers around a transaction proxy
+
+* check that named queries that use the query builder get rooted on a transaction
+proxy
+
+* decide if it's best for uncompleted transactions (that haven't called commit
+or rollback) to autoRollback quietly, or do it and throw an error
