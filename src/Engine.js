@@ -1,8 +1,7 @@
 import { Pool } from 'tarn';
-import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount } from "./Utils/Error.js";
+import { allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK } from './Constants.js';
+import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount, addDebugMethod } from "./Utils/index.js";
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
-import { addDebugMethod } from './Utils/Debug.js';
-import { allColumns, BEGIN, COMMIT, doubleQuote, ROLLBACK, equals, whereTrue } from './Constants.js';
 
 const notImplemented = notImplementedInBaseClass('Engine');
 
@@ -13,9 +12,9 @@ const poolDefaults = {
 }
 
 export class Engine {
-  static beingTrans = BEGIN
-  static quoteChar = doubleQuote
-  static returning = false
+  static quoteChar  = doubleQuote
+  static returning  = false
+  static beginTrans = BEGIN
 
   constructor(config={}) {
     this.engine    = config.engine || missing('engine');
@@ -75,7 +74,7 @@ export class Engine {
   }
 
   //-----------------------------------------------------------------------------
-  // Generic query methods
+  // Query execution methods
   //-----------------------------------------------------------------------------
   async clientExecute(client, sql, action) {
     const query = await client.prepare(sql)
@@ -84,22 +83,39 @@ export class Engine {
 
   async execute(sql, action, options={}) {
     this.debugData("execute()", { sql, options });
-    if (options.transaction) {
-      // console.log('ENGINE got a transaction: ', options.transaction.tmpId());
-    }
-    const client = await this.acquire();
+
+    // if we have a transaction in effect then we use the transaction's
+    // connection otherwise we fetch one from the pool
+    const trans = options.transaction
+    const client = trans
+      ? trans.connection
+      : await this.acquire()
+
     try {
+      // run the query
       const result = await this
         .clientExecute(client, sql, action)
         .catch( e => this.parseError(sql, e) );
+
+      // sanitize the result
       return options.sanitizeResult
         ? this.sanitizeResult(result, options)
         : result;
     }
     finally {
-      this.release(client);
+      // release the connection back to the pool if it's one we acquired
+      if (! trans) {
+        this.release(client);
+      }
     }
   }
+
+  //-----------------------------------------------------------------------------
+  // Generic query methods - most must be defined by subclasses
+  //-----------------------------------------------------------------------------
+  async run() { notImplemented('run()') }
+  async any() { notImplemented('any()') }
+  async all() { notImplemented('all()') }
 
   async one(sql, ...args) {
     const [params, options] = this.queryArgs(args);
@@ -113,9 +129,24 @@ export class Engine {
     }
   }
 
-  async run() { notImplemented('run()') }
-  async any() { notImplemented('any()') }
-  async all() { notImplemented('all()') }
+  //-----------------------------------------------------------------------------
+  // Transaction queries
+  //-----------------------------------------------------------------------------
+  async begin(transaction) {
+    const begin = this.constructor.beginTrans;
+    this.debug("begin() -", begin)
+    return await this.run(begin, { transaction })
+  }
+
+  async commit(transaction) {
+    this.debug('commit() - ', COMMIT);
+    return await this.run(COMMIT, { transaction });
+  }
+
+  async rollback(transaction) {
+    this.debug('rollback() - ', ROLLBACK);
+    return await this.run(ROLLBACK, { transaction });
+  }
 
   //-----------------------------------------------------------------------------
   // Query utility methods
@@ -155,57 +186,6 @@ export class Engine {
 
   sanitizeResult(result) {
     return result;
-  }
-
-  //-----------------------------------------------------------------------------
-  // Transactions
-  //-----------------------------------------------------------------------------
-  async transaction(queryable, code) {
-    const client = await this.acquire();
-    await this.begin(client);
-    let handled  = false;
-    const commit = async () => {
-      handled = true;
-      console.log('committing');
-      await this.commit(client);
-    }
-    const rollback = async () => {
-      handled = true;
-      console.log('rolling back');
-      await this.rollback(client);
-    }
-
-    try {
-      await code(queryable, commit, rollback)
-      if (! handled) {
-        await commit()
-      }
-    }
-    catch(e) {
-      console.log('caught error: ', e);
-
-      if (! handled) {
-        await rollback()
-      }
-      throw(e)
-    }
-    finally {
-      console.log('releasing');
-
-      this.release(client);
-    }
-  }
-
-  async begin(client) {
-    const query = this.constructor.beginTrans;
-    console.log('begin()');
-    return await client.prepare(query).run();
-  }
-  async commit(client) {
-    return await client.prepare(COMMIT).run();
-  }
-  async rollback(client) {
-    await await client.prepare(ROLLBACK).run();
   }
 
   //-----------------------------------------------------------------------------

@@ -26,7 +26,7 @@ async function main() {
   console.log('\nstarting transaction');
 
   await db.transaction(
-    async db => {
+    async (db, commit, rollback) => {
       console.log('transaction db (%s) is proxy?', db.tmpId(), db.isProxy ? green('YES') : red('NO'))
 
       const row = await db.one("SELECT 'hello' AS message");
@@ -47,7 +47,9 @@ async function main() {
       const get = await db.select('id name email').from('users').one();
       console.log('fetched user: ', get);
 
-    }
+      await commit();
+    },
+    { debug: true }
   )
   db.disconnect();
 }

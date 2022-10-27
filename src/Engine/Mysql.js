@@ -61,18 +61,6 @@ export class MysqlEngine extends Engine {
       )
   }
 
-  async begin() {
-    const query = this.constructor.beginTrans;
-    await this.run(query);
-  }
-  async commit() {
-    await this.run(COMMIT);
-  }
-  async rollback() {
-    await this.run(ROLLBACK);
-  }
-
-
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
@@ -84,10 +72,6 @@ export class MysqlEngine extends Engine {
     result[id]     ||= result.insertId || null;
     return result;
   }
-  beginTransactionQuery() {
-    return 'START TRANSACTION';
-  }
-
 }
 
 export default MysqlEngine
