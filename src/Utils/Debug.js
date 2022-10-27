@@ -47,6 +47,11 @@ export let debug = {
     prefix: 'Builder',
     color:  'yellow',
   },
+  transaction: {
+    debug:  false,
+    prefix: 'Transaction',
+    color:  'bright red'
+  },
   test: {
     debug:  false,
     prefix: 'Test',

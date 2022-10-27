@@ -1,6 +1,7 @@
 import Builder from './Builder.js'
 import { fail, isArray, isFunction, isString } from "@abw/badger-utils";
-import { addDebugMethod, missing, green, red } from './Utils/index.js';
+import { addDebugMethod, missing } from './Utils/index.js';
+// import { green, red } from './Utils/index.js';
 
 export class Query {
   constructor(engine, query, config={}) {
@@ -10,12 +11,14 @@ export class Query {
     this.havingValues = config.havingValues || [ ];
     this.transaction  = config.transaction;
 
+    /*
     if (config.transaction) {
       console.log(green('query has a transaction!'));
     }
     else {
       console.log(red('query does NOT have a transaction'));
     }
+    */
 
     if (isString(query)) {
       this.query = query;

@@ -3,7 +3,7 @@ import { singleWord } from "./Constants.js";
 import { fail, isFunction, isString } from "@abw/badger-utils";
 import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";
-import { blue, green, red } from "./Utils/Color.js";
+// import { blue, green, red } from "./Utils/Color.js";
 
 export class Queryable {
   constructor(engine) {
@@ -31,7 +31,7 @@ export class Queryable {
 
   buildQuery(source, config) {
     this.debugData("buildQuery()", { source });
-    console.log(blue('buildQuery() database (%s) is proxy? %s'), this.tmpId(), this.isProxy ? green('YES') : red('NO'));
+    // console.log(blue('buildQuery() database (%s) is proxy? %s'), this.tmpId(), this.isProxy ? green('YES') : red('NO'));
     return new Query(
       this.engine,
       isString(source) ? this.expandQuery(source) : source,

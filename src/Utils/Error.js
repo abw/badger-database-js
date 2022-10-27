@@ -125,6 +125,11 @@ export class DeletedRecordError extends CustomError { }
 export class QueryBuilderError extends CustomError { }
 
 /**
+ * Error class for reporting transaction errors
+ */
+export class TransactionError extends CustomError { }
+
+/**
  * Function for throwing a {@link UnexpectedRowCount} error when multiple
  * rows were returned or updated when only one was expected.
  * @param {!Integer} n - the number of rows encountered
