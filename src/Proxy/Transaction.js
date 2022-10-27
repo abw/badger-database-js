@@ -63,9 +63,9 @@ const handlers = {
   // When the database table() method is called we add the nocache option
   // so that it always returns a new table with the database set to the
   // proxy wrapper around the database
-  table: (target, method) => function (name, options={}) {
+  table: (_, method, transaction) => function (name, options={}) {
     // console.log(yellow('adding nocache option to table - '));
-    return method.apply(this, [name, { ...options, nocache: true }])
+    return method.apply(this, [name, { ...options, nocache: true, transaction }])
   },
 
   // The database.build is pre-defined as a wrapper around the database

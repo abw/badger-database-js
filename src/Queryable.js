@@ -28,7 +28,7 @@ export class Queryable {
       || fail("Invalid query fragment in SQL expansion: <", name, ">");
   }
 
-  buildQuery(source, config) {
+  buildQuery(source, config={}) {
     this.debugData("buildQuery()", { source });
     return new Query(
       this.engine,

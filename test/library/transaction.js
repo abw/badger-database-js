@@ -34,7 +34,9 @@ export const runTransactionTests = async (engine) => {
     `,
     deleteAnimals: `
       DELETE FROM animals
-    `
+    `,
+    selectBySkill:
+      db => db.select('name skill').from('animals').where('skill')
   };
 
   test.serial('hello',
@@ -44,6 +46,10 @@ export const runTransactionTests = async (engine) => {
   const tables = {
     animals: {
       columns: 'id name skill',
+      queries: {
+        selectBySkill:
+          t => t.select('name skill').where('skill')
+      }
     },
   };
 
@@ -258,8 +264,222 @@ export const runTransactionTests = async (engine) => {
     }
   )
 
-  // TODO: database.build..., database.insert(), database.update(), etc.
-  // named queries using database builder
+  test.serial( 'db.insert() with rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          const insert = db.insert('name').into('animals');
+          await insert.run(['Aardvark'])
+          await insert.run(['Badger'])
+          await insert.run(['Camel'])
+          const rows = await db.select('name').from('animals').all();
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Aardvark' },
+              { name: 'Badger'   },
+              { name: 'Camel'    },
+            ]
+          )
+          await db.rollback();
+        }
+      )
+      const committed = await db.all('fetchAnimals')
+      t.is( committed.length, 0 )
+    }
+  )
+
+  test.serial( 'db.insert() with commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          const insert = db.insert('name').into('animals');
+          await insert.run(['Aardvark'])
+          await insert.run(['Badger'])
+          await insert.run(['Camel'])
+          const rows = await db.select('name').from('animals').all();
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Aardvark' },
+              { name: 'Badger'   },
+              { name: 'Camel'    },
+            ]
+          )
+          await db.commit();
+        }
+      )
+      const committed = await db.select('name').from('animals').all();
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Aardvark' },
+          { name: 'Badger'   },
+          { name: 'Camel'    },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'db named query with rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          const insert = db.insert('name skill').into('animals');
+          await insert.run(['Brian Badger', 'Foraging' ])
+          await insert.run(['Bobby Badger', 'Foraging' ])
+          await insert.run(['Colin Camel',  'Wandering'])
+          const rows = await db.all('selectBySkill', ['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.rollback();
+        }
+      )
+      const committed = await db.all('selectBySkill', ['Foraging'])
+      t.is( committed.length, 0 )
+    }
+  )
+
+  test.serial( 'db named query with commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          const insert = db.insert('name skill').into('animals');
+          await insert.run(['Brian Badger', 'Foraging' ])
+          await insert.run(['Bobby Badger', 'Foraging' ])
+          await insert.run(['Colin Camel',  'Wandering'])
+          const rows = await db.all('selectBySkill', ['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.commit();
+        }
+      )
+      const committed = await db.all('selectBySkill', ['Foraging'])
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'db delete animals again',
+    async t => {
+      await db.run('deleteAnimals');
+      t.pass();
+    }
+  );
+
+  test.serial( 'table query builder with rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          const animals = await db.table('animals');
+          await animals.insert([
+            { name: 'Brian Badger', skill: 'Foraging' },
+            { name: 'Bobby Badger', skill: 'Foraging' },
+            { name: 'Colin Camel',  skill: 'Wandering'}
+          ]);
+          const rows = await animals.select('name skill').where('skill').all(['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.rollback();
+        }
+      )
+      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.is( committed.length, 0 )
+    }
+  )
+
+  test.serial( 'table query builder with commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          const animals = await db.table('animals');
+          await animals.insert([
+            { name: 'Brian Badger', skill: 'Foraging' },
+            { name: 'Bobby Badger', skill: 'Foraging' },
+            { name: 'Colin Camel',  skill: 'Wandering'}
+          ]);
+          const rows = await animals.select('name skill').where('skill').all(['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.commit();
+        }
+      )
+      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'db delete animals yet again',
+    async t => {
+      await db.run('deleteAnimals');
+      t.pass();
+    }
+  );
+
+
+  test.serial( 'table named query with rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          const animals = await db.table('animals');
+          await animals.insert([
+            { name: 'Brian Badger', skill: 'Foraging' },
+            { name: 'Bobby Badger', skill: 'Foraging' },
+            { name: 'Colin Camel',  skill: 'Wandering'}
+          ]);
+          const rows = await animals.all('selectBySkill', ['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.rollback();
+        },
+        // { debug: true }
+      )
+      const committed = await animals.all('selectBySkill', ['Foraging'])
+      t.is( committed.length, 0 )
+    }
+  )
+
   // named table queries using database builder
   // database.model
   // database.waiter
