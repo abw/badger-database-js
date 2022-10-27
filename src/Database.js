@@ -29,10 +29,6 @@ export class Database extends Queryable {
     addDebugMethod(this, 'database', config);
   }
 
-  tmpId() {
-    return 'database';
-  }
-
   //-----------------------------------------------------------------------------
   // acquire/release a connection from the engine
   //-----------------------------------------------------------------------------

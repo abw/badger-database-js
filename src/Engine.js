@@ -14,7 +14,6 @@ const poolDefaults = {
 export class Engine {
   static quoteChar  = doubleQuote
   static returning  = false
-  static beginTrans = BEGIN
 
   constructor(config={}) {
     this.engine    = config.engine || missing('engine');
@@ -133,18 +132,17 @@ export class Engine {
   // Transaction queries
   //-----------------------------------------------------------------------------
   async begin(transaction) {
-    const begin = this.constructor.beginTrans;
-    this.debug("begin() -", begin)
-    return await this.run(begin, { transaction })
+    this.debug('begin()')
+    return await this.run(BEGIN, { transaction })
   }
 
   async commit(transaction) {
-    this.debug('commit() - ', COMMIT);
+    this.debug('commit()');
     return await this.run(COMMIT, { transaction });
   }
 
   async rollback(transaction) {
-    this.debug('rollback() - ', ROLLBACK);
+    this.debug('rollback()');
     return await this.run(ROLLBACK, { transaction });
   }
 
