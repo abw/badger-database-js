@@ -1,4 +1,5 @@
 import transactionProxy from "./Proxy/Transaction.js";
+import Transactor from "./Transactor.js";
 import { addDebugMethod, missing, TransactionError } from "./Utils/index.js";
 
 export class Transaction {
@@ -13,7 +14,8 @@ export class Transaction {
 
   async run(code) {
     this.debug("run()");
-    const proxy    = transactionProxy(this.database, this);
+    // const proxy    = transactionProxy(this.database, this);
+    const actor    = this.database.transactor(Transactor, this);
     const commit   = this.commit.bind(this);
     const rollback = this.rollback.bind(this);
     try {
@@ -24,7 +26,7 @@ export class Transaction {
       await this.begin();
 
       // run the code
-      await code(proxy, commit, rollback)
+      await code(actor, commit, rollback)
       this.debug("code complete")
 
       // check that commit() or rollback() has been called

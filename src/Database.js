@@ -8,6 +8,7 @@ import { engine } from './Engines.js';
 import { addDebugMethod } from './Utils/index.js';
 import { databaseBuilder } from './Builders.js';
 import { fail } from '@abw/badger-utils';
+// import Transactor from './Transactor.js';
 
 const defaults = {
   tablesClass: Tables
@@ -17,6 +18,7 @@ export class Database extends Queryable {
   constructor(engine, params) {
     super(engine);
     const config   = { ...defaults, ...params };
+    this.config    = config;
     this.queries   = config.queries;
     this.fragments = config.fragments;
     this.tables    = config.tablesObject || new config.tablesClass(config.tables);
@@ -81,6 +83,9 @@ export class Database extends Queryable {
   //-----------------------------------------------------------------------------
   // Transactions
   //-----------------------------------------------------------------------------
+  async transactor(txclass, transaction) {
+    return new txclass(this.engine, this.config, transaction);
+  }
   async transaction(code, config) {
     const trans = new Transaction(this, config);
     await trans.run(code);
