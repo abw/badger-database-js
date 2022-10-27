@@ -2,6 +2,7 @@
 
 This page describes all the query builder methods in detail.
 
+* [Introduction](#introduction)
 * [Select Queries](#select-queries)
   * [select(columns)](#select-columns-)
   * [from(table)](#from-table-)
@@ -31,10 +32,18 @@ This page describes all the query builder methods in detail.
   * [one(values, options)](#one-values--options-)
   * [any(values, options)](#any-values--options-)
   * [all(values, options)](#all-values--options-)
+  * [sql()](#sql--)
+* [Placeholder Value Methods](#placeholder-value-methods)
+  * [setValues()](#setvalues--)
+  * [whereValues()](#wherevalues--)
+  * [havingValues()](#havingvalues--)
+  * [allValues()](#allvalues--)
 
-They all work in a similar way with respect to the arguments
-they accept.  The short form is to pass a string which may have
-some additional processing applied to it (typically splitting
+## Introduction
+
+The main query builder methods all work in a similar way with respect
+to the arguments they accept.  The short form is to pass a string which
+may have some additional processing applied to it (typically splitting
 a whitespace delimited string into multiple tokens).  Where there
 are two, three or four possible arguments, an array can be passed.
 Or an object can be passed with explicit properties for the different
