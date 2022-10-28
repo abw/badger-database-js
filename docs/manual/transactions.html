@@ -311,8 +311,12 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="transactions">Transactions</h1><p><strong>WARNING</strong> Transactions are a work in progress.  There are some known
-loose ends, possible bugs, and the implementation is subject to change.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="transactions">Transactions</h1><p>Transactions allow you to write a sequence of queries that can
+be committed to the database in one go.  If any single query fails,
+then all changes can be rolled back.  The classic example is in
+a banking application where money is debited from one account and
+credited to another.  Both queries must successfully complete, or
+neither of them should.</p>
 <p>We'll start by connecting to a database in the usual way.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
 
@@ -435,6 +439,17 @@ to your transaction function.</p>
     await brian.update({
       name: 'Brian the Badger'
     })
+    await tdb.commit();
+  }
+)</code></code></pre>
+<p>You can also use the <a href="manual/model.html">model</a> and <a href="manual/waiter.html">waiter</a>
+utilities, but once again, you <strong>MUST</strong> access them via the database reference
+passed to the function.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
+  async tdb =&gt; {
+    await tdb.waiter.model.users
+      .fetchRecord({ email: 'brian@badgerpower.com' })
+      .update({ name: 'Brian the Badger' })
     await tdb.commit();
   }
 )</code></code></pre>

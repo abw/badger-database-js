@@ -1,5 +1,5 @@
 import Engine from '../Engine.js';
-import { backtick, defaultIdColumn, COMMIT, ROLLBACK } from '../Constants.js';
+import { backtick, defaultIdColumn, COMMIT, ROLLBACK, BEGIN } from '../Constants.js';
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class MysqlEngine extends Engine {
@@ -65,17 +65,17 @@ export class MysqlEngine extends Engine {
   // Transaction methods - MySQL requires special handling
   //-----------------------------------------------------------------------------
   async begin(transact) {
-    this.debug("begin() - START TRANSACTION")
-    return await transact.connection.query('START TRANSACTION')
+    this.debug('begin()')
+    return await transact.connection.query(BEGIN)
   }
 
   async commit(transact) {
-    this.debug('commit() - ', COMMIT);
+    this.debug('commit()');
     return await transact.connection.query(COMMIT);
   }
 
   async rollback(transact) {
-    this.debug('rollback() - ', ROLLBACK);
+    this.debug('rollback()');
     return await transact.connection.query(ROLLBACK);
   }
 

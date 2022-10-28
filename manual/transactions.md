@@ -1,7 +1,11 @@
 # Transactions
 
-**WARNING** Transactions are a work in progress.  There are some known
-loose ends, possible bugs, and the implementation is subject to change.
+Transactions allow you to write a sequence of queries that can
+be committed to the database in one go.  If any single query fails,
+then all changes can be rolled back.  The classic example is in
+a banking application where money is debited from one account and
+credited to another.  Both queries must successfully complete, or
+neither of them should.
 
 We'll start by connecting to a database in the usual way.
 
@@ -21,8 +25,9 @@ commit function and a rollback function.
 await db.transaction(
   async (tdb, commit, rollback) => {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is goood...) {
       await commit();
     }
     else {
@@ -49,8 +54,9 @@ prefer.
 await db.transaction(
   async tdb => {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is good...) {
       await tdb.commit();
     }
     else {
@@ -72,8 +78,9 @@ regardless of these settings.
 await db.transaction(
   async tdb => {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is good...) {
       await tdb.rollback();
     }
     // else transaction will automatically be committed
@@ -86,8 +93,9 @@ await db.transaction(
 await db.transaction(
   async tdb => {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is good...) {
       await tdb.commit();
     }
     // else transaction will automatically be rolled back
@@ -108,7 +116,10 @@ await db.transaction(
 )
 ```
 
-You can use all of the database methods inside the transaction.
+You can use all of the database methods inside the transaction,
+including [named queries](manual/named_queries.html) and the
+[query builder](manual/query_builder.html).
+
 You can also load tables and call their methods, but you **MUST**
 fetch the table using the database reference passed to the transaction
 code.
@@ -165,3 +176,17 @@ await db.transaction(
 )
 ```
 
+You can also use the [model](manual/model.html) and [waiter](manual/waiter.html)
+utilities, but once again, you **MUST** access them via the database reference
+passed to the function.
+
+```js
+await db.transaction(
+  async tdb => {
+    await tdb.waiter.model.users
+      .fetchRecord({ email: 'brian@badgerpower.com' })
+      .update({ name: 'Brian the Badger' })
+    await tdb.commit();
+  }
+)
+```
