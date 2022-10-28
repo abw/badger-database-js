@@ -80,7 +80,7 @@ await db.transaction(
     await tdb.run('...some query...');
     await tdb.run('...another query...');
 
-    if (...all is good...) {
+    if (...something bad happened...) {
       await tdb.rollback();
     }
     // else transaction will automatically be committed
