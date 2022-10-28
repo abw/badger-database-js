@@ -1,3 +1,3 @@
-import { runTransactionTests } from '../../library/transaction.js';
+import { runTransactionTests } from '../../library/transactions.js';
 
 runTransactionTests('sqlite');
