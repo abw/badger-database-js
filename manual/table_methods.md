@@ -5,6 +5,15 @@ queries on table rows.  These use the [table query builder](manual/table_queries
 to automatically generate and run queries for you based on the data
 you provide as arguments.
 
+There are numerous methods that provide minor variations on other methods.  These all
+conform to a naming convention where the first part of the name is the action (e.g.
+`insert`, `update`), followed by the number of rows that it operates on (e.g. `one`,
+`any`, `all`).  The `Row` suffix (e.g. `insertOneRow()`) indicates that that `reload`
+option is automatically set and the method returns the complete row (or rows) reloaded
+from the database.  The `Record` suffix (e.g. `insertOneRecord()`) indicates that
+the `record` option is automatically set and the methods reloads the row (or rows)
+and returns it as a [record](manual/records.html) object (or array or objects).
+
 * [Insert Methods](#insert-methods)
   * [insert(data, options)](#insert-data--options-)
   * [insertOne(data, options)](#insertone-data--options-)
@@ -18,6 +27,8 @@ you provide as arguments.
   * [updateOne(set, where, options)](#updateone-set--where--options-)
   * [updateAny(set, where, options)](#updateany-set--where--options-)
   * [updateAll(set, where, options)](#updateall-set--where--options-)
+  * [updateOneRow(set, where, options)](#updateonerow-set--where--options-)
+  * [updateAnyRow(set, where, options)](#updateanyrow-set--where--options-)
 * [Delete Method](#delete-method)
   * [delete(where)](#delete-where-)
 * [Fetch Methods](#fetch-methods)

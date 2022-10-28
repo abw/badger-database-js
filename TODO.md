@@ -20,9 +20,9 @@ re-fetching row?
 select() and delete() to work as both data query constructors (e.g.
 `insert({ name: 'Andy' })`) and as the start of a query chain.
 
-* Add table `updateRows()` and `updateRow()` methods?
-
 ## Bugs
+
+* Postgres is failing transaction tests that use the waiter
 
 * Fix rollup/terser problems with source map (or is this node?)
 
