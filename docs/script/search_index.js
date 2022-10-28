@@ -408,12 +408,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger-database~transactor",
-    "class/src/Transactor.js~Transactor.html",
-    "<span>Transactor</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "class"
-  ],
-  [
     "@abw/badger-database~update",
     "variable/index.html#static-variable-UPDATE",
     "<span>UPDATE</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -4042,48 +4036,6 @@ window.esdocSearchIndex = [
     "class/src/Transaction.js~Transaction.html#instance-method-run",
     "src/Transaction.js~Transaction#run",
     "method"
-  ],
-  [
-    "src/transactor.js",
-    "file/src/Transactor.js.html",
-    "src/Transactor.js",
-    "file"
-  ],
-  [
-    "src/transactor.js~transactor#buildquery",
-    "class/src/Transactor.js~Transactor.html#instance-method-buildQuery",
-    "src/Transactor.js~Transactor#buildQuery",
-    "method"
-  ],
-  [
-    "src/transactor.js~transactor#commit",
-    "class/src/Transactor.js~Transactor.html#instance-method-commit",
-    "src/Transactor.js~Transactor#commit",
-    "method"
-  ],
-  [
-    "src/transactor.js~transactor#constructor",
-    "class/src/Transactor.js~Transactor.html#instance-constructor-constructor",
-    "src/Transactor.js~Transactor#constructor",
-    "method"
-  ],
-  [
-    "src/transactor.js~transactor#rollback",
-    "class/src/Transactor.js~Transactor.html#instance-method-rollback",
-    "src/Transactor.js~Transactor#rollback",
-    "method"
-  ],
-  [
-    "src/transactor.js~transactor#table",
-    "class/src/Transactor.js~Transactor.html#instance-method-table",
-    "src/Transactor.js~Transactor#table",
-    "method"
-  ],
-  [
-    "src/transactor.js~transactor#transaction",
-    "class/src/Transactor.js~Transactor.html#instance-member-transaction",
-    "src/Transactor.js~Transactor#transaction",
-    "member"
   ],
   [
     "src/utils/article.js",

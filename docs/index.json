@@ -13673,171 +13673,6 @@
   {
     "__docId__": 644,
     "kind": "file",
-    "name": "src/Transactor.js",
-    "content": "import Database from './Database.js';\n\nexport class Transactor extends Database {\n  constructor(engine, config, transaction) {\n    super(engine, config);\n    this.transaction = transaction;\n  }\n  buildQuery(source, config={}) {\n    this.debugData(\"buildQuery()\", { source });\n    return super.buildQuery(\n      source,\n      { ...config, transaction: this.transaction }\n    )\n  }\n  async table(name, options={}) {\n    return super.table(\n      name,\n      { ...options, transaction: this.transaction }\n    )\n  }\n  async commit() {\n    await this.transaction.commit();\n  }\n  async rollback() {\n    await this.transaction.rollback();\n  }\n}\n\nexport default Transactor",
-    "static": true,
-    "longname": "/Users/abw/js/badger-database-js/src/Transactor.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 645,
-    "kind": "class",
-    "name": "Transactor",
-    "memberof": "src/Transactor.js",
-    "static": true,
-    "longname": "src/Transactor.js~Transactor",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger-database",
-    "importStyle": "{Transactor}",
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "src/Database.js~Database"
-    ]
-  },
-  {
-    "__docId__": 646,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "src/Transactor.js~Transactor",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Transactor.js~Transactor#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 4,
-    "undocument": true
-  },
-  {
-    "__docId__": 647,
-    "kind": "member",
-    "name": "transaction",
-    "memberof": "src/Transactor.js~Transactor",
-    "static": false,
-    "longname": "src/Transactor.js~Transactor#transaction",
-    "access": "public",
-    "description": null,
-    "lineNumber": 6,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 648,
-    "kind": "method",
-    "name": "buildQuery",
-    "memberof": "src/Transactor.js~Transactor",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Transactor.js~Transactor#buildQuery",
-    "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "params": [
-      {
-        "name": "source",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "config",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 649,
-    "kind": "method",
-    "name": "table",
-    "memberof": "src/Transactor.js~Transactor",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Transactor.js~Transactor#table",
-    "access": "public",
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
-    "params": [
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 650,
-    "kind": "method",
-    "name": "commit",
-    "memberof": "src/Transactor.js~Transactor",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Transactor.js~Transactor#commit",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 651,
-    "kind": "method",
-    "name": "rollback",
-    "memberof": "src/Transactor.js~Transactor",
-    "generator": false,
-    "async": true,
-    "static": false,
-    "longname": "src/Transactor.js~Transactor#rollback",
-    "access": "public",
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 652,
-    "kind": "file",
     "name": "src/Utils/Article.js",
     "content": "// TODO: move this into badger-utils\nexport const article = noun =>\n  noun.match(/^[aeiou]/i)\n    ? 'an'\n    : 'a'\n",
     "static": true,
@@ -13847,7 +13682,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 653,
+    "__docId__": 645,
     "kind": "function",
     "name": "article",
     "memberof": "src/Utils/Article.js",
@@ -13873,7 +13708,7 @@
     "return": null
   },
   {
-    "__docId__": 654,
+    "__docId__": 646,
     "kind": "file",
     "name": "src/Utils/Color.js",
     "content": "import { color } from \"@abw/badger\";\n\nexport const red     = color('red');\nexport const green   = color('green');\nexport const blue    = color('blue');\nexport const yellow  = color('yellow');\nexport const cyan    = color('cyan');\nexport const magenta = color('magenta');",
@@ -13884,7 +13719,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 655,
+    "__docId__": 647,
     "kind": "variable",
     "name": "red",
     "memberof": "src/Utils/Color.js",
@@ -13904,7 +13739,7 @@
     }
   },
   {
-    "__docId__": 656,
+    "__docId__": 648,
     "kind": "variable",
     "name": "green",
     "memberof": "src/Utils/Color.js",
@@ -13924,7 +13759,7 @@
     }
   },
   {
-    "__docId__": 657,
+    "__docId__": 649,
     "kind": "variable",
     "name": "blue",
     "memberof": "src/Utils/Color.js",
@@ -13944,7 +13779,7 @@
     }
   },
   {
-    "__docId__": 658,
+    "__docId__": 650,
     "kind": "variable",
     "name": "yellow",
     "memberof": "src/Utils/Color.js",
@@ -13964,7 +13799,7 @@
     }
   },
   {
-    "__docId__": 659,
+    "__docId__": 651,
     "kind": "variable",
     "name": "cyan",
     "memberof": "src/Utils/Color.js",
@@ -13984,7 +13819,7 @@
     }
   },
   {
-    "__docId__": 660,
+    "__docId__": 652,
     "kind": "variable",
     "name": "magenta",
     "memberof": "src/Utils/Color.js",
@@ -14004,7 +13839,7 @@
     }
   },
   {
-    "__docId__": 661,
+    "__docId__": 653,
     "kind": "file",
     "name": "src/Utils/Columns.js",
     "content": "import { fail, isArray, isObject, isString, objMap, splitList } from \"@abw/badger-utils\";\nimport { bitSplitter, defaultIdColumn } from \"../Constants.js\";\nimport { throwColumnValidationError } from \"./Error.js\";\n\n\n/**\n * Function to prepare column definitions for a table.  If the columns specified\n * are a string of whitespace delimited tokens then they are first split into an\n * array.  An array is converted to a hash object by splitting each item on the\n * first colon, e.g. `id:required` has the column name `id` and flags of `required`.\n * Each value is then converted to an object, e.g. `required` becomes `{ required: true }`.\n * Then end result is an object where the keys are the column names and corresponding\n * values are objects containing any flags defined for the column.\n * @param {!Object} schema - scheme containing table properties\n * @param {!String} [schema.table] - the database table name\n * @param {String|Array|Object} [schema.columns] - the table columns\n * @return {Object} a column specification object\n * @example\n * const columns = prepareColumns({\n *   table:   'artists',\n *   columns: 'id name'\n * })\n * @example\n * const columns = prepareColumns({\n *   table:   'artists',\n *   columns: 'id:readonly name:required'\n * })\n * @example\n * const columns = prepareColumns({\n *   table: 'artists',\n *   columns: ['id:readonly', 'name:required']\n * })\n * @example\n * const columns = prepareColumns({\n *   table: 'artists',\n *   columns: {\n *     id:   'readonly',\n *     name: 'required'\n *   }\n * })\n * @example\n * const columns = prepareColumns({\n *   table: 'artists',\n *   columns: {\n *     id:   { readonly: true },\n *     name: { required: true }\n *   }\n * })\n */\nexport const prepareColumns = (schema) => {\n  const columns = schema.columns\n    || throwColumnValidationError('noColumns', { table: schema.table });\n\n  if (isString(columns)) {\n    return prepareColumnsString(columns, schema);\n  }\n  else if (isArray(columns)) {\n    return prepareColumnsArray(columns, schema);\n  }\n  else if (isObject(columns)) {\n    return prepareColumnsHash(columns, schema);\n  }\n  else {\n    return throwColumnValidationError('invalidColumns', { table: schema.table, columns });\n  }\n}\n\nconst prepareColumnsString = (columns, schema) => {\n  return prepareColumnsArray(splitList(columns), schema);\n}\n\nconst prepareColumnsArray = (columns, schema) => {\n  let index = { };\n  columns.forEach(\n    item => {\n      const bits  = item.split(bitSplitter);\n      const name  = bits.shift();\n      index[name] = prepareColumnBits(name, bits, schema);\n    }\n  )\n  return prepareColumnsHash(index, schema);\n}\n\nconst prepareColumnsHash = (columns, schema) => {\n  return objMap(\n    columns,\n    (value, name) => {\n      if (isString(value)) {\n        return prepareColumnBits(name, value.split(bitSplitter), schema)\n      }\n      else if (isObject(value)) {\n        // column name can be defined in column spec as 'column' in case\n        // the database column name doesn't match the name you want to use\n        const column = value.column || (value.column = name);\n        // tableColumn is the full \"table.column\"\n        value.tableColumn = schema.table + '.' + column;\n        return value;\n      }\n      else {\n        fail(`Invalid \"${name}\" columns specified in ${schema.table} table: ${value}`)\n      }\n    }\n  )\n}\n\n/**\n * @ignore\n * Internal function to convert an array of colon delimited parts from a column\n * specification string to an object.\n */\nconst prepareColumnBits = (name, bits, schema) => {\n  return bits.reduce(\n    (result, bit) => {\n      const kv = bit.split('=', 2);\n      const key = kv.shift();\n      result[key] = kv.length ? kv[0] : true;\n      return result\n    },\n    { column: name, tableColumn: schema.table + '.' + name }\n  );\n}\n\n\n/**\n * Function to determine the id and/or keys columns for a table.\n * If the keys are explicitly listed in the schema then they are used.\n * Otherwise it looks for each column that defines the `key` flag.\n * If the `id` column is set in the schema, or as an `id` flag on a\n * column then that is assumed to be both the id and single key.\n * If no keys or id is defined then we assume it's an `id` column.\n * @param {!Object} schema - scheme containing table properties\n * @param {!String} [schema.table] - the database table name\n * @param {Object} columns - the table columns\n * @return {Array} - an array of keys\n */\nexport const prepareKeys = (schema, columns={}) => {\n  let keys  = splitList(schema.keys);\n  const ids = Object.keys(columns).filter( key => columns[key].id );\n  if (ids.length > 1) {\n    return throwColumnValidationError('multipleIds', { table: schema.table });\n  }\n  if (keys.length === 0) {\n    keys = Object.keys(columns).filter( key => columns[key].key );\n  }\n  if (schema.id) {\n    keys.unshift(schema.id);\n  }\n  else if (ids.length) {\n    schema.id = ids[0];\n    keys.unshift(schema.id);\n  }\n  else if (keys.length === 0) {\n    schema.id = defaultIdColumn;\n    keys.unshift(schema.id);\n  }\n  return keys;\n}\n",
@@ -14015,7 +13850,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 662,
+    "__docId__": 654,
     "kind": "function",
     "name": "prepareColumns",
     "memberof": "src/Utils/Columns.js",
@@ -14080,7 +13915,7 @@
     }
   },
   {
-    "__docId__": 663,
+    "__docId__": 655,
     "kind": "function",
     "name": "prepareColumnsString",
     "memberof": "src/Utils/Columns.js",
@@ -14117,7 +13952,7 @@
     "ignore": true
   },
   {
-    "__docId__": 664,
+    "__docId__": 656,
     "kind": "function",
     "name": "prepareColumnsArray",
     "memberof": "src/Utils/Columns.js",
@@ -14154,7 +13989,7 @@
     "ignore": true
   },
   {
-    "__docId__": 665,
+    "__docId__": 657,
     "kind": "function",
     "name": "prepareColumnsHash",
     "memberof": "src/Utils/Columns.js",
@@ -14191,7 +14026,7 @@
     "ignore": true
   },
   {
-    "__docId__": 666,
+    "__docId__": 658,
     "kind": "function",
     "name": "prepareColumnBits",
     "memberof": "src/Utils/Columns.js",
@@ -14233,7 +14068,7 @@
     }
   },
   {
-    "__docId__": 667,
+    "__docId__": 659,
     "kind": "function",
     "name": "prepareKeys",
     "memberof": "src/Utils/Columns.js",
@@ -14289,7 +14124,7 @@
     }
   },
   {
-    "__docId__": 668,
+    "__docId__": 660,
     "kind": "file",
     "name": "src/Utils/Database.js",
     "content": "import { extract, hasValue, isString, remove } from \"@abw/badger-utils\";\nimport { invalid, missing } from \"./Error.js\";\n\n/**\n * @ignore\n * Regex to parse database string.\n */\nexport const databaseStringRegex = /^(\\w+):\\/\\/(?:(?:(\\w+)(?::(\\w+))?@)?(\\w+)(?::(\\d+))?\\/)?(\\w+)/;\n\n/**\n * @ignore\n * Lookup table mapping captures from above regex to configuration option.\n */\nexport const databaseStringElements = {\n  engine:   1,\n  user:     2,\n  password: 3,\n  host:     4,\n  port:     5,\n  database: 6,\n};\n\n/**\n * @ignore\n * Lookup table of aliases for configuration options.\n */\nexport const databaseAliases = {\n  username: 'user',\n  pass:     'password',\n  hostname: 'host',\n  file:     'filename',\n  name:     'database',\n};\n\n/**\n * Function to create and sanitize a database configuration.  If the argument\n * is a string then it is passed to {@link parseDatabaseString}.\n * @param {!(Object|String)} config - database connection string or configuration object\n * @param {!String} [config.engine] - database engine, one of `sqlite`, `mysql` or `postgres`\n * @param {?String} [config.username] - alias for `user` option\n * @param {?String} [config.user] - name of user to connect to database\n * @param {?String} [config.password] - password for user to connect to database\n * @param {?String} [config.pass] - alias for `password` option\n * @param {?String} [config.host] - database host name\n * @param {?String} [config.hostname] - alias for `host` option\n * @param {?String} [config.port] - database port\n * @param {?String} [config.database] - database name\n * @param {?String} [config.filename] - database filename for sqlite databases\n * @param {?String} [config.file] - alias for `filename` option\n * @return {Object} the database config object\n * @example\n * const config = databaseConfig('sqlite://dbfile.db')\n * @example\n * const config = databaseConfig('mysql://user:password@hostname:port//database')\n * @example\n * const config = databaseConfig('postgres://user:password@hostname:port//database')\n * @example\n * const config = databaseConfig({\n *   engine:   'sqlite',\n *   filename: 'dbfile.db'\n * })\n * @example\n * const config = databaseConfig({\n *   engine:   'postgres',\n *   database: 'musicdb',\n *   user:     'bobby',\n *   password: 'secret',\n *   host:     'mydbhost.com',\n *   port:     '5150'\n * })\n */\nexport const databaseConfig = config => {\n  if (config.env) {\n    Object.assign(config, configEnv(config.env, { prefix: config.envPrefix }))\n  }\n  let database = config.database || missing('database');\n\n  if (isString(database)) {\n    // parse connection string\n    config.database = database = parseDatabaseString(database);\n  }\n\n  // extract the engine name to top level config\n  config.engine ||= database.engine || missing('database.engine');\n  delete database.engine;\n\n  // fixup any aliases\n  Object.entries(databaseAliases).map(\n    ([key, value]) => {\n      if (hasValue(database[key])) {\n        database[value] ||= remove(database, key);\n      }\n    }\n  )\n\n  // merge in any engineOptions\n  if (config.engineOptions) {\n    Object.assign(database, remove(config, 'engineOptions'));\n  }\n\n  return config;\n}\n\nexport const configEnv = (env, options={}) => {\n  const prefix   = options.prefix || 'DATABASE'\n  const uscore   = prefix.match(/_$/) ? '' : '_';\n  const regex    = new RegExp(`^${prefix}${uscore}`);\n\n  // if there's an environment variable that exactly matches the prefix,\n  // e.g. DATABASE or MY_DATABASE then it's assumed to be a connection\n  // string.  Otherwise we extract all the environment variables that\n  // start with the prefix (and an underscore if there isn't already one)\n  // on the prefix), e.g. DATABASE_ENGINE, DATABASE_HOST, etc., and put\n  // them in an object\n  const database = env[prefix]\n    || extract(\n      env, regex,\n      { key: key => key.replace(regex, '').toLowerCase() }\n    );\n\n  return { database }\n}\n\n\n/**\n * Function to parse a database configuration string and return an object of\n * configuration options.\n * @param {!String} string - database connection string\n * @return {Object} a database config object parsed from the string\n * @example\n * config config = parseDatabaseString('postgresql://user:password@host:port/database')\n * @example\n * const config = parseDatabaseString('sqlite://filename.db')\n * @example\n * const config = parseDatabaseString('sqlite://:memory:')\n * @example\n * const config = parseDatabaseString('sqlite:memory')\n * @example\n */\nexport const parseDatabaseString = string => {\n  let config = { };\n  let match;\n\n  if (string.match(/^postgres(ql)?:/)) {\n    // special case for postgres which can handle a connectionString\n    // NOTE: we accept postgresql: or postgres: as prefixes and Do The\n    // Right Thing\n    config.engine = 'postgres';\n    config.connectionString = string.replace(/^postgres:/, 'postgresql:');\n  }\n  else if ((match = string.match(/^sqlite:\\/\\/(.*)/))) {\n    // special case for sqlite which only has a filename (or \":memory:\")\n    config.engine   = 'sqlite';\n    config.filename = match[1];\n  }\n  else if (string === 'sqlite:memory') {\n    // special case for sqlite allowing 'sqlite:memory' as short for 'sqlite://:memory:'\n    config.engine   = 'sqlite';\n    config.filename = ':memory:';\n  }\n  else if ((match = string.match(databaseStringRegex))) {\n    // all other cases (e.g. mysql)\n    Object.entries(databaseStringElements).map(\n      ([key, index]) => {\n        const value = match[index];\n        if (hasValue(value)) {\n          config[key] = value;\n        }\n      }\n    );\n  }\n  else {\n    invalid('database', string);\n  }\n  return config;\n}\n",
@@ -14300,7 +14135,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 669,
+    "__docId__": 661,
     "kind": "variable",
     "name": "databaseStringRegex",
     "memberof": "src/Utils/Database.js",
@@ -14320,7 +14155,7 @@
     }
   },
   {
-    "__docId__": 670,
+    "__docId__": 662,
     "kind": "variable",
     "name": "databaseStringElements",
     "memberof": "src/Utils/Database.js",
@@ -14340,7 +14175,7 @@
     }
   },
   {
-    "__docId__": 671,
+    "__docId__": 663,
     "kind": "variable",
     "name": "databaseAliases",
     "memberof": "src/Utils/Database.js",
@@ -14360,7 +14195,7 @@
     }
   },
   {
-    "__docId__": 672,
+    "__docId__": 664,
     "kind": "function",
     "name": "databaseConfig",
     "memberof": "src/Utils/Database.js",
@@ -14514,7 +14349,7 @@
     }
   },
   {
-    "__docId__": 673,
+    "__docId__": 665,
     "kind": "function",
     "name": "configEnv",
     "memberof": "src/Utils/Database.js",
@@ -14553,7 +14388,7 @@
     }
   },
   {
-    "__docId__": 674,
+    "__docId__": 666,
     "kind": "function",
     "name": "parseDatabaseString",
     "memberof": "src/Utils/Database.js",
@@ -14596,7 +14431,7 @@
     }
   },
   {
-    "__docId__": 675,
+    "__docId__": 667,
     "kind": "file",
     "name": "src/Utils/Debug.js",
     "content": "import { addDebug, ANSIescape, ANSIreset } from \"@abw/badger\";\nimport { doNothing, fail, isBoolean, isObject } from \"@abw/badger-utils\";\n\n/**\n * @ignore\n * Default width for debugging prefix column.\n */\nconst debugWidth = 16;\n\n/**\n * @ignore\n * Default debugging options\n */\nexport let debug = {\n  database: {\n    debug:  false,\n    prefix: 'Database',\n    color:  'bright magenta',\n  },\n  engine: {\n    debug:  false,\n    prefix: 'Engine',\n    color:  'red',\n  },\n  query: {\n    debug:  false,\n    prefix: 'Query',\n    color:  'cyan',\n  },\n  tables: {\n    debug:  false,\n    prefix: 'Tables',\n    color:  'blue',\n  },\n  table: {\n    debug:  false,\n    prefix: 'Table',\n    color:  'bright cyan',\n  },\n  record: {\n    debug:  false,\n    prefix: 'Record',\n    color:  'green',\n  },\n  builder: {\n    debug:  false,\n    prefix: 'Builder',\n    color:  'yellow',\n  },\n  transaction: {\n    debug:  false,\n    prefix: 'Transaction',\n    color:  'bright red'\n  },\n  test: {\n    debug:  false,\n    prefix: 'Test',\n    color:  'green'\n  },\n}\n\n/**\n * @ignore\n * Function to throw an error for an invalid debug option\n */\nconst invalidDebugItem = item =>\n  fail(`Invalid debug item \"${item}\" specified`)\n\n/**\n * Function to set debugging options.  Each key in the `options` should be\n * one of the components that supports debugging: `database`, `engine`, `queries`,\n * `table` or `record`.  The corresponding values should be a boolean value to\n * enable or disable debugging for the option or an object containing a `debug`\n * flag, and optionally, a `prefix` and/or `color`.\n * @param {!Object} options - debugging options\n * @example\n * setDebug({ engine: true })\n * @example\n * setDebug({\n *   engine: {\n *     debug: true,\n *     prefix: 'Choo Choo!',\n *     color: 'green'\n *   }\n * })\n */\nexport const setDebug = options => {\n  Object.entries(options).map(\n    ([key, value]) => {\n      const set = debug[key] || invalidDebugItem(key);\n      if (isBoolean(value)) {\n        set.debug = value;\n      }\n      else if (isObject(value)) {\n        Object.assign(set, value);\n      }\n    }\n  )\n}\n\n/**\n * Function to get debugging options for one of the components that supports debugging:\n * `database`, `engine`, `queries`, `table` or `record`.  One or more additional\n * objects can be passed that contain further configuration options. The returned object\n * will contained a merged set of the defaults and those options.\n * @param {!String} name - debugging options\n * @param {...Object} configs - additional debugging options\n * @example\n * getDebug('engine')\n * @example\n * getDebug('engine', { debug: true })\n * @example\n * getDebug('engine', { debug: true, color: 'green' })\n * @example\n * getDebug('engine', { debug: true }, { color: 'green' })\n */\nexport const getDebug = (name, ...configs) => {\n  const defaults = debug[name] || invalidDebugItem(name);\n  return Object.assign(\n    {},\n    defaults,\n    ...configs\n  );\n}\n\n/**\n * Function to add the `debug()` and `debugData()` methods to an object.\n * `database`, `engine`, `queries`, `table` or `record`.  One or more additional\n * objects can be passed that contain further configuration options. The returned object\n * will contained a merged set of the defaults and those options.\n * @param {!Object} object - object to receive methods\n * @param {!String} name - name of component type\n * @param {...Object} configs - additional debugging options\n * @example\n * addDebugMethod(myObject, 'engine', { debug: true })\n * @example\n * getDebug(myObject, 'engine', { debug: true }, { color: 'green' })\n */\nexport const addDebugMethod = (object, name, ...configs) => {\n  const options = getDebug(name, ...configs);\n  const enabled = options.debug;\n  const prefix  = options.debugPrefix || options.prefix;\n  const color   = options.debugColor  || options.color;\n  const preline = prefix.length > debugWidth - 2\n    ? prefix + \"\\n\" + \"\".padEnd(debugWidth, '-') + '> '\n    : (prefix + ' ').padEnd(debugWidth, '-') + '> ';\n  addDebug(object, enabled, preline, color);\n  object.debugData = DataDebugger(enabled, preline, color);\n}\n\n/**\n * @ignore\n * Function to generate a debugData() method for the above.\n */\nfunction DataDebugger(enabled, prefix, color, length=debugWidth) {\n  return enabled\n    ? (message, data={}) => {\n        console.log(\n          '%s' + prefix + '%s' + message,\n          color ? ANSIescape(color) : '',\n          color ? ANSIreset() : ''\n        );\n        Object.entries(data).map(\n          ([key, value]) => console.log(\n            '%s' + key.padStart(length, ' ') + ':%s',\n            color ? ANSIescape(color) : '',\n            color ? ANSIreset() : '',\n            value\n          )\n        )\n      }\n    : doNothing;\n}\n",
@@ -14607,7 +14442,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 676,
+    "__docId__": 668,
     "kind": "variable",
     "name": "debugWidth",
     "memberof": "src/Utils/Debug.js",
@@ -14627,7 +14462,7 @@
     }
   },
   {
-    "__docId__": 677,
+    "__docId__": 669,
     "kind": "variable",
     "name": "debug",
     "memberof": "src/Utils/Debug.js",
@@ -14647,7 +14482,7 @@
     }
   },
   {
-    "__docId__": 678,
+    "__docId__": 670,
     "kind": "function",
     "name": "invalidDebugItem",
     "memberof": "src/Utils/Debug.js",
@@ -14673,7 +14508,7 @@
     "return": null
   },
   {
-    "__docId__": 679,
+    "__docId__": 671,
     "kind": "function",
     "name": "setDebug",
     "memberof": "src/Utils/Debug.js",
@@ -14706,7 +14541,7 @@
     "return": null
   },
   {
-    "__docId__": 680,
+    "__docId__": 672,
     "kind": "function",
     "name": "getDebug",
     "memberof": "src/Utils/Debug.js",
@@ -14755,7 +14590,7 @@
     }
   },
   {
-    "__docId__": 681,
+    "__docId__": 673,
     "kind": "function",
     "name": "addDebugMethod",
     "memberof": "src/Utils/Debug.js",
@@ -14808,7 +14643,7 @@
     "return": null
   },
   {
-    "__docId__": 682,
+    "__docId__": 674,
     "kind": "function",
     "name": "DataDebugger",
     "memberof": "src/Utils/Debug.js",
@@ -14859,7 +14694,7 @@
     }
   },
   {
-    "__docId__": 683,
+    "__docId__": 675,
     "kind": "file",
     "name": "src/Utils/Error.js",
     "content": "import { fail } from \"@abw/badger-utils\"\nimport { format } from \"./Format.js\"\n\n//-----------------------------------------------------------------------------\n// General purpose error messages\n//-----------------------------------------------------------------------------\n/**\n * Function to throw a generic error used to report a missing configration item.\n * The error message will be of the form `No \"XXX\" specified`.\n * @param {!String} item - the name of the missing item\n * @example\n * missing('badger');   // throws error: No \"badger\" specified\n */\nexport const missing = (item) =>\n  fail(`No \"${item}\" specified`)\n\n/**\n * Function to throw a generic error used to report an invalid configration item.\n * The error message will be of the form `Invalid \"XXX\" specified: YYY`.\n * @param {!String} item - the name of the invalid item\n * @param value - the value of the invalid item\n * @example\n * invalid('badger', 99);   // throws error: Invalid \"badger\" specified: 99\n */\nexport const invalid = (item, value) =>\n  fail(`Invalid \"${item}\" specified: ${value}`)\n\n/**\n * Function to throw a generic error reporting that a method is not implemented.\n * This is used in base classes (e.g. {@link Engine}) where subclasses are\n * required to implement the method.\n * The error message will be of the form `METHOD is not implemented in MODULE`.\n * @param {!String} method - the name of the method\n * @param {!String} module - the name of the module\n * @example\n * notImplemented('wibble', 'FrussetPouch');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplemented = (method, module) =>\n  fail(`${method} is not implemented in ${module}`)\n\n/**\n * Currying function used to generate a function that calls {@link notImplemented}\n * with the module name pre-defined.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in FrussetPouch\n */\nexport const notImplementedInModule = module => method =>\n  notImplemented(method, module)\n\n/**\n * Wrapper around {@link notImplementedInModule} which provides a\n * more explicit error message for base classes.\n * @param {!String} module - the name of the module\n * @example\n * const thrower = notImplementedInModule('FrussetPouch');\n * throws('wibble');  // throws error: wibble is not implemented in the FrussetPouch base class\n */\nexport const notImplementedInBaseClass = module =>\n  notImplementedInModule(`the ${module} base class`)\n\n//-----------------------------------------------------------------------------\n// Custom error classes\n//-----------------------------------------------------------------------------\n/**\n * Error class for generating custom errors.\n */\nexport class CustomError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = this.constructor.name;\n  }\n}\n\nexport class SQLParseError extends Error {\n  constructor(query, args) {\n    super(args.message);\n    this.name  = this.constructor.name;\n    this.query = query;\n    this.type  = args.type;\n    this.code  = args.code;\n    this.position = args.position;\n    if (args.stack) {\n      this.stack = args.stack;\n    }\n  }\n}\n\n/**\n * Error class for reporting failure to load engine driver\n */\nexport class EngineDriverError extends CustomError { }\nexport const throwEngineDriver = (module, error) => {\n  throw new EngineDriverError(\n    `Failed to load \"${module}\" engine driver module.  Have you installed it?\\nError: ` + error.message\n  )\n}\n\n/**\n * Error class for reporting unexpected number of rows returned by a\n * database query.\n */\nexport class UnexpectedRowCount extends CustomError { }\n\n/**\n * Error class for reporting columns validation errors, e.g. when\n * attempting to update a `readonly` column.\n */\nexport class ColumnValidationError extends CustomError { }\n\n/**\n * Error class for reporting validation errors when inserting a row.\n */\nexport class InsertValidationError extends CustomError { }\n\n/**\n * Error class for reporting attempts to update a deleted record.\n */\nexport class DeletedRecordError extends CustomError { }\n\n/**\n * Error class for reporting query builder errors\n */\nexport class QueryBuilderError extends CustomError { }\n\n/**\n * Error class for reporting transaction errors\n */\nexport class TransactionError extends CustomError { }\n\n/**\n * Function for throwing a {@link UnexpectedRowCount} error when multiple\n * rows were returned or updated when only one was expected.\n * @param {!Integer} n - the number of rows encountered\n * @param {String} [action=returned] - the action that was being performed.\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were returned when one was expected\"\n * unexpectedRowCount(10);\n * @example\n * // throw UnexpectedRowCount error with message \"10 rows were updated when one was expected\"\n * unexpectedRowCount(10, 'updated');\n */\nexport function unexpectedRowCount(n, action='returned') {\n  throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)\n}\n\n/**\n * Function to contruct a function for throwing errors of a particular type\n * using message formats.  The function returned expects a format name and\n * an optional object containing values to insert into the message format.\n * @param {!Object} formats - an object mapping short names to message formats\n * @param {Error} [error=Error] - the error type\n * @example\n * const hurl = thrower({ oops => 'Unexpected <animal> encountered });\n * hurl('oops', 'badger');  // throws error: Unexpected badger encountered\n */\nexport const thrower = (formats, error=Error) =>\n  (fmt, data) => {\n    const message = format(\n      formats[fmt] || fail(\"Invalid message format: \", fmt),\n      data\n    );\n    throw new error(message)\n  }\n\n/**\n * Error throwing function for column validation errors.\n */\nexport const throwColumnValidationError = thrower(\n  {\n    unknown:        'Unknown \"<column>\" column in the <table> table',\n    readonly:       'The \"<column>\" column is readonly in the <table> table',\n    fixed:          'The \"<column>\" column is fixed in the <table> table',\n    required:       'Missing required column \"<column>\" for the <table> table',\n    multipleIds:    'Multiple columns are marked as \"id\" in the <table> table',\n    noColumns:      'No \"columns\" specified for the <table> table',\n    invalidColumns: 'Invalid \"columns\" specified for the <table> table: <columns>',\n  },\n  ColumnValidationError\n)\n\n/**\n * Error throwing function for deleted record errors.\n */\nexport const throwDeletedRecordError = thrower(\n  {\n    action: 'Cannot <action> deleted <table> record #<id>',\n  },\n  DeletedRecordError\n)\n",
@@ -14870,7 +14705,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 684,
+    "__docId__": 676,
     "kind": "function",
     "name": "missing",
     "memberof": "src/Utils/Error.js",
@@ -14902,7 +14737,7 @@
     "return": null
   },
   {
-    "__docId__": 685,
+    "__docId__": 677,
     "kind": "function",
     "name": "invalid",
     "memberof": "src/Utils/Error.js",
@@ -14944,7 +14779,7 @@
     "return": null
   },
   {
-    "__docId__": 686,
+    "__docId__": 678,
     "kind": "function",
     "name": "notImplemented",
     "memberof": "src/Utils/Error.js",
@@ -14986,7 +14821,7 @@
     "return": null
   },
   {
-    "__docId__": 687,
+    "__docId__": 679,
     "kind": "function",
     "name": "notImplementedInModule",
     "memberof": "src/Utils/Error.js",
@@ -15018,7 +14853,7 @@
     "return": null
   },
   {
-    "__docId__": 688,
+    "__docId__": 680,
     "kind": "function",
     "name": "notImplementedInBaseClass",
     "memberof": "src/Utils/Error.js",
@@ -15050,7 +14885,7 @@
     "return": null
   },
   {
-    "__docId__": 689,
+    "__docId__": 681,
     "kind": "class",
     "name": "CustomError",
     "memberof": "src/Utils/Error.js",
@@ -15068,7 +14903,7 @@
     ]
   },
   {
-    "__docId__": 690,
+    "__docId__": 682,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -15082,7 +14917,7 @@
     "undocument": true
   },
   {
-    "__docId__": 691,
+    "__docId__": 683,
     "kind": "member",
     "name": "name",
     "memberof": "src/Utils/Error.js~CustomError",
@@ -15099,7 +14934,7 @@
     }
   },
   {
-    "__docId__": 692,
+    "__docId__": 684,
     "kind": "class",
     "name": "SQLParseError",
     "memberof": "src/Utils/Error.js",
@@ -15118,7 +14953,7 @@
     ]
   },
   {
-    "__docId__": 693,
+    "__docId__": 685,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15132,7 +14967,7 @@
     "undocument": true
   },
   {
-    "__docId__": 694,
+    "__docId__": 686,
     "kind": "member",
     "name": "name",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15149,7 +14984,7 @@
     }
   },
   {
-    "__docId__": 695,
+    "__docId__": 687,
     "kind": "member",
     "name": "query",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15166,7 +15001,7 @@
     }
   },
   {
-    "__docId__": 696,
+    "__docId__": 688,
     "kind": "member",
     "name": "type",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15183,7 +15018,7 @@
     }
   },
   {
-    "__docId__": 697,
+    "__docId__": 689,
     "kind": "member",
     "name": "code",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15200,7 +15035,7 @@
     }
   },
   {
-    "__docId__": 698,
+    "__docId__": 690,
     "kind": "member",
     "name": "position",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15217,7 +15052,7 @@
     }
   },
   {
-    "__docId__": 699,
+    "__docId__": 691,
     "kind": "member",
     "name": "stack",
     "memberof": "src/Utils/Error.js~SQLParseError",
@@ -15234,7 +15069,7 @@
     }
   },
   {
-    "__docId__": 700,
+    "__docId__": 692,
     "kind": "class",
     "name": "EngineDriverError",
     "memberof": "src/Utils/Error.js",
@@ -15252,7 +15087,7 @@
     ]
   },
   {
-    "__docId__": 701,
+    "__docId__": 693,
     "kind": "function",
     "name": "throwEngineDriver",
     "memberof": "src/Utils/Error.js",
@@ -15284,7 +15119,7 @@
     "return": null
   },
   {
-    "__docId__": 702,
+    "__docId__": 694,
     "kind": "class",
     "name": "UnexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -15302,7 +15137,7 @@
     ]
   },
   {
-    "__docId__": 703,
+    "__docId__": 695,
     "kind": "class",
     "name": "ColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -15320,7 +15155,7 @@
     ]
   },
   {
-    "__docId__": 704,
+    "__docId__": 696,
     "kind": "class",
     "name": "InsertValidationError",
     "memberof": "src/Utils/Error.js",
@@ -15338,7 +15173,7 @@
     ]
   },
   {
-    "__docId__": 705,
+    "__docId__": 697,
     "kind": "class",
     "name": "DeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -15356,7 +15191,7 @@
     ]
   },
   {
-    "__docId__": 706,
+    "__docId__": 698,
     "kind": "class",
     "name": "QueryBuilderError",
     "memberof": "src/Utils/Error.js",
@@ -15374,7 +15209,7 @@
     ]
   },
   {
-    "__docId__": 707,
+    "__docId__": 699,
     "kind": "class",
     "name": "TransactionError",
     "memberof": "src/Utils/Error.js",
@@ -15392,7 +15227,7 @@
     ]
   },
   {
-    "__docId__": 708,
+    "__docId__": 700,
     "kind": "function",
     "name": "unexpectedRowCount",
     "memberof": "src/Utils/Error.js",
@@ -15437,7 +15272,7 @@
     "return": null
   },
   {
-    "__docId__": 709,
+    "__docId__": 701,
     "kind": "function",
     "name": "thrower",
     "memberof": "src/Utils/Error.js",
@@ -15481,7 +15316,7 @@
     "return": null
   },
   {
-    "__docId__": 710,
+    "__docId__": 702,
     "kind": "variable",
     "name": "throwColumnValidationError",
     "memberof": "src/Utils/Error.js",
@@ -15500,7 +15335,7 @@
     }
   },
   {
-    "__docId__": 711,
+    "__docId__": 703,
     "kind": "variable",
     "name": "throwDeletedRecordError",
     "memberof": "src/Utils/Error.js",
@@ -15519,7 +15354,7 @@
     }
   },
   {
-    "__docId__": 712,
+    "__docId__": 704,
     "kind": "file",
     "name": "src/Utils/Format.js",
     "content": "import { fail, noValue } from \"@abw/badger-utils\";\n\n/**\n * Function to format strings by inserting values into placeholder locations.\n * @param {!String} msg - the source string\n * @param {Object} data - data items to insert into the string\n * @returns {String} - the expanded string\n * @example\n * format('Hello <name>!', { name: 'World'});  // Hello World!\n */\nexport const format = (msg, data) =>\n  msg.replace(\n    /<(\\w+)>/g,\n    (_, key) => {\n      const val = data[key];\n      if (noValue(val)) {\n        fail(`Invalid variable expansion <${key}> in message format: ${msg}`);\n      }\n      return val;\n    }\n  );\n",
@@ -15530,7 +15365,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 713,
+    "__docId__": 705,
     "kind": "function",
     "name": "format",
     "memberof": "src/Utils/Format.js",
@@ -15585,7 +15420,7 @@
     }
   },
   {
-    "__docId__": 714,
+    "__docId__": 706,
     "kind": "file",
     "name": "src/Utils/Methods.js",
     "content": "import { fail } from \"@abw/badger-utils\";\n\nexport const aliasMethods = (object, aliases) =>\n  Object.entries(aliases).map(\n    ([alias, method]) => object[alias] = object[method]\n      || fail(`Invalid alias \"${alias}\" references non-existent method \"${method}\"`)\n  )\n",
@@ -15596,7 +15431,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 715,
+    "__docId__": 707,
     "kind": "function",
     "name": "aliasMethods",
     "memberof": "src/Utils/Methods.js",
@@ -15628,7 +15463,7 @@
     "return": null
   },
   {
-    "__docId__": 716,
+    "__docId__": 708,
     "kind": "file",
     "name": "src/Utils/Queries.js",
     "content": "import Builder from \"../Builder.js\";\nimport { fail, isString } from \"@abw/badger-utils\";\n\nexport const isQuery = query =>\n  isString(query) || (query instanceof Builder)\n\nexport const expandFragments = (query, queryable, maxDepth=16) => {\n  query = query.trim();\n  let sql = query;\n  let runaway = 0;\n  let expanded = [ ];\n\n  // eslint-disable-next-line no-constant-condition\n  while (true) {\n    let replaced = false;\n    sql = sql.replace(\n      /<(\\w+?)>/g,\n      (match, word) => {\n        replaced = true;\n        expanded.push(word);\n        return queryable.fragment(word);\n      }\n    );\n    if (! replaced) {\n      break;\n    }\n    if (++runaway >= maxDepth) {\n      fail(\n        \"Maximum SQL expansion limit (maxDepth=\", maxDepth, \") exceeded: \",\n        expanded.join(' -> ', )\n      )\n    }\n  }\n  return sql;\n}\n",
@@ -15639,7 +15474,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 717,
+    "__docId__": 709,
     "kind": "function",
     "name": "isQuery",
     "memberof": "src/Utils/Queries.js",
@@ -15665,7 +15500,7 @@
     "return": null
   },
   {
-    "__docId__": 718,
+    "__docId__": 710,
     "kind": "function",
     "name": "expandFragments",
     "memberof": "src/Utils/Queries.js",
@@ -15710,7 +15545,7 @@
     }
   },
   {
-    "__docId__": 719,
+    "__docId__": 711,
     "kind": "file",
     "name": "src/Utils/Relation.js",
     "content": "import { fail, hasValue, isString, noValue, remove } from \"@abw/badger-utils\";\n\nconst relationStringRegex = /^(\\w+)\\s*([-~=#]>)\\s*(\\w+)\\.(\\w+)$/;\nconst relationType = {\n  '~>': 'any',\n  '->': 'one',\n  '=>': 'many',\n  '#>': 'map',\n};\nconst relationAliases = {\n  localKey:   'from',\n  local_key:  'from',\n  remoteKey:  'to',\n  remote_key: 'to',\n  orderBy:    'order',\n  order_by:   'order',\n};\n\n/**\n * Function to prepare a relation definition.\n * @param {!String} table - the table name\n * @param {!String} name - the relation name\n * @param {!String|Object} config - the relation configuration\n * @return {Object} a relation specification object\n * @example\n * const relation = relationConfig(\n *   'artists', 'albums', 'id => albums.artist_id'\n * })\n * @example\n * const relation = relationConfig(\n *   'artists', 'albums',\n *   {\n *     from:  'id',\n *     type:  'many',\n *     table: 'albums',\n *     to:    'artist_id'\n *    }\n * )\n */\nexport const relationConfig = (table, name, config) => {\n  if (isString(config)) {\n    config = parseRelationString(config);\n  }\n  else if (isString(config.relation)) {\n    config = {\n      ...parseRelationString(config.relation),\n      ...config\n    }\n  }\n\n  // fix up any aliases\n  Object.entries(relationAliases).map(\n    ([key, value]) => {\n      if (hasValue(config[key])) {\n        config[value] ||= remove(config, key);\n      }\n    }\n  );\n\n  // check for missing parameters\n  if (! config.load) {\n    ['type', 'table', 'to', 'from'].forEach(\n      key => {\n        if (noValue(config[key])) {\n          fail(`Missing \"${key}\" in ${name} relation for ${table} table`);\n        }\n      }\n    );\n  }\n\n  // set the name\n  config.name = `${table}.${name}`;\n\n  return config;\n}\n\n/**\n * Function to parse a relation definition string\n * @param {!String} string - the relation definition string\n * @return {Object} a relation specification object\n * @example\n * const relation = parseRelationString(\n *   'id => albums.artist_id'\n * })\n */\nexport const parseRelationString = string => {\n  let match;\n  return ((match = string.match(relationStringRegex)))\n    ? {\n        from:  match[1],\n        type:  relationType[match[2]] || fail('Invalid type \"', match[2], '\" specified in relation: ', string),\n        table: match[3],\n        to:    match[4],\n      }\n    : fail(\"Invalid relation string specified: \", string);\n}\n\nexport const whereRelation = (record, spec) => {\n  const lkey  = spec.from;\n  const rkey  = spec.to;\n  let where   = spec.where || { };\n  if (lkey && rkey) {\n    where[rkey] = record.row[lkey];\n  }\n  return where\n}\n",
@@ -15721,7 +15556,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 720,
+    "__docId__": 712,
     "kind": "variable",
     "name": "relationStringRegex",
     "memberof": "src/Utils/Relation.js",
@@ -15742,7 +15577,7 @@
     "ignore": true
   },
   {
-    "__docId__": 721,
+    "__docId__": 713,
     "kind": "variable",
     "name": "relationType",
     "memberof": "src/Utils/Relation.js",
@@ -15763,7 +15598,7 @@
     "ignore": true
   },
   {
-    "__docId__": 722,
+    "__docId__": 714,
     "kind": "variable",
     "name": "relationAliases",
     "memberof": "src/Utils/Relation.js",
@@ -15784,7 +15619,7 @@
     "ignore": true
   },
   {
-    "__docId__": 723,
+    "__docId__": 715,
     "kind": "function",
     "name": "relationConfig",
     "memberof": "src/Utils/Relation.js",
@@ -15845,7 +15680,7 @@
     }
   },
   {
-    "__docId__": 724,
+    "__docId__": 716,
     "kind": "function",
     "name": "parseRelationString",
     "memberof": "src/Utils/Relation.js",
@@ -15884,7 +15719,7 @@
     }
   },
   {
-    "__docId__": 725,
+    "__docId__": 717,
     "kind": "function",
     "name": "whereRelation",
     "memberof": "src/Utils/Relation.js",
@@ -15920,7 +15755,7 @@
     }
   },
   {
-    "__docId__": 726,
+    "__docId__": 718,
     "kind": "file",
     "name": "src/Utils/Space.js",
     "content": "import { blank, lparen, rparen, space } from \"../Constants.js\";\n\nexport const spaceAfter = string =>\n  (string && string.length)\n    ? string + space\n    : blank\n\nexport const spaceBefore = string =>\n  (string && string.length)\n    ? space + string\n    : blank\n\nexport const spaceAround = string =>\n  (string && string.length)\n    ? space + string + space\n    : blank\n\nexport const parens = string =>\n  (string && string.length)\n    ? lparen + string + rparen\n    : blank",
@@ -15931,7 +15766,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 727,
+    "__docId__": 719,
     "kind": "function",
     "name": "spaceAfter",
     "memberof": "src/Utils/Space.js",
@@ -15957,7 +15792,7 @@
     "return": null
   },
   {
-    "__docId__": 728,
+    "__docId__": 720,
     "kind": "function",
     "name": "spaceBefore",
     "memberof": "src/Utils/Space.js",
@@ -15983,7 +15818,7 @@
     "return": null
   },
   {
-    "__docId__": 729,
+    "__docId__": 721,
     "kind": "function",
     "name": "spaceAround",
     "memberof": "src/Utils/Space.js",
@@ -16009,7 +15844,7 @@
     "return": null
   },
   {
-    "__docId__": 730,
+    "__docId__": 722,
     "kind": "function",
     "name": "parens",
     "memberof": "src/Utils/Space.js",
@@ -16035,7 +15870,7 @@
     "return": null
   },
   {
-    "__docId__": 731,
+    "__docId__": 723,
     "kind": "file",
     "name": "src/Utils/Tags.js",
     "content": "export const sql = sql => ({ sql })",
@@ -16046,7 +15881,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 732,
+    "__docId__": 724,
     "kind": "function",
     "name": "sql",
     "memberof": "src/Utils/Tags.js",
@@ -16089,7 +15924,7 @@
   },
   {
     "kind": "manualIndex",
-    "content": "# badger-database\n\n<img src=\"./images/badger2.svg\" width=\"300\"/>\n\nThis is the manual for the `badger-database` Javascript module.\n\n## Table of Contents\n\n* [Installation](manual/installation.html) - installing the library\n* [Connecting](manual/connecting.html) - connecting to a database\n* [Basic Queries](manual/basic_queries.html) - performing basic SQL queries\n* [Named Queries](manual/named_queries.html) - defining named SQL queries for abstraction and reusability\n* [Query Fragments](manual/query_fragments.html) - defining named SQL fragments for embedding into queries\n* [Query Builder](manual/query_builder.html) - building SQL queries programmatically\n* [Query Builder Methods](manual/builder_method.html) - methods for building SQL queries\n* [Tables](manual/tables.html) - using tables to automatically generate basic queries\n* [Table Columns](manual/table_columns.html) - defining table columns\n* [Table Methods](manual/table_methods.html) - calling table methods\n* [Table Queries](manual/table_queries.html) - defining named queries for tables\n* [Table Class](manual/table_class.html) - defining custom table classes\n* [Records](manual/records.html) - using records\n* [Record Methods](manual/record_methods.html) - calling record methods\n* [Record Class](manual/record_class.html) - defining custom record classes\n* [Relations](manual/relations.html) - defining relations between tables\n* [Transactions](manual/transactions.html) - using database transactions\n* [Model](manual/model.html) - accessing database tables in a simpler form\n* [Waiter](manual/waiter.html) - chaining together asynchronous operations\n* [Debugging](manual/debugging.html) - enabling debugging messages\n* [Extending](manual/extending.html) - extending badger-database to add your own functionality\n* [Limitations](manual/limitations.html) - coping with the limitations of badger-database\n* [Examples](manual/examples.html) - working examples using badger-database\n\n## Method Reference\n\nThis is a brief summary of the object methods available.\n\n### Database Methods\n\n| Method | Description\n|-|-|\n| [connect(options)](manual/connecting.html) | Connect to the database and return a `Database` object|\n| [disconnect()](manual/connecting.html#disconnecting) | Disconnect from the database |\n| [run(query, values, options)](manual/basic_queries.html#run-query--values--options-) | Run a raw SQL query or named query |\n| [one(query, values, options)](manual/basic_queries.html#one-query--values--options-) | Run a raw SQL query or named query to fetch exactly one row |\n| [any(query, values, options)](manual/basic_queries.html#any-query--values--options-) | Run a raw SQL query or named query to fetch any single row |\n| [all(query, values, options)](manual/basic_queries.html#all-query--values--options-) | Run a raw SQL query or named query to fetch all rows |\n| [build](manual/query_builder.html) | Start a query builder chain |\n| [select(columns)](manual/query_builder.html#select-queries) | Start a `SELECT` query builder chain with a column selection |\n| [insert(columns)](manual/query_builder.html#insert-queries) | Start an `INSERT` query builder chain with a column selection |\n| [update(table)](manual/query_builder.html#update-queries) | Start an `UPDATE` query builder chain with a table name |\n| [delete(columns)](manual/query_builder.html#delete-queries) | Start an `DELETE` query builder chain with optional column specification |\n| [transaction(code)](manual/transactions.html) | Execute queries in the scope of a transaction |\n| [table(name)](manual/tables.html) | Lookup a named table and return a `Table` object|\n\n### Table Query Methods\n\n| Method | Description\n|-|-|\n| [run(query, values, options)](manual/table_queries.html#run-query--values--options-) | Run a raw SQL query or named query |\n| [one(query, values, options)](manual/table_queries.html#one-query--values--options-) | Run a raw SQL query or named query to fetch exactly one row |\n| [any(query, values, options)](manual/table_queries.html#any-query--values--options-) | Run a raw SQL query or named query to fetch any single row |\n| [all(query, values, options)](manual/table_queries.html#all-query--values--options-) | Run a raw SQL query or named query to fetch all rows |\n\n### Table Insert Methods\n\n| Method | Description\n|-|-|\n| [insert(data, options)](manual/table_methods.html#insert-data--options-) | Insert one or more rows of data |\n| [insertOne(data, options)](manual/table_methods.html#insertone-data--options-) | Insert a single row of data |\n| [insertAll(array, options)](manual/table_methods.html#insertall-array--options-) | Insert multiple rows of data |\n| [insertOneRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Insert a single row of data and return the reloaded row|\n| [insertAllRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Insert multiple rows of data and return an array of reloaded rows|\n| [insertRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Alias for [insertOneRow()](manual/table_methods.html#insertonerow-data--options-) |\n| [insertRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Alias for [insertAllRows()](manual/table_methods.html#insertallrows-array--options-) |\n| [insertOneRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Insert a single row of data and return a record |\n| [insertAllRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Insert multiple rows of data and return an array of records |\n| [insertRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Alias for [insertOneRecord()](manual/table_methods.html#insertonerecord-data--options-) |\n| [insertRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Alias for [insertAllRecords()](manual/table_methods.html#insertallrecords-array--options-) |\n\n### Table Update Methods\n\n| Method | Description\n|-|-|\n| [update(set, where, options)](manual/table_methods.html#update-set--where--options-) | Update one or more rows to set new values where matching criteria |\n| [updateOne(set, where, options)](manual/table_methods.html#updateone-set--where--options-) | Update exactly one row to set new values where matching criteria |\n| [updateAny(set, where, options)](manual/table_methods.html#updateany-set--where--options-) | Update any row to set new values where matching criteria |\n| [updateAll(set, where, options)](manual/table_methods.html#updateall-set--where--options-) | Update all rows to set new values where matching criteria |\n| [updateOneRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Update exactly one row with reload option to return updated row |\n| [updateAnyRow(set, where, options)](manual/table_methods.html#updateanyrow-set--where--options-) | Update any row with reload option to return updated row |\n| [updateRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Alias for [updateOneRow()](manual/table_methods.html#updateonerow-set--where--options-) |\n\n### Table Delete Method\n\n| Method | Description\n|-|-|\n| [delete(where)](manual/table_methods.html#delete-where-) | Delete all rows where matching criteria |\n\n### Table Fetch Methods\n\n| Method | Description\n|-|-|\n| [fetch(where, options)](manual/table_methods.html#fetch-where--options-) | Fetch rows where matching criteria |\n| [fetchOne(where, options)](manual/table_methods.html#fetchone-where--options-) | Fetch exactly one row where matching criteria |\n| [fetchAny(where, options)](manual/table_methods.html#fetchany-where--options-) | Fetch any row where matching criteria |\n| [fetchAll(where, options)](manual/table_methods.html#fetchall-where--options-) | Fetch all rows where matching criteria |\n| [fetchOneRecord(where, options)](manual/table_methods.html#fetchonerecord-where--options-) | Fetch exactly one row where matching criteria and return as a record|\n| [fetchAnyRecord(where, options)](manual/table_methods#fetchanyrecord-where--options-) | Fetch any row where matching criteria and return as a record|\n| [fetchAllRecords(where, options)](manual/table_methods#fetchallrecords-where--options-) | Fetch all rows where matching criteria and return as a record|\n| [fetchRecord(where, options)](manual/table_methods#fetchonerecord-where--options-) | Alias for [fetchOneRecord()](manual/table_methods#fetchonerecord-where--options-) |\n| [fetchRecords(where, options)](manual/table_methods#fetchallrecords-where--options-) | Alias for [fetchAllRecords()](manual/table_methods#fetchallrecords-where--options-) |\n| [oneRow(query, args)](manual/table_queries.html#onerow-query--args-) | Select exactly one row using [fetchOne()](manual/table_methods.html#fetchone-where--options-) or [one()](manual/table_queries.html#one-query--values--options-) as appropriate|\n| [anyRow(query, args)](manual/table_queries.html#anyrow-query--args-) | Select any single row using [fetchAny()](manual/table_methods.html#fetchany-where--options-) or [any()](manual/table_queries.html#any-query--values--options-) as appropriate|\n| [allRows(query, args)](manual/table_queries.html#allrows-query--args-) | Select all rows using [fetchAll()](manual/table_methods.html#fetchall-where--options-) or [all()](manual/table_queries.html#all-query--values--options-) as appropriate|\n| [oneRecord(query, args)](manual/table_queries.html#onerecord-query--args-) | Select exactly one row using [fetchOne()](manual/table_methods.html#fetchone-where--options-) or [one()](manual/table_queries.html#one-query--values--options-) as appropriate and return as a record|\n| [anyRecord(query, args)](manual/table_queries.html#anyrecord-query--args-) | Select any single row using [fetchAny()](manual/table_methods.html#fetchany-where--options-) or [any()](manual/table_queries.html#any-query--values--options-) as appropriate and return as a record|\n| [allRecords(query, args)](manual/table_queries.html#allrecords-query--args-) | Select all rows using [fetchAll()](manual/table_methods.html#fetchall-where--options-) or [all()](manual/table_queries.html#all-query--values--options-) as appropriate and return as a record|\n\n### Other Table Methods\n\n| Method | Description\n|-|-|\n| [build](manual/table_queries.html#query-builder) | Start a query builder chain |\n| [select(columns)](manual/table_queries.html#query-builder) | Start a query builder chain with column selection and table pre-defined|\n| [record(row)](manual/table_methods.html#record-row-) | Convert a row to a record object |\n| [records(rows)](manual/table_methods.html#records-rows-) | Convert an array of rows to an array of record objects |\n\n### Record Methods\n| Method | Description\n|-|-|\n| [update(set)](manual/record_methods.html#update-set-) | Update the record to set new values |\n| [delete()](manual/record_methods.html#delete--)| Delete the corresponding row from the database |\n| [relation(name)](manual/record_methods.html#relation-name-) | Fetch record or records from a named relation |\n\n\n## Implementation Details\n\nThe library is implemented using ES6 modules.  A bundle for CJS is also provided.\n\nAll asynchronous functions and methods return promises.\n\n## Notes on Case Conventions\n\nThe Javascript convention is to use StudlyCaps for class names (e.g. `Artists`) and\ncamelCase for methods, function, variables, etc., (e.g. `albumTracks`).\n\nWhen it comes to database table and columns names you might want to adopt the same\nconvention.  That's fine.  However, be warned that many databases are case insensitive\nby default.  As a result you might find that the database you're using returns the\ndata with column names converted to lower case.  Most databases have an option to make\nit case sensitive so you might want to look into that.\n\nI prefer to avoid the problem altogether by defining my database tables and columns using\nsnake_case (e.g. `artists`, `artist_id`, `album_tracks`, etc). I typically use a number\nof other programming languages to access the same database in a project and many other\nlanguages (e.g. Rust, Perl, Python, PHP, etc.) use snake_case by convention.\n\nIn these examples I've adopted this convention because it's what works for me.  It doesn't\nbother me that I have to think in snake_case when I'm accessing row data, but camelCase\nwhen using method names.  In fact, I think it probably helps me to differentiate between\n\"raw\" data from the database and code.  You may disagree, and of course, you are free to\nadopt your own convention that does it differently.\n\n# Author\n\n[Andy Wardley](https://github.com/abw)\n",
+    "content": "# badger-database\n\n<img src=\"./images/badger2.svg\" width=\"300\"/>\n\nThis is the manual for the `badger-database` Javascript module.\n\n## Table of Contents\n\n* [Installation](manual/installation.html) - installing the library\n* [Connecting](manual/connecting.html) - connecting to a database\n* [Basic Queries](manual/basic_queries.html) - performing basic SQL queries\n* [Named Queries](manual/named_queries.html) - defining named SQL queries for abstraction and reusability\n* [Query Fragments](manual/query_fragments.html) - defining named SQL fragments for embedding into queries\n* [Query Builder](manual/query_builder.html) - building SQL queries programmatically\n* [Query Builder Methods](manual/builder_method.html) - methods for building SQL queries\n* [Tables](manual/tables.html) - using tables to automatically generate basic queries\n* [Table Columns](manual/table_columns.html) - defining table columns\n* [Table Methods](manual/table_methods.html) - calling table methods\n* [Table Queries](manual/table_queries.html) - defining named queries for tables\n* [Table Class](manual/table_class.html) - defining custom table classes\n* [Records](manual/records.html) - using records\n* [Record Methods](manual/record_methods.html) - calling record methods\n* [Record Class](manual/record_class.html) - defining custom record classes\n* [Relations](manual/relations.html) - defining relations between tables\n* [Transactions](manual/transactions.html) - using database transactions\n* [Model](manual/model.html) - accessing database tables in a simpler form\n* [Waiter](manual/waiter.html) - chaining together asynchronous operations\n* [Debugging](manual/debugging.html) - enabling debugging messages\n* [Implementation](manual/implementation.html) - understanding how the library is implemented\n* [Extending](manual/extending.html) - extending badger-database to add your own functionality\n* [Limitations](manual/limitations.html) - coping with the limitations of badger-database\n* [Examples](manual/examples.html) - working examples using badger-database\n\n## Method Reference\n\nThis is a brief summary of the object methods available.\n\n### Database Methods\n\n| Method | Description\n|-|-|\n| [connect(options)](manual/connecting.html) | Connect to the database and return a `Database` object|\n| [disconnect()](manual/connecting.html#disconnecting) | Disconnect from the database |\n| [run(query, values, options)](manual/basic_queries.html#run-query--values--options-) | Run a raw SQL query or named query |\n| [one(query, values, options)](manual/basic_queries.html#one-query--values--options-) | Run a raw SQL query or named query to fetch exactly one row |\n| [any(query, values, options)](manual/basic_queries.html#any-query--values--options-) | Run a raw SQL query or named query to fetch any single row |\n| [all(query, values, options)](manual/basic_queries.html#all-query--values--options-) | Run a raw SQL query or named query to fetch all rows |\n| [build](manual/query_builder.html) | Start a query builder chain |\n| [select(columns)](manual/query_builder.html#select-queries) | Start a `SELECT` query builder chain with a column selection |\n| [insert(columns)](manual/query_builder.html#insert-queries) | Start an `INSERT` query builder chain with a column selection |\n| [update(table)](manual/query_builder.html#update-queries) | Start an `UPDATE` query builder chain with a table name |\n| [delete(columns)](manual/query_builder.html#delete-queries) | Start an `DELETE` query builder chain with optional column specification |\n| [transaction(code)](manual/transactions.html) | Execute queries in the scope of a transaction |\n| [table(name)](manual/tables.html) | Lookup a named table and return a `Table` object|\n\n### Table Query Methods\n\n| Method | Description\n|-|-|\n| [run(query, values, options)](manual/table_queries.html#run-query--values--options-) | Run a raw SQL query or named query |\n| [one(query, values, options)](manual/table_queries.html#one-query--values--options-) | Run a raw SQL query or named query to fetch exactly one row |\n| [any(query, values, options)](manual/table_queries.html#any-query--values--options-) | Run a raw SQL query or named query to fetch any single row |\n| [all(query, values, options)](manual/table_queries.html#all-query--values--options-) | Run a raw SQL query or named query to fetch all rows |\n\n### Table Insert Methods\n\n| Method | Description\n|-|-|\n| [insert(data, options)](manual/table_methods.html#insert-data--options-) | Insert one or more rows of data |\n| [insertOne(data, options)](manual/table_methods.html#insertone-data--options-) | Insert a single row of data |\n| [insertAll(array, options)](manual/table_methods.html#insertall-array--options-) | Insert multiple rows of data |\n| [insertOneRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Insert a single row of data and return the reloaded row|\n| [insertAllRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Insert multiple rows of data and return an array of reloaded rows|\n| [insertRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Alias for [insertOneRow()](manual/table_methods.html#insertonerow-data--options-) |\n| [insertRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Alias for [insertAllRows()](manual/table_methods.html#insertallrows-array--options-) |\n| [insertOneRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Insert a single row of data and return a record |\n| [insertAllRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Insert multiple rows of data and return an array of records |\n| [insertRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Alias for [insertOneRecord()](manual/table_methods.html#insertonerecord-data--options-) |\n| [insertRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Alias for [insertAllRecords()](manual/table_methods.html#insertallrecords-array--options-) |\n\n### Table Update Methods\n\n| Method | Description\n|-|-|\n| [update(set, where, options)](manual/table_methods.html#update-set--where--options-) | Update one or more rows to set new values where matching criteria |\n| [updateOne(set, where, options)](manual/table_methods.html#updateone-set--where--options-) | Update exactly one row to set new values where matching criteria |\n| [updateAny(set, where, options)](manual/table_methods.html#updateany-set--where--options-) | Update any row to set new values where matching criteria |\n| [updateAll(set, where, options)](manual/table_methods.html#updateall-set--where--options-) | Update all rows to set new values where matching criteria |\n| [updateOneRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Update exactly one row with reload option to return updated row |\n| [updateAnyRow(set, where, options)](manual/table_methods.html#updateanyrow-set--where--options-) | Update any row with reload option to return updated row |\n| [updateRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Alias for [updateOneRow()](manual/table_methods.html#updateonerow-set--where--options-) |\n\n### Table Delete Method\n\n| Method | Description\n|-|-|\n| [delete(where)](manual/table_methods.html#delete-where-) | Delete all rows where matching criteria |\n\n### Table Fetch Methods\n\n| Method | Description\n|-|-|\n| [fetch(where, options)](manual/table_methods.html#fetch-where--options-) | Fetch rows where matching criteria |\n| [fetchOne(where, options)](manual/table_methods.html#fetchone-where--options-) | Fetch exactly one row where matching criteria |\n| [fetchAny(where, options)](manual/table_methods.html#fetchany-where--options-) | Fetch any row where matching criteria |\n| [fetchAll(where, options)](manual/table_methods.html#fetchall-where--options-) | Fetch all rows where matching criteria |\n| [fetchOneRecord(where, options)](manual/table_methods.html#fetchonerecord-where--options-) | Fetch exactly one row where matching criteria and return as a record|\n| [fetchAnyRecord(where, options)](manual/table_methods#fetchanyrecord-where--options-) | Fetch any row where matching criteria and return as a record|\n| [fetchAllRecords(where, options)](manual/table_methods#fetchallrecords-where--options-) | Fetch all rows where matching criteria and return as a record|\n| [fetchRecord(where, options)](manual/table_methods#fetchonerecord-where--options-) | Alias for [fetchOneRecord()](manual/table_methods#fetchonerecord-where--options-) |\n| [fetchRecords(where, options)](manual/table_methods#fetchallrecords-where--options-) | Alias for [fetchAllRecords()](manual/table_methods#fetchallrecords-where--options-) |\n| [oneRow(query, args)](manual/table_queries.html#onerow-query--args-) | Select exactly one row using [fetchOne()](manual/table_methods.html#fetchone-where--options-) or [one()](manual/table_queries.html#one-query--values--options-) as appropriate|\n| [anyRow(query, args)](manual/table_queries.html#anyrow-query--args-) | Select any single row using [fetchAny()](manual/table_methods.html#fetchany-where--options-) or [any()](manual/table_queries.html#any-query--values--options-) as appropriate|\n| [allRows(query, args)](manual/table_queries.html#allrows-query--args-) | Select all rows using [fetchAll()](manual/table_methods.html#fetchall-where--options-) or [all()](manual/table_queries.html#all-query--values--options-) as appropriate|\n| [oneRecord(query, args)](manual/table_queries.html#onerecord-query--args-) | Select exactly one row using [fetchOne()](manual/table_methods.html#fetchone-where--options-) or [one()](manual/table_queries.html#one-query--values--options-) as appropriate and return as a record|\n| [anyRecord(query, args)](manual/table_queries.html#anyrecord-query--args-) | Select any single row using [fetchAny()](manual/table_methods.html#fetchany-where--options-) or [any()](manual/table_queries.html#any-query--values--options-) as appropriate and return as a record|\n| [allRecords(query, args)](manual/table_queries.html#allrecords-query--args-) | Select all rows using [fetchAll()](manual/table_methods.html#fetchall-where--options-) or [all()](manual/table_queries.html#all-query--values--options-) as appropriate and return as a record|\n\n### Other Table Methods\n\n| Method | Description\n|-|-|\n| [build](manual/table_queries.html#query-builder) | Start a query builder chain |\n| [select(columns)](manual/table_queries.html#query-builder) | Start a query builder chain with column selection and table pre-defined|\n| [record(row)](manual/table_methods.html#record-row-) | Convert a row to a record object |\n| [records(rows)](manual/table_methods.html#records-rows-) | Convert an array of rows to an array of record objects |\n\n### Record Methods\n| Method | Description\n|-|-|\n| [update(set)](manual/record_methods.html#update-set-) | Update the record to set new values |\n| [delete()](manual/record_methods.html#delete--)| Delete the corresponding row from the database |\n| [relation(name)](manual/record_methods.html#relation-name-) | Fetch record or records from a named relation |\n\n\n## Implementation Details\n\nThe library is implemented using ES6 modules.  A bundle for CJS is also provided.\n\nAll asynchronous functions and methods return promises.\n\n## Notes on Case Conventions\n\nThe Javascript convention is to use StudlyCaps for class names (e.g. `Artists`) and\ncamelCase for methods, function, variables, etc., (e.g. `albumTracks`).\n\nWhen it comes to database table and columns names you might want to adopt the same\nconvention.  That's fine.  However, be warned that many databases are case insensitive\nby default.  As a result you might find that the database you're using returns the\ndata with column names converted to lower case.  Most databases have an option to make\nit case sensitive so you might want to look into that.\n\nI prefer to avoid the problem altogether by defining my database tables and columns using\nsnake_case (e.g. `artists`, `artist_id`, `album_tracks`, etc). I typically use a number\nof other programming languages to access the same database in a project and many other\nlanguages (e.g. Rust, Perl, Python, PHP, etc.) use snake_case by convention.\n\nIn these examples I've adopted this convention because it's what works for me.  It doesn't\nbother me that I have to think in snake_case when I'm accessing row data, but camelCase\nwhen using method names.  In fact, I think it probably helps me to differentiate between\n\"raw\" data from the database and code.  You may disagree, and of course, you are free to\nadopt your own convention that does it differently.\n\n# Author\n\n[Andy Wardley](https://github.com/abw)\n",
     "longname": "/Users/abw/js/badger-database-js/manual/index.md",
     "name": "./manual/index.md",
     "static": true,
@@ -16227,7 +16062,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-database-js/manual/transactions.md",
     "name": "./manual/transactions.md",
-    "content": "# Transactions\n\nTransactions allow you to write a sequence of queries that can\nbe committed to the database in one go.  If any single query fails,\nthen all changes can be rolled back.  The classic example is in\na banking application where money is debited from one account and\ncredited to another.  Both queries must successfully complete, or\nneither of them should.\n\nWe'll start by connecting to a database in the usual way.\n\n```js\nimport connect from '@abw/badger-database'\n\nconst db = connect({ database: 'sqlite:memory' });\n```\n\nA transaction is run by calling the `transaction()` method on the\ndatabase.  You should pass it a function which will contain all\nthe code that will be run inside the transaction.  The function\nwill be passed three parameters: a reference to the database, a\ncommit function and a rollback function.\n\n```js\nawait db.transaction(\n  async (tdb, commit, rollback) => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is goood...) {\n      await commit();\n    }\n    else {\n      await rollback();\n    }\n  }\n)\n```\n\nYou **MUST** use the database reference provided to the function for\nall database operations (shown as `tbd` in these examples).  Call\nthe `commit()` function to commit the changes made in the transaction,\nor `rollback()` to roll them back.\n\nYou can only call `commit()` or `rollback()`, not both, and you must\ncall at least one of them.  If your code throws an error then the\ntransaction will automatically be rolled back, as long as you haven't\nalready called `commit()` or `rollback()`.\n\nYou can also call the `tdb.commit()` or `tdb.rollback()` methods if you\nprefer.\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is good...) {\n      await tdb.commit();\n    }\n    else {\n      await tdb.rollback();\n    }\n  }\n)\n```\n\nYou can pass an object containing configuration options as a second\nargument to the `transaction()` method.  This can contain the `autoCommit`\nor `autoRollback` options which will causes the transaction to be automatically\ncommitted or rolled back, respectively.  This will only happen if you don't\nmanually call either `commit()` or `rollback()` within your transaction code.\nIf an error is thrown then the transaction will always be rolled back,\nregardless of these settings.\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is good...) {\n      await tdb.rollback();\n    }\n    // else transaction will automatically be committed\n  },\n  { autoCommit: true }\n)\n```\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is good...) {\n      await tdb.commit();\n    }\n    // else transaction will automatically be rolled back\n  },\n  { autoRollback: true }\n)\n```\n\nYou can also add the `debug` option to generating debugging messages\nfor the transaction.\n\n```js\nawait db.transaction(\n  async tdb => {\n    // your transaction code\n  },\n  { debug: true }\n)\n```\n\nYou can use all of the database methods inside the transaction,\nincluding [named queries](manual/named_queries.html) and the\n[query builder](manual/query_builder.html).\n\nYou can also load tables and call their methods, but you **MUST**\nfetch the table using the database reference passed to the transaction\ncode.\n\n```js\nawait db.transaction(\n  async tdb => {\n    const users = await tdb.table('users');\n    await users.insert({\n      name: 'Brian Badger',\n      email: 'brian@badgerpower.com',\n    });\n    await tdb.commit();\n  }\n)\n```\n\nYou **MUST NOT** use any database or table references from outside\nof the transaction code.  All references must be accessed through\nthe database reference passed to your code.\n\n```js\nconst users = await db.table('users');\n\nawait db.transaction(\n  async tdb => {\n    // DO NOT DO THIS! - the existing users reference will not\n    // execute queries in the context of the transaction\n    await users.insert({\n      name: 'Brian Badger',\n      email: 'brian@badgerpower.com',\n    });\n    await tdb.commit();\n  }\n)\n```\n\nYou can also use records within a transaction, but they **MUST**\nbe fetch from tables accessed through the database reference passed\nto your transaction function.\n\n```js\nawait db.transaction(\n  async tdb => {\n    const users = await tdb.table('users');\n    const brian = await users.fetchRecord({\n      email: 'brian@badgerpower.com',\n    });\n    await brian.update({\n      name: 'Brian the Badger'\n    })\n    await tdb.commit();\n  }\n)\n```\n\nYou can also use the [model](manual/model.html) and [waiter](manual/waiter.html)\nutilities, but once again, you **MUST** access them via the database reference\npassed to the function.\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.waiter.model.users\n      .fetchRecord({ email: 'brian@badgerpower.com' })\n      .update({ name: 'Brian the Badger' })\n    await tdb.commit();\n  }\n)\n```\n",
+    "content": "# Transactions\n\nTransactions allow you to write a sequence of queries that can\nbe committed to the database in one go.  If any single query fails,\nthen all changes can be rolled back.  The classic example is in\na banking application where money is debited from one account and\ncredited to another.  Both queries must successfully complete, or\nneither of them should.\n\nWe'll start by connecting to a database in the usual way.\n\n```js\nimport connect from '@abw/badger-database'\n\nconst db = connect({ database: 'sqlite:memory' });\n```\n\nA transaction is run by calling the `transaction()` method on the\ndatabase.  You should pass it a function which will contain all\nthe code that will be run inside the transaction.  The function\nwill be passed three parameters: a reference to the database, a\ncommit function and a rollback function.\n\n```js\nawait db.transaction(\n  async (tdb, commit, rollback) => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is goood...) {\n      await commit();\n    }\n    else {\n      await rollback();\n    }\n  }\n)\n```\n\nYou **MUST** use the database reference provided to the function for\nall database operations (shown as `tbd` in these examples).  Call\nthe `commit()` function to commit the changes made in the transaction,\nor `rollback()` to roll them back.\n\nYou can only call `commit()` or `rollback()`, not both, and you must\ncall at least one of them.  If your code throws an error then the\ntransaction will automatically be rolled back, as long as you haven't\nalready called `commit()` or `rollback()`.\n\nYou can also call the `tdb.commit()` or `tdb.rollback()` methods if you\nprefer.\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is good...) {\n      await tdb.commit();\n    }\n    else {\n      await tdb.rollback();\n    }\n  }\n)\n```\n\nYou can pass an object containing configuration options as a second\nargument to the `transaction()` method.  This can contain the `autoCommit`\nor `autoRollback` options which will causes the transaction to be automatically\ncommitted or rolled back, respectively.  This will only happen if you don't\nmanually call either `commit()` or `rollback()` within your transaction code.\nIf an error is thrown then the transaction will always be rolled back,\nregardless of these settings.\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...something bad happened...) {\n      await tdb.rollback();\n    }\n    // else transaction will automatically be committed\n  },\n  { autoCommit: true }\n)\n```\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.run('...some query...');\n    await tdb.run('...another query...');\n\n    if (...all is good...) {\n      await tdb.commit();\n    }\n    // else transaction will automatically be rolled back\n  },\n  { autoRollback: true }\n)\n```\n\nYou can also add the `debug` option to generating debugging messages\nfor the transaction.\n\n```js\nawait db.transaction(\n  async tdb => {\n    // your transaction code\n  },\n  { debug: true }\n)\n```\n\nYou can use all of the database methods inside the transaction,\nincluding [named queries](manual/named_queries.html) and the\n[query builder](manual/query_builder.html).\n\nYou can also load tables and call their methods, but you **MUST**\nfetch the table using the database reference passed to the transaction\ncode.\n\n```js\nawait db.transaction(\n  async tdb => {\n    const users = await tdb.table('users');\n    await users.insert({\n      name: 'Brian Badger',\n      email: 'brian@badgerpower.com',\n    });\n    await tdb.commit();\n  }\n)\n```\n\nYou **MUST NOT** use any database or table references from outside\nof the transaction code.  All references must be accessed through\nthe database reference passed to your code.\n\n```js\nconst users = await db.table('users');\n\nawait db.transaction(\n  async tdb => {\n    // DO NOT DO THIS! - the existing users reference will not\n    // execute queries in the context of the transaction\n    await users.insert({\n      name: 'Brian Badger',\n      email: 'brian@badgerpower.com',\n    });\n    await tdb.commit();\n  }\n)\n```\n\nYou can also use records within a transaction, but they **MUST**\nbe fetch from tables accessed through the database reference passed\nto your transaction function.\n\n```js\nawait db.transaction(\n  async tdb => {\n    const users = await tdb.table('users');\n    const brian = await users.fetchRecord({\n      email: 'brian@badgerpower.com',\n    });\n    await brian.update({\n      name: 'Brian the Badger'\n    })\n    await tdb.commit();\n  }\n)\n```\n\nYou can also use the [model](manual/model.html) and [waiter](manual/waiter.html)\nutilities, but once again, you **MUST** access them via the database reference\npassed to the function.\n\n```js\nawait db.transaction(\n  async tdb => {\n    await tdb.waiter.model.users\n      .fetchRecord({ email: 'brian@badgerpower.com' })\n      .update({ name: 'Brian the Badger' })\n    await tdb.commit();\n  }\n)\n```\n",
     "static": true,
     "access": "public"
   },
@@ -16252,6 +16087,14 @@
     "longname": "/Users/abw/js/badger-database-js/manual/debugging.md",
     "name": "./manual/debugging.md",
     "content": "# Debugging\n\nTo enable debugging messages for the database library add the `debug` flag to the\n`connect()` configuration, set to `true`.\n\n```js\nconst db = connect({\n  database: 'sqlite:memory',\n  debug: true\n})\n```\n\nTo enable debugging for individual tables, add the `debug` flag to the table\nconfiguration.\n\n```js\nconst db = connect({\n  database: 'sqlite:memory',\n  tables: {\n    users: {\n      columns: 'id name email',\n      debug: true,\n    }\n  }\n})\n```\n\nTo enable debugging for a record object associated with a table, set the `recordConfig`\nfor the table to include the `debug` flag.\n\n```js\nconst db = connect({\n  database: 'sqlite:memory',\n  tables: {\n    users: {\n      columns: 'id name email',\n      recordConfig: {\n        debug: true\n      }\n    }\n  }\n})\n```\n\nTo enable debugging on a global level (for example, to enable it for all tables,\nrecords, etc.), use the `setDebug` function.  You can set any of the following\nflags to `true` to enable debugging for that component.\n\n```js\nimport { connect, setDebug } from '../src/Utils/Debug.js';\n\nsetDebug({\n  database: true,   // general database queries\n  engine:   true,   // lower level functionality\n  builder:  true,   // query builder\n  tables:   true,   // table provider\n  table:    true,   // table methods\n  record:   true,   // record methods\n})\n```\n\nDebugging messages are formatted with a colored prefix to help you identify\nwhere the error came from.\n\n<img src=\"./images/screenshots/debugging.png\" width=\"100%\"/>\n\nYou can change the debug message prefix for different components and the color\nthat it is rendered in.\n\n```js\nsetDebug({\n  engine: {\n    debug:  true,\n    prefix: 'Snake!',\n    color:  'red'\n  }\n})\n```\n\nThe available colors are: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`,\n`grey` and `white`.  You can also prefix any of them with `bright` or `dark`, e.g.\n`dark red`, `bright yellow`, etc.\n\nYou can specify the `color` as an object containing `fg` to set the foreground\ncolor and `bg` to set the background color independently.  Note that the `bright` and\n`dark` prefixes might not work as you expect, e.g. both foreground and background will\nend up bright or dark, even if you only add the modified to one or the other.\n\n```js\nsetDebug({\n  engine: {\n    debug:  true,\n    prefix: 'Snake!',\n    color:  { fg: 'yellow', bg: 'blue' }\n  }\n})\n```\n\nInside a custom table or record module you can print debugging messages to the console\nusing the `debug()` method.  If debugging is enabled for the module then it will be\nprinted to the console.  Otherwise it will be ignored.\n\n```js\nexport class User extends Record {\n  helloWorld() {\n    this.debug(\"helloWorld()\");\n    // ...your code goes here...\n  }\n}\n```\n\nYou can use the `debugData()` method to generate debugging messages to display\nthe contents of data items.  This is a useful way to inspect the parameters\npassed to a method.  Again, it will only generate output if debugging is enabled\nfor that module so you can safely add these lines to your code and enabled them\nby setting the `debug` option when you need to.\n\n```js\nexport class User extends Record {\n  helloWorld(message, options) {\n    this.debugData(\"helloWorld()\", { message, options });\n    // ...your code goes here...\n  }\n}\n```\n\n## SQL Parse Errors\n\nIn an ideal world every SQL query you write would be syntactically correct,\nrun first time, return the correct results and be efficient to boot.\nUnfortunately we don't live in an ideal world.  I've been writing SQL in a\nprofessional capacity for longer than I care to remember (3 decades or so)\nand I *very rarely* get a complex query right first time.\n\nThis is one reason why I'm not a fan of using ORMs or query builders for more\ncomplex queries.  I *nearly always* write, test and debug a complex query in SQL\nfirst.  When it's finally working as expecting I don't want to then have to\ntranslate it into a format that the ORM or query builder will understand and\nhope that it generates the same SQL that I've written.  Your experience may\nbe different, of course, but it's the principle that has guided me in the\ndesign and implementation of this library.\n\nDatabases aren't well known for producing friendly error messages when\nsomething goes wrong (I'm looking at *all* of you, Sqlite, Mysql and Postgres).\nThe database engine modules that handle the specifics of different databases\ntry to make the process of debugging SQL queries a little less painful.  If\nthere is a parse error in a SQL query then they will throw a `SQLParseError`\nand do their best to standardise the response.\n\nMost importantly, the error will contain a copy of the SQL query that failed\nso that you don't have to go digging around to find it (this is particularly\nuseful when the query has been generated programmatically by a query builder).\n\nHere's a trivial example showing an invalid SQL query.\n\n```js\nasync function main() {\n  const db = connect({\n    database: 'sqlite:memory',\n  })\n  await db.run(\n    `SELECT FROM badger mushroom`\n  ).catch(\n    e => console.log(e)\n  )\n  db.disconnect();\n}\nmain()\n```\n\nSqlite is perhaps the database that provides the least friendly error messages.\nIt will look something like this:\n\n```js\nSQLParseError: near \"FROM\": syntax error\n    at Database.prepare (...blah...)\n    at SqliteEngine.prepare (...blah...)\n    at SqliteEngine.execute (...blah...)\n    at async main (...blah...) {\n  name: 'SQLParseError',\n  query: 'SELECT FROM badger mushroom',\n  type: 'SQLITE_ERROR',\n  code: undefined,\n  position: undefined\n}\n```\n\nHere's an example of the same error when using Postgres:\n\n```js\nSQLParseError: relation \"badger\" does not exist\n    at PostgresEngine.parseError (...blah...)\n    at ...blah...\n    at processTicksAndRejections (...blah...)\n    at async PostgresEngine.execute (...blah...)\n    at async main (...blah...) {\n  query: 'SELECT FROM badger mushroom',\n  type: 'ERROR',\n  code: '42P01',\n  position: '13'\n}\n```\n\nAnd here it is for Mysql:\n\n```js\nSQLParseError: You have an error in your SQL syntax; check the manual that corresponds to\nyour MySQL server version for the right syntax to use near 'FROM badger mushroom' at line 1\n    at PromiseConnection.prepare (...blah...)\n    at MysqlEngine.prepare (...blah...)\n    at MysqlEngine.execute (...blah...)\n    at processTicksAndRejections (...blah...)\n    at async main (...blah...) {\n  query: 'SELECT FROM badger mushroom',\n  type: 'ER_PARSE_ERROR',\n  code: 1064,\n  position: undefined\n}\n```",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "manual",
+    "longname": "/Users/abw/js/badger-database-js/manual/implementation.md",
+    "name": "./manual/implementation.md",
+    "content": "# Implementation Details\n\nThis section talks about how the library is implemented.  It's aimed at\npeople who are looking to maintain or extend the library, find and fix\nbugs, or are looking to use it in a project and want to convince themselves\nthat it's suffiently well written and easy to reason about, should they\never need to maintain or extend it themselves.\n\n## Total Cost of Ownership\n\nFree and Open Source software is fantastic. If you have a problem you need\nto solve then you can spend days, weeks or months writing your own solution,\nor you can download and use an Open Source library with a single command.\nNot only is it free to use, but also has a greater chance of being well\ndocumented and reliable.  It has (hopefully) been well tested by the author\nand is widely used in the community, increasing the chances that any bugs in\nit have already been found and fixed.  Software quality isn't something that\nhappens overnight.\n\nHowever, it's important to understand that there are hidden costs in using\nany piece of software.  Even if you don't have to pay any money to install\nand use it, you still have to consider the ongoing costs associated with\nmaintenance.  If at some time in the future you find a bug or want to add a\nnew feature, you may find that the original author has stopped maintaining\nthe code, isn't interested in fixing the bug that you've found, doesn't want\nto add your new feature, has retired and gone to live in a llama colony in\nOuter Mongolia, or has simply disappeared off the face of the Earth.  At\nthis point, you're potentially on your own.\n\nBefore building your next big dotcom enterprise around any this library, or\nindeed any key piece of technology, you should invest at least some of the\ntime you would have otherwise spent writing it yourself in getting to know\nit.  Not only understanding how to use it, but also getting a feel for how\nit works, evaluating the quality of the codebase, and considering how easy\nit would be for you, or your future colleagues to maintain it, should you\never need to.\n\nGiven that this is a new library as of 2022 (albeit one that is based on\na similar library written in Perl that's been used in production for nearly\n20 years) that at the time of writing has a user base measured in single figures,\nyou should be especially cautious about adopting it without performing due\ndiligence.\n\nThis document provides a high-level overview of how `badger-database` works\nto help you with that process.\n\n## Key Components\n\nThe [Database](https://github.com/abw/badger-database-js/blob/master/src/Database.js)\nmodule is the main interface to the library.  This is what gets returned\nby the [connect()](manual/connecting.html) function (defined down at the bottom\nof the [Database.js](https://github.com/abw/badger-database-js/blob/master/src/Database.js)\nfile).\n\nThe [Database](https://github.com/abw/badger-database-js/blob/master/src/Database.js) module\nis a subclass of the [Queryable](https://github.com/abw/badger-database-js/blob/master/src/Queryable.js)\nmodule.  This is the base class that implements the\nbasic [run()](manual/basic_queries.html#run-query--values--options-),\n[one()](manual/basic_queries.html#one-query--values--options-),\n[any()](manual/basic_queries.html#any-query--values--options-)\nand [all()](manual/basic_queries.html#all-query--values--options-) methods.\n\nThe [Table](https://github.com/abw/badger-database-js/blob/master/src/Table.js)\nmodule is also a subclass of\n[Queryable](https://github.com/abw/badger-database-js/blob/master/src/Queryable.js)\nso that it also inherits those same basic query methods.\n\nThe [Engine](https://github.com/abw/badger-database-js/blob/master/src/Engine.js)\nmodule is used by the\n[Queryable](https://github.com/abw/badger-database-js/blob/master/src/Queryable.js)\nclasses as a lower-level interface to the database.  It handles communicating with the\nunderlying database driver and provides methods for accessing the connection pool,\npreparing and executing queries, and formatting SQL fragments, e.g. quoting columns\nand table names, generating  placeholders, etc.\n\nThere are three subclasses of the\n[Engine](https://github.com/abw/badger-database-js/blob/master/src/Engine.js) module\nwhich are specialised for the different databases supported:\n[Sqlite](https://github.com/abw/badger-database-js/blob/master/src/Engine/Sqlite.js),\n[Mysql](https://github.com/abw/badger-database-js/blob/master/src/Engine/Mysql.js) and\n[Postgres](https://github.com/abw/badger-database-js/blob/master/src/Engine/Postgres.js).\n\nThe [Engines](https://github.com/abw/badger-database-js/blob/master/src/Engines.js)\nmodule is an [Engine](https://github.com/abw/badger-database-js/blob/master/src/Engine.js)\nprovider.  It implements the functionality to allow engines to\nbe registered and then used by specifying a driver protocol (e.g. `sqlite`, `mysql`,\n`mariadb`, `postgres` or `postgresql`).\n\nThe [Database](https://github.com/abw/badger-database-js/blob/master/src/Database.js)\nmodule implements the [table()](manual/table.html) method for\ncreate new [Table](https://github.com/abw/badger-database-js/blob/master/src/Table.js)\nobjects.  It uses the [Tables](https://github.com/abw/badger-database-js/blob/master/src/Tables.js)\nmodule as a \"provider\".  This module is ridiculously simply, but it exists\nas an extension point so that you can implement your own\n[Tables](https://github.com/abw/badger-database-js/blob/master/src/Tables.js) provider\nif you want to change the way that table configurations details are defined\n(for example, I have a number of projects where the table definitions are in\nYAML files that get loaded when the table is first used).\n\nThe [Table](https://github.com/abw/badger-database-js/blob/master/src/Table.js)\nmodule is also intended to be an extension point.  It implements\na number of methods providing the basic CRUD functions (Create, Read, Update,\nDelete) in various flavours (one, any, all, returning rows or records) that\nshould cover most basic row-based operations.  When you need to add custom\nqueries, business logic or other functionality relating to a particular table\nthen you can create your own subclass of the\n[Table](https://github.com/abw/badger-database-js/blob/master/src/Table.js)\nmodule and hook it in.\n\nVarious [Table](https://github.com/abw/badger-database-js/blob/master/src/Table.js) methods have an option to return rows as [records](manual/records.html).\nThe base class [Record](https://github.com/abw/badger-database-js/blob/master/src/Record.js)\nmodule provides some basic methods for updating the record, deleting it or\nfetching related records.  The more important role is as another extension point.\nYou can subclass it to create your own record modules where you can add data\nvalidation, business logic or other functionality relating to individual entities.\n\nThe [Table](https://github.com/abw/badger-database-js/blob/master/src/Table.js) methods that return records don't return a [Record](https://github.com/abw/badger-database-js/blob/master/src/Record.js)\nobject directly, but instead return a\n[Record Proxy](https://github.com/abw/badger-database-js/blob/master/src/Proxy/Record.js)\nwrapper around the record.  This proxy allows you to access the `record.row` components\nwithout having to specify the `.row` part (e.g. `record.id` is short for `record.row.id`)\nand also provide access to record relations.\n\nThe [Relation](https://github.com/abw/badger-database-js/tree/master/src/Relation)\nmodules implement the queries to fetch related records for different relation\ntypes:\n[one](https://github.com/abw/badger-database-js/blob/master/src/Relation/one.js),\n[any](https://github.com/abw/badger-database-js/blob/master/src/Relation/any.js),\n[many](https://github.com/abw/badger-database-js/blob/master/src/Relation/many.js) and\n[map](https://github.com/abw/badger-database-js/blob/master/src/Relation/many.js).\nMost of them are very simple, being no more than 10 lines of code.\n\nThe [Builder](https://github.com/abw/badger-database-js/blob/master/src/Builder.js)\nmodule is the base class for components that are used to build SQL queries.\nThere are numerous subclasses, one for each builder method, e.g.\n[Select](https://github.com/abw/badger-database-js/blob/master/src/Builder/Select.js),\n[From](https://github.com/abw/badger-database-js/blob/master/src/Builder/From.js),\n[Where](https://github.com/abw/badger-database-js/blob/master/src/Builder/Where.js),\n[Insert](https://github.com/abw/badger-database-js/blob/master/src/Builder/Insert.js),\n[Into](https://github.com/abw/badger-database-js/blob/master/src/Builder/Into.js),\nand so on.\n\nThe [Builders](https://github.com/abw/badger-database-js/blob/master/src/Builders.js)\nmodule is the provider for `Builder` components, where they can be registered and used.\n\nThe [Builder Proxy](https://github.com/abw/badger-database-js/blob/master/src/Proxy/Builder.js)\nis a bit of magic sauce that allows one builder component to chain other builder components\nonto it.  When you call the `db.select(...)` method, for example, it creates a\n[Select](https://github.com/abw/badger-database-js/blob/master/src/Builder/Select.js)\nbuilder component and returns a builder proxy wrapper around it.  When you call the\n`from(...)` method on that, it creates a\n[From](https://github.com/abw/badger-database-js/blob/master/src/Builder/From.js) builder\ncomponents, passing it a reference to the \"parent\" component that it's attached to,\nand returns a builder proxy around that.  And so the process continues...\n\nWhen you want to run a query built this way, e.g. by calling `run()`, `one()`, `any()`\nor `all()`, these methods first call the `sql()` method to generate the query as SQL.\nThe final builder component in the chain asks its parent for everything it knows about\n(the builder context) and then adds its own information to it.  The parent does the\nsame thing - asking its parent for a context and then adding its own information to it.\nSo the context requests bubble up the chain, and the context information is then passed\nback down.  At each step, a new context object is created so that builder components\ndon't affect any previous components in the chain.  Once all the context information\nhas been collected, it's then a relatively simple process of generating the SQL for\neach component type (by calling the `generateSQL()` static class method) and then\ncombining the fragments together in the right order.\n\nWhen a SQL query has been built using the [query builder](manual/query_builder.html),\nor if you're running a [named query](manual/named_queries.html) or a raw SQL query,\nit is wrapped up as a [Query](https://github.com/abw/badger-database-js/blob/master/src/Query.js)\nobject before being passed to the [Engine](https://github.com/abw/badger-database-js/blob/master/src/Engine.js) to execute.  This provides a level of\nabstraction so that the higher levels don't have to worry about the difference between\nrunning a raw SQL query or a query built using the query builder - the\n[Query](https://github.com/abw/badger-database-js/blob/master/src/Query.js) object\ntakes care of that.  It also deals with combining placeholder values from the query\nbuilder and any that you pass to the query execution methods `run()`, `one()`, `any()`\nand `all()`.\n\nThe [Transaction](https://github.com/abw/badger-database-js/blob/master/src/Transaction.js)\nmodule is used to run transactions.  It implements methods to handle the `commit()` and\n`rollback()` and maintains the state so that it can tell if one or the other has been\ncalled.  It also acquires a dedicated database connection from the\n[Engine](https://github.com/abw/badger-database-js/blob/master/src/Engine.js) to ensure\nthat all queries run within the scope of the transaction use the same connection.\n\n## Conclusion\n\nThat's just about all there is to it.  At the time of writing it's a little less than\n3,000 lines of code.  That's an order of magnitude *less* than some of the other\npopular Javascript ORMs and SQL query builders out there.  It is perhaps not a fair\ncomparison as other libraries may do a lot more than `badger-database`, but the\npoint is to illustrate that this is one of the *simpler* and *less intrusive*\nsolutions that exists for adding database functionality to your project.\n\nIt doesn't aim to be a library that you can use as an *alternative* to using SQL\n(although that may be true for some simpler projects), but rather to give you tools\nthat *help* you work with SQL.  In particular, the focus is on automating some of\nthe simple, boring tasks that are an inherent part of using a database so that you\nhave time to focus on the more complicated things that are harder to automate.\n",
     "static": true,
     "access": "public"
   },

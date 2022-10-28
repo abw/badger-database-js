@@ -320,59 +320,173 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="named-queries">Named Queries</h1><p>Instead of embedding SQL queries directly into your code, you can
-define them as named queries.  This allows you to hide away some of the
-details of the database implemenentation so that your application code
-can be simpler and clearer.</p>
-<p>To keep things simple, this example has all the code in one file,
-which isn't really hiding anything at all.  In practice, you would usually
-move the database definition into a separate module.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import connect from '@abw/badger-database'
-
-const dbConfig = {
-  database: 'sqlite://test.db',
-  queries: {
-    createUsersTable:`
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY ASC,
-        name TEXT,
-        email TEXT
-      )`,
-    insertUser:
-      'INSERT INTO users (name, email) VALUES (?, ?)',
-    selectUserByEmail:
-      'SELECT * FROM users WHERE email=?'
-  }
-};
-
-async function main() {
-  // connect to the database
-  const db = connect(dbConfig);
-
-  // create the users table using a named query
-  await db.run('createUsersTable');
-
-  // insert a row using a named query
-  const insert = await db.run(
-    'insertUser',
-    ['Bobby Badger', 'bobby@badgerpower.com']
-  );
-  console.log("Inserted ID:", insert.lastInsertRowid);
-
-  // fetch a row using a named query
-  const bobby = await db.one(
-    'selectUserByEmail',
-    ['bobby@badgerpower.com']
-  );
-  console.log("Fetched row:", bobby);
-}
-
-main()</code></code></pre>
-<h2 id="where-next-">Where Next?</h2><p>In the next section we'll look at how you can define reusable
-<a href="manual/query_fragments.html">query fragments</a> that can be
-embedded into your named queries.</p>
-<p>You can also define named queries using the
-<a href="manual/query_builder.html">query builder</a>.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="implementation-details">Implementation Details</h1><p>This section talks about how the library is implemented.  It's aimed at
+people who are looking to maintain or extend the library, find and fix
+bugs, or are looking to use it in a project and want to convince themselves
+that it's suffiently well written and easy to reason about, should they
+ever need to maintain or extend it themselves.</p>
+<h2 id="total-cost-of-ownership">Total Cost of Ownership</h2><p>Free and Open Source software is fantastic. If you have a problem you need
+to solve then you can spend days, weeks or months writing your own solution,
+or you can download and use an Open Source library with a single command.
+Not only is it free to use, but also has a greater chance of being well
+documented and reliable.  It has (hopefully) been well tested by the author
+and is widely used in the community, increasing the chances that any bugs in
+it have already been found and fixed.  Software quality isn't something that
+happens overnight.</p>
+<p>However, it's important to understand that there are hidden costs in using
+any piece of software.  Even if you don't have to pay any money to install
+and use it, you still have to consider the ongoing costs associated with
+maintenance.  If at some time in the future you find a bug or want to add a
+new feature, you may find that the original author has stopped maintaining
+the code, isn't interested in fixing the bug that you've found, doesn't want
+to add your new feature, has retired and gone to live in a llama colony in
+Outer Mongolia, or has simply disappeared off the face of the Earth.  At
+this point, you're potentially on your own.</p>
+<p>Before building your next big dotcom enterprise around any this library, or
+indeed any key piece of technology, you should invest at least some of the
+time you would have otherwise spent writing it yourself in getting to know
+it.  Not only understanding how to use it, but also getting a feel for how
+it works, evaluating the quality of the codebase, and considering how easy
+it would be for you, or your future colleagues to maintain it, should you
+ever need to.</p>
+<p>Given that this is a new library as of 2022 (albeit one that is based on
+a similar library written in Perl that's been used in production for nearly
+20 years) that at the time of writing has a user base measured in single figures,
+you should be especially cautious about adopting it without performing due
+diligence.</p>
+<p>This document provides a high-level overview of how <code>badger-database</code> works
+to help you with that process.</p>
+<h2 id="key-components">Key Components</h2><p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Database.js">Database</a>
+module is the main interface to the library.  This is what gets returned
+by the <a href="manual/connecting.html">connect()</a> function (defined down at the bottom
+of the <a href="https://github.com/abw/badger-database-js/blob/master/src/Database.js">Database.js</a>
+file).</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Database.js">Database</a> module
+is a subclass of the <a href="https://github.com/abw/badger-database-js/blob/master/src/Queryable.js">Queryable</a>
+module.  This is the base class that implements the
+basic <a href="manual/basic_queries.html#run-query--values--options-">run()</a>,
+<a href="manual/basic_queries.html#one-query--values--options-">one()</a>,
+<a href="manual/basic_queries.html#any-query--values--options-">any()</a>
+and <a href="manual/basic_queries.html#all-query--values--options-">all()</a> methods.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Table.js">Table</a>
+module is also a subclass of
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Queryable.js">Queryable</a>
+so that it also inherits those same basic query methods.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Engine.js">Engine</a>
+module is used by the
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Queryable.js">Queryable</a>
+classes as a lower-level interface to the database.  It handles communicating with the
+underlying database driver and provides methods for accessing the connection pool,
+preparing and executing queries, and formatting SQL fragments, e.g. quoting columns
+and table names, generating  placeholders, etc.</p>
+<p>There are three subclasses of the
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Engine.js">Engine</a> module
+which are specialised for the different databases supported:
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Engine/Sqlite.js">Sqlite</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Engine/Mysql.js">Mysql</a> and
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Engine/Postgres.js">Postgres</a>.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Engines.js">Engines</a>
+module is an <a href="https://github.com/abw/badger-database-js/blob/master/src/Engine.js">Engine</a>
+provider.  It implements the functionality to allow engines to
+be registered and then used by specifying a driver protocol (e.g. <code>sqlite</code>, <code>mysql</code>,
+<code>mariadb</code>, <code>postgres</code> or <code>postgresql</code>).</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Database.js">Database</a>
+module implements the <a href="manual/table.html">table()</a> method for
+create new <a href="https://github.com/abw/badger-database-js/blob/master/src/Table.js">Table</a>
+objects.  It uses the <a href="https://github.com/abw/badger-database-js/blob/master/src/Tables.js">Tables</a>
+module as a "provider".  This module is ridiculously simply, but it exists
+as an extension point so that you can implement your own
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Tables.js">Tables</a> provider
+if you want to change the way that table configurations details are defined
+(for example, I have a number of projects where the table definitions are in
+YAML files that get loaded when the table is first used).</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Table.js">Table</a>
+module is also intended to be an extension point.  It implements
+a number of methods providing the basic CRUD functions (Create, Read, Update,
+Delete) in various flavours (one, any, all, returning rows or records) that
+should cover most basic row-based operations.  When you need to add custom
+queries, business logic or other functionality relating to a particular table
+then you can create your own subclass of the
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Table.js">Table</a>
+module and hook it in.</p>
+<p>Various <a href="https://github.com/abw/badger-database-js/blob/master/src/Table.js">Table</a> methods have an option to return rows as <a href="manual/records.html">records</a>.
+The base class <a href="https://github.com/abw/badger-database-js/blob/master/src/Record.js">Record</a>
+module provides some basic methods for updating the record, deleting it or
+fetching related records.  The more important role is as another extension point.
+You can subclass it to create your own record modules where you can add data
+validation, business logic or other functionality relating to individual entities.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Table.js">Table</a> methods that return records don't return a <a href="https://github.com/abw/badger-database-js/blob/master/src/Record.js">Record</a>
+object directly, but instead return a
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Proxy/Record.js">Record Proxy</a>
+wrapper around the record.  This proxy allows you to access the <code>record.row</code> components
+without having to specify the <code>.row</code> part (e.g. <code>record.id</code> is short for <code>record.row.id</code>)
+and also provide access to record relations.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/tree/master/src/Relation">Relation</a>
+modules implement the queries to fetch related records for different relation
+types:
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Relation/one.js">one</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Relation/any.js">any</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Relation/many.js">many</a> and
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Relation/many.js">map</a>.
+Most of them are very simple, being no more than 10 lines of code.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Builder.js">Builder</a>
+module is the base class for components that are used to build SQL queries.
+There are numerous subclasses, one for each builder method, e.g.
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/Select.js">Select</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/From.js">From</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/Where.js">Where</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/Insert.js">Insert</a>,
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/Into.js">Into</a>,
+and so on.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Builders.js">Builders</a>
+module is the provider for <code>Builder</code> components, where they can be registered and used.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Proxy/Builder.js">Builder Proxy</a>
+is a bit of magic sauce that allows one builder component to chain other builder components
+onto it.  When you call the <code>db.select(...)</code> method, for example, it creates a
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/Select.js">Select</a>
+builder component and returns a builder proxy wrapper around it.  When you call the
+<code>from(...)</code> method on that, it creates a
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Builder/From.js">From</a> builder
+components, passing it a reference to the "parent" component that it's attached to,
+and returns a builder proxy around that.  And so the process continues...</p>
+<p>When you want to run a query built this way, e.g. by calling <code>run()</code>, <code>one()</code>, <code>any()</code>
+or <code>all()</code>, these methods first call the <code>sql()</code> method to generate the query as SQL.
+The final builder component in the chain asks its parent for everything it knows about
+(the builder context) and then adds its own information to it.  The parent does the
+same thing - asking its parent for a context and then adding its own information to it.
+So the context requests bubble up the chain, and the context information is then passed
+back down.  At each step, a new context object is created so that builder components
+don't affect any previous components in the chain.  Once all the context information
+has been collected, it's then a relatively simple process of generating the SQL for
+each component type (by calling the <code>generateSQL()</code> static class method) and then
+combining the fragments together in the right order.</p>
+<p>When a SQL query has been built using the <a href="manual/query_builder.html">query builder</a>,
+or if you're running a <a href="manual/named_queries.html">named query</a> or a raw SQL query,
+it is wrapped up as a <a href="https://github.com/abw/badger-database-js/blob/master/src/Query.js">Query</a>
+object before being passed to the <a href="https://github.com/abw/badger-database-js/blob/master/src/Engine.js">Engine</a> to execute.  This provides a level of
+abstraction so that the higher levels don't have to worry about the difference between
+running a raw SQL query or a query built using the query builder - the
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Query.js">Query</a> object
+takes care of that.  It also deals with combining placeholder values from the query
+builder and any that you pass to the query execution methods <code>run()</code>, <code>one()</code>, <code>any()</code>
+and <code>all()</code>.</p>
+<p>The <a href="https://github.com/abw/badger-database-js/blob/master/src/Transaction.js">Transaction</a>
+module is used to run transactions.  It implements methods to handle the <code>commit()</code> and
+<code>rollback()</code> and maintains the state so that it can tell if one or the other has been
+called.  It also acquires a dedicated database connection from the
+<a href="https://github.com/abw/badger-database-js/blob/master/src/Engine.js">Engine</a> to ensure
+that all queries run within the scope of the transaction use the same connection.</p>
+<h2 id="conclusion">Conclusion</h2><p>That's just about all there is to it.  At the time of writing it's a little less than
+3,000 lines of code.  That's an order of magnitude <em>less</em> than some of the other
+popular Javascript ORMs and SQL query builders out there.  It is perhaps not a fair
+comparison as other libraries may do a lot more than <code>badger-database</code>, but the
+point is to illustrate that this is one of the <em>simpler</em> and <em>less intrusive</em>
+solutions that exists for adding database functionality to your project.</p>
+<p>It doesn't aim to be a library that you can use as an <em>alternative</em> to using SQL
+(although that may be true for some simpler projects), but rather to give you tools
+that <em>help</em> you work with SQL.  In particular, the focus is on automating some of
+the simple, boring tasks that are an inherent part of using a database so that you
+have time to focus on the more complicated things that are harder to automate.</p>
 </div>
 </div>
 
