@@ -573,9 +573,148 @@ export const runTransactionTests = async (engine) => {
     }
   )
 
-  // TODO
-  // database.model
-  // database.waiter
+  test.serial( 'cry havoc and let slip the animals of testing',
+    async t => {
+      await db.run('deleteAnimals');
+      t.pass();
+    }
+  );
+
+  test.serial( 'table via model with rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          const animals = await db.model.animals;
+          await animals.insert([
+            { name: 'Brian Badger', skill: 'Foraging' },
+            { name: 'Bobby Badger', skill: 'Foraging' },
+            { name: 'Colin Camel',  skill: 'Wandering'}
+          ]);
+          const rows = await animals.select('name skill').where('skill').all(['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.rollback();
+        }
+      )
+      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.is( committed.length, 0 )
+    }
+  )
+
+  test.serial( 'table via model with commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          const animals = await db.model.animals;
+          await animals.insert([
+            { name: 'Brian Badger', skill: 'Foraging' },
+            { name: 'Bobby Badger', skill: 'Foraging' },
+            { name: 'Colin Camel',  skill: 'Wandering'}
+          ]);
+          const rows = await animals.select('name skill').where('skill').all(['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.commit();
+        }
+      )
+      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'waiter',
+    async t => {
+      await db.waiter.model.animals
+        .fetchRecord({ name: 'Brian Badger' })
+        .update({ name: 'Brian the Badger' })
+      const rows = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.deepEqual(
+        rows,
+        [
+          { name: 'Brian the Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'waiter rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.waiter.model.animals
+            .fetchRecord({ name: 'Bobby Badger' })
+            .update({ name: 'Bobby the Badger' })
+          const rows = await db.waiter.model.animals
+            .select('name skill')
+            .where('name skill')
+            .all(['Bobby the Badger', 'Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Bobby the Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.rollback();
+        }
+      )
+      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian the Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'waiter commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.waiter.model.animals
+            .fetchRecord({ name: 'Bobby Badger' })
+            .update({ name: 'Bobby the Badger' })
+          const rows = await db.waiter.model.animals
+            .select('name skill')
+            .where('name skill')
+            .all(['Bobby the Badger', 'Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Bobby the Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.commit();
+        }
+      )
+      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian the Badger', skill: 'Foraging' },
+          { name: 'Bobby the Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
 
   test.after(
     () => db.disconnect()
