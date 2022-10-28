@@ -329,8 +329,9 @@ commit function and a rollback function.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
   async (tdb, commit, rollback) =&gt; {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is goood...) {
       await commit();
     }
     else {
@@ -351,8 +352,9 @@ prefer.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
   async tdb =&gt; {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is good...) {
       await tdb.commit();
     }
     else {
@@ -370,8 +372,9 @@ regardless of these settings.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
   async tdb =&gt; {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is good...) {
       await tdb.rollback();
     }
     // else transaction will automatically be committed
@@ -381,8 +384,9 @@ regardless of these settings.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
   async tdb =&gt; {
     await tdb.run('...some query...');
+    await tdb.run('...another query...');
 
-    if (...some condition...) {
+    if (...all is good...) {
       await tdb.commit();
     }
     // else transaction will automatically be rolled back
@@ -397,8 +401,10 @@ for the transaction.</p>
   },
   { debug: true }
 )</code></code></pre>
-<p>You can use all of the database methods inside the transaction.
-You can also load tables and call their methods, but you <strong>MUST</strong>
+<p>You can use all of the database methods inside the transaction,
+including <a href="manual/named_queries.html">named queries</a> and the
+<a href="manual/query_builder.html">query builder</a>.</p>
+<p>You can also load tables and call their methods, but you <strong>MUST</strong>
 fetch the table using the database reference passed to the transaction
 code.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
