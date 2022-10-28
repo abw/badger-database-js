@@ -7,12 +7,10 @@ setDebug({
   // engine: true,
   // transaction: true,
 })
-// test.todo( 'transaction support is a work in progress ');
 
 export const runTransactionTests = async (engine) => {
   const database = databaseConfig(engine);
   const sqlite   = engine === 'sqlite';
-  // const mysql    = engine === 'mysql';
   const postgres = engine === 'postgres';
   const ph1      = postgres ? '$1' : '?';
   const ph2      = postgres ? '$2' : '?';
@@ -67,7 +65,6 @@ export const runTransactionTests = async (engine) => {
       t.pass();
     }
   )
-
 
   test.serial( 'transaction with rollback',
     async t => {
@@ -643,12 +640,16 @@ export const runTransactionTests = async (engine) => {
       await db.waiter.model.animals
         .fetchRecord({ name: 'Brian Badger' })
         .update({ name: 'Brian the Badger' })
-      const rows = await animals.select('name skill').where('skill').all(['Foraging']);
+      const rows = await animals
+        .select('name skill')
+        .where('skill')
+        .order('name')
+        .all(['Foraging']);
       t.deepEqual(
         rows,
         [
-          { name: 'Brian the Badger', skill: 'Foraging' },
           { name: 'Bobby Badger', skill: 'Foraging' },
+          { name: 'Brian the Badger', skill: 'Foraging' },
         ]
       )
     }
@@ -674,12 +675,16 @@ export const runTransactionTests = async (engine) => {
           await db.rollback();
         }
       )
-      const committed = await animals.select('name skill').where('skill').all(['Foraging']);
+      const committed = await animals
+        .select('name skill')
+        .where('skill')
+        .order('name')
+        .all(['Foraging']);
       t.deepEqual(
         committed,
         [
-          { name: 'Brian the Badger', skill: 'Foraging' },
           { name: 'Bobby Badger', skill: 'Foraging' },
+          { name: 'Brian the Badger', skill: 'Foraging' },
         ]
       )
     }

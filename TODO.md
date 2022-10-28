@@ -22,8 +22,6 @@ select() and delete() to work as both data query constructors (e.g.
 
 ## Bugs
 
-* Postgres is failing transaction tests that use the waiter
-
 * Fix rollup/terser problems with source map (or is this node?)
 
 ## Documentation
