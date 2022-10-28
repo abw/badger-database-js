@@ -477,11 +477,12 @@ called.  It also acquires a dedicated database connection from the
 <a href="https://github.com/abw/badger-database-js/blob/master/src/Engine.js">Engine</a> to ensure
 that all queries run within the scope of the transaction use the same connection.</p>
 <h2 id="conclusion">Conclusion</h2><p>That's just about all there is to it.  At the time of writing it's a little less than
-3,000 lines of code.  That's an order of magnitude <em>less</em> than some of the other
-popular Javascript ORMs and SQL query builders out there.  It is perhaps not a fair
-comparison as other libraries may do a lot more than <code>badger-database</code>, but the
-point is to illustrate that this is one of the <em>simpler</em> and <em>less intrusive</em>
-solutions that exists for adding database functionality to your project.</p>
+3,000 lines of code.  That's an order of magnitude less than some of the other
+popular Javascript ORMs and SQL query builders out there, and around 30 times less
+code than one of the more comprehensive "next generation" ORMs. It is perhaps not a
+fair comparison as other libraries may do a lot more than <code>badger-database</code>, but the
+point is to illustrate that this is one of the <em>simpler</em> and <em>less intrusive</em> solutions
+that exists for adding database functionality to your project.</p>
 <p>It doesn't aim to be a library that you can use as an <em>alternative</em> to using SQL
 (although that may be true for some simpler projects), but rather to give you tools
 that <em>help</em> you work with SQL.  In particular, the focus is on automating some of

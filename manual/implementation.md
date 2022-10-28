@@ -186,11 +186,12 @@ that all queries run within the scope of the transaction use the same connection
 ## Conclusion
 
 That's just about all there is to it.  At the time of writing it's a little less than
-3,000 lines of code.  That's an order of magnitude *less* than some of the other
-popular Javascript ORMs and SQL query builders out there.  It is perhaps not a fair
-comparison as other libraries may do a lot more than `badger-database`, but the
-point is to illustrate that this is one of the *simpler* and *less intrusive*
-solutions that exists for adding database functionality to your project.
+3,000 lines of code.  That's an order of magnitude less than some of the other
+popular Javascript ORMs and SQL query builders out there, and around 30 times less
+code than one of the more comprehensive "next generation" ORMs. It is perhaps not a
+fair comparison as other libraries may do a lot more than `badger-database`, but the
+point is to illustrate that this is one of the *simpler* and *less intrusive* solutions
+that exists for adding database functionality to your project.
 
 It doesn't aim to be a library that you can use as an *alternative* to using SQL
 (although that may be true for some simpler projects), but rather to give you tools
