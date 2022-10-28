@@ -1,10 +1,7 @@
 import { addDebugMethod, missing, TransactionError } from "./Utils/index.js";
-// import transactionProxy from "./Proxy/Transaction.js";
 
 export class Transaction {
   constructor(engine, config={}) {
-    // this.database     = database || missing('database')
-    // this.engine       = database.engine
     this.engine       = engine || missing('engine')
     this.completed    = false
     this.autoCommit   = config.autoCommit
@@ -14,7 +11,6 @@ export class Transaction {
 
   async run(proxy, code) {
     this.debug("run()");
-    // const proxy    = transactionProxy(this.database, this);
     const commit   = this.commit.bind(this);
     const rollback = this.rollback.bind(this);
     try {
