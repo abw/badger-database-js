@@ -479,8 +479,101 @@ export const runTransactionTests = async (engine) => {
     }
   )
 
+  test.serial( 'table named query with commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          await db.run('deleteAnimals');
+          const animals = await db.table('animals');
+          await animals.insert([
+            { name: 'Brian Badger', skill: 'Foraging' },
+            { name: 'Bobby Badger', skill: 'Foraging' },
+            { name: 'Colin Camel',  skill: 'Wandering'}
+          ]);
+          const rows = await animals.all('selectBySkill', ['Foraging']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Foraging' },
+              { name: 'Bobby Badger', skill: 'Foraging' },
+            ]
+          )
+          await db.commit();
+        },
+      )
+      const committed = await animals.all('selectBySkill', ['Foraging'])
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'record update with rollback',
+    async t => {
+      await db.transaction(
+        async db => {
+          const animals = await db.table('animals');
+          const brian = await animals.fetchRecord({
+            name: 'Brian Badger'
+          })
+          t.is( brian.skill, 'Foraging' );
+          brian.update({ skill: 'Badgering' });
+          const rows = await animals.all('selectBySkill', ['Badgering']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Badgering' },
+            ]
+          )
+          await db.rollback();
+        },
+      )
+      const committed = await animals.all('selectBySkill', ['Foraging'])
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian Badger', skill: 'Foraging' },
+          { name: 'Bobby Badger', skill: 'Foraging' },
+        ]
+      )
+    }
+  )
+
+  test.serial( 'record update with commit',
+    async t => {
+      await db.transaction(
+        async db => {
+          const animals = await db.table('animals');
+          const brian = await animals.fetchRecord({
+            name: 'Brian Badger'
+          })
+          t.is( brian.skill, 'Foraging' );
+          brian.update({ skill: 'Badgering' });
+          const rows = await animals.all('selectBySkill', ['Badgering']);
+          t.deepEqual(
+            rows,
+            [
+              { name: 'Brian Badger', skill: 'Badgering' },
+            ]
+          )
+          await db.commit();
+        },
+      )
+      const committed = await animals.all('selectBySkill', ['Badgering'])
+      t.deepEqual(
+        committed,
+        [
+          { name: 'Brian Badger', skill: 'Badgering' },
+        ]
+      )
+    }
+  )
+
   // TODO
-  // records
   // database.model
   // database.waiter
 
