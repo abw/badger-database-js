@@ -15,6 +15,7 @@ const methodAliases = {
   insertRecord:  "insertOneRecord",
   insertRecords: "insertAllRecords",
   update:        "updateAll",
+  updateRow:     "updateOneRow",
   fetch:         "fetchAll",
   fetchRecord:   "fetchOneRecord",
   fetchRecords:  "fetchAllRecords",
@@ -188,6 +189,16 @@ export class Table extends Queryable {
       key => fetch[key] = firstValue(set[key], where[key])
     );
     return this.oneRow(fetch, options);
+  }
+
+  async updateOneRow(set, where, options) {
+    this.debugData("updateOneRow()", { set, where, options });
+    return this.updateOne(set, where, this.withReloadOption(options))
+  }
+
+  async updateAnyRow(set, where, options) {
+    this.debugData("updateAnyRow()", { set, where, options });
+    return this.updateAny(set, where, this.withReloadOption(options))
   }
 
   //-----------------------------------------------------------------------------

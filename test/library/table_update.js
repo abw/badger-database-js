@@ -103,6 +103,34 @@ export function runTableUpdateTests(engine) {
     }
   )
 
+  test.serial( 'updateOneRow()',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.updateOneRow(
+        { name:  'Robby Badger' },
+        { email: 'bobby@badgerpower.com' },
+      );
+      t.is( result.changes, undefined );
+      t.is( result.id, 1 );
+      t.is( result.name, 'Robby Badger' );
+      t.is( result.email, 'bobby@badgerpower.com' );
+    }
+  )
+
+  test.serial( 'updateRow()',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.updateRow(
+        { name:  'Rob Badger' },
+        { email: 'bobby@badgerpower.com' },
+      );
+      t.is( result.changes, undefined );
+      t.is( result.id, 1 );
+      t.is( result.name, 'Rob Badger' );
+      t.is( result.email, 'bobby@badgerpower.com' );
+    }
+  )
+
   test.serial( 'updateAny()',
     async t => {
       const users = await db.table('users');
@@ -140,11 +168,25 @@ export function runTableUpdateTests(engine) {
     }
   )
 
+  test.serial( 'updateAnyRow()',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.updateAnyRow(
+        { name:  'Bobby Badger' },
+        { email: 'bobby@badgerpower.com' },
+      );
+      t.is( result.changes, undefined );
+      t.is( result.id, 1 );
+      t.is( result.name, 'Bobby Badger' );
+      t.is( result.email, 'bobby@badgerpower.com' );
+    }
+  )
+
   test.serial( 'updateAny() with reload on changed item',
     async t => {
       const users = await db.table('users');
       const result = await users.updateAny(
-        { email: 'robbie@badgerpower.com' },
+        { email: 'robbie@badgerpower.com', name: 'Robbie Badger' },
         { email: 'bobby@badgerpower.com' },
         { reload: true }
       );

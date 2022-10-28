@@ -73,6 +73,8 @@ This is a brief summary of the object methods available.
 | [updateOne(set, where, options)](manual/table_methods.html#updateone-set--where--options-) | Update exactly one row to set new values where matching criteria |
 | [updateAny(set, where, options)](manual/table_methods.html#updateany-set--where--options-) | Update any row to set new values where matching criteria |
 | [updateAll(set, where, options)](manual/table_methods.html#updateall-set--where--options-) | Update all rows to set new values where matching criteria |
+| [updateOneRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Update exactly one row with reload option to return updated row |
+| [updateAnyRow(set, where, options)](manual/table_methods.html#updateanyrow-set--where--options-) | Update any row with reload option to return updated row |
 | [delete(where)](manual/table_methods.html#delete-where-) | Delete all rows where matching criteria |
 | [fetch(where, options)](manual/table_methods.html#fetch-where--options-) | Fetch rows where matching criteria |
 | [fetchOne(where, options)](manual/table_methods.html#fetchone-where--options-) | Fetch exactly one row where matching criteria |

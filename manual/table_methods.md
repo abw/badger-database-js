@@ -514,6 +514,41 @@ reload a row after an update then you can use the
 [updateOne()](#updateone-set--where--options-) or
 [updateAny()](#updateany-set--where--options-) methods.
 
+### updateOneRow(set, where, options)
+
+This is a wrapper around the [updateOne()](#updateone-set--where--options-) method
+which automatically sets the `reload` option for you.  The result returned
+will be the updated row reloaded from the database instead of a result object.
+
+```js
+const row = await users.updateOneRow(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' },
+);
+console.log('updated row:', row);
+```
+
+The `updateRow()` method is provided as an alias for this method.
+
+### updateAnyRow(set, where, options)
+
+This is a wrapper around the [updateAny()](#updateany-set--where--options-) method
+which automatically sets the `reload` option for you.  The result returned
+will be the updated row reloaded from the database instead of a result object.
+
+```js
+const row = await users.updateAnyRow(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' },
+);
+if (row) {
+  console.log("updated row:", row);
+}
+else {
+  console.log("could not update row - Brian not found!")
+}
+```
+
 ## Delete Method
 
 ### delete(where)
