@@ -49,6 +49,7 @@ This is a brief summary of the object methods available.
 | [insert(columns)](manual/query_builder.html#insert-queries) | Start an `INSERT` query builder chain with a column selection |
 | [update(table)](manual/query_builder.html#update-queries) | Start an `UPDATE` query builder chain with a table name |
 | [delete(columns)](manual/query_builder.html#delete-queries) | Start an `DELETE` query builder chain with optional column specification |
+| [transaction(code)](manual/transactions.html) | Execute queries in the scope of a transaction |
 | [table(name)](manual/tables.html) | Lookup a named table and return a `Table` object|
 
 ### Table Methods
@@ -62,6 +63,8 @@ This is a brief summary of the object methods available.
 | [insert(data, options)](manual/table_methods.html#insert-data--options-) | Insert one or more rows of data |
 | [insertOne(data, options)](manual/table_methods.html#insertone-data--options-) | Insert a single row of data |
 | [insertAll(array, options)](manual/table_methods.html#insertall-array--options-) | Insert multiple rows of data |
+| [insertOneRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Insert a single row of data and return the reloaded row|
+| [insertAllRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Insert multiple rows of data and return an array of reloaded rows|
 | [insertOneRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Insert a single row of data and return a record |
 | [insertAllRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Insert multiple rows of data and return an array of records |
 | [insertRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Alias for [insertOneRecord()](manual/table_methods.html#insertonerecord-data--options-) |

@@ -9,6 +9,8 @@ you provide as arguments.
   * [insert(data, options)](#insert-data--options-)
   * [insertOne(data, options)](#insertone-data--options-)
   * [insertAll(array, options)](#insertall-array--options-)
+  * [insertOneRow(data, options)](#insertonerow-data--options-)
+  * [insertAllRows(array, options)](#insertallrows-array--options-)
   * [insertOneRecord(data, options)](#insertonerecord-data--options-)
   * [insertAllRecords(array, options)](#insertallrecords-array--options-)
 * [Update Methods](#update-methods)
@@ -240,6 +242,53 @@ const results = await users.insertAll([
   }
 ]);
 ```
+
+### insertOneRow(data, options)
+
+This is a wrapper around the [insertOne()](#insertone-data--options-) method
+which automatically sets the `reload` option for you.  The result returned
+will be the inserted row reloaded from the database instead of a result object.
+
+```js
+const row = await users.insertOneRow({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+console.log(row.id);     // e.g. 123
+console.log(row.name);   // Brian Badger
+console.log(row.email);  // brian@badgerpower.com
+```
+
+The `insertRow()` method is provided as an alias for this method.
+
+### insertAllRows(array, options)
+
+This is a wrapper around the [insertAll()](#insertall-array--options-) method
+which automatically sets the `reload` option for you.  The result returned
+will be an array of rows reloaded from the database instead of an array of results.
+
+```js
+const rows = await users.insertAllRows([
+  {
+    name:  'Bobby Badger',
+    email: 'bobby@badgerpower.com'
+  },
+  {
+    name:  'Brian Badger',
+    email: 'brian@badgerpower.com'
+  }
+]);
+// array of rows returned
+console.log(rows.length); // 2
+console.log(rows[0].id);      // e.g. 123
+console.log(rows[0].name);    // Bobby Badger
+console.log(rows[0].email);   // bobby@badgerpower.com
+console.log(rows[1].id);      // e.g. 124
+console.log(rows[1].name);    // Brian Badger
+console.log(rows[1].email);   // brian@badgerpower.com
+```
+
+The `insertRows()` method is provided as an alias for this method.
 
 ### insertOneRecord(data, options)
 

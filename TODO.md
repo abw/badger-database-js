@@ -20,14 +20,13 @@ re-fetching row?
 select() and delete() to work as both data query constructors (e.g.
 `insert({ name: 'Andy' })`) and as the start of a query chain.
 
+* Add table `updateRows()` and `updateRow()` methods?
+
 ## Bugs
 
 * Fix rollup/terser problems with source map (or is this node?)
 
 ## Documentation
-
-* Document table insertRow()/insertOneRow() and insertRows()/insertAllRows()
-which automatically set reload option, and look into adding to updateXXX
 
 * API documentation
 

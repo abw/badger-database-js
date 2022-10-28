@@ -174,6 +174,82 @@ export function runTableInsertTests(engine) {
     }
   )
 
+  test.serial( 'insertRows()',
+    async t => {
+      const users = await db.table('users');
+      const rows = await users.insertRows(
+        [
+          {
+            name:  'Julie Jackdaw',
+            email: 'julie@badgerpower.com'
+          },
+          {
+            name:  'Kevin Kangaroo',
+            email: 'kevin@badgerpower.com'
+          },
+        ]
+      );
+      t.is( rows.length, 2 );
+      t.is( rows[0].id, 11 );
+      t.is( rows[0].name, 'Julie Jackdaw' );
+      t.is( rows[0].email, 'julie@badgerpower.com' );
+      t.is( rows[1].id, 12 );
+      t.is( rows[1].name, 'Kevin Kangaroo' );
+      t.is( rows[1].email, 'kevin@badgerpower.com' );
+    }
+  )
+
+  test.serial( 'insertAllRows()',
+    async t => {
+      const users = await db.table('users');
+      const rows = await users.insertAllRows(
+        [
+          {
+            name:  'Lionel Llama',
+            email: 'lionel@badgerpower.com'
+          },
+          {
+            name:  'Mavis Mouse',
+            email: 'mavis@badgerpower.com'
+          },
+        ]
+      );
+      t.is( rows.length, 2 );
+      t.is( rows[0].id, 13 );
+      t.is( rows[0].name, 'Lionel Llama' );
+      t.is( rows[0].email, 'lionel@badgerpower.com' );
+      t.is( rows[1].id, 14 );
+      t.is( rows[1].name, 'Mavis Mouse' );
+      t.is( rows[1].email, 'mavis@badgerpower.com' );
+    }
+  )
+
+  test.serial( 'insertRow()',
+    async t => {
+      const users = await db.table('users');
+      const row   = await users.insertRow({
+        name:  'Nick Narwhal',
+        email: 'nick@badgerpower.com'
+      })
+      t.is( row.id, 15 );
+      t.is( row.name, 'Nick Narwhal' );
+      t.is( row.email, 'nick@badgerpower.com' );
+    }
+  )
+
+  test.serial( 'insertOneRow()',
+    async t => {
+      const users = await db.table('users');
+      const row   = await users.insertOneRow({
+        name:  'Oliver Okapi',
+        email: 'oliver@badgerpower.com'
+      })
+      t.is( row.id, 16 );
+      t.is( row.name, 'Oliver Okapi' );
+      t.is( row.email, 'oliver@badgerpower.com' );
+    }
+  )
+
   test.after( 'disconnect',
     () => db.disconnect()
   )
