@@ -20,10 +20,6 @@ re-fetching row?
 select() and delete() to work as both data query constructors (e.g.
 `insert({ name: 'Andy' })`) and as the start of a query chain.
 
-## Fixes
-
-* functions for munging allValues must be updated to include setValues
-
 ## Bugs
 
 * Fix rollup/terser problems with source map (or is this node?)
