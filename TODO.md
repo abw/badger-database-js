@@ -26,8 +26,6 @@ select() and delete() to work as both data query constructors (e.g.
 
 ## Bugs
 
-* waiter is not throwing errors (or the test aren't picking them up)
-
 * Fix rollup/terser problems with source map (or is this node?)
 
 ## Documentation

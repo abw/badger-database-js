@@ -1,5 +1,6 @@
 import test from 'ava';
 import { connect } from '../../src/Database.js';
+import { SQLParseError, UnexpectedRowCount } from '../../src/Utils/Error.js';
 import { connectMusicDatabase } from '../library/music_database.js';
 
 let musicdb;
@@ -50,6 +51,33 @@ test.serial( 'waiter connect',
       .one("SELECT 'Hello World!' AS greeting")
     t.is(row.greeting, 'Hello World!');
   }
+)
+
+test.serial( 'waiter syntax error',
+  async t => t.throwsAsync(
+    async () => await musicdb
+      .waiter
+      .model
+      .artists
+      .one('SELECT pink floyd'),
+    {
+      instanceOf: SQLParseError,
+    }
+  )
+)
+
+test.serial( 'waiter missing record error',
+  async t => t.throwsAsync(
+    async () => await musicdb
+      .waiter
+      .model
+      .artists
+      .fetchOne({ name: 'Punk Floyd' }),
+    {
+      instanceOf: UnexpectedRowCount,
+      message: '0 rows were returned when one was expected'
+    }
+  )
 )
 
 test.after( 'disconnect',
