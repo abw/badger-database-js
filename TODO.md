@@ -28,4 +28,5 @@ select() and delete() to work as both data query constructors (e.g.
 
 * API documentation
 
+* Implementation details
 
