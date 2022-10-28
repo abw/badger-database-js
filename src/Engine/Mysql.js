@@ -64,19 +64,19 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Transaction methods - MySQL requires special handling
   //-----------------------------------------------------------------------------
-  async begin(transaction) {
+  async begin(transact) {
     this.debug("begin() - START TRANSACTION")
-    return await transaction.connection.query('START TRANSACTION')
+    return await transact.connection.query('START TRANSACTION')
   }
 
-  async commit(transaction) {
+  async commit(transact) {
     this.debug('commit() - ', COMMIT);
-    return await transaction.connection.query(COMMIT);
+    return await transact.connection.query(COMMIT);
   }
 
-  async rollback(transaction) {
+  async rollback(transact) {
     this.debug('rollback() - ', ROLLBACK);
-    return await transaction.connection.query(ROLLBACK);
+    return await transact.connection.query(ROLLBACK);
   }
 
   //-----------------------------------------------------------------------------

@@ -5,8 +5,9 @@ import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";
 
 export class Queryable {
-  constructor(engine) {
-    this.engine = engine || missing('engine');
+  constructor(engine, config={}) {
+    this.engine   = engine || missing('engine');
+    this.transact = config.transact;
   }
 
   query(source) {
@@ -29,7 +30,8 @@ export class Queryable {
   }
 
   buildQuery(source, config={}) {
-    this.debugData("buildQuery()", { source });
+    config.transact ||= this.transact;
+    this.debugData("buildQuery()", { source, config });
     return new Query(
       this.engine,
       isString(source) ? this.expandQuery(source) : source,

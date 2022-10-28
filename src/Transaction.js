@@ -1,21 +1,20 @@
-import transactionProxy from "./Proxy/Transaction.js";
-import Transactor from "./Transactor.js";
 import { addDebugMethod, missing, TransactionError } from "./Utils/index.js";
+// import transactionProxy from "./Proxy/Transaction.js";
 
 export class Transaction {
-  constructor(database, config={}) {
-    this.database     = database || missing('database')
-    this.engine       = database.engine
+  constructor(engine, config={}) {
+    // this.database     = database || missing('database')
+    // this.engine       = database.engine
+    this.engine       = engine || missing('engine')
     this.completed    = false
     this.autoCommit   = config.autoCommit
     this.autoRollback = config.autoRollback
     addDebugMethod(this, 'transaction', config)
   }
 
-  async run(code) {
+  async run(proxy, code) {
     this.debug("run()");
     // const proxy    = transactionProxy(this.database, this);
-    const actor    = this.database.transactor(Transactor, this);
     const commit   = this.commit.bind(this);
     const rollback = this.rollback.bind(this);
     try {
@@ -26,7 +25,7 @@ export class Transaction {
       await this.begin();
 
       // run the code
-      await code(actor, commit, rollback)
+      await code(proxy, commit, rollback)
       this.debug("code complete")
 
       // check that commit() or rollback() has been called

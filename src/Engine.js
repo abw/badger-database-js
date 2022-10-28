@@ -85,9 +85,9 @@ export class Engine {
 
     // if we have a transaction in effect then we use the transaction's
     // connection otherwise we fetch one from the pool
-    const trans = options.transaction
-    const client = trans
-      ? trans.connection
+    const transact = options.transact
+    const client = transact
+      ? transact.connection
       : await this.acquire()
 
     try {
@@ -103,7 +103,7 @@ export class Engine {
     }
     finally {
       // release the connection back to the pool if it's one we acquired
-      if (! trans) {
+      if (! transact) {
         this.release(client);
       }
     }
@@ -131,19 +131,19 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Transaction queries
   //-----------------------------------------------------------------------------
-  async begin(transaction) {
+  async begin(transact) {
     this.debug('begin()')
-    return await this.run(BEGIN, { transaction })
+    return await this.run(BEGIN, { transact })
   }
 
-  async commit(transaction) {
+  async commit(transact) {
     this.debug('commit()');
-    return await this.run(COMMIT, { transaction });
+    return await this.run(COMMIT, { transact });
   }
 
-  async rollback(transaction) {
+  async rollback(transact) {
     this.debug('rollback()');
-    return await this.run(ROLLBACK, { transaction });
+    return await this.run(ROLLBACK, { transact });
   }
 
   //-----------------------------------------------------------------------------

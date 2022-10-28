@@ -68,11 +68,11 @@ export const runTransactionTests = async (engine) => {
     }
   )
 
+
   test.serial( 'transaction with rollback',
     async t => {
       await db.transaction(
         async (db, commit, rollback) => {
-          // console.log('running transaction code');
           await db.run('insertAnimal', ['Badger', 'Foraging']);
           await db.run('insertAnimal', ['Ferret', 'Ferreting']);
           const animals = await db.all('fetchAnimals');

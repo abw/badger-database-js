@@ -8,27 +8,33 @@ import { engine } from './Engines.js';
 import { addDebugMethod } from './Utils/index.js';
 import { databaseBuilder } from './Builders.js';
 import { fail } from '@abw/badger-utils';
-// import Transactor from './Transactor.js';
 
 const defaults = {
   tablesClass: Tables
 };
 
 export class Database extends Queryable {
-  constructor(engine, params) {
-    super(engine);
-    const config   = { ...defaults, ...params };
-    this.config    = config;
+  constructor(engine, config={}) {
+    super(engine, config);
+    this.config    = config = { ...defaults, ...config };
     this.queries   = config.queries;
     this.fragments = config.fragments;
     this.tables    = config.tablesObject || new config.tablesClass(config.tables);
+    this.initDatabase(config)
+    addDebugMethod(this, 'database', config);
+  }
+  initDatabase() {
+    // We do this part separately so that we can call this method when
+    // we create a transaction, allowing it to create wrappers around
+    // the new "this" that has the transaction stored in it
     this.build     = databaseBuilder(this);
     this.model     = modelProxy(this);
     this.waiter    = proxymise(this);
     this.state     = {
+      // tables must be created afresh to ensure they get the
+      // transaction reference
       table: { },
     };
-    addDebugMethod(this, 'database', config);
   }
 
   //-----------------------------------------------------------------------------
@@ -45,11 +51,6 @@ export class Database extends Queryable {
   // Tables
   //-----------------------------------------------------------------------------
   async table(name, options={}) {
-    if (options.nocache) {
-      //console.log(green('creating new table (nocache is set)'));
-      //console.log('database (%s) is proxy? %s', this.tmpId(), this.isProxy ? green('YES') : red('NO'));
-      return await this.initTable(name, options);
-    }
     return this.state.table[name]
       ||= await this.initTable(name, options);
   }
@@ -57,11 +58,15 @@ export class Database extends Queryable {
     return await this.tables.table(name);
   }
   async initTable(name, options) {
-    const schema = await this.hasTable(name) || fail(`Invalid table specified: ${name}`);
-    const tclass = schema.tableClass   || Table;
-    const topts  = schema.tableOptions || { };
+    const schema   = await this.hasTable(name) || fail(`Invalid table specified: ${name}`);
+    const tclass   = schema.tableClass   || Table;
+    const topts    = schema.tableOptions || { };
+    const transact = this.transact;
     schema.table ||= name;
-    return new tclass(this, { ...schema, ...topts, ...options });
+    return new tclass(
+      this,
+      { ...schema, ...topts, ...options, transact }
+    );
   }
 
   //-----------------------------------------------------------------------------
@@ -83,12 +88,16 @@ export class Database extends Queryable {
   //-----------------------------------------------------------------------------
   // Transactions
   //-----------------------------------------------------------------------------
-  async transactor(txclass, transaction) {
-    return new txclass(this.engine, this.config, transaction);
-  }
   async transaction(code, config) {
-    const trans = new Transaction(this, config);
-    await trans.run(code);
+    const transact = new Transaction(this.engine, config);
+    const proxy = {
+      transact,
+      commit:   () => transact.commit(),
+      rollback: () => transact.rollback(),
+    };
+    Object.setPrototypeOf(proxy, this);
+    proxy.initDatabase()
+    await transact.run(proxy, code);
   }
 
   //-----------------------------------------------------------------------------

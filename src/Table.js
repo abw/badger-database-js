@@ -22,7 +22,7 @@ const methodAliases = {
 
 export class Table extends Queryable {
   constructor(database, config) {
-    super(database.engine);
+    super(database.engine, config);
     this.config        = this.configure(config) || config;
     this.database      = database || fail("No database specified");
     this.table         = config.table;
@@ -37,8 +37,6 @@ export class Table extends Queryable {
     this.fragments     = this.prepareFragments(config);
     this.relations     = config.relations || { };
     this.build         = databaseBuilder(this.database);
-    this.transaction   = config.transaction;    // HACK
-
     aliasMethods(this, methodAliases);
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
   }
@@ -337,13 +335,6 @@ export class Table extends Queryable {
 
   withRecordOption(options={}) {
     return { ...options, record: true };
-  }
-
-  // HACK to make sure transaction gets passed to engine
-  buildQuery(source, config={}) {
-    this.debugData("buildQuery()", { source });
-    config.transaction ||= this.transaction;
-    return super.buildQuery(source, config);
   }
 
   //-----------------------------------------------------------------------------
