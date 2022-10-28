@@ -37,20 +37,4 @@ which automatically set reload option, and look into adding to updateXXX
 
 * API documentation
 
-## Transactions
 
-* Have engine detect a transaction option and use its connection instead of
-taking a new one from the pool [DONE - but subject to change]
-
-* Database must NOT reuse any cached table to ensure a new table is created
-with Queryable proxy [DONE - but subject to change]
-
-* database.build, database.model and database.waiter must be reconstituted as
-wrappers around a transaction proxy [database.build is done]
-
-* check that named queries that use the query builder get rooted on a transaction
-proxy [DONE - but subject to change]
-
-* decide if it's best for uncompleted transactions (that haven't called commit
-or rollback) to autoRollback quietly, or do it and throw an error [DONE - explicit
-errors are best]
