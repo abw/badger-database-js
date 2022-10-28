@@ -36,6 +36,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Transaction.js~Transaction.html">Transaction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Transactor.js~Transactor.html">Transactor</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseBuilder">databaseBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerBuilder">registerBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerBuilders">registerBuilders</a></span></span></li>
@@ -122,7 +123,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-builderProxy">builderProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transactionProxy">transactionProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-any">any</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map">map</a></span></span></li>
@@ -676,7 +676,7 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-begin">begin</a></span></span><span class="code" data-ice="signature">(transaction: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-begin">begin</a></span></span><span class="code" data-ice="signature">(transact: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -732,7 +732,7 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-commit">commit</a></span></span><span class="code" data-ice="signature">(transaction: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-commit">commit</a></span></span><span class="code" data-ice="signature">(transact: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1404,7 +1404,7 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-rollback">rollback</a></span></span><span class="code" data-ice="signature">(transaction: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Engine.js~Engine.html#instance-method-rollback">rollback</a></span></span><span class="code" data-ice="signature">(transact: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2157,7 +2157,7 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">begin</span><span class="code" data-ice="signature">(transaction: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">begin</span><span class="code" data-ice="signature">(transact: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -2181,7 +2181,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">transaction</td>
+      <td data-ice="name" class="code" data-depth="0">transact</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -2311,7 +2311,7 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">commit</span><span class="code" data-ice="signature">(transaction: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">commit</span><span class="code" data-ice="signature">(transact: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -2335,7 +2335,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">transaction</td>
+      <td data-ice="name" class="code" data-depth="0">transact</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -3972,7 +3972,7 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">rollback</span><span class="code" data-ice="signature">(transaction: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">rollback</span><span class="code" data-ice="signature">(transact: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -3996,7 +3996,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">transaction</td>
+      <td data-ice="name" class="code" data-depth="0">transact</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>

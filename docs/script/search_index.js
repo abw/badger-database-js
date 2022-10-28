@@ -408,6 +408,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~transactor",
+    "class/src/Transactor.js~Transactor.html",
+    "<span>Transactor</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "class"
+  ],
+  [
     "@abw/badger-database~update",
     "variable/index.html#static-variable-UPDATE",
     "<span>UPDATE</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -837,12 +843,6 @@ window.esdocSearchIndex = [
     "@abw/badger-database~thrower",
     "function/index.html#static-function-thrower",
     "<span>thrower</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
-    "function"
-  ],
-  [
-    "@abw/badger-database~transactionproxy",
-    "function/index.html#static-function-transactionProxy",
-    "<span>transactionProxy</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
     "function"
   ],
   [
@@ -2580,6 +2580,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/database.js~database#config",
+    "class/src/Database.js~Database.html#instance-member-config",
+    "src/Database.js~Database#config",
+    "member"
+  ],
+  [
     "src/database.js~database#constructor",
     "class/src/Database.js~Database.html#instance-constructor-constructor",
     "src/Database.js~Database#constructor",
@@ -2607,6 +2613,12 @@ window.esdocSearchIndex = [
     "src/database.js~database#hastable",
     "class/src/Database.js~Database.html#instance-method-hasTable",
     "src/Database.js~Database#hasTable",
+    "method"
+  ],
+  [
+    "src/database.js~database#initdatabase",
+    "class/src/Database.js~Database.html#instance-method-initDatabase",
+    "src/Database.js~Database#initDatabase",
     "method"
   ],
   [
@@ -3234,12 +3246,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/proxy/transaction.js",
-    "file/src/Proxy/Transaction.js.html",
-    "src/Proxy/Transaction.js",
-    "file"
-  ],
-  [
     "src/query.js",
     "file/src/Query.js.html",
     "src/Query.js",
@@ -3318,9 +3324,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/query.js~query#transaction",
-    "class/src/Query.js~Query.html#instance-member-transaction",
-    "src/Query.js~Query#transaction",
+    "src/query.js~query#transact",
+    "class/src/Query.js~Query.html#instance-member-transact",
+    "src/Query.js~Query#transact",
     "member"
   ],
   [
@@ -3424,6 +3430,12 @@ window.esdocSearchIndex = [
     "class/src/Queryable.js~Queryable.html#instance-method-sql",
     "src/Queryable.js~Queryable#sql",
     "method"
+  ],
+  [
+    "src/queryable.js~queryable#transact",
+    "class/src/Queryable.js~Queryable.html#instance-member-transact",
+    "src/Queryable.js~Queryable#transact",
+    "member"
   ],
   [
     "src/record.js",
@@ -3562,12 +3574,6 @@ window.esdocSearchIndex = [
     "class/src/Table.js~Table.html#instance-member-build",
     "src/Table.js~Table#build",
     "member"
-  ],
-  [
-    "src/table.js~table#buildquery",
-    "class/src/Table.js~Table.html#instance-method-buildQuery",
-    "src/Table.js~Table#buildQuery",
-    "method"
   ],
   [
     "src/table.js~table#checkcolumnnames",
@@ -3876,12 +3882,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/table.js~table#transaction",
-    "class/src/Table.js~Table.html#instance-member-transaction",
-    "src/Table.js~Table#transaction",
-    "member"
-  ],
-  [
     "src/table.js~table#updateall",
     "class/src/Table.js~Table.html#instance-method-updateAll",
     "src/Table.js~Table#updateAll",
@@ -3894,9 +3894,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#updateanyrow",
+    "class/src/Table.js~Table.html#instance-method-updateAnyRow",
+    "src/Table.js~Table#updateAnyRow",
+    "method"
+  ],
+  [
     "src/table.js~table#updateone",
     "class/src/Table.js~Table.html#instance-method-updateOne",
     "src/Table.js~Table#updateOne",
+    "method"
+  ],
+  [
+    "src/table.js~table#updateonerow",
+    "class/src/Table.js~Table.html#instance-method-updateOneRow",
+    "src/Table.js~Table#updateOneRow",
     "method"
   ],
   [
@@ -4002,12 +4014,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/transaction.js~transaction#database",
-    "class/src/Transaction.js~Transaction.html#instance-member-database",
-    "src/Transaction.js~Transaction#database",
-    "member"
-  ],
-  [
     "src/transaction.js~transaction#engine",
     "class/src/Transaction.js~Transaction.html#instance-member-engine",
     "src/Transaction.js~Transaction#engine",
@@ -4036,6 +4042,48 @@ window.esdocSearchIndex = [
     "class/src/Transaction.js~Transaction.html#instance-method-run",
     "src/Transaction.js~Transaction#run",
     "method"
+  ],
+  [
+    "src/transactor.js",
+    "file/src/Transactor.js.html",
+    "src/Transactor.js",
+    "file"
+  ],
+  [
+    "src/transactor.js~transactor#buildquery",
+    "class/src/Transactor.js~Transactor.html#instance-method-buildQuery",
+    "src/Transactor.js~Transactor#buildQuery",
+    "method"
+  ],
+  [
+    "src/transactor.js~transactor#commit",
+    "class/src/Transactor.js~Transactor.html#instance-method-commit",
+    "src/Transactor.js~Transactor#commit",
+    "method"
+  ],
+  [
+    "src/transactor.js~transactor#constructor",
+    "class/src/Transactor.js~Transactor.html#instance-constructor-constructor",
+    "src/Transactor.js~Transactor#constructor",
+    "method"
+  ],
+  [
+    "src/transactor.js~transactor#rollback",
+    "class/src/Transactor.js~Transactor.html#instance-method-rollback",
+    "src/Transactor.js~Transactor#rollback",
+    "method"
+  ],
+  [
+    "src/transactor.js~transactor#table",
+    "class/src/Transactor.js~Transactor.html#instance-method-table",
+    "src/Transactor.js~Transactor#table",
+    "method"
+  ],
+  [
+    "src/transactor.js~transactor#transaction",
+    "class/src/Transactor.js~Transactor.html#instance-member-transaction",
+    "src/Transactor.js~Transactor#transaction",
+    "member"
   ],
   [
     "src/utils/article.js",

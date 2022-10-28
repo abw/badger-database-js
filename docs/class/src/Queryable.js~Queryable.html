@@ -36,6 +36,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Transaction.js~Transaction.html">Transaction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Transactor.js~Transactor.html">Transactor</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseBuilder">databaseBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerBuilder">registerBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerBuilders">registerBuilders</a></span></span></li>
@@ -122,7 +123,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-builderProxy">builderProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transactionProxy">transactionProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-any">any</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map">map</a></span></span></li>
@@ -196,7 +196,7 @@
   
   
   <div class="flat-list" data-ice="directSubclass"><h4>Direct Subclass:</h4><div><span><a href="class/src/Database.js~Database.html">Database</a></span>, <span><a href="class/src/Table.js~Table.html">Table</a></span></div></div>
-  
+  <div class="flat-list" data-ice="indirectSubclass"><h4>Indirect Subclass:</h4><div><span><a href="class/src/Transactor.js~Transactor.html">Transactor</a></span></div></div>
   
   
   
@@ -272,6 +272,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Queryable.js~Queryable.html#instance-member-engine">engine</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Queryable.js~Queryable.html#instance-member-transact">transact</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -755,6 +783,49 @@
   
   
 </div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-transact">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">transact</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber10">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
 </div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
@@ -770,7 +841,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber85">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber87">source</a></span></span>
     </span>
   </h3>
 
@@ -853,7 +924,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber77">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber79">source</a></span></span>
     </span>
   </h3>
 
@@ -936,7 +1007,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber31">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber32">source</a></span></span>
     </span>
   </h3>
 
@@ -1014,7 +1085,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber51">source</a></span></span>
     </span>
   </h3>
 
@@ -1085,7 +1156,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber40">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber42">source</a></span></span>
     </span>
   </h3>
 
@@ -1162,7 +1233,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber24">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber25">source</a></span></span>
     </span>
   </h3>
 
@@ -1233,7 +1304,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber101">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber103">source</a></span></span>
     </span>
   </h3>
 
@@ -1304,7 +1375,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber99">source</a></span></span>
     </span>
   </h3>
 
@@ -1375,7 +1446,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber93">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber95">source</a></span></span>
     </span>
   </h3>
 
@@ -1446,7 +1517,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber69">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber71">source</a></span></span>
     </span>
   </h3>
 
@@ -1529,7 +1600,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber12">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber13">source</a></span></span>
     </span>
   </h3>
 
@@ -1600,7 +1671,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber64">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber66">source</a></span></span>
     </span>
   </h3>
 
@@ -1683,7 +1754,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber59">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Queryable.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 

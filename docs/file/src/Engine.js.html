@@ -36,6 +36,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Table.js~Table.html">Table</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Tables.js~Tables.html">Tables</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Transaction.js~Transaction.html">Transaction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Transactor.js~Transactor.html">Transactor</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-databaseBuilder">databaseBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerBuilder">registerBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-registerBuilders">registerBuilders</a></span></span></li>
@@ -122,7 +123,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#proxy">Proxy</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-builderProxy">builderProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-modelProxy">modelProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-recordProxy">recordProxy</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transactionProxy">transactionProxy</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#relation">Relation</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-any">any</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-many">many</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map">map</a></span></span></li>
@@ -265,9 +265,9 @@ export class Engine {
 
     // if we have a transaction in effect then we use the transaction's
     // connection otherwise we fetch one from the pool
-    const trans = options.transaction
-    const client = trans
-      ? trans.connection
+    const transact = options.transact
+    const client = transact
+      ? transact.connection
       : await this.acquire()
 
     try {
@@ -283,7 +283,7 @@ export class Engine {
     }
     finally {
       // release the connection back to the pool if it's one we acquired
-      if (! trans) {
+      if (! transact) {
         this.release(client);
       }
     }
@@ -311,19 +311,19 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Transaction queries
   //-----------------------------------------------------------------------------
-  async begin(transaction) {
+  async begin(transact) {
     this.debug('begin()')
-    return await this.run(BEGIN, { transaction })
+    return await this.run(BEGIN, { transact })
   }
 
-  async commit(transaction) {
+  async commit(transact) {
     this.debug('commit()');
-    return await this.run(COMMIT, { transaction });
+    return await this.run(COMMIT, { transact });
   }
 
-  async rollback(transaction) {
+  async rollback(transact) {
     this.debug('rollback()');
-    return await this.run(ROLLBACK, { transaction });
+    return await this.run(ROLLBACK, { transact });
   }
 
   //-----------------------------------------------------------------------------

@@ -52,7 +52,7 @@ This is a brief summary of the object methods available.
 | [transaction(code)](manual/transactions.html) | Execute queries in the scope of a transaction |
 | [table(name)](manual/tables.html) | Lookup a named table and return a `Table` object|
 
-### Table Methods
+### Table Query Methods
 
 | Method | Description
 |-|-|
@@ -60,22 +60,45 @@ This is a brief summary of the object methods available.
 | [one(query, values, options)](manual/table_queries.html#one-query--values--options-) | Run a raw SQL query or named query to fetch exactly one row |
 | [any(query, values, options)](manual/table_queries.html#any-query--values--options-) | Run a raw SQL query or named query to fetch any single row |
 | [all(query, values, options)](manual/table_queries.html#all-query--values--options-) | Run a raw SQL query or named query to fetch all rows |
+
+### Table Insert Methods
+
+| Method | Description
+|-|-|
 | [insert(data, options)](manual/table_methods.html#insert-data--options-) | Insert one or more rows of data |
 | [insertOne(data, options)](manual/table_methods.html#insertone-data--options-) | Insert a single row of data |
 | [insertAll(array, options)](manual/table_methods.html#insertall-array--options-) | Insert multiple rows of data |
 | [insertOneRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Insert a single row of data and return the reloaded row|
 | [insertAllRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Insert multiple rows of data and return an array of reloaded rows|
+| [insertRow(data, options)](manual/table_methods.html#insertonerow-data--options-) | Alias for [insertOneRow()](manual/table_methods.html#insertonerow-data--options-) |
+| [insertRows(array, options)](manual/table_methods.html#insertallrows-array--options-) | Alias for [insertAllRows()](manual/table_methods.html#insertallrows-array--options-) |
 | [insertOneRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Insert a single row of data and return a record |
 | [insertAllRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Insert multiple rows of data and return an array of records |
 | [insertRecord(data, options)](manual/table_methods.html#insertonerecord-data--options-) | Alias for [insertOneRecord()](manual/table_methods.html#insertonerecord-data--options-) |
 | [insertRecords(array, options)](manual/table_methods.html#insertallrecords-array--options-) | Alias for [insertAllRecords()](manual/table_methods.html#insertallrecords-array--options-) |
+
+### Table Update Methods
+
+| Method | Description
+|-|-|
 | [update(set, where, options)](manual/table_methods.html#update-set--where--options-) | Update one or more rows to set new values where matching criteria |
 | [updateOne(set, where, options)](manual/table_methods.html#updateone-set--where--options-) | Update exactly one row to set new values where matching criteria |
 | [updateAny(set, where, options)](manual/table_methods.html#updateany-set--where--options-) | Update any row to set new values where matching criteria |
 | [updateAll(set, where, options)](manual/table_methods.html#updateall-set--where--options-) | Update all rows to set new values where matching criteria |
 | [updateOneRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Update exactly one row with reload option to return updated row |
 | [updateAnyRow(set, where, options)](manual/table_methods.html#updateanyrow-set--where--options-) | Update any row with reload option to return updated row |
+| [updateRow(set, where, options)](manual/table_methods.html#updateonerow-set--where--options-) | Alias for [updateOneRow()](manual/table_methods.html#updateonerow-set--where--options-) |
+
+### Table Delete Method
+
+| Method | Description
+|-|-|
 | [delete(where)](manual/table_methods.html#delete-where-) | Delete all rows where matching criteria |
+
+### Table Fetch Methods
+
+| Method | Description
+|-|-|
 | [fetch(where, options)](manual/table_methods.html#fetch-where--options-) | Fetch rows where matching criteria |
 | [fetchOne(where, options)](manual/table_methods.html#fetchone-where--options-) | Fetch exactly one row where matching criteria |
 | [fetchAny(where, options)](manual/table_methods.html#fetchany-where--options-) | Fetch any row where matching criteria |
@@ -91,6 +114,11 @@ This is a brief summary of the object methods available.
 | [oneRecord(query, args)](manual/table_queries.html#onerecord-query--args-) | Select exactly one row using [fetchOne()](manual/table_methods.html#fetchone-where--options-) or [one()](manual/table_queries.html#one-query--values--options-) as appropriate and return as a record|
 | [anyRecord(query, args)](manual/table_queries.html#anyrecord-query--args-) | Select any single row using [fetchAny()](manual/table_methods.html#fetchany-where--options-) or [any()](manual/table_queries.html#any-query--values--options-) as appropriate and return as a record|
 | [allRecords(query, args)](manual/table_queries.html#allrecords-query--args-) | Select all rows using [fetchAll()](manual/table_methods.html#fetchall-where--options-) or [all()](manual/table_queries.html#all-query--values--options-) as appropriate and return as a record|
+
+### Other Table Methods
+
+| Method | Description
+|-|-|
 | [build](manual/table_queries.html#query-builder) | Start a query builder chain |
 | [select(columns)](manual/table_queries.html#query-builder) | Start a query builder chain with column selection and table pre-defined|
 | [record(row)](manual/table_methods.html#record-row-) | Convert a row to a record object |

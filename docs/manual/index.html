@@ -162,6 +162,8 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertone-data--options-" data-ice="link">insertOne(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertall-array--options-" data-ice="link">insertAll(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-methods" data-ice="link">Update Methods</a></li>
@@ -169,6 +171,8 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone-set--where--options-" data-ice="link">updateOne(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany-set--where--options-" data-ice="link">updateAny(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall-set--where--options-" data-ice="link">updateAll(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-method" data-ice="link">Delete Method</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-methods" data-ice="link">Fetch Methods</a></li>
@@ -389,11 +393,15 @@
 <td>Start an <code>DELETE</code> query builder chain with optional column specification</td>
 </tr>
 <tr>
+<td><a href="manual/transactions.html">transaction(code)</a></td>
+<td>Execute queries in the scope of a transaction</td>
+</tr>
+<tr>
 <td><a href="manual/tables.html">table(name)</a></td>
 <td>Lookup a named table and return a <code>Table</code> object</td>
 </tr>
 </tbody></table>
-<h3 id="table-methods">Table Methods</h3><table>
+<h3 id="table-query-methods">Table Query Methods</h3><table>
 <thead>
 <tr>
 <th>Method</th>
@@ -416,7 +424,15 @@
 <td><a href="manual/table_queries.html#all-query--values--options-">all(query, values, options)</a></td>
 <td>Run a raw SQL query or named query to fetch all rows</td>
 </tr>
+</tbody></table>
+<h3 id="table-insert-methods">Table Insert Methods</h3><table>
+<thead>
 <tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
 <td><a href="manual/table_methods.html#insert-data--options-">insert(data, options)</a></td>
 <td>Insert one or more rows of data</td>
 </tr>
@@ -427,6 +443,22 @@
 <tr>
 <td><a href="manual/table_methods.html#insertall-array--options-">insertAll(array, options)</a></td>
 <td>Insert multiple rows of data</td>
+</tr>
+<tr>
+<td><a href="manual/table_methods.html#insertonerow-data--options-">insertOneRow(data, options)</a></td>
+<td>Insert a single row of data and return the reloaded row</td>
+</tr>
+<tr>
+<td><a href="manual/table_methods.html#insertallrows-array--options-">insertAllRows(array, options)</a></td>
+<td>Insert multiple rows of data and return an array of reloaded rows</td>
+</tr>
+<tr>
+<td><a href="manual/table_methods.html#insertonerow-data--options-">insertRow(data, options)</a></td>
+<td>Alias for <a href="manual/table_methods.html#insertonerow-data--options-">insertOneRow()</a></td>
+</tr>
+<tr>
+<td><a href="manual/table_methods.html#insertallrows-array--options-">insertRows(array, options)</a></td>
+<td>Alias for <a href="manual/table_methods.html#insertallrows-array--options-">insertAllRows()</a></td>
 </tr>
 <tr>
 <td><a href="manual/table_methods.html#insertonerecord-data--options-">insertOneRecord(data, options)</a></td>
@@ -444,7 +476,15 @@
 <td><a href="manual/table_methods.html#insertallrecords-array--options-">insertRecords(array, options)</a></td>
 <td>Alias for <a href="manual/table_methods.html#insertallrecords-array--options-">insertAllRecords()</a></td>
 </tr>
+</tbody></table>
+<h3 id="table-update-methods">Table Update Methods</h3><table>
+<thead>
 <tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
 <td><a href="manual/table_methods.html#update-set--where--options-">update(set, where, options)</a></td>
 <td>Update one or more rows to set new values where matching criteria</td>
 </tr>
@@ -461,10 +501,38 @@
 <td>Update all rows to set new values where matching criteria</td>
 </tr>
 <tr>
+<td><a href="manual/table_methods.html#updateonerow-set--where--options-">updateOneRow(set, where, options)</a></td>
+<td>Update exactly one row with reload option to return updated row</td>
+</tr>
+<tr>
+<td><a href="manual/table_methods.html#updateanyrow-set--where--options-">updateAnyRow(set, where, options)</a></td>
+<td>Update any row with reload option to return updated row</td>
+</tr>
+<tr>
+<td><a href="manual/table_methods.html#updateonerow-set--where--options-">updateRow(set, where, options)</a></td>
+<td>Alias for <a href="manual/table_methods.html#updateonerow-set--where--options-">updateOneRow()</a></td>
+</tr>
+</tbody></table>
+<h3 id="table-delete-method">Table Delete Method</h3><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
 <td><a href="manual/table_methods.html#delete-where-">delete(where)</a></td>
 <td>Delete all rows where matching criteria</td>
 </tr>
+</tbody></table>
+<h3 id="table-fetch-methods">Table Fetch Methods</h3><table>
+<thead>
 <tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
 <td><a href="manual/table_methods.html#fetch-where--options-">fetch(where, options)</a></td>
 <td>Fetch rows where matching criteria</td>
 </tr>
@@ -524,7 +592,15 @@
 <td><a href="manual/table_queries.html#allrecords-query--args-">allRecords(query, args)</a></td>
 <td>Select all rows using <a href="manual/table_methods.html#fetchall-where--options-">fetchAll()</a> or <a href="manual/table_queries.html#all-query--values--options-">all()</a> as appropriate and return as a record</td>
 </tr>
+</tbody></table>
+<h3 id="other-table-methods">Other Table Methods</h3><table>
+<thead>
 <tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
 <td><a href="manual/table_queries.html#query-builder">build</a></td>
 <td>Start a query builder chain</td>
 </tr>

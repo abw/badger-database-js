@@ -290,7 +290,7 @@ const rows = await users.insertAllRows([
   }
 ]);
 // array of rows returned
-console.log(rows.length); // 2
+console.log(rows.length);     // 2
 console.log(rows[0].id);      // e.g. 123
 console.log(rows[0].name);    // Bobby Badger
 console.log(rows[0].email);   // bobby@badgerpower.com

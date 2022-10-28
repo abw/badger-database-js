@@ -162,6 +162,8 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insert-data--options-" data-ice="link">insert(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertone-data--options-" data-ice="link">insertOne(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertall-array--options-" data-ice="link">insertAll(array, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerow-data--options-" data-ice="link">insertOneRow(data, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrows-array--options-" data-ice="link">insertAllRows(array, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertonerecord-data--options-" data-ice="link">insertOneRecord(data, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#insertallrecords-array--options-" data-ice="link">insertAllRecords(array, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#update-methods" data-ice="link">Update Methods</a></li>
@@ -169,6 +171,8 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateone-set--where--options-" data-ice="link">updateOne(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateany-set--where--options-" data-ice="link">updateAny(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateall-set--where--options-" data-ice="link">updateAll(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateonerow-set--where--options-" data-ice="link">updateOneRow(set, where, options)</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#updateanyrow-set--where--options-" data-ice="link">updateAnyRow(set, where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-method" data-ice="link">Delete Method</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#delete-where-" data-ice="link">delete(where)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetch-methods" data-ice="link">Fetch Methods</a></li>
@@ -311,11 +315,21 @@
 queries on table rows.  These use the <a href="manual/table_queries.html#query-builder">table query builder</a>
 to automatically generate and run queries for you based on the data
 you provide as arguments.</p>
+<p>There are numerous methods that provide minor variations on other methods.  These all
+conform to a naming convention where the first part of the name is the action (e.g.
+<code>insert</code>, <code>update</code>), followed by the number of rows that it operates on (e.g. <code>one</code>,
+<code>any</code>, <code>all</code>).  The <code>Row</code> suffix (e.g. <code>insertOneRow()</code>) indicates that that <code>reload</code>
+option is automatically set and the method returns the complete row (or rows) reloaded
+from the database.  The <code>Record</code> suffix (e.g. <code>insertOneRecord()</code>) indicates that
+the <code>record</code> option is automatically set and the methods reloads the row (or rows)
+and returns it as a <a href="manual/records.html">record</a> object (or array or objects).</p>
 <ul>
 <li><a href="#insert-methods">Insert Methods</a><ul>
 <li><a href="#insert-data--options-">insert(data, options)</a></li>
 <li><a href="#insertone-data--options-">insertOne(data, options)</a></li>
 <li><a href="#insertall-array--options-">insertAll(array, options)</a></li>
+<li><a href="#insertonerow-data--options-">insertOneRow(data, options)</a></li>
+<li><a href="#insertallrows-array--options-">insertAllRows(array, options)</a></li>
 <li><a href="#insertonerecord-data--options-">insertOneRecord(data, options)</a></li>
 <li><a href="#insertallrecords-array--options-">insertAllRecords(array, options)</a></li>
 </ul>
@@ -325,6 +339,8 @@ you provide as arguments.</p>
 <li><a href="#updateone-set--where--options-">updateOne(set, where, options)</a></li>
 <li><a href="#updateany-set--where--options-">updateAny(set, where, options)</a></li>
 <li><a href="#updateall-set--where--options-">updateAll(set, where, options)</a></li>
+<li><a href="#updateonerow-set--where--options-">updateOneRow(set, where, options)</a></li>
+<li><a href="#updateanyrow-set--where--options-">updateAnyRow(set, where, options)</a></li>
 </ul>
 </li>
 <li><a href="#delete-method">Delete Method</a><ul>
@@ -497,6 +513,39 @@ same as calling <a href="#insert-data--options-">insert()</a> with an array of r
     email: 'simon@badgerpower.com'
   }
 ]);</code></code></pre>
+<h3 id="insertonerow-data--options-">insertOneRow(data, options)</h3><p>This is a wrapper around the <a href="#insertone-data--options-">insertOne()</a> method
+which automatically sets the <code>reload</code> option for you.  The result returned
+will be the inserted row reloaded from the database instead of a result object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.insertOneRow({
+  name:  'Brian Badger',
+  email: 'brian@badgerpower.com'
+});
+console.log(row.id);     // e.g. 123
+console.log(row.name);   // Brian Badger
+console.log(row.email);  // brian@badgerpower.com</code></code></pre>
+<p>The <code>insertRow()</code> method is provided as an alias for this method.</p>
+<h3 id="insertallrows-array--options-">insertAllRows(array, options)</h3><p>This is a wrapper around the <a href="#insertall-array--options-">insertAll()</a> method
+which automatically sets the <code>reload</code> option for you.  The result returned
+will be an array of rows reloaded from the database instead of an array of results.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rows = await users.insertAllRows([
+  {
+    name:  'Bobby Badger',
+    email: 'bobby@badgerpower.com'
+  },
+  {
+    name:  'Brian Badger',
+    email: 'brian@badgerpower.com'
+  }
+]);
+// array of rows returned
+console.log(rows.length);     // 2
+console.log(rows[0].id);      // e.g. 123
+console.log(rows[0].name);    // Bobby Badger
+console.log(rows[0].email);   // bobby@badgerpower.com
+console.log(rows[1].id);      // e.g. 124
+console.log(rows[1].name);    // Brian Badger
+console.log(rows[1].email);   // brian@badgerpower.com</code></code></pre>
+<p>The <code>insertRows()</code> method is provided as an alias for this method.</p>
 <h3 id="insertonerecord-data--options-">insertOneRecord(data, options)</h3><p>This is a wrapper around the <a href="#insertone-data--options-">insertOne()</a> method
 which automatically sets the <code>record</code> option for you.  The result returned
 will be a record object instead of a result object.</p>
@@ -647,6 +696,28 @@ ensure that you're only updating one row, or if you want to automatically
 reload a row after an update then you can use the
 <a href="#updateone-set--where--options-">updateOne()</a> or
 <a href="#updateany-set--where--options-">updateAny()</a> methods.</p>
+<h3 id="updateonerow-set--where--options-">updateOneRow(set, where, options)</h3><p>This is a wrapper around the <a href="#updateone-set--where--options-">updateOne()</a> method
+which automatically sets the <code>reload</code> option for you.  The result returned
+will be the updated row reloaded from the database instead of a result object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateOneRow(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' },
+);
+console.log('updated row:', row);</code></code></pre>
+<p>The <code>updateRow()</code> method is provided as an alias for this method.</p>
+<h3 id="updateanyrow-set--where--options-">updateAnyRow(set, where, options)</h3><p>This is a wrapper around the <a href="#updateany-set--where--options-">updateAny()</a> method
+which automatically sets the <code>reload</code> option for you.  The result returned
+will be the updated row reloaded from the database instead of a result object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const row = await users.updateAnyRow(
+  { name: 'Brian "The Brains" Badger' },
+  { email: 'brian@badgerpower.com' },
+);
+if (row) {
+  console.log("updated row:", row);
+}
+else {
+  console.log("could not update row - Brian not found!")
+}</code></code></pre>
 <h2 id="delete-method">Delete Method</h2><h3 id="delete-where-">delete(where)</h3><p>You can probably guess what the <code>delete()</code> method does.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await users.delete({
   email: 'brian@badgerpower.com'
