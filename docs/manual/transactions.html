@@ -443,7 +443,7 @@ await db.transaction(
   }
 )</code></code></pre>
 <p>You can also use records within a transaction, but they <strong>MUST</strong>
-be fetch from tables accessed through the database reference passed
+be fetched from tables accessed through the database reference passed
 to your transaction function.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">await db.transaction(
   async tdb =&gt; {
