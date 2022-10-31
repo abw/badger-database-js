@@ -158,7 +158,7 @@ await db.transaction(
 ```
 
 You can also use records within a transaction, but they **MUST**
-be fetch from tables accessed through the database reference passed
+be fetched from tables accessed through the database reference passed
 to your transaction function.
 
 ```js
