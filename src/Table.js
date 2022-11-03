@@ -66,7 +66,7 @@ export class Table extends Queryable {
   }
 
   prepareInsert(data, options) {
-    const [cols, vals] = this.checkWritableColumns(data, options);
+    const [cols, vals] = this.validateInsert(data, options);
     const returning = this.engine.returning
       ? { table: this.table, columns: this.keys }
       : undefined;
@@ -78,6 +78,10 @@ export class Table extends Queryable {
       .returning(returning);
     this.debugData('prepareInsert()', { data, sql: insert.sql() })
     return insert;
+  }
+
+  validateInsert(data, options) {
+    return this.checkWritableColumns(data, options);
   }
 
   async insertOne(data, options={}) {
@@ -135,8 +139,7 @@ export class Table extends Queryable {
   // update
   //-----------------------------------------------------------------------------
   prepareUpdate(set, where, options) {
-    const [ , , update] = this.checkUpdatableColumns(set, options);
-    const [ , , criteria] = this.checkWhereColumns(where, options);
+    const [update, criteria] = this.validateUpdate(set, where, options);
     const query = this
       .build
       .update(this.table)
@@ -145,6 +148,12 @@ export class Table extends Queryable {
     const sql = query.sql();
     this.debugData("prepareUpdate()", { where, sql })
     return query
+  }
+
+  validateUpdate(set, where, options) {
+    const [ , , update] = this.checkUpdatableColumns(set, options);
+    const [ , , criteria] = this.checkWhereColumns(where, options);
+    return [update, criteria]
   }
 
   async updateOne(set, where, options={}) {
@@ -206,7 +215,7 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   async delete(where, options) {
     this.debugData("delete()", { where });
-    const [ , , criteria] = this.checkWhereColumns(where, options);
+    const criteria = this.validateDelete(where, options)
     const query = this
       .build
       .delete()
@@ -215,6 +224,11 @@ export class Table extends Queryable {
     const sql = query.sql();
     this.debugData("delete()", { where, sql })
     return await query.run();
+  }
+
+  validateDelete(where, options) {
+    const [ , , criteria] = this.checkWhereColumns(where, options);
+    return criteria;
   }
 
   //-----------------------------------------------------------------------------
