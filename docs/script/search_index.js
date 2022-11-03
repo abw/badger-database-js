@@ -3912,6 +3912,24 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#validatedelete",
+    "class/src/Table.js~Table.html#instance-method-validateDelete",
+    "src/Table.js~Table#validateDelete",
+    "method"
+  ],
+  [
+    "src/table.js~table#validateinsert",
+    "class/src/Table.js~Table.html#instance-method-validateInsert",
+    "src/Table.js~Table#validateInsert",
+    "method"
+  ],
+  [
+    "src/table.js~table#validateupdate",
+    "class/src/Table.js~Table.html#instance-method-validateUpdate",
+    "src/Table.js~Table#validateUpdate",
+    "method"
+  ],
+  [
     "src/table.js~table#withrecordoption",
     "class/src/Table.js~Table.html#instance-method-withRecordOption",
     "src/Table.js~Table#withRecordOption",
