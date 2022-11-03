@@ -65,8 +65,8 @@ export class Table extends Queryable {
       : this.insertOne(data, options)
   }
 
-  prepareInsert(data, options) {
-    const [cols, vals] = this.validateInsert(data, options);
+  async prepareInsert(data, options) {
+    const [cols, vals] = await this.validateInsert(data, options);
     const returning = this.engine.returning
       ? { table: this.table, columns: this.keys }
       : undefined;
@@ -80,12 +80,14 @@ export class Table extends Queryable {
     return insert;
   }
 
-  validateInsert(data, options) {
+  async validateInsert(data, options) {
     return this.checkWritableColumns(data, options);
   }
 
   async insertOne(data, options={}) {
-    const insert = await this.prepareInsert(data, options).run(undefined, { keys: this.keys });
+    const insert = await this
+      .prepareInsert(data, options)
+      .then( query => query.run(undefined, { keys: this.keys }) );
     return options.reload || options.record
       ? this.insertReload(data, insert, options)
       : insert;
@@ -138,8 +140,8 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   // update
   //-----------------------------------------------------------------------------
-  prepareUpdate(set, where, options) {
-    const [update, criteria] = this.validateUpdate(set, where, options);
+  async prepareUpdate(set, where, options) {
+    const [update, criteria] = await this.validateUpdate(set, where, options);
     const query = this
       .build
       .update(this.table)
@@ -150,7 +152,7 @@ export class Table extends Queryable {
     return query
   }
 
-  validateUpdate(set, where, options) {
+  async validateUpdate(set, where, options) {
     const [ , , update] = this.checkUpdatableColumns(set, options);
     const [ , , criteria] = this.checkWhereColumns(where, options);
     return [update, criteria]
@@ -158,7 +160,9 @@ export class Table extends Queryable {
 
   async updateOne(set, where, options={}) {
     this.debugData("updateOne()", { set, where, options });
-    const update = await this.prepareUpdate(set, where, options).run();
+    const update = await this
+      .prepareUpdate(set, where, options)
+      .then( query => query.run() );
     if (update.changes !== 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
@@ -169,7 +173,9 @@ export class Table extends Queryable {
 
   async updateAny(set, where, options={}) {
     this.debugData("updateAny()", { set, where, options });
-    const update = await this.prepareUpdate(set, where, options).run()
+    const update = await this
+      .prepareUpdate(set, where, options)
+      .then( query => query.run() )
     if (update.changes > 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
@@ -182,7 +188,9 @@ export class Table extends Queryable {
 
   async updateAll(set, where, options={}) {
     this.debugData("updateAllRows()", { set, where, options });
-    const update = await this.prepareUpdate(set, where, options).run();
+    const update = await this
+      .prepareUpdate(set, where, options)
+      .then( query => query.run() );
     return options.reload
       ? fail("Cannot reload multiple updated rows")
       : update;
@@ -215,7 +223,7 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   async delete(where, options) {
     this.debugData("delete()", { where });
-    const criteria = this.validateDelete(where, options)
+    const criteria = await this.validateDelete(where, options)
     const query = this
       .build
       .delete()
@@ -226,7 +234,7 @@ export class Table extends Queryable {
     return await query.run();
   }
 
-  validateDelete(where, options) {
+  async validateDelete(where, options) {
     const [ , , criteria] = this.checkWhereColumns(where, options);
     return criteria;
   }
