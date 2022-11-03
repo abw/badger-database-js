@@ -11350,7 +11350,7 @@
     "__docId__": 555,
     "kind": "file",
     "name": "src/Table.js",
-    "content": "import Record from \"./Record.js\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\nimport { isQuery } from \"./Utils/Queries.js\";\nimport Queryable from \"./Queryable.js\";\nimport { aliasMethods } from \"./Utils/Methods.js\";\nimport { databaseBuilder } from \"./Builders.js\";\n\nconst methodAliases = {\n  insertRow:     \"insertOneRow\",\n  insertRows:    \"insertAllRows\",\n  insertRecord:  \"insertOneRecord\",\n  insertRecords: \"insertAllRecords\",\n  update:        \"updateAll\",\n  updateRow:     \"updateOneRow\",\n  fetch:         \"fetchAll\",\n  fetchRecord:   \"fetchOneRecord\",\n  fetchRecords:  \"fetchAllRecords\",\n}\n\nexport class Table extends Queryable {\n  constructor(database, config) {\n    super(database.engine, config);\n    this.config        = this.configure(config) || config;\n    this.database      = database || fail(\"No database specified\");\n    this.table         = config.table;\n    this.columns       = prepareColumns(config);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(config, this.columns);\n    this.id            = config.id;\n    this.recordClass   = config.recordClass || Record;\n    this.recordConfig  = config.recordConfig;\n    this.queries       = config.queries || { };\n    this.fragments     = this.prepareFragments(config);\n    this.relations     = config.relations || { };\n    this.build         = databaseBuilder(this.database);\n    aliasMethods(this, methodAliases);\n    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);\n  }\n\n  configure(config) {\n    return config;\n  }\n\n  prepareFragments(config) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = config.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAll(data, options)\n      : this.insertOne(data, options)\n  }\n\n  prepareInsert(data, options) {\n    const [cols, vals] = this.validateInsert(data, options);\n    const returning = this.engine.returning\n      ? { table: this.table, columns: this.keys }\n      : undefined;\n    this.checkRequiredColumns(data);\n    const insert = this.build\n      .insert(cols)\n      .into(this.table)\n      .values(vals)\n      .returning(returning);\n    this.debugData('prepareInsert()', { data, sql: insert.sql() })\n    return insert;\n  }\n\n  validateInsert(data, options) {\n    return this.checkWritableColumns(data, options);\n  }\n\n  async insertOne(data, options={}) {\n    const insert = await this.prepareInsert(data, options).run(undefined, { keys: this.keys });\n    return options.reload || options.record\n      ? this.insertReload(data, insert, options)\n      : insert;\n  }\n\n  async insertAll(data, options) {\n    this.debugData(\"insertAll()\", { data, options });\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOne(row, options));\n    }\n    return rows;\n  }\n\n  async insertOneRow(data, options) {\n    this.debugData(\"insertOneRow()\", { data, options });\n    return this.insertOne(data, this.withReloadOption(options))\n  }\n\n  async insertAllRows(data, options) {\n    this.debugData(\"insertAllRows()\", { data, options });\n    return this.insertAll(data, this.withReloadOption(options))\n  }\n\n  async insertOneRecord(data, options) {\n    this.debugData(\"insertOneRecord()\", { data, options });\n    return this.insertOne(data, this.withRecordOption(options))\n  }\n\n  async insertAllRecords(data, options) {\n    this.debugData(\"insertAllRecords()\", { data, options });\n    return this.insertAll(data, this.withRecordOption(options))\n  }\n\n  async insertReload(input, output, options={}) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return options.record\n      ? this.oneRecord(fetch)\n      : this.oneRow(fetch);\n  }\n\n\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  prepareUpdate(set, where, options) {\n    const [update, criteria] = this.validateUpdate(set, where, options);\n    const query = this\n      .build\n      .update(this.table)\n      .set(update)\n      .where(criteria);\n    const sql = query.sql();\n    this.debugData(\"prepareUpdate()\", { where, sql })\n    return query\n  }\n\n  validateUpdate(set, where, options) {\n    const [ , , update] = this.checkUpdatableColumns(set, options);\n    const [ , , criteria] = this.checkWhereColumns(where, options);\n    return [update, criteria]\n  }\n\n  async updateOne(set, where, options={}) {\n    this.debugData(\"updateOne()\", { set, where, options });\n    const update = await this.prepareUpdate(set, where, options).run();\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where, options)\n      : update;\n  }\n\n  async updateAny(set, where, options={}) {\n    this.debugData(\"updateAny()\", { set, where, options });\n    const update = await this.prepareUpdate(set, where, options).run()\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where, options)\n        : undefined\n      : update;\n  }\n\n  async updateAll(set, where, options={}) {\n    this.debugData(\"updateAllRows()\", { set, where, options });\n    const update = await this.prepareUpdate(set, where, options).run();\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  async updateReload(set, where, options) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch, options);\n  }\n\n  async updateOneRow(set, where, options) {\n    this.debugData(\"updateOneRow()\", { set, where, options });\n    return this.updateOne(set, where, this.withReloadOption(options))\n  }\n\n  async updateAnyRow(set, where, options) {\n    this.debugData(\"updateAnyRow()\", { set, where, options });\n    return this.updateAny(set, where, this.withReloadOption(options))\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where, options) {\n    this.debugData(\"delete()\", { where });\n    const criteria = this.validateDelete(where, options)\n    const query = this\n      .build\n      .delete()\n      .from(this.table)\n      .where(criteria)\n    const sql = query.sql();\n    this.debugData(\"delete()\", { where, sql })\n    return await query.run();\n  }\n\n  validateDelete(where, options) {\n    const [ , , criteria] = this.checkWhereColumns(where, options);\n    return criteria;\n  }\n\n  //-----------------------------------------------------------------------------\n  // fetch - using where data\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, options) {\n    const table = this.table;\n    const columns = options.columns || Object.keys(this.columns);\n    this.checkColumnNames(columns);\n    const [ , , criteria] = this.checkWhereColumns(where, options);\n    const query = this\n      .select({ table, columns })\n      .where(criteria)\n      .order(options.orderBy || options.order);\n    const sql = query.sql();\n    this.debugData(\"prepareFetch()\", { where, sql })\n    return query\n  }\n\n  async fetchOne(where, options={}) {\n    this.debugData(\"fetchOne()\", { where, options });\n    const row = await this.prepareFetch(where, options).one();\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n\n  async fetchAny(where, options={}) {\n    this.debugData(\"fetchAny()\", { where, options });\n    const row = await this.prepareFetch(where, options).any();\n    return row\n      ? options.record\n        ? this.record(row)\n        : row\n      : undefined;\n  }\n\n  async fetchAll(where, options={}) {\n    this.debugData(\"fetchAllRows()\", { where, options });\n    const rows = await this.prepareFetch(where, options).all();\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  async fetchOneRecord(where, options) {\n    this.debugData(\"fetchOneRecord()\", { where, options });\n    return this.fetchOne(where, this.withRecordOption(options));\n  }\n\n  async fetchAnyRecord(where, options) {\n    this.debugData(\"fetchAnyRecord()\", { where, options });\n    return this.fetchAny(where, this.withRecordOption(options));\n  }\n\n  async fetchAllRecords(where, options) {\n    this.debugData(\"fetchAllRecords()\", { where, options });\n    return this.fetchAll(where, this.withRecordOption(options));\n  }\n\n  //-----------------------------------------------------------------------------\n  // Generic methods map onto equivalent fetch or select methods depending on\n  // first arguments.  If it's a query (string or builder) then it's forwarded\n  // to the select method, otherwise to the fetch method.\n  //-----------------------------------------------------------------------------\n  async oneRow(query, ...args) {\n    this.debugData(\"oneRow()\", { query, args });\n    return isQuery(query)\n      ? this.one(query, ...args)\n      : this.fetchOne(query, ...args)\n  }\n\n  async anyRow(query, ...args) {\n    this.debugData(\"anyRow()\", { query, ...args });\n    return isQuery(query)\n      ? this.any(query, ...args)\n      : this.fetchAny(query, ...args)\n  }\n\n  async allRows(query, ...args) {\n    this.debugData(\"allRows()\", { query, ...args });\n    return isQuery(query)\n      ? this.all(query, ...args)\n      : this.fetchAll(query, ...args)\n  }\n\n  async oneRecord(query, ...args) {\n    this.debugData(\"oneRecord()\", { query, args });\n    return isQuery(query)\n      ? this.one(query, args[0], this.withRecordOption(args[1]))\n      : this.fetchOne(query, this.withRecordOption(args[0]))\n  }\n\n  async anyRecord(query, ...args) {\n    this.debugData(\"anyRecord()\", { query, args });\n    return isQuery(query)\n      ? this.any(query, args[0], this.withRecordOption(args[1]))\n      : this.fetchAny(query, this.withRecordOption(args[0]))\n  }\n\n  async allRecords(query, ...args) {\n    this.debugData(\"allRecords()\", { query, args });\n    return isQuery(query)\n      ? this.all(query, args[0], this.withRecordOption(args[1]))\n      : this.fetchAll(query, this.withRecordOption(args[0]))\n  }\n\n  loadedOne(row, options={}) {\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n\n  loadedAny(row, options={}) {\n    return row\n      ? this.loadedOne(row, options)\n      : undefined;\n  }\n\n  loadedAll(rows, options={}) {\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  withReloadOption(options={}) {\n    return { ...options, reload: true };\n  }\n\n  withRecordOption(options={}) {\n    return { ...options, record: true };\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n\n  checkColumns(data={}, options={}, cols=[], vals=[]) {\n    this.debugData(\"checkColumns()\", { data, options})\n    const table = this.table;\n    let result = { };\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column];\n        if (spec) {\n          if (options.writable && spec.readonly) {\n            throwColumnValidationError('readonly', { column, table });\n          }\n          if (options.fixed && spec.fixed) {\n            throwColumnValidationError('fixed', { column, table });\n          }\n          // cols.push(options.tableColumn ? spec.tableColumn : spec.column);\n          cols.push(spec.column);\n          vals.push(data[column]);\n          result[spec.column] = data[column];\n        }\n        else if (! options.pick) {\n          throwColumnValidationError('unknown', { column, table });\n        }\n      }\n    )\n    this.debugData(\"checkColumns()\", { cols, vals })\n    return [cols, vals, result];\n  }\n\n  checkWritableColumns(data, options={}) {\n    return this.checkColumns(data, { ...options, writable: true })\n  }\n\n  checkUpdatableColumns(data, options={}) {\n    return this.checkColumns(data, { ...options, writable: true, fixed: true })\n  }\n\n  checkWhereColumns(where, options) {\n    return this.checkColumns(where, options)\n  }\n\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query builder methods\n  //-----------------------------------------------------------------------------\n  select(...args) {\n    if (args.length === 0) {\n      args.push({\n        table:   this.table,\n        columns: Object.keys(this.columns)\n      })\n    }\n    return this.build.select(...args).from(this.table)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Record methods\n  //-----------------------------------------------------------------------------\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordConfig)\n    );\n  }\n\n  record(row) {\n    this.debugData(\"record()\", { row });\n    return Promise.resolve(\n      this.newRecord(row)\n    );\n  }\n\n  records(rows) {\n    this.debugData(\"records()\", { rows });\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Utility methods\n  //-----------------------------------------------------------------------------\n  tableFragments() {\n    return this.tableFragments\n  }\n\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n\n}\n\nexport default Table;\n",
+    "content": "import Record from \"./Record.js\";\nimport recordProxy from \"./Proxy/Record.js\";\nimport { fail, firstValue, isArray, noValue, splitList } from \"@abw/badger-utils\";\nimport { prepareColumns, prepareKeys } from \"./Utils/Columns.js\";\nimport { throwColumnValidationError, unexpectedRowCount } from \"./Utils/Error.js\";\nimport { addDebugMethod } from \"./Utils/Debug.js\";\nimport { isQuery } from \"./Utils/Queries.js\";\nimport Queryable from \"./Queryable.js\";\nimport { aliasMethods } from \"./Utils/Methods.js\";\nimport { databaseBuilder } from \"./Builders.js\";\n\nconst methodAliases = {\n  insertRow:     \"insertOneRow\",\n  insertRows:    \"insertAllRows\",\n  insertRecord:  \"insertOneRecord\",\n  insertRecords: \"insertAllRecords\",\n  update:        \"updateAll\",\n  updateRow:     \"updateOneRow\",\n  fetch:         \"fetchAll\",\n  fetchRecord:   \"fetchOneRecord\",\n  fetchRecords:  \"fetchAllRecords\",\n}\n\nexport class Table extends Queryable {\n  constructor(database, config) {\n    super(database.engine, config);\n    this.config        = this.configure(config) || config;\n    this.database      = database || fail(\"No database specified\");\n    this.table         = config.table;\n    this.columns       = prepareColumns(config);\n    this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );\n    this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );\n    this.keys          = prepareKeys(config, this.columns);\n    this.id            = config.id;\n    this.recordClass   = config.recordClass || Record;\n    this.recordConfig  = config.recordConfig;\n    this.queries       = config.queries || { };\n    this.fragments     = this.prepareFragments(config);\n    this.relations     = config.relations || { };\n    this.build         = databaseBuilder(this.database);\n    aliasMethods(this, methodAliases);\n    addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);\n  }\n\n  configure(config) {\n    return config;\n  }\n\n  prepareFragments(config) {\n    const quote       = this.database.quote.bind(this.database);\n    const fragments   = config.fragments ||= { };\n    fragments.table   = quote(this.table);\n    fragments.columns = Object.values(this.columns).map(\n      spec => quote(spec.tableColumn)\n    ).join(', ');\n    return fragments;\n  }\n\n  //-----------------------------------------------------------------------------\n  // Basic queries - insert\n  //-----------------------------------------------------------------------------\n  async insert(data, options) {\n    return isArray(data, options)\n      ? this.insertAll(data, options)\n      : this.insertOne(data, options)\n  }\n\n  async prepareInsert(data, options) {\n    const [cols, vals] = await this.validateInsert(data, options);\n    const returning = this.engine.returning\n      ? { table: this.table, columns: this.keys }\n      : undefined;\n    this.checkRequiredColumns(data);\n    const insert = this.build\n      .insert(cols)\n      .into(this.table)\n      .values(vals)\n      .returning(returning);\n    this.debugData('prepareInsert()', { data, sql: insert.sql() })\n    return insert;\n  }\n\n  async validateInsert(data, options) {\n    return this.checkWritableColumns(data, options);\n  }\n\n  async insertOne(data, options={}) {\n    const insert = await this\n      .prepareInsert(data, options)\n      .then( query => query.run(undefined, { keys: this.keys }) );\n    return options.reload || options.record\n      ? this.insertReload(data, insert, options)\n      : insert;\n  }\n\n  async insertAll(data, options) {\n    this.debugData(\"insertAll()\", { data, options });\n    let rows = [ ];\n    for (const row of data) {\n      rows.push(await this.insertOne(row, options));\n    }\n    return rows;\n  }\n\n  async insertOneRow(data, options) {\n    this.debugData(\"insertOneRow()\", { data, options });\n    return this.insertOne(data, this.withReloadOption(options))\n  }\n\n  async insertAllRows(data, options) {\n    this.debugData(\"insertAllRows()\", { data, options });\n    return this.insertAll(data, this.withReloadOption(options))\n  }\n\n  async insertOneRecord(data, options) {\n    this.debugData(\"insertOneRecord()\", { data, options });\n    return this.insertOne(data, this.withRecordOption(options))\n  }\n\n  async insertAllRecords(data, options) {\n    this.debugData(\"insertAllRecords()\", { data, options });\n    return this.insertAll(data, this.withRecordOption(options))\n  }\n\n  async insertReload(input, output, options={}) {\n    // For insert queries where the input data is used to run the query,\n    // and the output data is returned from the query. We should have\n    // values for each of this.keys because they should always be\n    // either specified in the input data, or returned by the database\n    const fetch = { };\n    this.keys.map(\n      key => fetch[key] = firstValue(output[key], input[key])\n    );\n    return options.record\n      ? this.oneRecord(fetch)\n      : this.oneRow(fetch);\n  }\n\n\n  //-----------------------------------------------------------------------------\n  // update\n  //-----------------------------------------------------------------------------\n  async prepareUpdate(set, where, options) {\n    const [update, criteria] = await this.validateUpdate(set, where, options);\n    const query = this\n      .build\n      .update(this.table)\n      .set(update)\n      .where(criteria);\n    const sql = query.sql();\n    this.debugData(\"prepareUpdate()\", { where, sql })\n    return query\n  }\n\n  async validateUpdate(set, where, options) {\n    const [ , , update] = this.checkUpdatableColumns(set, options);\n    const [ , , criteria] = this.checkWhereColumns(where, options);\n    return [update, criteria]\n  }\n\n  async updateOne(set, where, options={}) {\n    this.debugData(\"updateOne()\", { set, where, options });\n    const update = await this\n      .prepareUpdate(set, where, options)\n      .then( query => query.run() );\n    if (update.changes !== 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? this.updateReload(set, where, options)\n      : update;\n  }\n\n  async updateAny(set, where, options={}) {\n    this.debugData(\"updateAny()\", { set, where, options });\n    const update = await this\n      .prepareUpdate(set, where, options)\n      .then( query => query.run() )\n    if (update.changes > 1) {\n      return unexpectedRowCount(update.changes, 'updated');\n    }\n    return options.reload\n      ? update.changes === 1\n        ? this.updateReload(set, where, options)\n        : undefined\n      : update;\n  }\n\n  async updateAll(set, where, options={}) {\n    this.debugData(\"updateAllRows()\", { set, where, options });\n    const update = await this\n      .prepareUpdate(set, where, options)\n      .then( query => query.run() );\n    return options.reload\n      ? fail(\"Cannot reload multiple updated rows\")\n      : update;\n  }\n\n  async updateReload(set, where, options) {\n    // For update queries things are a little more complicated.  In the\n    // usual case we can reload the rows using the original selection\n    // criteria (where).  But we might have done an update which changes\n    // that selection criteria (set), so we should use those values instead.\n    const fetch = { };\n    Object.keys(where).map(\n      key => fetch[key] = firstValue(set[key], where[key])\n    );\n    return this.oneRow(fetch, options);\n  }\n\n  async updateOneRow(set, where, options) {\n    this.debugData(\"updateOneRow()\", { set, where, options });\n    return this.updateOne(set, where, this.withReloadOption(options))\n  }\n\n  async updateAnyRow(set, where, options) {\n    this.debugData(\"updateAnyRow()\", { set, where, options });\n    return this.updateAny(set, where, this.withReloadOption(options))\n  }\n\n  //-----------------------------------------------------------------------------\n  // delete\n  //-----------------------------------------------------------------------------\n  async delete(where, options) {\n    this.debugData(\"delete()\", { where });\n    const criteria = await this.validateDelete(where, options)\n    const query = this\n      .build\n      .delete()\n      .from(this.table)\n      .where(criteria)\n    const sql = query.sql();\n    this.debugData(\"delete()\", { where, sql })\n    return await query.run();\n  }\n\n  async validateDelete(where, options) {\n    const [ , , criteria] = this.checkWhereColumns(where, options);\n    return criteria;\n  }\n\n  //-----------------------------------------------------------------------------\n  // fetch - using where data\n  //-----------------------------------------------------------------------------\n  prepareFetch(where, options) {\n    const table = this.table;\n    const columns = options.columns || Object.keys(this.columns);\n    this.checkColumnNames(columns);\n    const [ , , criteria] = this.checkWhereColumns(where, options);\n    const query = this\n      .select({ table, columns })\n      .where(criteria)\n      .order(options.orderBy || options.order);\n    const sql = query.sql();\n    this.debugData(\"prepareFetch()\", { where, sql })\n    return query\n  }\n\n  async fetchOne(where, options={}) {\n    this.debugData(\"fetchOne()\", { where, options });\n    const row = await this.prepareFetch(where, options).one();\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n\n  async fetchAny(where, options={}) {\n    this.debugData(\"fetchAny()\", { where, options });\n    const row = await this.prepareFetch(where, options).any();\n    return row\n      ? options.record\n        ? this.record(row)\n        : row\n      : undefined;\n  }\n\n  async fetchAll(where, options={}) {\n    this.debugData(\"fetchAllRows()\", { where, options });\n    const rows = await this.prepareFetch(where, options).all();\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  async fetchOneRecord(where, options) {\n    this.debugData(\"fetchOneRecord()\", { where, options });\n    return this.fetchOne(where, this.withRecordOption(options));\n  }\n\n  async fetchAnyRecord(where, options) {\n    this.debugData(\"fetchAnyRecord()\", { where, options });\n    return this.fetchAny(where, this.withRecordOption(options));\n  }\n\n  async fetchAllRecords(where, options) {\n    this.debugData(\"fetchAllRecords()\", { where, options });\n    return this.fetchAll(where, this.withRecordOption(options));\n  }\n\n  //-----------------------------------------------------------------------------\n  // Generic methods map onto equivalent fetch or select methods depending on\n  // first arguments.  If it's a query (string or builder) then it's forwarded\n  // to the select method, otherwise to the fetch method.\n  //-----------------------------------------------------------------------------\n  async oneRow(query, ...args) {\n    this.debugData(\"oneRow()\", { query, args });\n    return isQuery(query)\n      ? this.one(query, ...args)\n      : this.fetchOne(query, ...args)\n  }\n\n  async anyRow(query, ...args) {\n    this.debugData(\"anyRow()\", { query, ...args });\n    return isQuery(query)\n      ? this.any(query, ...args)\n      : this.fetchAny(query, ...args)\n  }\n\n  async allRows(query, ...args) {\n    this.debugData(\"allRows()\", { query, ...args });\n    return isQuery(query)\n      ? this.all(query, ...args)\n      : this.fetchAll(query, ...args)\n  }\n\n  async oneRecord(query, ...args) {\n    this.debugData(\"oneRecord()\", { query, args });\n    return isQuery(query)\n      ? this.one(query, args[0], this.withRecordOption(args[1]))\n      : this.fetchOne(query, this.withRecordOption(args[0]))\n  }\n\n  async anyRecord(query, ...args) {\n    this.debugData(\"anyRecord()\", { query, args });\n    return isQuery(query)\n      ? this.any(query, args[0], this.withRecordOption(args[1]))\n      : this.fetchAny(query, this.withRecordOption(args[0]))\n  }\n\n  async allRecords(query, ...args) {\n    this.debugData(\"allRecords()\", { query, args });\n    return isQuery(query)\n      ? this.all(query, args[0], this.withRecordOption(args[1]))\n      : this.fetchAll(query, this.withRecordOption(args[0]))\n  }\n\n  loadedOne(row, options={}) {\n    return options.record\n      ? this.record(row)\n      : row;\n  }\n\n  loadedAny(row, options={}) {\n    return row\n      ? this.loadedOne(row, options)\n      : undefined;\n  }\n\n  loadedAll(rows, options={}) {\n    return options.record\n      ? this.records(rows)\n      : rows;\n  }\n\n  withReloadOption(options={}) {\n    return { ...options, reload: true };\n  }\n\n  withRecordOption(options={}) {\n    return { ...options, record: true };\n  }\n\n  //-----------------------------------------------------------------------------\n  // Column validation\n  //-----------------------------------------------------------------------------\n  checkColumnNames(names) {\n    const table = this.table;\n    splitList(names).forEach(\n      column => this.columns[column]\n          || throwColumnValidationError('unknown', { column, table })\n    )\n  }\n\n  checkColumns(data={}, options={}, cols=[], vals=[]) {\n    this.debugData(\"checkColumns()\", { data, options})\n    const table = this.table;\n    let result = { };\n    // check that all the values supplied correspond to valid columns\n    Object.keys(data).forEach(\n      column => {\n        const spec = this.columns[column];\n        if (spec) {\n          if (options.writable && spec.readonly) {\n            throwColumnValidationError('readonly', { column, table });\n          }\n          if (options.fixed && spec.fixed) {\n            throwColumnValidationError('fixed', { column, table });\n          }\n          // cols.push(options.tableColumn ? spec.tableColumn : spec.column);\n          cols.push(spec.column);\n          vals.push(data[column]);\n          result[spec.column] = data[column];\n        }\n        else if (! options.pick) {\n          throwColumnValidationError('unknown', { column, table });\n        }\n      }\n    )\n    this.debugData(\"checkColumns()\", { cols, vals })\n    return [cols, vals, result];\n  }\n\n  checkWritableColumns(data, options={}) {\n    return this.checkColumns(data, { ...options, writable: true })\n  }\n\n  checkUpdatableColumns(data, options={}) {\n    return this.checkColumns(data, { ...options, writable: true, fixed: true })\n  }\n\n  checkWhereColumns(where, options) {\n    return this.checkColumns(where, options)\n  }\n\n  checkRequiredColumns(data) {\n    const table = this.table;\n    this.required.forEach(\n      column => {\n        if (noValue(data[column])) {\n          throwColumnValidationError('required', { column, table });\n        }\n      }\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Query builder methods\n  //-----------------------------------------------------------------------------\n  select(...args) {\n    if (args.length === 0) {\n      args.push({\n        table:   this.table,\n        columns: Object.keys(this.columns)\n      })\n    }\n    return this.build.select(...args).from(this.table)\n  }\n\n  //-----------------------------------------------------------------------------\n  // Record methods\n  //-----------------------------------------------------------------------------\n  newRecord(row) {\n    return recordProxy(\n      new this.recordClass(this, row, this.recordConfig)\n    );\n  }\n\n  record(row) {\n    this.debugData(\"record()\", { row });\n    return Promise.resolve(\n      this.newRecord(row)\n    );\n  }\n\n  records(rows) {\n    this.debugData(\"records()\", { rows });\n    return Promise.resolve(\n      rows.map(\n        row => this.newRecord(row)\n      )\n    );\n  }\n\n  //-----------------------------------------------------------------------------\n  // Utility methods\n  //-----------------------------------------------------------------------------\n  tableFragments() {\n    return this.tableFragments\n  }\n\n  identity(data) {\n    return this.keys.reduce(\n      (result, key) => {\n        result[key] = data[key]\n        return result\n      },\n      {}\n    );\n  }\n\n}\n\nexport default Table;\n",
     "static": true,
     "longname": "/Users/abw/js/badger-database-js/src/Table.js",
     "access": "public",
@@ -11742,7 +11742,7 @@
     "name": "prepareInsert",
     "memberof": "src/Table.js~Table",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Table.js~Table#prepareInsert",
     "access": "public",
@@ -11775,7 +11775,7 @@
     "name": "validateInsert",
     "memberof": "src/Table.js~Table",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Table.js~Table#validateInsert",
     "access": "public",
@@ -11849,7 +11849,7 @@
     "longname": "src/Table.js~Table#insertAll",
     "access": "public",
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 96,
     "undocument": true,
     "params": [
       {
@@ -11882,7 +11882,7 @@
     "longname": "src/Table.js~Table#insertOneRow",
     "access": "public",
     "description": null,
-    "lineNumber": 103,
+    "lineNumber": 105,
     "undocument": true,
     "params": [
       {
@@ -11915,7 +11915,7 @@
     "longname": "src/Table.js~Table#insertAllRows",
     "access": "public",
     "description": null,
-    "lineNumber": 108,
+    "lineNumber": 110,
     "undocument": true,
     "params": [
       {
@@ -11948,7 +11948,7 @@
     "longname": "src/Table.js~Table#insertOneRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 113,
+    "lineNumber": 115,
     "undocument": true,
     "params": [
       {
@@ -11981,7 +11981,7 @@
     "longname": "src/Table.js~Table#insertAllRecords",
     "access": "public",
     "description": null,
-    "lineNumber": 118,
+    "lineNumber": 120,
     "undocument": true,
     "params": [
       {
@@ -12014,7 +12014,7 @@
     "longname": "src/Table.js~Table#insertReload",
     "access": "public",
     "description": null,
-    "lineNumber": 123,
+    "lineNumber": 125,
     "undocument": true,
     "params": [
       {
@@ -12051,12 +12051,12 @@
     "name": "prepareUpdate",
     "memberof": "src/Table.js~Table",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Table.js~Table#prepareUpdate",
     "access": "public",
     "description": null,
-    "lineNumber": 141,
+    "lineNumber": 143,
     "undocument": true,
     "params": [
       {
@@ -12090,12 +12090,12 @@
     "name": "validateUpdate",
     "memberof": "src/Table.js~Table",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Table.js~Table#validateUpdate",
     "access": "public",
     "description": null,
-    "lineNumber": 153,
+    "lineNumber": 155,
     "undocument": true,
     "params": [
       {
@@ -12134,7 +12134,7 @@
     "longname": "src/Table.js~Table#updateOne",
     "access": "public",
     "description": null,
-    "lineNumber": 159,
+    "lineNumber": 161,
     "undocument": true,
     "params": [
       {
@@ -12176,7 +12176,7 @@
     "longname": "src/Table.js~Table#updateAny",
     "access": "public",
     "description": null,
-    "lineNumber": 170,
+    "lineNumber": 174,
     "undocument": true,
     "params": [
       {
@@ -12218,7 +12218,7 @@
     "longname": "src/Table.js~Table#updateAll",
     "access": "public",
     "description": null,
-    "lineNumber": 183,
+    "lineNumber": 189,
     "undocument": true,
     "params": [
       {
@@ -12260,7 +12260,7 @@
     "longname": "src/Table.js~Table#updateReload",
     "access": "public",
     "description": null,
-    "lineNumber": 191,
+    "lineNumber": 199,
     "undocument": true,
     "params": [
       {
@@ -12299,7 +12299,7 @@
     "longname": "src/Table.js~Table#updateOneRow",
     "access": "public",
     "description": null,
-    "lineNumber": 203,
+    "lineNumber": 211,
     "undocument": true,
     "params": [
       {
@@ -12338,7 +12338,7 @@
     "longname": "src/Table.js~Table#updateAnyRow",
     "access": "public",
     "description": null,
-    "lineNumber": 208,
+    "lineNumber": 216,
     "undocument": true,
     "params": [
       {
@@ -12377,7 +12377,7 @@
     "longname": "src/Table.js~Table#delete",
     "access": "public",
     "description": null,
-    "lineNumber": 216,
+    "lineNumber": 224,
     "undocument": true,
     "params": [
       {
@@ -12405,12 +12405,12 @@
     "name": "validateDelete",
     "memberof": "src/Table.js~Table",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Table.js~Table#validateDelete",
     "access": "public",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 237,
     "undocument": true,
     "params": [
       {
@@ -12443,7 +12443,7 @@
     "longname": "src/Table.js~Table#prepareFetch",
     "access": "public",
     "description": null,
-    "lineNumber": 237,
+    "lineNumber": 245,
     "undocument": true,
     "params": [
       {
@@ -12476,7 +12476,7 @@
     "longname": "src/Table.js~Table#fetchOne",
     "access": "public",
     "description": null,
-    "lineNumber": 251,
+    "lineNumber": 259,
     "undocument": true,
     "params": [
       {
@@ -12512,7 +12512,7 @@
     "longname": "src/Table.js~Table#fetchAny",
     "access": "public",
     "description": null,
-    "lineNumber": 259,
+    "lineNumber": 267,
     "undocument": true,
     "params": [
       {
@@ -12548,7 +12548,7 @@
     "longname": "src/Table.js~Table#fetchAll",
     "access": "public",
     "description": null,
-    "lineNumber": 269,
+    "lineNumber": 277,
     "undocument": true,
     "params": [
       {
@@ -12584,7 +12584,7 @@
     "longname": "src/Table.js~Table#fetchOneRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 277,
+    "lineNumber": 285,
     "undocument": true,
     "params": [
       {
@@ -12617,7 +12617,7 @@
     "longname": "src/Table.js~Table#fetchAnyRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 282,
+    "lineNumber": 290,
     "undocument": true,
     "params": [
       {
@@ -12650,7 +12650,7 @@
     "longname": "src/Table.js~Table#fetchAllRecords",
     "access": "public",
     "description": null,
-    "lineNumber": 287,
+    "lineNumber": 295,
     "undocument": true,
     "params": [
       {
@@ -12683,7 +12683,7 @@
     "longname": "src/Table.js~Table#oneRow",
     "access": "public",
     "description": null,
-    "lineNumber": 297,
+    "lineNumber": 305,
     "undocument": true,
     "params": [
       {
@@ -12717,7 +12717,7 @@
     "longname": "src/Table.js~Table#anyRow",
     "access": "public",
     "description": null,
-    "lineNumber": 304,
+    "lineNumber": 312,
     "undocument": true,
     "params": [
       {
@@ -12751,7 +12751,7 @@
     "longname": "src/Table.js~Table#allRows",
     "access": "public",
     "description": null,
-    "lineNumber": 311,
+    "lineNumber": 319,
     "undocument": true,
     "params": [
       {
@@ -12785,7 +12785,7 @@
     "longname": "src/Table.js~Table#oneRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 318,
+    "lineNumber": 326,
     "undocument": true,
     "params": [
       {
@@ -12819,7 +12819,7 @@
     "longname": "src/Table.js~Table#anyRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 325,
+    "lineNumber": 333,
     "undocument": true,
     "params": [
       {
@@ -12853,7 +12853,7 @@
     "longname": "src/Table.js~Table#allRecords",
     "access": "public",
     "description": null,
-    "lineNumber": 332,
+    "lineNumber": 340,
     "undocument": true,
     "params": [
       {
@@ -12887,7 +12887,7 @@
     "longname": "src/Table.js~Table#loadedOne",
     "access": "public",
     "description": null,
-    "lineNumber": 339,
+    "lineNumber": 347,
     "undocument": true,
     "params": [
       {
@@ -12923,7 +12923,7 @@
     "longname": "src/Table.js~Table#loadedAny",
     "access": "public",
     "description": null,
-    "lineNumber": 345,
+    "lineNumber": 353,
     "undocument": true,
     "params": [
       {
@@ -12959,7 +12959,7 @@
     "longname": "src/Table.js~Table#loadedAll",
     "access": "public",
     "description": null,
-    "lineNumber": 351,
+    "lineNumber": 359,
     "undocument": true,
     "params": [
       {
@@ -12995,7 +12995,7 @@
     "longname": "src/Table.js~Table#withReloadOption",
     "access": "public",
     "description": null,
-    "lineNumber": 357,
+    "lineNumber": 365,
     "undocument": true,
     "params": [
       {
@@ -13025,7 +13025,7 @@
     "longname": "src/Table.js~Table#withRecordOption",
     "access": "public",
     "description": null,
-    "lineNumber": 361,
+    "lineNumber": 369,
     "undocument": true,
     "params": [
       {
@@ -13055,7 +13055,7 @@
     "longname": "src/Table.js~Table#checkColumnNames",
     "access": "public",
     "description": null,
-    "lineNumber": 368,
+    "lineNumber": 376,
     "undocument": true,
     "params": [
       {
@@ -13078,7 +13078,7 @@
     "longname": "src/Table.js~Table#checkColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 376,
+    "lineNumber": 384,
     "undocument": true,
     "params": [
       {
@@ -13135,7 +13135,7 @@
     "longname": "src/Table.js~Table#checkWritableColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 405,
+    "lineNumber": 413,
     "undocument": true,
     "params": [
       {
@@ -13171,7 +13171,7 @@
     "longname": "src/Table.js~Table#checkUpdatableColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 409,
+    "lineNumber": 417,
     "undocument": true,
     "params": [
       {
@@ -13207,7 +13207,7 @@
     "longname": "src/Table.js~Table#checkWhereColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 413,
+    "lineNumber": 421,
     "undocument": true,
     "params": [
       {
@@ -13240,7 +13240,7 @@
     "longname": "src/Table.js~Table#checkRequiredColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 417,
+    "lineNumber": 425,
     "undocument": true,
     "params": [
       {
@@ -13263,7 +13263,7 @@
     "longname": "src/Table.js~Table#select",
     "access": "public",
     "description": null,
-    "lineNumber": 431,
+    "lineNumber": 439,
     "undocument": true,
     "params": [
       {
@@ -13291,7 +13291,7 @@
     "longname": "src/Table.js~Table#newRecord",
     "access": "public",
     "description": null,
-    "lineNumber": 444,
+    "lineNumber": 452,
     "undocument": true,
     "params": [
       {
@@ -13318,7 +13318,7 @@
     "longname": "src/Table.js~Table#record",
     "access": "public",
     "description": null,
-    "lineNumber": 450,
+    "lineNumber": 458,
     "undocument": true,
     "params": [
       {
@@ -13345,7 +13345,7 @@
     "longname": "src/Table.js~Table#records",
     "access": "public",
     "description": null,
-    "lineNumber": 457,
+    "lineNumber": 465,
     "undocument": true,
     "params": [
       {
@@ -13372,7 +13372,7 @@
     "longname": "src/Table.js~Table#tableFragments",
     "access": "public",
     "description": null,
-    "lineNumber": 469,
+    "lineNumber": 477,
     "undocument": true,
     "params": [],
     "return": {
@@ -13392,7 +13392,7 @@
     "longname": "src/Table.js~Table#identity",
     "access": "public",
     "description": null,
-    "lineNumber": 473,
+    "lineNumber": 481,
     "undocument": true,
     "params": [
       {
@@ -16021,7 +16021,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.21\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-sourcemaps\": \"^0.6.3\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"source-map-support\": \"^0.5.21\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"proxymise\": \"^1.0.2\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger-database\",\n  \"version\": \"1.1.22\",\n  \"description\": \"Javascript database abstraction layer\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger-database.cjs.js\",\n  \"module\": \"dist/badger-database.esm.js\",\n  \"exports\": \"./dist/badger-database.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-database-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-database-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"database\",\n    \"sql\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-json\": \"^4.1.0\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"better-sqlite3\": \"^7.6.2\",\n    \"dotenv\": \"^16.0.1\",\n    \"eslint\": \"^8.20.0\",\n    \"mysql2\": \"^2.3.3\",\n    \"pg\": \"^8.8.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-sourcemaps\": \"^0.6.3\",\n    \"rollup-plugin-terser\": \"^7.0.2\",\n    \"source-map-support\": \"^0.5.21\",\n    \"sqlite3\": \"^5.1.1\"\n  },\n  \"dependencies\": {\n    \"@abw/badger\": \"^1.0.8\",\n    \"@abw/badger-utils\": \"^1.0.12\",\n    \"proxymise\": \"^1.0.2\",\n    \"tarn\": \"^3.0.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-database-js/package.json",
     "name": "package.json",
     "static": true,
