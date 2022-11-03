@@ -518,7 +518,7 @@ export const runTransactionTests = async (engine) => {
             name: 'Brian Badger'
           })
           t.is( brian.skill, 'Foraging' );
-          brian.update({ skill: 'Badgering' });
+          await brian.update({ skill: 'Badgering' });
           const rows = await animals.all('selectBySkill', ['Badgering']);
           t.deepEqual(
             rows,
@@ -549,7 +549,7 @@ export const runTransactionTests = async (engine) => {
             name: 'Brian Badger'
           })
           t.is( brian.skill, 'Foraging' );
-          brian.update({ skill: 'Badgering' });
+          await brian.update({ skill: 'Badgering' });
           const rows = await animals.all('selectBySkill', ['Badgering']);
           t.deepEqual(
             rows,
