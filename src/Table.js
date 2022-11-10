@@ -88,9 +88,7 @@ export class Table extends Queryable {
     const insert = await this
       .prepareInsert(data, options)
       .then( query => query.run(undefined, { keys: this.keys }) );
-    return options.reload || options.record
-      ? this.insertReload(data, insert, options)
-      : insert;
+    return this.inserted(data, insert, options);
   }
 
   async insertAll(data, options) {
@@ -120,6 +118,12 @@ export class Table extends Queryable {
   async insertAllRecords(data, options) {
     this.debugData("insertAllRecords()", { data, options });
     return this.insertAll(data, this.withRecordOption(options))
+  }
+
+  async inserted(input, output, options={}) {
+    return options.reload || options.record
+      ? this.insertReload(input, output, options)
+      : output;
   }
 
   async insertReload(input, output, options={}) {
@@ -163,12 +167,9 @@ export class Table extends Queryable {
     const update = await this
       .prepareUpdate(set, where, options)
       .then( query => query.run() );
-    if (update.changes !== 1) {
-      return unexpectedRowCount(update.changes, 'updated');
-    }
-    return options.reload
-      ? this.updateReload(set, where, options)
-      : update;
+    return update.changes === 1
+      ? this.updated(set, where, update, options)
+      : unexpectedRowCount(update.changes, 'updated');
   }
 
   async updateAny(set, where, options={}) {
@@ -179,11 +180,14 @@ export class Table extends Queryable {
     if (update.changes > 1) {
       return unexpectedRowCount(update.changes, 'updated');
     }
-    return options.reload
-      ? update.changes === 1
-        ? this.updateReload(set, where, options)
-        : undefined
-      : update;
+    else if (update.changes === 1) {
+      return this.updated(set, where, update, options)
+    }
+    else {
+      return options.reload
+        ? undefined
+        : update;
+    }
   }
 
   async updateAll(set, where, options={}) {
@@ -196,6 +200,22 @@ export class Table extends Queryable {
       : update;
   }
 
+  async updateOneRow(set, where, options) {
+    this.debugData("updateOneRow()", { set, where, options });
+    return this.updateOne(set, where, this.withReloadOption(options))
+  }
+
+  async updateAnyRow(set, where, options) {
+    this.debugData("updateAnyRow()", { set, where, options });
+    return this.updateAny(set, where, this.withReloadOption(options))
+  }
+
+  async updated(set, where, result, options) {
+    return options.reload
+      ? this.updateReload(set, where, options)
+      : result;
+  }
+
   async updateReload(set, where, options) {
     // For update queries things are a little more complicated.  In the
     // usual case we can reload the rows using the original selection
@@ -206,16 +226,6 @@ export class Table extends Queryable {
       key => fetch[key] = firstValue(set[key], where[key])
     );
     return this.oneRow(fetch, options);
-  }
-
-  async updateOneRow(set, where, options) {
-    this.debugData("updateOneRow()", { set, where, options });
-    return this.updateOne(set, where, this.withReloadOption(options))
-  }
-
-  async updateAnyRow(set, where, options) {
-    this.debugData("updateAnyRow()", { set, where, options });
-    return this.updateAny(set, where, this.withReloadOption(options))
   }
 
   //-----------------------------------------------------------------------------
@@ -231,12 +241,17 @@ export class Table extends Queryable {
       .where(criteria)
     const sql = query.sql();
     this.debugData("delete()", { where, sql })
-    return await query.run();
+    const result = await query.run();
+    return this.deleted(where, result, options)
   }
 
   async validateDelete(where, options) {
     const [ , , criteria] = this.checkWhereColumns(where, options);
     return criteria;
+  }
+
+  async deleted(where, result) {
+    return result;
   }
 
   //-----------------------------------------------------------------------------
