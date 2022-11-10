@@ -14,11 +14,11 @@ export class Record {
     addDebugMethod(this, 'record', { debugPrefix: `Record:${this.table.table}` }, config);
   }
 
-  async update(set) {
+  async update(set, options={}) {
     this.debugData("update()", { set });
     this.assertNotDeleted('update');
     const where = this.table.identity(this.row);
-    const update = await this.table.updateOne(set, where, { reload: true });
+    const update = await this.table.updateOne(set, where, { ...options, reload: true });
     Object.assign(this.row, update);
     return this;
   }
