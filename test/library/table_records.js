@@ -3,7 +3,7 @@ import Record from '../../src/Record.js';
 import { connect } from '../../src/Database.js';
 import { databaseConfig } from './database.js';
 import { createUsersTableQuery } from './users_table.js';
-import { DeletedRecordError } from '../../src/Utils/Error.js';
+import { ColumnValidationError, DeletedRecordError } from '../../src/Utils/Error.js';
 
 export function runTableRecordsTests(engine) {
   const database = databaseConfig(engine);
@@ -112,7 +112,6 @@ export function runTableRecordsTests(engine) {
       t.is( bobby instanceof Record, true );
     }
   )
-
   test.serial( 'fetchRecord()',
     async t => {
       const users = await db.table('users');
@@ -483,6 +482,40 @@ export function runTableRecordsTests(engine) {
       t.is( bobby.name, 'Roberto Badger' );
     }
   )
+  test.serial( 'record update with extra parameters throws error',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.oneRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      await t.throwsAsync(
+        () => bobby.update({
+          name: 'Rob Badger',
+          something_else: 'This should be ignored'
+        }),
+        {
+          instanceOf: ColumnValidationError,
+          message: 'Unknown "something_else" column in the users table'
+        }
+      );
+    }
+  )
+  test.serial( 'record update with extra parameters and pick option',
+    async t => {
+      const users = await db.table('users');
+      const bobby = await users.oneRecord({
+        email: 'bobby@badgerpower.com'
+      });
+      await bobby.update(
+        {
+          name: 'Rob Badger',
+          something_else: 'This should be ignored'
+        },
+        { pick: true }
+      );
+      t.is( bobby.name, 'Rob Badger' );
+    }
+  )
 
   // record delete
   test.serial( 'record delete',
@@ -499,7 +532,6 @@ export function runTableRecordsTests(engine) {
       t.is( reload, undefined );
     }
   )
-
   test.serial( 'cannot update deleted record',
     async t => {
       const users = await db.table('users');
