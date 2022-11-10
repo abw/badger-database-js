@@ -3642,6 +3642,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/table.js~table#deleted",
+    "class/src/Table.js~Table.html#instance-method-deleted",
+    "src/Table.js~Table#deleted",
+    "method"
+  ],
+  [
     "src/table.js~table#fetchall",
     "class/src/Table.js~Table.html#instance-method-fetchAll",
     "src/Table.js~Table#fetchAll",
@@ -3741,6 +3747,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#insertreload",
     "class/src/Table.js~Table.html#instance-method-insertReload",
     "src/Table.js~Table#insertReload",
+    "method"
+  ],
+  [
+    "src/table.js~table#inserted",
+    "class/src/Table.js~Table.html#instance-method-inserted",
+    "src/Table.js~Table#inserted",
     "method"
   ],
   [
@@ -3909,6 +3921,12 @@ window.esdocSearchIndex = [
     "src/table.js~table#updatereload",
     "class/src/Table.js~Table.html#instance-method-updateReload",
     "src/Table.js~Table#updateReload",
+    "method"
+  ],
+  [
+    "src/table.js~table#updated",
+    "class/src/Table.js~Table.html#instance-method-updated",
+    "src/Table.js~Table#updated",
     "method"
   ],
   [
