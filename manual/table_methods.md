@@ -38,7 +38,7 @@ and returns it as a [record](manual/records.html) object (or array or objects).
   * [fetchAll(where, options)](#fetchall-where--options-)
   * [fetchOneRecord(where, options)](#fetchonerecord-where--options-)
   * [fetchAnyRecord(where, options)](#fetchanyrecord-where--options-)
-  * [fetchAllRecord(where, options)](#fetchallrecords-where--options-)
+  * [fetchAllRecords(where, options)](#fetchallrecords-where--options-)
 * [Record Methods](#record-methods)
   * [record(row)](#record-row-)
   * [records(rows)](#records-rows-)
