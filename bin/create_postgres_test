@@ -14,6 +14,8 @@ RED="\033[1;31m"
 YELLOW="\033[0;33m"
 CLEAR="\033[0m"
 
+
+
 #---------------------------------------------------------------------------
 # Drop any existing database
 #---------------------------------------------------------------------------
@@ -74,19 +76,19 @@ fi
 echo "Dropping $DATABASE database"
 $PSQL -c "DROP DATABASE $DATABASE"
 
-#---------------------------------------------------------------------------
-# create database
-#---------------------------------------------------------------------------
-echo "Creating Postgres database: $DATABASE"
-$PSQL -c "CREATE DATABASE $DATABASE"
-
 
 #---------------------------------------------------------------------------
 # create user
 #---------------------------------------------------------------------------
 echo "Creating Postgres user: $USERNAME"
-$PSQL -c "DROP USER $USERNAME" $DATABASE
-$PSQL -c "CREATE USER $USERNAME PASSWORD '$PASSWORD'" $DATABASE
+$PSQL -c "DROP USER $USERNAME"
+$PSQL -c "CREATE USER $USERNAME PASSWORD '$PASSWORD'"
+
+#---------------------------------------------------------------------------
+# create database
+#---------------------------------------------------------------------------
+echo "Creating Postgres database: $DATABASE"
+$PSQL -c "CREATE DATABASE $DATABASE WITH OWNER test"
 
 #---------------------------------------------------------------------------
 # grant user access

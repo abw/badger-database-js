@@ -1,11 +1,13 @@
 #!/bin/bash
+set -e
+
 #------------------------------------------------------------------------
 # Script to create a test database.
 #------------------------------------------------------------------------
 
-# location of mysql and mysqladmin programs
-MYSQL=/usr/local/bin/mysql
-MYSQL_ADMIN=/usr/local/bin/mysqladmin
+# location of mysql and mysqladmin programs - you may need to change these
+MYSQL=/opt/local/bin/mysql
+MYSQL_ADMIN=/opt/local/bin/mysqladmin
 MYSQL_USER="root"
 
 DATABASE="test"
@@ -17,6 +19,13 @@ PORT="3306"
 RED="\033[1;31m"
 YELLOW="\033[0;33m"
 CLEAR="\033[0m"
+
+#---------------------------------------------------------------------------
+# prompt user for the mysql root password
+#---------------------------------------------------------------------------
+read -p "Enter the MySQL root password: " MYSQL_PASS
+MYSQL_USER_PASS="-u$MYSQL_USER -p$MYSQL_PASS"
+echo "MYSQL_USER_PASS: $MYSQL_USER_PASS"
 
 #---------------------------------------------------------------------------
 # Drop any existing database
@@ -76,26 +85,35 @@ if [ $YES != "y" ]; then
 fi
 
 echo "Dropping $DATABASE database"
-$MYSQL -f -h$HOSTNAME -P$PORT -e "drop database $DATABASE;"
+$MYSQL $MYSQL_USER_PASS -f -h$HOSTNAME -P$PORT -e "DROP DATABASE IF EXISTS $DATABASE;"
 
 #---------------------------------------------------------------------------
 # create database
 #---------------------------------------------------------------------------
 echo "Creating MySQL database: $DATABASE"
 
-$MYSQL -h$HOSTNAME -P$PORT -e "create database $DATABASE;"
+$MYSQL $MYSQL_USER_PASS -h$HOSTNAME -P$PORT -e "CREATE DATABASE $DATABASE;"
 
 #---------------------------------------------------------------------------
-# grant user access
+# create user and grant access
 #---------------------------------------------------------------------------
-echo "Granting access to user $USERNAME"
+echo "Granting access to user $USERNAME@$HOSTNAME"
 
-$MYSQL $MYSQL_ARGS -h$HOSTNAME -P$PORT $MYSQL_PASS_OPT \
+$MYSQL $MYSQL_USER_PASS -h$HOSTNAME -P$PORT $MYSQL_PASS_OPT \
   --default-character-set=utf8 mysql <<EOF || exit
 
-GRANT
-  SELECT, INSERT, UPDATE, DELETE, INDEX,
-  ALTER, CREATE, DROP, REFERENCES
-  ON $DATABASE.* TO $USER@$HOSTNAME IDENTIFIED BY '$PASSWORD';
+CREATE USER IF NOT EXISTS '$USERNAME'@'$HOSTNAME' IDENTIFIED BY '$PASSWORD';
 
+GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, LOCK TABLES,
+      ALTER, CREATE, DROP, REFERENCES
+      ON $DATABASE.* TO '$USERNAME'@'$HOSTNAME';
+flush privileges;
 EOF
+
+# Older versions of MySQL
+# GRANT
+#   SELECT, INSERT, UPDATE, DELETE, INDEX,
+#   ALTER, CREATE, DROP, REFERENCES
+#   ON $DATABASE.* TO $USERNAME@$HOSTNAME IDENTIFIED BY '$PASSWORD';
+#
+# EOF
