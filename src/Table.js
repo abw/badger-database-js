@@ -274,27 +274,21 @@ export class Table extends Queryable {
   async fetchOne(where, options={}) {
     this.debugData("fetchOne()", { where, options });
     const row = await this.prepareFetch(where, options).one();
-    return options.record
-      ? this.record(row)
-      : row;
+    return this.loadedOne(row, options);
   }
 
   async fetchAny(where, options={}) {
     this.debugData("fetchAny()", { where, options });
     const row = await this.prepareFetch(where, options).any();
     return row
-      ? options.record
-        ? this.record(row)
-        : row
+      ? this.loadedOne(row, options)
       : undefined;
   }
 
   async fetchAll(where, options={}) {
     this.debugData("fetchAllRows()", { where, options });
     const rows = await this.prepareFetch(where, options).all();
-    return options.record
-      ? this.records(rows)
-      : rows;
+    return this.loadedAll(rows, options);
   }
 
   async fetchOneRecord(where, options) {
@@ -359,22 +353,26 @@ export class Table extends Queryable {
       : this.fetchAll(query, this.withRecordOption(args[0]))
   }
 
-  loadedOne(row, options={}) {
-    return options.record
+  loaded(row, options={}) {
+    return options
       ? this.record(row)
       : row;
   }
 
+  loadedOne(row, options={}) {
+    return this.loaded(row, options);
+  }
+
   loadedAny(row, options={}) {
     return row
-      ? this.loadedOne(row, options)
+      ? this.loaded(row, options)
       : undefined;
   }
 
   loadedAll(rows, options={}) {
-    return options.record
-      ? this.records(rows)
-      : rows;
+    return Promise.all(
+      rows.map( row => this.loaded(row, options) )
+    );
   }
 
   withReloadOption(options={}) {
