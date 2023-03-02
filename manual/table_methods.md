@@ -40,6 +40,7 @@ and returns it as a [record](manual/records.html) object (or array or objects).
   * [fetchAnyRecord(where, options)](#fetchanyrecord-where--options-)
   * [fetchAllRecords(where, options)](#fetchallrecords-where--options-)
 * [Record Methods](#record-methods)
+  * [loaded(row, options)](#loaded-row--options-)
   * [record(row)](#record-row-)
   * [records(rows)](#records-rows-)
 
@@ -816,6 +817,33 @@ the rows as an array of record objects.
 The `fetchRecords()` method is provided as an alias for this method.
 
 ## Record Methods
+
+### loaded(row, options)
+
+This methods is called whenever a row is loaded from the database (or reloaded
+in the case of updated rows when the `reload` option is set).  If the
+`options.record` flag is set then it passes the `row` to the
+[record()](#record-row-) method to convert it to a [record](manual/records.html)
+object.  Otherwise the row is returned.
+
+You can redefine this method in your own table classes to perform any
+processing of the loaded data.  For example, if your database stores
+boolean values as numbers and you want them to be converted to boolean
+values whenever a record is loaded then you could do something like this.
+
+```js
+import { Table } from '@abw/badger-database'
+
+export class Users extends Table {
+  loaded(row, options) {
+    row.admin  = Boolean(row.admin);
+    return super.loaded(row, options);
+  }
+}
+```
+
+You should always call the `super.loaded()` method after any processing
+and return the value that it returns, as show in this example.
 
 ### record(row)
 
