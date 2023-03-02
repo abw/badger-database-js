@@ -184,6 +184,7 @@
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchanyrecord-where--options-" data-ice="link">fetchAnyRecord(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#fetchallrecords-where--options-" data-ice="link">fetchAllRecords(where, options)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-methods" data-ice="link">Record Methods</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#loaded-row--options-" data-ice="link">loaded(row, options)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#record-row-" data-ice="link">record(row)</a></li>
 <li data-ice="manualNav" class="indent-h3" data-link="manual/table_methods.html"><a href="manual/table_methods.html#records-rows-" data-ice="link">records(rows)</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/table_methods.html"><a href="manual/table_methods.html#where-next-" data-ice="link">Where Next?</a></li>
@@ -363,10 +364,11 @@ and returns it as a <a href="manual/records.html">record</a> object (or array or
 <li><a href="#fetchall-where--options-">fetchAll(where, options)</a></li>
 <li><a href="#fetchonerecord-where--options-">fetchOneRecord(where, options)</a></li>
 <li><a href="#fetchanyrecord-where--options-">fetchAnyRecord(where, options)</a></li>
-<li><a href="#fetchallrecords-where--options-">fetchAllRecord(where, options)</a></li>
+<li><a href="#fetchallrecords-where--options-">fetchAllRecords(where, options)</a></li>
 </ul>
 </li>
 <li><a href="#record-methods">Record Methods</a><ul>
+<li><a href="#loaded-row--options-">loaded(row, options)</a></li>
 <li><a href="#record-row-">record(row)</a></li>
 <li><a href="#records-rows-">records(rows)</a></li>
 </ul>
@@ -875,7 +877,26 @@ the row as a record object.</p>
 <h3 id="fetchallrecords-where--options-">fetchAllRecords(where, options)</h3><p>This method is a wrapper around <a href="#fetchall-where--options-">fetchAll()</a> which returns
 the rows as an array of record objects.</p>
 <p>The <code>fetchRecords()</code> method is provided as an alias for this method.</p>
-<h2 id="record-methods">Record Methods</h2><h3 id="record-row-">record(row)</h3><p>This methods converts a row of data to a <a href="manual/records.html">record</a> object.</p>
+<h2 id="record-methods">Record Methods</h2><h3 id="loaded-row--options-">loaded(row, options)</h3><p>This method is called whenever a row is loaded from the database (or reloaded
+in the case of updated rows when the <code>reload</code> option is set).  If the
+<code>options.record</code> flag is set then it passes the <code>row</code> to the
+<a href="#record-row-">record()</a> method to convert it to a <a href="manual/records.html">record</a>
+object.  Otherwise the row is returned.</p>
+<p>You can redefine this method in your own <a href="manual/table_class.html">table classes</a>
+to perform any processing of the loaded data.  For example, if your database
+stores boolean values as numbers and you want them to be converted to boolean
+values whenever a record is loaded then you could do something like this.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Table } from '@abw/badger-database'
+
+export class Users extends Table {
+  loaded(row, options) {
+    row.admin  = Boolean(row.admin);
+    return super.loaded(row, options);
+  }
+}</code></code></pre>
+<p>You should always call the <code>super.loaded()</code> method after any processing
+and return the value that it returns, as show in this example.</p>
+<h3 id="record-row-">record(row)</h3><p>This methods converts a row of data to a <a href="manual/records.html">record</a> object.</p>
 <h3 id="records-rows-">records(rows)</h3><p>This methods converts an array of rows of data to a an array of <a href="manual/records.html">record</a> objects.</p>
 <h2 id="where-next-">Where Next?</h2><p>In the section we'll look at how you can define your own custom
 <a href="manual/table_queries.html">table queries</a>.</p>

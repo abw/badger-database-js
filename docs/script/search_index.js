@@ -3762,6 +3762,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/table.js~table#loaded",
+    "class/src/Table.js~Table.html#instance-method-loaded",
+    "src/Table.js~Table#loaded",
+    "method"
+  ],
+  [
     "src/table.js~table#loadedall",
     "class/src/Table.js~Table.html#instance-method-loadedAll",
     "src/Table.js~Table#loadedAll",
