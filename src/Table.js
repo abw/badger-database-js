@@ -354,7 +354,7 @@ export class Table extends Queryable {
   }
 
   loaded(row, options={}) {
-    return options
+    return options.record
       ? this.record(row)
       : row;
   }

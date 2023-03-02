@@ -7,9 +7,7 @@ export class Users extends Table {
     return this.allRows({ admin: 1 });
   }
   loaded(row, options) {
-    console.log('LOADED: ', row);
-    console.log('OPTIONS: ', options);
-
+    // console.log('LOADED: ', row);
     row.loaded = true;
     row.admin  = Boolean(row.admin);
     return super.loaded(row, options);
