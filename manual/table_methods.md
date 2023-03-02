@@ -820,15 +820,15 @@ The `fetchRecords()` method is provided as an alias for this method.
 
 ### loaded(row, options)
 
-This methods is called whenever a row is loaded from the database (or reloaded
+This method is called whenever a row is loaded from the database (or reloaded
 in the case of updated rows when the `reload` option is set).  If the
 `options.record` flag is set then it passes the `row` to the
 [record()](#record-row-) method to convert it to a [record](manual/records.html)
 object.  Otherwise the row is returned.
 
-You can redefine this method in your own table classes to perform any
-processing of the loaded data.  For example, if your database stores
-boolean values as numbers and you want them to be converted to boolean
+You can redefine this method in your own [table classes](manual/table_class.html)
+to perform any processing of the loaded data.  For example, if your database
+stores boolean values as numbers and you want them to be converted to boolean
 values whenever a record is loaded then you could do something like this.
 
 ```js
