@@ -68,6 +68,19 @@ test.serial( 'update({ ...Frankie Ferret... })',
   }
 )
 
+test.serial( 'update record',
+  async t => {
+    const users   = await db.table('users');
+    const frankie = await users.oneRecord(
+      { email:    'frank@ferret.com' }
+    );
+    t.is(frankie.forename, 'Frankie');
+    t.is(frankie.surname, 'Ferret');
+    await frankie.update({ forename: 'Francis' });
+    t.is(frankie.forename, 'Francis');
+  }
+)
+
 test.after( 'disconnect',
   () => db.disconnect()
 )
