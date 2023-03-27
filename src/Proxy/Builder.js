@@ -19,6 +19,11 @@ export const builderProxy = (builders, parent, options={}) =>
       get(target, prop) {
         // console.log('builderProxy %s', prop);
 
+        if (prop === 'toString') {
+          // special case for toString() which Proxies handle differently
+          return target.toString.bind(target);
+        }
+
         // if it's not a builder method then delegate to the target
         const bclass = builders[prop];
         if (! bclass) {

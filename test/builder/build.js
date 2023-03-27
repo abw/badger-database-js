@@ -31,6 +31,13 @@ test( 'build.where().select().from()',
   }
 )
 
+test( 'stringification',
+  t => {
+    const op = db.build.where('c').select('a').from('b');
+    t.is( `QUERY: ${op}`, 'QUERY: SELECT "a"\nFROM "b"\nWHERE "c" = ?' );
+  }
+)
+
 test.after( 'disconnect',
   () => db.disconnect()
 )

@@ -285,6 +285,10 @@ export class Builder {
     )
   }
 
+  toString() {
+    return this.sql();
+  }
+
   error(...args) {
     const etype   = this.errorType || QueryBuilderError;
     throw new etype(args.join(''))

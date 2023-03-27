@@ -88,6 +88,10 @@ export class Query {
     }
     return [...wvalues, ...hvalues, ...where]
   }
+
+  toString() {
+    return this.sql();
+  }
 }
 
 export default Query
