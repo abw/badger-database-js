@@ -1380,6 +1380,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder.js~builder#tostring",
+    "class/src/Builder.js~Builder.html#instance-method-toString",
+    "src/Builder.js~Builder#toString",
+    "method"
+  ],
+  [
     "src/builder.js~builder#wherevalues",
     "class/src/Builder.js~Builder.html#instance-method-whereValues",
     "src/Builder.js~Builder#whereValues",
@@ -3000,6 +3006,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/engine/mysql.js~mysqlengine#connected",
+    "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-connected",
+    "src/Engine/Mysql.js~MysqlEngine#connected",
+    "method"
+  ],
+  [
     "src/engine/mysql.js~mysqlengine#disconnect",
     "class/src/Engine/Mysql.js~MysqlEngine.html#instance-method-disconnect",
     "src/Engine/Mysql.js~MysqlEngine#disconnect",
@@ -3315,6 +3327,12 @@ window.esdocSearchIndex = [
     "src/query.js~query#sql",
     "class/src/Query.js~Query.html#instance-method-sql",
     "src/Query.js~Query#sql",
+    "method"
+  ],
+  [
+    "src/query.js~query#tostring",
+    "class/src/Query.js~Query.html#instance-method-toString",
+    "src/Query.js~Query#toString",
     "method"
   ],
   [

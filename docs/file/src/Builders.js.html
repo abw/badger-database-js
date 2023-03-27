@@ -226,7 +226,7 @@ export const registerBuilder = module =&gt; {
   // Builder modules have a slot that they use in the context.  Sometimes multiple
   // builders can share the same slot (e.g. Columns and Select both use "select").
   // When we're rendering a builder chain we first generate a context (which may be
-  // cached) in which each builder object instance adds theor fragments of SQL to the
+  // cached) in which each builder object instance adds their fragments of SQL to the
   // array in their context slot, e.g. from('table1').from(['table2', 'alias']) will
   // result in the "from" slot containing: ['"table1"', '"table2" as "alias"'].  Then
   // we need to go through those slots in a particular order (e.g. select, from,

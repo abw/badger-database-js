@@ -199,6 +199,11 @@ export class MysqlEngine extends Engine {
     return mysql.createConnection(this.database);
   }
 
+  async connected(db) {
+    // work-around for https://github.com/sidorares/node-mysql2/issues/939
+    return ! db?.connection?._closing;
+  }
+
   async disconnect(connection) {
     this.debug("disconnect()");
     connection.destroy();
