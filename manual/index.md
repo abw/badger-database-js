@@ -1,6 +1,6 @@
 # badger-database
 
-<img src="./images/badger2.svg" width="300"/>
+<img src="./images/badger3.svg" width="300"/>
 
 This is the manual for the `badger-database` Javascript module.
 
