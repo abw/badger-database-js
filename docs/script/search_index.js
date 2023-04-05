@@ -2256,6 +2256,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/set.js~set#resolvelinkobject",
+    "class/src/Builder/Set.js~Set.html#instance-method-resolveLinkObject",
+    "src/Builder/Set.js~Set#resolveLinkObject",
+    "method"
+  ],
+  [
     "src/builder/set.js~set.buildmethod",
     "class/src/Builder/Set.js~Set.html#static-member-buildMethod",
     "src/Builder/Set.js~Set.buildMethod",

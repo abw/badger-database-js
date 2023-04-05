@@ -196,6 +196,29 @@ export class Set extends Where {
     this.setValues(...values)
   }
 
+  resolveLinkObject(criteria) {
+    const database = this.lookupDatabase();
+    let values = [ ];
+    const result = Object.entries(criteria).map(
+      ([column, value]) =&gt; {
+        values.push(value)
+        // generate the criteria with a placeholder
+        return database.engine.formatWherePlaceholder(
+          column,
+          // the 'value' here can be a JSON array which confuses the
+          // formatWherePlaceholder() method into thinking it's a comparison
+          // which is valid in where() but not in set()
+          '',
+          this.context.placeholder++
+        )
+      }
+    )
+    if (values.length) {
+      this.addValues(...values);
+    }
+    return result;
+  }
+
   resolveLinkArray(criteria) {
     // don't allow three arguments - comparisons are not valid here
     if (criteria.length == 2) {
