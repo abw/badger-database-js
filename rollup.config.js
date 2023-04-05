@@ -33,6 +33,7 @@ export default [
       sourcemaps()
     ],
     external: [
+      "node:buffer",
       "node:fs",
       "node:path",
       "node:process",
@@ -41,6 +42,7 @@ export default [
       "child_process",
       "mysql2",
       "mysql2/promise",
+      "os",
       "sqlite3",
       "events",
       "fs",
