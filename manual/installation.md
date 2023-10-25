@@ -24,7 +24,7 @@ at least one of the database driver modules:
     // mysql
     pnpm add @abw/badger-database mysql2
     // sqlite
-    pnpm add @abw/badger-database better-sqlite
+    pnpm add @abw/badger-database better-sqlite3
 
 ### yarn
 
@@ -33,7 +33,7 @@ at least one of the database driver modules:
     // mysql
     yarn add @abw/badger-database mysql
     // sqlite
-    yarn add @abw/badger-database better-sqlite
+    yarn add @abw/badger-database better-sqlite3
 
 ## Where Next?
 
