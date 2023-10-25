@@ -1,5 +1,5 @@
 import Builder from '../Builder.js';
-import { hasValue, isArray, splitList } from '@abw/badger-utils';
+import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils';
 import { AND, WHERE, space } from '../Constants.js';
 
 export class Where extends Builder {
@@ -74,6 +74,12 @@ export class Where extends Builder {
           else if (value.length !== 1) {
             this.errorMsg('object', { n: value.length });
           }
+        }
+        else if (isNull(value)) {
+          // special case where value is null: WHERE xxx is null
+          return database.engine.formatWhereNull(
+            column
+          )
         }
         else {
           // otherwise we assume it's just a value

@@ -129,6 +129,13 @@ test( 'where sql clause',
   }
 )
 
+test( 'where null clause',
+  t => {
+    const query = db.build.from('users').select('id').where({ deleted: null });
+    t.is( query.sql(), 'SELECT "id"\nFROM "users"\nWHERE "deleted" is NULL' );
+  }
+)
+
 test( 'object with value array with three elements',
   t => {
     const error = t.throws(
