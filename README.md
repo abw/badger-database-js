@@ -305,7 +305,7 @@ const db = connect({
 })
 
 // fetch table
-await users = db.table('users');
+const users = await db.table('users');
 
 // run named query defined for table
 await users.run('create');
@@ -362,7 +362,7 @@ const db = connect({
         // each album has one artist
         artist: 'artist_id -> artists.id',
         // each albums has many tracks
-        tracks: 'id => tracks.album_id,
+        tracks: 'id => tracks.album_id',
       }
     },
     tracks: {
