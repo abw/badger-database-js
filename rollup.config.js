@@ -1,9 +1,8 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import sourcemaps from 'rollup-plugin-sourcemaps';
 import json from '@rollup/plugin-json';
-import pkg from './package.json';
-import { terser } from 'rollup-plugin-terser'
+import pkg from './package.json' with { type: "json" };
+import terser from '@rollup/plugin-terser';
 
 // Silence circular dependency warnings
 const ignoreWarnings = [
@@ -26,11 +25,10 @@ export default [
     input: 'src/index.js',
     plugins: [
       resolve({
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js'],
       }),
       commonjs(),
       json(),
-      sourcemaps()
     ],
     external: [
       "node:buffer",
@@ -44,6 +42,7 @@ export default [
       "mysql2/promise",
       "os",
       "sqlite3",
+      "fsevents",
       "events",
       "fs",
       "path",
