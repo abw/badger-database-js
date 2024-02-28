@@ -168,6 +168,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger-database~in",
+    "variable/index.html#static-variable-IN",
+    "<span>IN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
+    "variable"
+  ],
+  [
     "@abw/badger-database~inner_join",
     "variable/index.html#static-variable-INNER_JOIN",
     "<span>INNER_JOIN</span> <span class=\"search-result-import-path\">@abw/badger-database</span>",
@@ -2454,6 +2460,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/builder/where.js~where#resolvein",
+    "class/src/Builder/Where.js~Where.html#instance-method-resolveIn",
+    "src/Builder/Where.js~Where#resolveIn",
+    "method"
+  ],
+  [
     "src/builder/where.js~where#resolvelinkarray",
     "class/src/Builder/Where.js~Where.html#instance-method-resolveLinkArray",
     "src/Builder/Where.js~Where#resolveLinkArray",
@@ -2853,6 +2865,12 @@ window.esdocSearchIndex = [
     "src/engine.js~engine#formatsetplaceholder",
     "class/src/Engine.js~Engine.html#instance-method-formatSetPlaceholder",
     "src/Engine.js~Engine#formatSetPlaceholder",
+    "method"
+  ],
+  [
+    "src/engine.js~engine#formatwhereinplaceholder",
+    "class/src/Engine.js~Engine.html#instance-method-formatWhereInPlaceholder",
+    "src/Engine.js~Engine#formatWhereInPlaceholder",
     "method"
   ],
   [

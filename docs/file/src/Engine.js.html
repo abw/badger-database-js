@@ -56,6 +56,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FULL_JOIN">FULL_JOIN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GROUP_BY">GROUP_BY</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HAVING">HAVING</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-IN">IN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INNER_JOIN">INNER_JOIN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INSERT">INSERT</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INTO">INTO</a></span></span></li>
@@ -402,6 +403,13 @@ export class Engine {
     // e.g. ['&gt;' 1973], otherwise we assume it's an equality operator, '='
     const cmp = isArray(value) ? value[0] : equals;
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
+  }
+
+  formatWhereInPlaceholder(column, values, n) {
+    const placeholders = values.map(
+      (v, i) =&gt; this.formatPlaceholder(n + i)
+    )
+    return `${this.quote(column)} in (${placeholders})`;
   }
 
   formatWhereNull(column) {

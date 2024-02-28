@@ -617,7 +617,15 @@ placeholders instead of <code>?</code>, but works exactly the same.</p>
 SET    name=?
 WHERE  email!=?</code></code></pre>
 <p>Any single value SQL operator can be used, e.g. <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>.
-You can't use operators that expect lists of values, e.g. <code>in (...)</code>.</p>
+For the <code>in</code> operator you should define the candidate values as an array.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">await users.update(
+  { name: "He's not a badger, he's a very naughty boy" },
+  { animal: ['in', ['Ferret', 'Stoat']] }
+);</code></code></pre>
+<p>The query builder will add placeholders for each of the values:</p>
+<pre><code class="lang-sql"><code class="source-code prettyprint">UPDATE users
+SET    name=?
+WHERE  animal in (?,?)</code></code></pre>
 <p>This method, and the other update methods, will throw a <code>ColumnValidationError</code>
 if you specify a column in either the <code>set</code> or <code>where</code> data that isn't defined
 as a table column.  The <code>pick</code> option can be used to override this.  When set,

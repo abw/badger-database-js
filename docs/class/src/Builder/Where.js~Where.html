@@ -56,6 +56,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FULL_JOIN">FULL_JOIN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GROUP_BY">GROUP_BY</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HAVING">HAVING</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-IN">IN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INNER_JOIN">INNER_JOIN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INSERT">INSERT</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INTO">INTO</a></span></span></li>
@@ -177,13 +178,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Where} from '<span><a href="file/src/Builder/Where.js.html#lineNumber5">@abw/badger-database</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Where} from '<span><a href="file/src/Builder/Where.js.html#lineNumber7">@abw/badger-database</a></span>'</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/Builder/Where.js.html#lineNumber5">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/Builder/Where.js.html#lineNumber7">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -384,6 +385,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Builder/Where.js~Where.html#instance-method-addValues">addValues</a></span></span><span class="code" data-ice="signature">(values: ...<span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Builder/Where.js~Where.html#instance-method-resolveIn">resolveIn</a></span></span><span class="code" data-ice="signature">(column: <span>*</span>, values: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1599,7 +1628,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber6">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber8">source</a></span></span>
     </span>
   </h3>
 
@@ -1642,7 +1671,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber7">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber9">source</a></span></span>
     </span>
   </h3>
 
@@ -1685,7 +1714,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber9">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber11">source</a></span></span>
     </span>
   </h3>
 
@@ -1728,7 +1757,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber8">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber10">source</a></span></span>
     </span>
   </h3>
 
@@ -1771,7 +1800,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber10">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber12">source</a></span></span>
     </span>
   </h3>
 
@@ -1820,7 +1849,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber102">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber126">source</a></span></span>
     </span>
   </h3>
 
@@ -1868,6 +1897,83 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-resolveIn">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">resolveIn</span><span class="code" data-ice="signature">(column: <span>*</span>, values: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber114">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">column</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">values</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-resolveLinkArray">
     <span class="access" data-ice="access">public</span>
     
@@ -1879,7 +1985,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber27">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber29">source</a></span></span>
     </span>
   </h3>
 
@@ -1950,7 +2056,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber63">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
@@ -2021,7 +2127,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Builder/Where.js.html#lineNumber17">source</a></span></span>
     </span>
   </h3>
 

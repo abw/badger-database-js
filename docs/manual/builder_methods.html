@@ -666,6 +666,30 @@ set the third item to <code>undefined</code>.</p>
 // -&gt; SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE "id" &gt; ?</code></code></pre>
+<p>There's a special case for the <code>in</code> operator.  Here the query builder has
+to know how many items are in the list of candidate values so that it can
+generate the appropriate number of placeholders.  So you must pass the
+values in as part of the <code>where</code> clause.  You can do this using either
+a three-element array, where the array of values are passed as the third
+element:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name email')
+  .from('users')
+  .where(['id', 'in', [123, 456]])
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" in (?,?)</code></code></pre>
+<p>Or using a two-element array with the array of values nested inside the
+second array.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name email')
+  .from('users')
+  .where(['id', ['in' [123, 456]]])
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" in (?,?)</code></code></pre>
+<p>Note that the <code>in</code> operator is itself case insensitive, so you can write
+it as <code>in</code>, <code>IN</code>, <code>In</code> or even <code>iN</code> if you so wish.  However, you can't
+write it as <code>Ni</code> (or <code>Peng</code> or <code>Neee-Wom</code> for that matter), even if you
+bring a shrubbery to offer as appeasement.</p>
 <p>You can also set a comparison operator using an object by setting the value
 to a two element array: <code>[operator, value]</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name email')
@@ -681,6 +705,14 @@ to a two element array: <code>[operator, value]</code>.</p>
 // -&gt; SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE "id" &gt; ?</code></code></pre>
+<p>The special case for the <code>in</code> operator also applies here.  The value must
+be an array with the array of values provided as the second element.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name email')
+  .from('users')
+  .where({ id: ['in', [123, 456]]})
+// -&gt; SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" in (?,?)</code></code></pre>
 <p>You can use raw SQL to define the criteria.  The explicit way is to
 pass an object with a <code>sql</code> property.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">db.select('id name email')
