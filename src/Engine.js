@@ -225,6 +225,13 @@ export class Engine {
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
   }
 
+  formatWhereInPlaceholder(column, values, n) {
+    const placeholders = values.map(
+      (v, i) => this.formatPlaceholder(n + i)
+    )
+    return `${this.quote(column)} in (${placeholders})`;
+  }
+
   formatWhereNull(column) {
     return `${this.quote(column)} is NULL`;
   }

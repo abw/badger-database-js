@@ -537,6 +537,39 @@ db.select('id name email')
 //    WHERE "id" > ?
 ```
 
+There's a special case for the `in` operator.  Here the query builder has
+to know how many items are in the list of candidate values so that it can
+generate the appropriate number of placeholders.  So you must pass the
+values in as part of the `where` clause.  You can do this using either
+a three-element array, where the array of values are passed as the third
+element:
+
+```js
+db.select('id name email')
+  .from('users')
+  .where(['id', 'in', [123, 456]])
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" in (?,?)
+```
+
+Or using a two-element array with the array of values nested inside the
+second array.
+
+```js
+db.select('id name email')
+  .from('users')
+  .where(['id', ['in' [123, 456]]])
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" in (?,?)
+```
+
+Note that the `in` operator is itself case insensitive, so you can write
+it as `in`, `IN`, `In` or even `iN` if you so wish.  However, you can't
+write it as `Ni` (or `Peng` or `Neee-Wom` for that matter), even if you
+bring a shrubbery to offer as appeasement.
+
 You can also set a comparison operator using an object by setting the value
 to a two element array: `[operator, value]`.
 
@@ -558,6 +591,18 @@ db.select('id name email')
 // -> SELECT "id", "name", "email"
 //    FROM "users"
 //    WHERE "id" > ?
+```
+
+The special case for the `in` operator also applies here.  The value must
+be an array with the array of values provided as the second element.
+
+```js
+db.select('id name email')
+  .from('users')
+  .where({ id: ['in', [123, 456]]})
+// -> SELECT "id", "name", "email"
+//    FROM "users"
+//    WHERE "id" in (?,?)
 ```
 
 You can use raw SQL to define the criteria.  The explicit way is to

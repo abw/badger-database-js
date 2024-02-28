@@ -399,7 +399,22 @@ WHERE  email!=?
 ```
 
 Any single value SQL operator can be used, e.g. `=`, `!=`, `<`, `<=`, `>`, `>=`.
-You can't use operators that expect lists of values, e.g. `in (...)`.
+For the `in` operator you should define the candidate values as an array.
+
+```js
+await users.update(
+  { name: "He's not a badger, he's a very naughty boy" },
+  { animal: ['in', ['Ferret', 'Stoat']] }
+);
+```
+
+The query builder will add placeholders for each of the values:
+
+```sql
+UPDATE users
+SET    name=?
+WHERE  animal in (?,?)
+```
 
 This method, and the other update methods, will throw a `ColumnValidationError`
 if you specify a column in either the `set` or `where` data that isn't defined

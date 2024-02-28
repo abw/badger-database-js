@@ -85,6 +85,17 @@ export function runTableWhereTests(engine) {
     }
   )
 
+  test.serial( 'select rows using in',
+    async t => {
+      const albums = await db.waiter.model.albums.allRows({
+        year: ['in', [1973, 1975]],
+      });
+      t.is( albums.length, 2 );
+      t.is( albums[0].title, 'The Dark Side of the Moon' );
+      t.is( albums[1].title, 'Wish You Were Here' );
+    }
+  )
+
   test.after( 'disconnect',
     () => db.disconnect()
   )

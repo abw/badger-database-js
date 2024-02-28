@@ -123,6 +123,18 @@ export function runTableFetchTests(engine) {
     }
   )
 
+  test.serial( 'fetchAll() many in',
+    async t => {
+      const users = await db.table('users');
+      const rows  = await users.fetchAll({
+        name: ['in', ['Bobby Badger', 'Brian Badger']]
+      });
+      t.is( rows.length, 2 );
+      t.is( rows[0].name, 'Bobby Badger' );
+      t.is( rows[1].name, 'Brian Badger' );
+    }
+  )
+
   test.serial( 'fetchAll() with no spec',
     async t => {
       const users = await db.table('users');

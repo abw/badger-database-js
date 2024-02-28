@@ -236,6 +236,17 @@ export function runTableUpdateTests(engine) {
     }
   )
 
+  test.serial( 'updateAll() with in not found',
+    async t => {
+      const users = await db.table('users');
+      const result = await users.updateAll(
+        { name:  'Robbie Badger' },
+        { email: ['in', ['bobby@badgerpower.co.uk', 'nobby@nowhere.com']] },
+      );
+      t.is( result.changes, 0 );
+    }
+  )
+
   test.serial( 'updateAll() not found with reload error',
     async t => {
       const users = await db.table('users');

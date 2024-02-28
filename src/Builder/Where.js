@@ -1,6 +1,8 @@
 import Builder from '../Builder.js';
 import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils';
-import { AND, WHERE, space } from '../Constants.js';
+import { AND, WHERE, IN, space } from '../Constants.js';
+
+const isIn = value => value.toUpperCase() === IN
 
 export class Where extends Builder {
   static buildMethod = 'where'
@@ -28,8 +30,12 @@ export class Where extends Builder {
     const database = this.lookupDatabase();
     if (criteria.length === 2) {
       let match;
+
       // a two-element array can be [column, [operator]] or [column, [operator, value]]
       if (isArray(criteria[1])) {
+        if (isIn(criteria[1][0])) {
+          return this.resolveIn(criteria[0], criteria[1][1])
+        }
         if (hasValue(criteria[1][1])) {
           this.addValues(criteria[1][1]);
         }
@@ -45,13 +51,16 @@ export class Where extends Builder {
       )
     }
     else if (criteria.length === 3) {
-      // a two-element array is [column, operator, value]
+      // a three-element array is [column, operator, value]
+      if (isIn(criteria[1])) {
+        return this.resolveIn(criteria[0], criteria[2])
+      }
       if (hasValue(criteria[2])) {
         this.addValues(criteria[2]);
       }
       return database.engine.formatWherePlaceholder(
         criteria[0],
-        [criteria[1], undefined],
+        [criteria[1], criteria[2]],
         this.context.placeholder++
       )
     }
@@ -69,6 +78,9 @@ export class Where extends Builder {
           // the value can be a two element array: [operator, value]
           // or a single element array: [operator]
           if (value.length === 2) {
+            if (isIn(value[0])) {
+              return this.resolveIn(column, value[1])
+            }
             values.push(value[1])
           }
           else if (value.length !== 1) {
@@ -97,6 +109,18 @@ export class Where extends Builder {
       this.addValues(...values);
     }
     return result;
+  }
+
+  resolveIn(column, values) {
+    const database = this.lookupDatabase();
+    this.addValues(...values);
+    const ph = this.context.placeholder
+    this.context.placeholder += values.length
+    return database.engine.formatWhereInPlaceholder(
+      column,
+      values,
+      ph
+    )
   }
 
   addValues(...values) {
