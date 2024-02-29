@@ -1,5 +1,23 @@
-import { addDebug, ANSIescape, ANSIreset } from "@abw/badger";
+import { ANSIescape, ANSIreset } from "./Color.js";
 import { doNothing, fail, isBoolean, isObject } from "@abw/badger-utils";
+
+export function Debugger(enabled, prefix='', color) {
+  return enabled
+    ? prefix
+      ? (format, ...args) =>
+          console.log(
+            '%s' + prefix + '%s' + format,
+            color ? ANSIescape(color) : '',
+            ANSIreset(),
+            ...args,
+          )
+      : console.log.bind(console)
+    : doNothing;
+}
+
+export function addDebug(obj, enabled, prefix='', color) {
+  obj.debug = Debugger(enabled, prefix, color);
+}
 
 /**
  * @ignore
