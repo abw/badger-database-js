@@ -1,0 +1,1 @@
+import{_ as s,o as a,c as i,a2 as n}from"./chunks/framework.mZNJGiH_.js";const y=JSON.parse('{"title":"Waiter","description":"","frontmatter":{},"headers":[],"relativePath":"waiter.md","filePath":"waiter.md"}'),t={name:"waiter.md"},e=n("",11),h=[e];function l(p,k,r,o,d,E){return a(),i("div",null,h)}const g=s(t,[["render",l]]);export{y as __pageData,g as default};

@@ -5,7 +5,7 @@ export default defineConfig({
   title: "Badger Database",
   description: "A Database Abstraction Toolkit",
   head: [['link', { rel: 'icon', href: '/images/badger3.svg' }]],
-  base: '/badger-database/',
+  base: '/badger-database-js/',
   outDir: '../docs',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
