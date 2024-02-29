@@ -78,13 +78,11 @@ like this:
 ```js
 import { connect, sql } from '@abw/badger-database'
 
-async function main() {
-  const db = connect({ database: 'sqlite:memory' });
+const db = connect({ database: 'sqlite:memory' });
 
-  // examples go here
-}
+// examples go here
 
-main()
+db.disconnect()
 ```
 
 The database object provides four methods for creating different

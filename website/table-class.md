@@ -17,66 +17,62 @@ export class Users extends Table {
   }
 }
 
-async function main() {
-  const db = connect({
-    database: 'sqlite:memory',
-    tables: {
-      users: {
-        // bind in the custom table class
-        tableClass: Users,
-        // column definitions
-        columns: 'id name email animal',
-        // query definitions
-        queries: {
-          create: `
-            CREATE TABLE users (
-              id     INTEGER PRIMARY KEY ASC,
-              name   TEXT,
-              email  TEXT,
-              animal TEXT
-            )`
-        }
-      },
-    }
-  });
-
-  // fetch users table object
-  const users = await db.table('users');
-
-  // run the 'create' query to create the database table
-  await users.run('create');
-
-  // insert some rows
-  await users.insert([
-    {
-      name:   'Bobby Badger',
-      email:  'bobby@badgerpower.com',
-      animal: 'Badger'
+const db = connect({
+  database: 'sqlite:memory',
+  tables: {
+    users: {
+      // bind in the custom table class
+      tableClass: Users,
+      // column definitions
+      columns: 'id name email animal',
+      // query definitions
+      queries: {
+        create: `
+          CREATE TABLE users (
+            id     INTEGER PRIMARY KEY ASC,
+            name   TEXT,
+            email  TEXT,
+            animal TEXT
+          )`
+      }
     },
-    {
-      name:   'Brian Badger',
-      email:  'brian@badgerpower.com',
-      animal: 'Badger'
-    },
-    {
-      name:   'Frankie Ferret',
-      email:  'frank@ferret.com',
-      animal: 'Ferret'
-    }
-  ]);
+  }
+});
 
-  // now call the custom badgers() method to fetch all badgers
-  const badgers = await users.badgers();
+// fetch users table object
+const users = await db.table('users');
 
-  console.log(badgers.length);    // 2
-  console.log(badgers[0].name);   // Bobby Badger
-  console.log(badgers[1].name);   // Brian Badger
+// run the 'create' query to create the database table
+await users.run('create');
 
-  // disconnect
-  db.disconnect();
-}
+// insert some rows
+await users.insert([
+  {
+    name:   'Bobby Badger',
+    email:  'bobby@badgerpower.com',
+    animal: 'Badger'
+  },
+  {
+    name:   'Brian Badger',
+    email:  'brian@badgerpower.com',
+    animal: 'Badger'
+  },
+  {
+    name:   'Frankie Ferret',
+    email:  'frank@ferret.com',
+    animal: 'Ferret'
+  }
+]);
 
-main()
+// now call the custom badgers() method to fetch all badgers
+const badgers = await users.badgers();
+
+console.log(badgers.length);    // 2
+console.log(badgers[0].name);   // Bobby Badger
+console.log(badgers[1].name);   // Brian Badger
+
+// disconnect
+db.disconnect();
 ```
 
 ## Table Configuration
