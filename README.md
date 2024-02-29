@@ -60,11 +60,8 @@ is a lightweight variant of the Active Record pattern.
 
 ## Documentation and Examples
 
-The [manual pages](https://abw.github.io/badger-database-js/docs/manual/index.html)
-provides a guided walk-through of the features of the library.
-
-The [API documentation](https://abw.github.io/badger-database-js/docs/identifiers.html)
-contains information about the class, methods and other functions provided.
+The [web site](https://abw.github.io/badger-database-js/)
+has detailed documentation and examples of use.
 
 The [github repository](https://github.com/abw/badger-database-js) includes a
 number of [examples](https://github.com/abw/badger-database-js/tree/master/examples/)
@@ -133,7 +130,7 @@ to install `@abw/badger-database` and at least one of the driver modules.
 
 ## Quick Start
 
-Import the [connect()](https://abw.github.io/badger-database-js/docs/manual/connecting.html)
+Import the [connect()](https://abw.github.io/badger-database-js/connecting.html)
 function from `@abw/badger-database` and create a database connection.  This example shows a
 `sqlite` in-memory database which is ideal for testing.
 
@@ -145,7 +142,7 @@ const db = connect({
 })
 ```
 
-Use the [run()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#run-query--values--options-)
+Use the [run()](https://abw.github.io/badger-database-js/basic-queries.html#run)
 method to run SQL queries.  For example, to create a `users` table:
 
 ```js
@@ -168,7 +165,7 @@ const insert = await db.run(
 console.log("Inserted ID:", insert.lastInsertRowid);
 ```
 
-Use the [one()](https://abw.github.io/badger-database-js/docs/manual/basic_queries.html#one-query--values--options-)
+Use the [one()](https://abw.github.io/badger-database-js/basic-queries.html#one)
 method to fetch a row of data:
 
 ```js
@@ -179,8 +176,8 @@ const select = await db.one(
 console.log("User Name:", select.name);
 ```
 
-Define [named queries](https://abw.github.io/badger-database-js/docs/manual/named_queries.html)
-and reusable [query fragments](https://abw.github.io/badger-database-js/docs/manual/query_fragments.html)
+Define [named queries](https://abw.github.io/badger-database-js/named-queries.html)
+and reusable [query fragments](https://abw.github.io/badger-database-js/query-fragments.html)
 up front so that you don't have to embed SQL in your application code:
 
 ```js
@@ -236,7 +233,7 @@ const select2 = await db.one(
 );
 ```
 
-Use the [query builder](https://abw.github.io/badger-database-js/docs/manual/query_builder.html)
+Use the [query builder](https://abw.github.io/badger-database-js/query-builder.html)
 to generate custom SQL select queries.
 
 ```js
@@ -283,7 +280,7 @@ const emp1 = await employee         // extend existing query
 //   AND "users"."id" = ?
 ```
 
-Define [tables](https://abw.github.io/badger-database-js/docs/manual/tables.html)
+Define [tables](https://abw.github.io/badger-database-js/tables.html)
 to benefit from table-scoped queries and automatically generated queries:
 
 ```js
@@ -322,7 +319,7 @@ const select = await users.fetchOne({
 });
 ```
 
-Use [records](https://abw.github.io/badger-database-js/docs/manual/records.html)
+Use [records](https://abw.github.io/badger-database-js/records.html)
 to perform further operations on rows.
 
 ```js
@@ -342,7 +339,7 @@ await record.update({
 await record.delete();
 ```
 
-Define [relations](https://abw.github.io/badger-database-js/docs/manual/relations.html)
+Define [relations](https://abw.github.io/badger-database-js/relations.html)
 between tables.
 
 ```js
@@ -399,7 +396,7 @@ console.log(tracks[1].title);  // Breathe
 console.log(tracks[2].title);  // On the Run
 ```
 
-Read the [fine manual](https://abw.github.io/badger-database-js/docs/manual/) for
+Read the [fine manual](https://abw.github.io/badger-database-js/) for
 further information.
 
 # Author

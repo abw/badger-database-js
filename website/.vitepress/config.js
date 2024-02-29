@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Badger Database",
   description: "A Database Abstraction Toolkit",
-  head: [['link', { rel: 'icon', href: '/images/badger3.svg' }]],
+  head: [['link', { rel: 'icon', href: '/badger-database-js/images/badger3.svg' }]],
   base: '/badger-database-js/',
   outDir: '../docs',
   themeConfig: {
