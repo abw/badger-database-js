@@ -1,0 +1,1 @@
+import{_ as s,o as a,c as i,a2 as t}from"./chunks/framework.Pt8yDOQY.js";const g=JSON.parse('{"title":"Model","description":"","frontmatter":{},"headers":[],"relativePath":"model.md","filePath":"model.md"}'),e={name:"model.md"},n=t("",9),l=[n];function h(p,d,k,o,c,r){return a(),i("div",null,l)}const y=s(e,[["render",h]]);export{g as __pageData,y as default};

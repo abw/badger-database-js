@@ -22,10 +22,11 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint 'src/**/*'",
-    "docs:build": "esdoc",
-    "docs:serve": "serve docs",
     "test": "ava --serial",
-    "pretest": "pnpm run build"
+    "pretest": "pnpm run build",
+    "docs:dev": "vitepress dev website",
+    "docs:build": "vitepress build website",
+    "docs:preview": "vitepress preview website"
   },
   "keywords": [
     "badger",
@@ -33,11 +34,6 @@
     "sql"
   ],
   "devDependencies": {
-    "@itsjamie/esdoc-cli": "^0.5.0",
-    "@itsjamie/esdoc-core": "^0.5.0",
-    "@itsjamie/esdoc-importpath-plugin": "^0.5.0",
-    "@itsjamie/esdoc-inject-style-plugin": "^0.5.0",
-    "@itsjamie/esdoc-standard-plugin": "^0.5.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
