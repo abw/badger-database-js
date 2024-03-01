@@ -7,6 +7,7 @@ export default defineConfig({
   head: [['link', { rel: 'icon', href: '/badger-database-js/images/badger3.svg' }]],
   base: '/badger-database-js/',
   outDir: '../docs',
+  lastUpdated: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'Badger Database',

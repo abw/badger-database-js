@@ -25,12 +25,24 @@ hero:
       link: /examples
 
 features:
-  - title: Run SQL Queries
+  - title: SQL Queries
     details: Define your own named SQL queries and composable query fragments
+    link: /basic-queries
   - title: Query Builder
     details: Use the query builder to programmatically compose SQL queries
-  - title: Tables and Records
-    details: Define tables and records for basic ORM functionality
+    link: /query-builder
+  - title: Tables
+    details: Define table schemas to benefit from inbuilt CRUD queries
+    link: /tables
+  - title: Records
+    details: Return rows as record objects for ORM functionality
+    link: /records
+  - title: Relations
+    details: Define relations between records to generate fetching methods
+    link: /relations
+  - title: Transactions
+    details: Use transactions with commit/rollback to ensure database consistency
+    link: /transactions
 ---
 
 ## SQL Made Easier
