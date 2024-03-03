@@ -38,7 +38,7 @@ features:
     details: Return rows as record objects for ORM functionality
     link: /records
   - title: Relations
-    details: Define relations between records to generate fetching methods
+    details: Define relations between records to interconnect data
     link: /relations
   - title: Transactions
     details: Use transactions with commit/rollback to ensure database consistency
