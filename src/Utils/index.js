@@ -5,7 +5,7 @@ export * from './Database.js';
 export * from './Debug.js';
 export * from './Error.js';
 export * from './Format.js';
-export * from './Queries.js';
+export * from './In.js';
 export * from './Relation.js';
 export * from './Space.js';
 export * from './Tags.js';
