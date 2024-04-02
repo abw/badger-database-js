@@ -140,7 +140,16 @@ test( 'where id in with raw sql',
 test( 'where array id in three elements',
   t => {
     const query = db.build.from('users').select('email').where(['id', 'in', [123, 456, 789]]);
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" in (?,?,?)' );
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" IN (?,?,?)' );
+    t.is( query.allValues().length, 3 );
+    t.is( query.allValues().join(' '), '123 456 789' );
+  }
+)
+
+test( 'where array id not in three elements',
+  t => {
+    const query = db.build.from('users').select('email').where(['id', 'not in', [123, 456, 789]]);
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" NOT IN (?,?,?)' );
     t.is( query.allValues().length, 3 );
     t.is( query.allValues().join(' '), '123 456 789' );
   }
@@ -149,7 +158,16 @@ test( 'where array id in three elements',
 test( 'where array id in two elements',
   t => {
     const query = db.build.from('users').select('email').where(['id', ['in', [123, 456, 789]]]);
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" in (?,?,?)' );
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" IN (?,?,?)' );
+    t.is( query.allValues().length, 3 );
+    t.is( query.allValues().join(' '), '123 456 789' );
+  }
+)
+
+test( 'where array id not in two elements',
+  t => {
+    const query = db.build.from('users').select('email').where(['id', ['not in', [123, 456, 789]]]);
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" NOT IN (?,?,?)' );
     t.is( query.allValues().length, 3 );
     t.is( query.allValues().join(' '), '123 456 789' );
   }
@@ -158,7 +176,18 @@ test( 'where array id in two elements',
 test( 'where object id in',
   t => {
     const query = db.build.from('users').select('email').where({ id: ['in', [123, 456, 789]] });
-    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" in (?,?,?)' );
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" IN (?,?,?)' );
+    t.is( query.allValues().length, 3 );
+    t.is( query.allValues()[0], 123 );
+    t.is( query.allValues()[1], 456 );
+    t.is( query.allValues()[2], 789 );
+  }
+)
+
+test( 'where object id not in',
+  t => {
+    const query = db.build.from('users').select('email').where({ id: ['not in', [123, 456, 789]] });
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" NOT IN (?,?,?)' );
     t.is( query.allValues().length, 3 );
     t.is( query.allValues()[0], 123 );
     t.is( query.allValues()[1], 456 );

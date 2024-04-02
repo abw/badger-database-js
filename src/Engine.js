@@ -225,11 +225,11 @@ export class Engine {
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
   }
 
-  formatWhereInPlaceholder(column, values, n) {
+  formatWhereInPlaceholder(column, operator, values, n) {
     const placeholders = values.map(
       (v, i) => this.formatPlaceholder(n + i)
     )
-    return `${this.quote(column)} in (${placeholders})`;
+    return `${this.quote(column)} ${operator} (${placeholders})`;
   }
 
   formatWhereNull(column) {

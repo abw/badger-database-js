@@ -1,8 +1,7 @@
 import Builder from '../Builder.js';
 import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils';
-import { AND, WHERE, IN, space } from '../Constants.js';
-
-const isIn = value => value.toUpperCase() === IN
+import { AND, WHERE, space } from '../Constants.js';
+import { isIn } from '../Utils/index.js'
 
 export class Where extends Builder {
   static buildMethod = 'where'
@@ -33,8 +32,9 @@ export class Where extends Builder {
 
       // a two-element array can be [column, [operator]] or [column, [operator, value]]
       if (isArray(criteria[1])) {
-        if (isIn(criteria[1][0])) {
-          return this.resolveIn(criteria[0], criteria[1][1])
+        const inOrNotIn = isIn(criteria[1][0])
+        if (inOrNotIn) {
+          return this.resolveIn(criteria[0], inOrNotIn, criteria[1][1])
         }
         if (hasValue(criteria[1][1])) {
           this.addValues(criteria[1][1]);
@@ -52,8 +52,9 @@ export class Where extends Builder {
     }
     else if (criteria.length === 3) {
       // a three-element array is [column, operator, value]
-      if (isIn(criteria[1])) {
-        return this.resolveIn(criteria[0], criteria[2])
+      const inOrNotIn = isIn(criteria[1])
+      if (inOrNotIn) {
+        return this.resolveIn(criteria[0], inOrNotIn, criteria[2])
       }
       if (hasValue(criteria[2])) {
         this.addValues(criteria[2]);
@@ -78,8 +79,9 @@ export class Where extends Builder {
           // the value can be a two element array: [operator, value]
           // or a single element array: [operator]
           if (value.length === 2) {
-            if (isIn(value[0])) {
-              return this.resolveIn(column, value[1])
+            const inOrNotIn = isIn(value[0])
+            if (inOrNotIn) {
+              return this.resolveIn(column, inOrNotIn, value[1])
             }
             values.push(value[1])
           }
@@ -111,13 +113,14 @@ export class Where extends Builder {
     return result;
   }
 
-  resolveIn(column, values) {
+  resolveIn(column, operator, values) {
     const database = this.lookupDatabase();
     this.addValues(...values);
     const ph = this.context.placeholder
     this.context.placeholder += values.length
     return database.engine.formatWhereInPlaceholder(
       column,
+      operator,
       values,
       ph
     )

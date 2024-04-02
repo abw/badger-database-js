@@ -374,7 +374,8 @@ WHERE  email!=?
 ```
 
 Any single value SQL operator can be used, e.g. `=`, `!=`, `<`, `<=`, `>`, `>=`.
-For the `in` operator you should define the candidate values as an array.
+For the `in` and `not in` operators you should define the candidate values
+as an array.
 
 ```js
 await users.update(
@@ -388,7 +389,7 @@ The query builder will add placeholders for each of the values:
 ```sql
 UPDATE users
 SET    name=?
-WHERE  animal in (?,?)
+WHERE  animal IN (?,?)
 ```
 
 This method, and the other update methods, will throw a `ColumnValidationError`

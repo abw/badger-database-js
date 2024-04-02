@@ -96,6 +96,18 @@ export function runTableWhereTests(engine) {
     }
   )
 
+  test.serial( 'select rows using not in',
+    async t => {
+      const albums = await db.waiter.model.albums.allRows({
+        year: ['not in', [1973, 1975]],
+      });
+      t.is( albums.length, 3 );
+      t.is( albums[0].title, 'Atom Heart Mother' );
+      t.is( albums[1].title, 'The Wall' );
+      t.is( albums[2].title, 'The Final Cut' );
+    }
+  )
+
   test.after( 'disconnect',
     () => db.disconnect()
   )
