@@ -155,6 +155,15 @@ test( 'where array id not in three elements',
   }
 )
 
+test( 'where array id in three elements coerce to array',
+  t => {
+    const query = db.build.from('users').select('email').where(['id', 'in', 123]);
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" IN (?)' );
+    t.is( query.allValues().length, 1 );
+    t.is( query.allValues().join(' '), '123' );
+  }
+)
+
 test( 'where array id in two elements',
   t => {
     const query = db.build.from('users').select('email').where(['id', ['in', [123, 456, 789]]]);
@@ -170,6 +179,15 @@ test( 'where array id not in two elements',
     t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" NOT IN (?,?,?)' );
     t.is( query.allValues().length, 3 );
     t.is( query.allValues().join(' '), '123 456 789' );
+  }
+)
+
+test( 'where array id in two elements coerce to array',
+  t => {
+    const query = db.build.from('users').select('email').where(['id', ['in', 123]]);
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "id" IN (?)' );
+    t.is( query.allValues().length, 1 );
+    t.is( query.allValues().join(' '), '123' );
   }
 )
 
@@ -194,6 +212,27 @@ test( 'where object id not in',
     t.is( query.allValues()[2], 789 );
   }
 )
+
+test( 'where object id in with extra clauses',
+  t => {
+    const query = db.build
+      .from('users')
+      .select('email')
+      .where({
+        volume: 11,
+        id: ['in', [123, 456, 789]],
+        description: 'One louder'
+      });
+    t.is( query.sql(), 'SELECT "email"\nFROM "users"\nWHERE "volume" = ? AND "id" IN (?,?,?) AND "description" = ?' );
+    t.is( query.allValues().length, 5 );
+    t.is( query.allValues()[0], 11 );
+    t.is( query.allValues()[1], 123 );
+    t.is( query.allValues()[2], 456 );
+    t.is( query.allValues()[3], 789 );
+    t.is( query.allValues()[4], 'One louder' );
+  }
+)
+
 
 test( 'where null clause',
   t => {

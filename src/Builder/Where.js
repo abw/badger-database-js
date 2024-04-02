@@ -1,7 +1,7 @@
 import Builder from '../Builder.js';
 import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils';
 import { AND, WHERE, space } from '../Constants.js';
-import { isIn } from '../Utils/index.js'
+import { isIn, toArray } from '../Utils/index.js'
 
 export class Where extends Builder {
   static buildMethod = 'where'
@@ -34,7 +34,9 @@ export class Where extends Builder {
       if (isArray(criteria[1])) {
         const inOrNotIn = isIn(criteria[1][0])
         if (inOrNotIn) {
-          return this.resolveIn(criteria[0], inOrNotIn, criteria[1][1])
+          const inValues = toArray(criteria[1][1])
+          this.addValues(...inValues);
+          return this.resolveIn(criteria[0], inOrNotIn, inValues)
         }
         if (hasValue(criteria[1][1])) {
           this.addValues(criteria[1][1]);
@@ -54,7 +56,9 @@ export class Where extends Builder {
       // a three-element array is [column, operator, value]
       const inOrNotIn = isIn(criteria[1])
       if (inOrNotIn) {
-        return this.resolveIn(criteria[0], inOrNotIn, criteria[2])
+        const inValues = toArray(criteria[2])
+        this.addValues(...inValues);
+        return this.resolveIn(criteria[0], inOrNotIn, inValues)
       }
       if (hasValue(criteria[2])) {
         this.addValues(criteria[2]);
@@ -80,8 +84,10 @@ export class Where extends Builder {
           // or a single element array: [operator]
           if (value.length === 2) {
             const inOrNotIn = isIn(value[0])
+            const inValues = toArray(value[1])
             if (inOrNotIn) {
-              return this.resolveIn(column, inOrNotIn, value[1])
+              values.push(...inValues)
+              return this.resolveIn(column, inOrNotIn, inValues)
             }
             values.push(value[1])
           }
@@ -97,6 +103,7 @@ export class Where extends Builder {
         }
         else {
           // otherwise we assume it's just a value
+          // console.log(`adding value for ${column}: `, value);
           values.push(value)
         }
         // generate the criteria with a placeholder
@@ -115,7 +122,7 @@ export class Where extends Builder {
 
   resolveIn(column, operator, values) {
     const database = this.lookupDatabase();
-    this.addValues(...values);
+    // console.log(`adding ${column} ${operator} values: `, values);
     const ph = this.context.placeholder
     this.context.placeholder += values.length
     return database.engine.formatWhereInPlaceholder(
