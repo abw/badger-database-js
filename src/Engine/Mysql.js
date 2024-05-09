@@ -17,17 +17,33 @@ export class MysqlEngine extends Engine {
     const { default: mysql } = await import(this.driver).catch(
       e => throwEngineDriver(this.driver, e)
     );
-    return mysql.createConnection(this.database);
+    return await mysql.createConnection(this.database);
   }
 
   async connected(db) {
     // work-around for https://github.com/sidorares/node-mysql2/issues/939
-    return ! db?.connection?._closing;
+    const connection = db?.connection || { }
+    return ! (connection._closing || connection._badger_veryNaughtyBoy);
   }
 
   async disconnect(connection) {
     this.debug("disconnect()");
     connection.destroy();
+  }
+
+  //-----------------------------------------------------------------------------
+  // Low-level execute method - with hack to catch jammed connections
+  //-----------------------------------------------------------------------------
+  async clientExecute(client, sql, action) {
+    try {
+      const query = await client.prepare(sql)
+      return await action(query);
+    }
+    catch (e) {
+      // Hack to work around connection with errors getting jammed
+      client.connection._badger_veryNaughtyBoy = true
+      throw(e)
+    }
   }
 
   //-----------------------------------------------------------------------------

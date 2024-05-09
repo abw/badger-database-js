@@ -104,7 +104,7 @@ export class Engine {
     finally {
       // release the connection back to the pool if it's one we acquired
       if (! transact) {
-        this.release(client);
+        await this.release(client);
       }
     }
   }
