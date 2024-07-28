@@ -242,7 +242,9 @@ export async function connectMusicDatabase(engine='sqlite') {
 // Run numerous tests
 //-----------------------------------------------------------------------------
 export const runMusicDatabaseTests = async (database, options) => {
-  const musicdb = await connectMusicDatabase(database, options);
+  console.log(`running music database tests`)
+
+  const musicdb = await connectMusicDatabase(database, options)
   const artists = await musicdb.table('artists');
   const albums  = await musicdb.table('albums');
   const tracks  = await musicdb.table('tracks');
