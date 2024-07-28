@@ -2,8 +2,8 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    include: ['vitest/**/*.js'],
-    exclude: ['vitest/library/*.js'],
+    include: ['test/**/*.js'],
+    exclude: ['test/library/*.js'],
     fileParallelism: false,
   },
 })
