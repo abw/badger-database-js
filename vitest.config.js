@@ -6,9 +6,11 @@ export default defineConfig({
     exclude: ['test/library/*.js'],
     fileParallelism: false,
     reporters: ['html'],
+    outputFile: './tmp/test/index.html',
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.js']
+      include: ['src/**/*.js'],
+      reportsDirectory: './tmp/coverage'
     },
   },
 })
