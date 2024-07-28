@@ -22,7 +22,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint 'src/**/*'",
-    "test": "ava --serial",
+    "ava-test": "ava --serial",
+    "test": "vitest",
     "pretest": "pnpm run build",
     "docs:dev": "vitepress dev website",
     "docs:build": "vitepress build website",
@@ -47,7 +48,8 @@
     "rollup": "^4.8.0",
     "source-map-support": "^0.5.21",
     "sqlite3": "^5.1.6",
-    "vitepress": "1.0.0-rc.44"
+    "vitepress": "1.0.0-rc.44",
+    "vitest": "^2.0.4"
   },
   "dependencies": {
     "@abw/badger-utils": "^1.0.23",
