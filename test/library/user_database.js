@@ -323,6 +323,22 @@ export const runUserDatabaseTests = async (engine, options) => {
     }
   )
 
+  test( 'select with join onto employees and company using as',
+    async () => {
+      const row = await userdb
+        .select('users.name, job.job_title')
+        .select(['employer.name', 'employer_name'])
+        .from('users')
+        .join('users.id=employees.user_id as job')
+        .join('job.company_id=companies.id as employer')
+        .where('users.id')
+        .one([Bobby.id])
+      expect(row.name).toBe(Bobby.name)
+      expect(row.job_title).toBe('Chief Badger')
+      expect(row.employer_name).toBe('Badgers Inc.')
+    }
+  )
+
   test( 'select with queries built on a base',
     async () => {
       const employees = userdb
