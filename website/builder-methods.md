@@ -647,19 +647,22 @@ db.select('name email')
 
 ### join(table)
 
-This method can be used to join tables.  A string can be passed as
-a shorthand syntax of the form `from = table.to`, where `from` is the
-column you're joining from, `table` is the table you're joining onto
-and `to` is the column in the joined table that should match the value
-in the `from` column.  Spaces are optional around the equals sign,
-e.g. `from=table.to` or `from = table.to` are both treated the same.
+This method can be used to join tables.
+
+A string can be passed as a shorthand syntax of the form `from = table.to`.
+Here `from` is the column you're joining from.  This can include the table
+name if necessary to disambiguate (e.g. `users.id`) or can just be the column name
+if it's unique (e.g. `id`).  The `table` is the table you're joining onto
+and `to` is the column in that table that should match the value in the
+`from` column. Spaces are optional around the equals sign, e.g.
+`from=table.to` or `from = table.to` are both treated the same.
 
 ```js
-db.select('name email')
+db.select('users.name users.email')
   .select(['companies.name', 'company_name'])
   .from('users')
   .join('users.company_id = companies.id')
-// -> SELECT "name", "email", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
@@ -669,16 +672,29 @@ For a right join, use a right pointing arrow, e.g. `from => table.to`.
 For a full join, use a double headed arrow, e.g. `from <=> table.to`.
 Spaces around the arrow are optional.
 
+If you want to create an alias for the target table then you can add `as <alias>`
+to the end of the string.
+
+```js
+db.select('users.name users.email')
+  .select(['employer.name', 'company'])
+  .from('users')
+  .join('users.company_id = companies.id as employer')
+// -> SELECT "users"."name", "users"."email", "employer"."name" AS "company"
+//    FROM "users"
+//    JOIN "companies" AS "employer" ON "users"."company_id" = "employer"."id"
+```
+
 You can pass an array to the method containing 2, 3, or 4 elements.
 When using two elements, the first should be the table column you're
 joining from and the second should be the table column you're joining to.
 
 ```js
-db.select('name email')
+db.select('users.name users.email')
   .from('users')
   .select(['companies.name', 'company_name'])
   .join(['users.company_id', 'companies.id'])
-// -> SELECT "name", "email", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
@@ -686,11 +702,11 @@ db.select('name email')
 The three element version has the destination table and column separated.
 
 ```js
-db.select('name email')
+db.select('users.name users.email')
   .from('users')
   .select(['companies.name', 'company_name'])
   .join(['users.company_id', 'companies', 'id'])
-// -> SELECT "name", "email", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
@@ -699,11 +715,11 @@ The four element version allows you to specify the join type at the
 beginning.  Valid types are `left`, `right`, `inner` and `full`.
 
 ```js
-db.select('name email')
+db.select('users.name users.email')
   .from('users')
   .select(['companies.name', 'company_name'])
   .join(['left', 'users.company_id', 'companies', 'id'])
-// -> SELECT "name", "email", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
@@ -712,25 +728,53 @@ You can pass an object to the method containing the `from`, `table`
 and `to` properties, and optionally the `type`.
 
 ```js
-db.select('name email')
+db.select('users.name users.email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join({ type: 'left', from: 'users.company_id', table: 'companies', to: 'id' })
-// -> SELECT "name", "email", "companies"."name" AS "company_name"
+  .join({
+    type:  'left',
+    from:  'users.company_id',
+    table: 'companies',
+    to:    'id'
+  })
+// -> SELECT "users"."name", "users"."email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"
 ```
 
-Or you can combine the table name and column in the `to` property.
+Or you can combine the table name and column in the `to` property as you
+might for the `from` property.
 
 ```js
-db.select('name email')
+db.select('users.name users.email')
   .from('users')
   .select(['companies.name', 'company_name'])
-  .join({ type: 'left', from: 'users.company_id', to: 'companies.id' })
-// -> SELECT "name", "email", "companies"."name" AS "company_name"
+  .join({
+    type: 'left',
+    from: 'users.company_id',
+    to:   'companies.id'
+  })
+// -> SELECT "users"."name", "users"."email", "companies"."name" AS "company_name"
 //    FROM "users"
 //    LEFT JOIN "companies" ON "users"."company_id" = "companies"."id"
+```
+
+You can also use the `as` property to create an alias for the table.
+
+```js
+db.select('users.name users.email')
+  .from('users')
+  .select(['employer.name', 'company'])
+  .join({
+    from:  'users.company_id',
+    table: 'companies',
+    as:    'employer'
+    to:    'id'
+  })
+// -> SELECT "users"."name", "users"."email", "employer"."name" AS "company"
+//    FROM "users"
+//    LEFT JOIN "companies" AS "employer"
+//    ON "users"."company_id" = "employer"."id"
 ```
 
 You know the drill, right?  If the method doesn't do what you need then you
@@ -738,11 +782,11 @@ can use raw SQL to define the joins, either with an object containing a
 `sql` property:
 
 ```js
-db.select('name email employee.job_title')
+db.select('users.name users.email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
   .join({ sql: 'JOIN employees ON users.id=employees.user_id' })
-// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN employees ON users.id=employees.user_id
 ```
@@ -750,11 +794,11 @@ db.select('name email employee.job_title')
 Or using the `sql` function to create a tagged template literal.
 
 ```js
-db.select('name email employee.job_title')
+db.select('users.name users.email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
   .join(sql`JOIN employees ON users.id=employees.user_id`)
-// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN employees ON users.id=employees.user_id
 ```
@@ -762,12 +806,12 @@ db.select('name email employee.job_title')
 And just like the other methods, you can call the method multiple times.
 
 ```js
-db.select('name email employee.job_title')
+db.select('users.name users.email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
   .join('users.id = employees.user_id')
   .join('employees.company_id = companies.id')
-// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "employees" ON "users"."id" = "employees"."user_id"
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"
@@ -777,11 +821,11 @@ Or you can pass multiple arguments to a single method call.  Each argument
 can be any of the values described above.
 
 ```js
-db.select('name email employee.job_title')
+db.select('users.name users.email employee.job_title')
   .select(['companies.name', 'company_name'])
   .from('users')
   .join('users.id = employees.user_id', 'employees.company_id = companies.id')
-// -> SELECT "name", "email", "employee"."job_title", "companies"."name" AS "company_name"
+// -> SELECT "users"."name", "users"."email", "employee"."job_title", "companies"."name" AS "company_name"
 //    FROM "users"
 //    JOIN "employees" ON "users"."id" = "employees"."user_id"
 //    JOIN "companies" ON "employees"."company_id" = "companies"."id"

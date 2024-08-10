@@ -21,11 +21,27 @@ test( 'join object',
   )
 )
 
+test( 'join object with as',
+  () => expectOpTypeSql(
+    db.build.join({ table: 'a', from: 'b', to: 'c', as: 'd' }),
+    Join,
+    'JOIN "a" AS "d" ON "b" = "d"."c"'
+  )
+)
+
 test( 'join object with combined to',
   () => expectOpTypeSql(
     db.build.join({ from: 'a.b', to: 'c.d' }),
     Join,
     'JOIN "c" ON "a"."b" = "c"."d"'
+  )
+)
+
+test( 'join object with as and combined from and to',
+  () => expectOpTypeSql(
+    db.build.join({ from: 'a.b', to: 'c.d', as: 'e' }),
+    Join,
+    'JOIN "c" AS "e" ON "a"."b" = "e"."d"'
   )
 )
 
@@ -58,6 +74,14 @@ test( 'join string with table name',
     db.build.join("a.b=c.d"),
     Join,
     'JOIN "c" ON "a"."b" = "c"."d"'
+  )
+)
+
+test( 'join string with table name and as',
+  () => expectOpTypeSql(
+    db.build.join("a.b=c.d as e"),
+    Join,
+    'JOIN "c" AS "e" ON "a"."b" = "e"."d"'
   )
 )
 
@@ -98,6 +122,14 @@ test( 'left join string with table name and spaces',
     db.build.join("a.b <= c.d"),
     Join,
     'LEFT JOIN "c" ON "a"."b" = "c"."d"'
+  )
+)
+
+test( 'left join string with table name, spaces and as',
+  () => expectOpTypeSql(
+    db.build.join("a.b <= c.d as e"),
+    Join,
+    'LEFT JOIN "c" AS "e" ON "a"."b" = "e"."d"'
   )
 )
 

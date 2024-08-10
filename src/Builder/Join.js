@@ -1,14 +1,15 @@
 import Builder from '../Builder.js';
-import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, ON, RIGHT_JOIN } from '../Constants.js';
+import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, AS, ON, RIGHT_JOIN } from '../Constants.js';
 import { spaceAfter, spaceAround } from '../Utils/Space.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
-const joinRegex = /^(.*?)\s*(<?=>?)\s*(\w+)\.(\w+)$/;
+const joinRegex = /^(.*?)\s*(<?=>?)\s*(\w+)\.(\w+)(?:\s+as\s+(\w+))?$/;
 const joinElements = {
   from:  1,
   type:  2,
   table: 3,
   to:    4,
+  as:    5,
 };
 const joinTypes = {
   default: JOIN,
@@ -75,16 +76,24 @@ export class Join extends Builder {
       || this.errorMsg('type', { joinType: join.type });
 
     if (join.table && join.from && join.to) {
-      return this.constructJoin(
-        type, join.from, join.table, this.tableColumn(join.table, join.to)
-      );
+      return join.as
+        ? this.constructJoinAs(
+          type, join.from, join.table, join.as, this.tableColumn(join.as, join.to)
+        )
+        : this.constructJoin(
+          type, join.from, join.table, this.tableColumn(join.table, join.to)
+        );
     }
     else if (join.from && join.to) {
       const match = join.to.match(tableColumnRegex);
       if (match) {
-        return this.constructJoin(
-          type, join.from, match[1], this.tableColumn(match[1], match[2])
-        )
+        return join.as
+          ? this.constructJoinAs(
+            type, join.from, match[1], join.as, this.tableColumn(join.as, match[2])
+          )
+          : this.constructJoin(
+            type, join.from, match[1], this.tableColumn(match[1], match[2])
+          )
       }
     }
     this.errorMsg('object', { keys: Object.keys(join).sort().join(', ') });
@@ -93,6 +102,16 @@ export class Join extends Builder {
   constructJoin(type, from, table, to) {
     return spaceAfter(type)
       + this.quote(table)
+      + spaceAround(ON)
+      + this.quote(from)
+      + spaceAround(equals)
+      + this.quote(to);
+  }
+  constructJoinAs(type, from, table, as, to) {
+    return spaceAfter(type)
+      + this.quote(table)
+      + spaceAround(AS)
+      + this.quote(as)
       + spaceAround(ON)
       + this.quote(from)
       + spaceAround(equals)

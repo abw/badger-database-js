@@ -64,6 +64,22 @@ test( 'delete',
   )
 )
 
+test( 'delete',
+  () => expect(
+    db.select('id name email')
+      .from('users')
+      .where('id')
+      .sql()
+  ).toBe(
+    [
+      'SELECT "id", "name", "email"',
+      'FROM "users"',
+      'WHERE "id" = ?'
+    ].join('\n')
+  )
+)
+
+
 test( 'disconnect',
   () => db.disconnect()
 )
