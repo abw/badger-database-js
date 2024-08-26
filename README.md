@@ -60,7 +60,7 @@ is a lightweight variant of the Active Record pattern.
 
 ## Documentation and Examples
 
-The [web site](https://abw.github.io/badger-database-js/)
+The [web site](https://badgerpower.com/badger-database-js/)
 has detailed documentation and examples of use.
 
 The [github repository](https://github.com/abw/badger-database-js) includes a
@@ -76,10 +76,11 @@ Version 2.0.0 will be the first stable release.
 
 ## Caveat
 
-This is currently a work in progress loosely based on the Perl
+This is loosely based on the Perl
 [Badger::Database](https://github.com/abw/Badger-Database) library.
-It is being written to help migrate a number of old Perl projects
-to Javascript.
+It was originally written to help migrate a number of old Perl projects
+to Javascript.  It has been in use in production sites for a couple of years
+now and has proved its worth.
 
 Feel free to use it for your own projects but be warned that
 I wrote it to help me get my own job done.  I don't plan for it to
@@ -105,7 +106,7 @@ then it might not be for you - there are *plenty* of other Javascript
 ORMs that might be a better place to start.
 
 If you are using it to develop an application and want to hire me for
-some paid consultancy work, to provide support, or if you need someone
+some consultancy work, to provide support, or if you need someone
 to help with systems analysis, database design, application development,
 etc., then feel to [contact me](mailto:abw@wardley.org) to discuss your
 requirements - it's what I do professionally.  That isn't supposed to be
@@ -130,7 +131,7 @@ to install `@abw/badger-database` and at least one of the driver modules.
 
 ## Quick Start
 
-Import the [connect()](https://abw.github.io/badger-database-js/connecting.html)
+Import the [connect()](https://badgerpower.com/badger-database-js/connecting.html)
 function from `@abw/badger-database` and create a database connection.  This example shows a
 `sqlite` in-memory database which is ideal for testing.
 
@@ -142,7 +143,7 @@ const db = connect({
 })
 ```
 
-Use the [run()](https://abw.github.io/badger-database-js/basic-queries.html#run)
+Use the [run()](https://badgerpower.com/badger-database-js/basic-queries.html#run)
 method to run SQL queries.  For example, to create a `users` table:
 
 ```js
@@ -165,7 +166,7 @@ const insert = await db.run(
 console.log("Inserted ID:", insert.lastInsertRowid);
 ```
 
-Use the [one()](https://abw.github.io/badger-database-js/basic-queries.html#one)
+Use the [one()](https://badgerpower.com/badger-database-js/basic-queries.html#one)
 method to fetch a row of data:
 
 ```js
@@ -176,8 +177,8 @@ const select = await db.one(
 console.log("User Name:", select.name);
 ```
 
-Define [named queries](https://abw.github.io/badger-database-js/named-queries.html)
-and reusable [query fragments](https://abw.github.io/badger-database-js/query-fragments.html)
+Define [named queries](https://badgerpower.com/badger-database-js/named-queries.html)
+and reusable [query fragments](https://badgerpower.com/badger-database-js/query-fragments.html)
 up front so that you don't have to embed SQL in your application code:
 
 ```js
@@ -233,7 +234,7 @@ const select2 = await db.one(
 );
 ```
 
-Use the [query builder](https://abw.github.io/badger-database-js/query-builder.html)
+Use the [query builder](https://badgerpower.com/badger-database-js/query-builder.html)
 to generate custom SQL select queries.
 
 ```js
@@ -280,7 +281,7 @@ const emp1 = await employee         // extend existing query
 //   AND "users"."id" = ?
 ```
 
-Define [tables](https://abw.github.io/badger-database-js/tables.html)
+Define [tables](https://badgerpower.com/badger-database-js/tables.html)
 to benefit from table-scoped queries and automatically generated queries:
 
 ```js
@@ -319,7 +320,7 @@ const select = await users.fetchOne({
 });
 ```
 
-Use [records](https://abw.github.io/badger-database-js/records.html)
+Use [records](https://badgerpower.com/badger-database-js/records.html)
 to perform further operations on rows.
 
 ```js
@@ -339,7 +340,7 @@ await record.update({
 await record.delete();
 ```
 
-Define [relations](https://abw.github.io/badger-database-js/relations.html)
+Define [relations](https://badgerpower.com/badger-database-js/relations.html)
 between tables.
 
 ```js
@@ -396,7 +397,7 @@ console.log(tracks[1].title);  // Breathe
 console.log(tracks[2].title);  // On the Run
 ```
 
-Read the [fine manual](https://abw.github.io/badger-database-js/) for
+Read the [fine manual](https://badgerpower.com/badger-database-js/) for
 further information.
 
 # Author
