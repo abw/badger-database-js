@@ -1,4 +1,4 @@
-import { isObject, splitList } from "@abw/badger-utils";
+import { isObject, splitList } from '@abw/badger-utils'
 
 const ANSIStart  = '\u001B[';
 const ANSIEnd    = 'm';
@@ -27,7 +27,7 @@ const ANSIRGB = {
 const isRGB = color => {
   const triple = splitList(color)
   return triple.length === 3
-    ? { r: triple[0], g: triple[1], b: triple[2]}
+    ? { r: triple[0], g: triple[1], b: triple[2] }
     : null
 }
 

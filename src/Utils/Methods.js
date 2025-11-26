@@ -1,4 +1,4 @@
-import { fail } from "@abw/badger-utils";
+import { fail } from '@abw/badger-utils'
 
 export const aliasMethods = (object, aliases) =>
   Object.entries(aliases).map(

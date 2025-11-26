@@ -1,6 +1,6 @@
 import Builder from '../Builder.js';
 import { splitList } from '@abw/badger-utils';
-import { comma, ASC, DESC, ORDER_BY, space } from '../Constants.js';
+import { comma, ASC, DESC, ORDER_BY, space } from '../Constants'
 
 export class Order extends Builder {
   static buildMethod = 'order'

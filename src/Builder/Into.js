@@ -1,4 +1,4 @@
-import { blank, comma, INTO, newline, VALUES } from '../Constants.js';
+import { blank, comma, INTO, newline, VALUES } from '../Constants'
 import { isArray, isString } from '@abw/badger-utils';
 import Builder from '../Builder.js';
 import { parens, spaceAfter, spaceBefore } from '../Utils/Space.js';

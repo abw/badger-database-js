@@ -1,5 +1,5 @@
 import Builder from './Builder.js';
-import { comma, WITH } from '../Constants.js';
+import { comma, WITH } from '../Constants'
 
 export class With extends Builder {
   static buildMethod = 'with'

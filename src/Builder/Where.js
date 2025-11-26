@@ -1,6 +1,6 @@
 import Builder from '../Builder.js';
 import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils';
-import { AND, WHERE, space } from '../Constants.js';
+import { AND, WHERE, space } from '../Constants'
 import { isIn, toArray } from '../Utils/index.js'
 
 export class Where extends Builder {

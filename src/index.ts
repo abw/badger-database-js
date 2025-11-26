@@ -1,6 +1,6 @@
 export * from './Builder.js';
 export * from './Builders.js';
-export * from './Constants.js';
+export * from './Constants'
 export * from './Database.js';
 export * from './Engine.js';
 export * from './Engine/index.js';

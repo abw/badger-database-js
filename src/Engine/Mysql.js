@@ -1,5 +1,5 @@
 import Engine from '../Engine.js';
-import { backtick, defaultIdColumn, COMMIT, ROLLBACK, BEGIN } from '../Constants.js';
+import { backtick, defaultIdColumn, COMMIT, ROLLBACK, BEGIN } from '../Constants'
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class MysqlEngine extends Engine {

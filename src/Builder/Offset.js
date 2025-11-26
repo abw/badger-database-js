@@ -1,5 +1,5 @@
 import Simple from './Simple.js';
-import { OFFSET } from '../Constants.js';
+import { OFFSET } from '../Constants'
 
 export class Offset extends Simple {
   static buildMethod = 'offset'

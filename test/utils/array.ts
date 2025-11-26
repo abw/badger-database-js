@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { toArray } from '../../src/index.js'
+import { toArray } from '../../src/index'
 
 test( 'string',
   () => expect(toArray('apple'))

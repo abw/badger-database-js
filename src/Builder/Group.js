@@ -1,6 +1,6 @@
 import Builder from '../Builder.js';
 import { splitList } from '@abw/badger-utils';
-import { comma, GROUP_BY } from '../Constants.js';
+import { comma, GROUP_BY } from '../Constants'
 
 export class Group extends Builder {
   static buildMethod = 'group'

@@ -1,5 +1,5 @@
 import Query from "./Query.js";
-import { singleWord } from "./Constants.js";
+import { singleWord } from './Constants';
 import { fail, isFunction, isString } from "@abw/badger-utils";
 import { expandFragments } from "./Utils/Queries.js";
 import { missing } from "./Utils/Error.js";

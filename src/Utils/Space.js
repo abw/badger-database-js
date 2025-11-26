@@ -1,4 +1,4 @@
-import { blank, lparen, rparen, space } from "../Constants.js";
+import { blank, lparen, rparen, space } from '../Constants'
 
 export const spaceAfter = string =>
   (string && string.length)

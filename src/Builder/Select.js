@@ -1,5 +1,5 @@
 import Builder from '../Builder.js';
-import { comma, SELECT } from '../Constants.js';
+import { comma, SELECT } from '../Constants'
 
 export class Select extends Builder {
   static buildMethod = 'select'

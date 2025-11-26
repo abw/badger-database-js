@@ -1,5 +1,5 @@
 import Where from './Where.js';
-import { comma, SET } from '../Constants.js';
+import { comma, SET } from '../Constants'
 
 export class Set extends Where {
   static buildMethod = 'set'

@@ -1,6 +1,6 @@
 import Engine from '../Engine.js';
 import { missing, throwEngineDriver } from '../Utils/Error.js';
-import { defaultIdColumn } from '../Constants.js';
+import { defaultIdColumn } from '../Constants'
 import { remove } from '@abw/badger-utils';
 
 export class SqliteEngine extends Engine {

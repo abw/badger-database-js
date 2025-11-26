@@ -1,6 +1,6 @@
-import { fail, isArray, isObject, isString, objMap, splitList } from "@abw/badger-utils";
-import { bitSplitter, defaultIdColumn } from "../Constants.js";
-import { throwColumnValidationError } from "./Error.js";
+import { fail, isArray, isObject, isString, objMap, splitList } from '@abw/badger-utils'
+import { bitSplitter, defaultIdColumn } from '../Constants'
+import { throwColumnValidationError } from './Error.js'
 
 
 /**

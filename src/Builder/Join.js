@@ -1,5 +1,5 @@
 import Builder from '../Builder.js';
-import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, AS, ON, RIGHT_JOIN } from '../Constants.js';
+import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, AS, ON, RIGHT_JOIN } from '../Constants'
 import { spaceAfter, spaceAround } from '../Utils/Space.js';
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;

@@ -1,6 +1,6 @@
 import Builder from '../Builder.js';
 import { isArray, isObject, isString, splitList } from '@abw/badger-utils';
-import { comma, FROM } from '../Constants.js';
+import { comma, FROM } from '../Constants'
 
 export class From extends Builder {
   static buildMethod = 'from'

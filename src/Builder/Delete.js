@@ -1,6 +1,6 @@
 import { isArray } from '@abw/badger-utils';
 import Builder from '../Builder.js';
-import { comma, DELETE } from '../Constants.js';
+import { comma, DELETE } from '../Constants'
 import { spaceAfter } from '../Utils/Space.js';
 
 export class Delete extends Builder {

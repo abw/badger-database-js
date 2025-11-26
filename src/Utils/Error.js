@@ -1,5 +1,4 @@
-import { fail } from "@abw/badger-utils"
-import { format } from "./Format.js"
+import { fail, format } from '@abw/badger-utils'
 
 //-----------------------------------------------------------------------------
 // General purpose error messages

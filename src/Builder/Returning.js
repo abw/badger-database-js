@@ -1,5 +1,5 @@
 import Select from './Select.js';
-import { RETURNING } from '../Constants.js';
+import { RETURNING } from '../Constants'
 
 export class Returning extends Select {
   static buildMethod = 'returning'

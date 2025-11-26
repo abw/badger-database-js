@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { format } from '../../src/Utils/Format.js'
+import { format } from '@abw/badger-utils'
 
 test( 'format()',
   () => expect(

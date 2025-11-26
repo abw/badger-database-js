@@ -1,5 +1,5 @@
 import Engine from '../Engine.js';
-import { defaultIdColumn } from '../Constants.js';
+import { defaultIdColumn } from '../Constants'
 import { throwEngineDriver } from '../Utils/Error.js';
 
 export class PostgresEngine extends Engine {

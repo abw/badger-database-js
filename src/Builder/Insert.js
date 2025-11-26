@@ -1,5 +1,5 @@
 import Builder from '../Builder.js';
-import { comma, INSERT } from '../Constants.js';
+import { comma, INSERT } from '../Constants'
 
 export class Insert extends Builder {
   static buildMethod = 'insert'

@@ -1,5 +1,5 @@
 import Where from './Where.js';
-import { HAVING } from '../Constants.js';
+import { HAVING } from '../Constants'
 
 export class Having extends Where {
   static buildMethod = 'having'

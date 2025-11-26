@@ -1,6 +1,6 @@
-import { newline, unknown } from "./Constants.js";
-import { addDebugMethod, format, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from "./Utils/index";
-import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
+import { newline, unknown } from './Constants'
+import { addDebugMethod, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from "./Utils/index";
+import { fail, format, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
 
 export let Builders   = { };
 export let Generators = { };

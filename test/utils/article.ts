@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { article } from '../../src/index.js'
+import { article } from '../../src/index'
 
 test( 'an Aardvark',
   () => expect(article('Aardvark')).toBe('an')

@@ -1,5 +1,5 @@
 import From from './From.js';
-import { comma, UPDATE } from '../Constants.js';
+import { comma, UPDATE } from '../Constants'
 
 export class Update extends From {
   static buildMethod = 'update'

@@ -1,5 +1,5 @@
 import Simple from './Simple.js';
-import { LIMIT } from '../Constants.js';
+import { LIMIT } from '../Constants'
 
 export class Limit extends Simple {
   static buildMethod = 'limit'
