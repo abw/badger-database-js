@@ -1,0 +1,25 @@
+{
+  "include": ["src/**/*", "test/**/*"],
+  "compilerOptions": {
+    "paths": {
+      "@/src/*":    ["./src/*"],
+      "@/test/*":   ["./test/*"],
+    },
+    "moduleResolution": "node",
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es2020",
+    "outDir": "dist",
+    "sourceRoot": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "strict": false,
+    "allowJs": true,
+    "module": "esnext",
+    "noEmitOnError": true,
+    "lib": ["es2017"],
+    "esModuleInterop": false,
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true,
+  },
+}

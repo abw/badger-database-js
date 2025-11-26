@@ -1,6 +1,6 @@
 import { Pool } from 'tarn';
 import { allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK } from './Constants.js';
-import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount, addDebugMethod } from "./Utils/index.js";
+import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount, addDebugMethod } from "./Utils/index";
 import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils';
 
 const notImplemented = notImplementedInBaseClass('Engine');

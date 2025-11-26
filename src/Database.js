@@ -5,7 +5,7 @@ import Transaction from "./Transaction.js";
 import proxymise from 'proxymise';
 import modelProxy from './Proxy/Model.js';
 import { engine } from './Engines.js';
-import { addDebugMethod } from './Utils/index.js';
+import { addDebugMethod } from './Utils/index';
 import { databaseBuilder } from './Builders.js';
 import { fail } from '@abw/badger-utils';
 

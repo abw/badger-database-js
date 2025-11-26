@@ -1,5 +1,5 @@
 import { newline, unknown } from "./Constants.js";
-import { addDebugMethod, format, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from "./Utils/index.js";
+import { addDebugMethod, format, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from "./Utils/index";
 import { fail, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
 
 export let Builders   = { };

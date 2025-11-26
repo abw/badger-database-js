@@ -1,5 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 import pkg from './package.json' with { type: "json" };
 import terser from '@rollup/plugin-terser';
@@ -22,13 +23,14 @@ const onwarn = (warning, warn) => {
 
 export default [
   {
-    input: 'src/index.js',
+    input: 'src/index.ts',
     plugins: [
       resolve({
-        extensions: ['.js'],
+        extensions: ['.js', '.ts'],
       }),
       commonjs(),
       json(),
+      typescript()
     ],
     external: [
       "node:buffer",

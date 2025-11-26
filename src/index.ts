@@ -9,5 +9,5 @@ export * from './Proxy/index.js';
 export * from './Record.js';
 export * from './Table.js';
 export * from './Tables.js';
-export * from './Utils/index.js';
-export { connect as default } from './Database.js'
+export * from './Utils/index';
+// export { connect as default } from './Database.js'

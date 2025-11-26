@@ -20,14 +20,19 @@
     "url": "https://github.com/abw/badger-database-js/issues"
   },
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "lint": "eslint 'src/**/*'",
-    "test": "vitest --ui --coverage",
-    "pretest": "pnpm run build",
+    "rollup": "rollup -c",
+    "XXdev": "rollup -c -w",
+    "build": "$npm_execpath lib && $npm_execpath docs:build",
+    "lib": "tsc && vite build",
     "docs:dev": "vitepress dev website",
     "docs:build": "vitepress build website",
-    "docs:preview": "vitepress preview website"
+    "docs:preview": "vitepress preview website",
+    "lint": "eslint 'src/**/*'",
+    "test": "vitest --ui --coverage",
+    "pretest": "$npm_execpath lib"
+  },
+  "NEWscripts": {
+    "lint": "eslint"
   },
   "keywords": [
     "badger",
@@ -39,22 +44,36 @@
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@vitest/coverage-v8": "^2.0.4",
-    "@vitest/ui": "^2.0.4",
-    "better-sqlite3": "^9.4.4",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@vitest/coverage-v8": "^4.0.14",
+    "@vitest/ui": "^4.0.14",
+    "better-sqlite3": "^9.6.0",
     "dotenv": "^16.3.1",
-    "eslint": "^8.55.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
     "mysql2": "^3.9.7",
     "pg": "^8.11.3",
     "rollup": "^4.8.0",
     "source-map-support": "^0.5.21",
     "sqlite3": "^5.1.6",
-    "vitepress": "1.0.0-rc.44",
-    "vitest": "^2.0.4"
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitepress": "1.6.4",
+    "vitest": "^4.0.14"
   },
   "dependencies": {
-    "@abw/badger-utils": "^1.0.23",
+    "@abw/badger-utils": "^1.2.4",
     "proxymise": "^1.0.2",
     "tarn": "^3.0.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild",
+      "sqlite3"
+    ]
   }
 }
