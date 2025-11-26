@@ -406,6 +406,9 @@ export class Table extends Queryable {
           if (options.writable && spec.readonly) {
             throwColumnValidationError('readonly', { column, table });
           }
+          // TODO: this is a misnomer: options.fixed should really be
+          // options.unfixed as it's asking us to assert that the column
+          // is NOT fixed
           if (options.fixed && spec.fixed) {
             throwColumnValidationError('fixed', { column, table });
           }
