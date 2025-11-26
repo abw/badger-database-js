@@ -1,6 +1,10 @@
 import { expect, test } from 'vitest'
 import { format } from '@abw/badger-utils'
 
+// NOTE: format() used to be defined in this module but was a duplicate of
+// the same function that was added to badger-utils.  We keep these tests
+// here to assert that it behaves the same.
+
 test( 'format()',
   () => expect(
     format(

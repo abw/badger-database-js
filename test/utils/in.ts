@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { isIn } from '../../src/Utils/index.js'
-import { IN, NOT_IN } from '../../src/Constants.js'
+import { isIn } from '../../src/Utils/index'
+import { IN, NOT_IN } from '../../src/Constants'
 
 test( 'isIn("in")',
   () => expect(
