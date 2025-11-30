@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { parseRelationString, relationConfig } from "../../src/Utils/Relation.js"
+import { parseRelationString, relationConfig } from "../../src/Utils"
 
 test( 'a->b.c',
   () => {
@@ -80,7 +80,7 @@ test( 'relation config rewriting',
         localKey:  'wibble',
         remoteKey: 'wobble',
         table:     'frusset',
-        type:      'pouch',
+        type:      'any',
       }
     )
     expect(config.from).toBe('wibble')

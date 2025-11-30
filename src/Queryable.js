@@ -1,8 +1,7 @@
-import Query from "./Query.js";
-import { singleWord } from './Constants';
-import { fail, isFunction, isString } from "@abw/badger-utils";
-import { expandFragments } from "./Utils/Queries.js";
-import { missing } from "./Utils/Error.js";
+import Query from './Query.js'
+import { singleWord } from './Constants'
+import { fail, isFunction, isString } from '@abw/badger-utils'
+import { expandFragments, missing } from './Utils'
 
 export class Queryable {
   constructor(engine, config={}) {

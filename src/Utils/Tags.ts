@@ -1,0 +1,1 @@
+export const sql = (sql: TemplateStringsArray) => ({ sql })

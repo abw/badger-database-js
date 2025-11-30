@@ -145,7 +145,7 @@ export function unexpectedRowCount(n, action='returned') {
 }
 
 /**
- * Function to contruct a function for throwing errors of a particular type
+ * Function to construct a function for throwing errors of a particular type
  * using message formats.  The function returned expects a format name and
  * an optional object containing values to insert into the message format.
  * @param {!Object} formats - an object mapping short names to message formats
@@ -168,13 +168,15 @@ export const thrower = (formats, error=Error) =>
  */
 export const throwColumnValidationError = thrower(
   {
-    unknown:        'Unknown "<column>" column in the <table> table',
-    readonly:       'The "<column>" column is readonly in the <table> table',
-    fixed:          'The "<column>" column is fixed in the <table> table',
-    required:       'Missing required column "<column>" for the <table> table',
-    multipleIds:    'Multiple columns are marked as "id" in the <table> table',
-    noColumns:      'No "columns" specified for the <table> table',
-    invalidColumns: 'Invalid "columns" specified for the <table> table: <columns>',
+    unknown:            'Unknown "<column>" column in the <table> table',
+    readonly:           'The "<column>" column is readonly in the <table> table',
+    fixed:              'The "<column>" column is fixed in the <table> table',
+    required:           'Missing required column "<column>" for the <table> table',
+    multipleIds:        'Multiple columns are marked as "id" in the <table> table',
+    noColumns:          'No columns specified for the <table> table',
+    invalidColumns:     'Invalid columns specified for the <table> table: <columns>',
+    invalidColumn:      'Invalid column specification for <table>.<column> (<reason>)',
+    invalidColumnSpec:  'Invalid column specification for <table>.<column>: <spec> (<reason>)',
   },
   ColumnValidationError
 )

@@ -1,10 +1,15 @@
-import Builder from "../Builder.js";
-import { fail, isString } from "@abw/badger-utils";
+import Builder from '../Builder.js'
+import { fail, isString } from '@abw/badger-utils'
+import Queryable from '../Queryable'
 
-export const isQuery = query =>
+export const isQuery = (query: any) =>
   isString(query) || (query instanceof Builder)
 
-export const expandFragments = (query, queryable, maxDepth=16) => {
+export const expandFragments = (
+  query: string,
+  queryable:
+  Queryable, maxDepth=16
+) => {
   query = query.trim();
   let sql = query;
   let runaway = 0;
@@ -15,7 +20,7 @@ export const expandFragments = (query, queryable, maxDepth=16) => {
     let replaced = false;
     sql = sql.replace(
       /<(\w+?)>/g,
-      (match, word) => {
+      (_match, word) => {
         replaced = true;
         expanded.push(word);
         return queryable.fragment(word);
@@ -26,7 +31,7 @@ export const expandFragments = (query, queryable, maxDepth=16) => {
     }
     if (++runaway >= maxDepth) {
       fail(
-        "Maximum SQL expansion limit (maxDepth=", maxDepth, ") exceeded: ",
+        `Maximum SQL expansion limit (maxDepth=${maxDepth}) exceeded: `,
         expanded.join(' -> ', )
       )
     }

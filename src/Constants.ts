@@ -1,3 +1,5 @@
+import { splitHash } from '@abw/badger-utils'
+
 export const defaultIdColumn  = 'id'
 export const bitSplitter      = /:/
 export const singleWord       = /^\w+$/
@@ -46,3 +48,8 @@ export const BEGIN            = 'BEGIN'
 export const ROLLBACK         = 'ROLLBACK'
 export const COMMIT           = 'COMMIT'
 
+export const VALID_TABLE_COLUMN_KEYS = splitHash(
+  'id readonly required type column tableColumn'
+)
+
+export const MATCH_VALID_FRAGMENT_KEY = /^(id|readonly|required|(type|column)=.*)/

@@ -1,13 +1,12 @@
-import Record from "./Record.js";
-import Queryable from "./Queryable.js";
-import recordProxy from "./Proxy/Record.js";
-import { databaseBuilder } from "./Builders.js";
-import { isQuery } from "./Utils/Queries.js";
-import { addDebugMethod } from "./Utils/Debug.js";
-import { aliasMethods } from "./Utils/Methods.js";
-import { prepareColumns, prepareKeys } from "./Utils/Columns.js";
-import { throwColumnValidationError, unexpectedRowCount } from "./Utils/Error.js";
-import { fail, firstValue, isArray, noValue, splitList } from "@abw/badger-utils";
+import Record from './Record.js'
+import Queryable from './Queryable.js'
+import recordProxy from './Proxy/Record.js'
+import { databaseBuilder } from './Builders.js'
+import { fail, firstValue, isArray, noValue, splitList } from '@abw/badger-utils'
+import {
+  isQuery, addDebugMethod, aliasMethods, prepareColumns, prepareKeys,
+  throwColumnValidationError, unexpectedRowCount
+} from './Utils'
 
 const methodAliases = {
   insertRow:     "insertOneRow",

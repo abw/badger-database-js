@@ -1,4 +1,4 @@
-import { whereRelation } from "../Utils/Relation.js";
+import { whereRelation } from '../Utils/Relation'
 
 export const any = async (record, spec={}) => {
   const where = whereRelation(record, spec);
