@@ -1,5 +1,5 @@
 import { fail, hasValue, isString, noValue, remove } from "@abw/badger-utils";
-import { RelationAliases, RelationArrowMap, RelationRecord, RelationSpec } from './Types'
+import { RelationAliases, RelationArrowMap, RelationRecord, RelationSpec } from '../types'
 
 const relationStringRegex = /^(\w+)\s*([-~=#]>)\s*(\w+)\.(\w+)$/;
 

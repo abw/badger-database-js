@@ -7,14 +7,14 @@ import { areValidColumnFragments, invalidColumnFragments, invalidTableColumnObje
 /**
  * Function to convert an array of column specification fragments into a
  * well-structured `TableColumn` object.
- * ### Example
+ * @example
  * ```ts
  * const column = prepareColumnSpecFragments(
  *   'artists', 'id',
  *   ['readonly', 'type=number'],
  * })
  * ```
- * #### Returns:
+ * Returns:
  * ```ts
  * {
  *   column: 'id',
@@ -44,14 +44,14 @@ export const prepareColumnFragments = (
  * Splits a string containing colon-separated column specification fragments
  * into an array, validating that they are all valid `TableColumnFragment`
  * strings.  Returns a `TableColumnFragments` array or throws an error.
- * ### Example
+ * @example
  * ```ts
  * const fragments = splitColumnSpecFragments(
  *   'artists', 'id',
  *   'readonly:type=number'
  * )
  * ```
- * #### Returns:
+ * Returns:
  * ```ts
  * [ 'readonly', 'type=number']
  * ```
@@ -92,14 +92,15 @@ export const throwInvalidColumnFragments = (
  * colons, or a `TableSpec` object (a `Partial<TableColumn>`) containing valid
  * keys that can be upgraded to a `TableColumn` object.  Throws an error if
  * the `spec` is invalid.
- * ### Example 1 - specifying a string of column fragments
+ * @example
+ * Specifying a string of column fragments
  * ```ts
  * const column = prepareColumn(
  *   'artists', 'id',
  *   'readonly:type=number'
  * )
  * ```
- * #### Returns:
+ * Returns:
  * ```ts
  * {
  *    column: 'id',
@@ -108,14 +109,15 @@ export const throwInvalidColumnFragments = (
  *    type: 'number'
  * }
  * ```
- * ### Example 2 - specifying an object containing a partial `TableColumn` specification
+ * @example
+ * Specifying an object containing a partial `TableColumn` specification
  * ```ts
  * const column = prepareColumn(
  *   'artists', 'id',
  *   { readonly: true, type: 'number' }
  * )
  * ```
- * #### Returns:
+ * Returns:
  * ```ts
  * {
  *    column: 'id',
@@ -181,28 +183,32 @@ export const prepareColumn = (
  * Each value is then converted to an object, e.g. `required` becomes `{ required: true }`.
  * Then end result is an object where the keys are the column names and corresponding
  * values are objects containing any flags defined for the column.
- * ### Example 1 - `columns` as a string of column names
+ * @example
+ * Specifying `columns` as a string of column names
  * ```ts
  * const columns = prepareColumns(
  *   'artists',
  *   'id name'
  * )
  * ```
- * ### Example 2 - `columns` as a string of column names and modifiers
+ * @example
+ * Specifying `columns` as a string of column names and modifiers
  * ```ts
  * const columns = prepareColumns(
  *   'artists',
  *   'id:readonly name:required'
  * )
  * ```
- * ### Example 3 - `columns` as an array of names with optional modifiers
+ * @example
+ * Specifying `columns` as an array of names with optional modifiers
  * ```ts
  * const columns = prepareColumns(
  *   'artists',
  *   ['id:readonly', 'name:required']
  * )
  * ```
- * ### Example 4 - `columns` as an object with string as values
+ * @example
+ * Specifying `columns` as an object with string as values
  * ```ts
  * const columns = prepareColumns({
  *   table: 'artists',
@@ -212,7 +218,8 @@ export const prepareColumn = (
  *   }
  * })
  * ```
- * ### Example 5 - `columns` as an object with objects as values
+ * @example
+ * Specifying `columns` as an object with objects as values
  * ```ts
  * const columns = prepareColumns({
  *   table: 'artists',
@@ -249,14 +256,16 @@ export const prepareColumns = (
  * Function to prepare column definitions for a table, where the `columns` are
  * specified as a whitespace delimited string of column names with optional
  * modifiers.
- * ### Example 1 - `columns` as a string of column names
+ * @example
+ * Specifying `columns` as a string of column names
  * ```ts
  * const columns = prepareColumns(
  *   'artists',
  *   'id name'
  * )
  * ```
- * ### Example 2 - `columns` as a string of column names and modifiers
+ * @example
+ * Specifying `columns` as a string of column names and modifiers
  * ```ts
  * const columns = prepareColumns(
  *   'artists',
@@ -276,7 +285,7 @@ export const prepareColumnsString = (
  * Function to prepare column definitions for a table, where the `columns` are
  * specified as an array of strings containing column names with optional
  * modifiers.
- * ### Example
+ * @example
  * ```ts
  * const columns = prepareColumnsArray(
  *   'artists',
@@ -310,7 +319,7 @@ export const prepareColumnsArray = (
  * specified as an object with keys for column names and values containing
  * any valid column specification
  * modifiers.
- * ### Example
+ * @example
  * ```ts
  * const columns = prepareColumnsObject(
  *   'artists',
