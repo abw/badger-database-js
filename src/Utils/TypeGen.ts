@@ -20,9 +20,14 @@ export type TableTypes = {
   table: string,
   typeNames: TableActionTypeNames
   actions: TableActionTypes
+  tableTypeName: string
   tableType: string
 }
 export type TablesTypes = Record<string, TableTypes>
+export type OutputTypesConfig = {
+  database?: string
+  databaseTypeName?: string
+}
 
 export const generateTypes = (database: DatabaseSpec) => {
   const tables = database.tables
@@ -55,11 +60,13 @@ export const generateTableTypes = (
     },
     { } as TableActionTypes
   )
+  const tableTypeName = `${capName}Table`
   return {
     table,
     typeNames,
     actions,
-    tableType: tableType(capName, typeNames)
+    tableTypeName,
+    tableType: tableType(tableTypeName, typeNames)
   }
 }
 
@@ -69,15 +76,6 @@ export const prepareTableTypes = (
 ): TableTypeSpecs => {
   const columns = prepareColumns(table, spec.columns)
   const { keys } = prepareKeys(table, spec, columns)
-
-  const selectColumns = Object.entries(columns).reduce(
-      (columns, [name, column]) => {
-        const { type='string' } = column
-        columns.push({ name, type, optional: true })
-        return columns
-      },
-      [ ] as TableColumnTypeSpec[]
-    )
 
   const insertColumns = Object.entries(columns).reduce(
       (columns, [name, column]) => {
@@ -101,6 +99,15 @@ export const prepareTableTypes = (
       [ ] as TableColumnTypeSpec[]
     )
 
+    const selectColumns = Object.entries(columns).reduce(
+      (columns, [name, column]) => {
+        const { type='string' } = column
+        columns.push({ name, type, optional: true })
+        return columns
+      },
+      [ ] as TableColumnTypeSpec[]
+    )
+
     const deleteColumns = keys.reduce(
       (deleteColumns, name: string) => {
         const column = columns[name]
@@ -116,9 +123,9 @@ export const prepareTableTypes = (
 
 
   return {
-    select: selectColumns,
     insert: insertColumns,
     update: updateColumns,
+    select: selectColumns,
     delete: deleteColumns,
   }
 }
@@ -127,9 +134,9 @@ export const generateTableTypeNames = (
   tableTypePrefix: string,
 ): TableActionTypeNames => {
   return {
-    select: `${tableTypePrefix}TableSelectColumns`,
     insert: `${tableTypePrefix}TableInsertColumns`,
     update: `${tableTypePrefix}TableUpdateColumns`,
+    select: `${tableTypePrefix}TableSelectColumns`,
     delete: `${tableTypePrefix}TableDeleteColumns`,
   }
 }
@@ -164,6 +171,16 @@ const tableType = (
   ].join('\n')
 }
 
+export const outputTypes = (
+  tablesTypes: TablesTypes,
+  options?: OutputTypesConfig
+) => {
+  return [
+    outputTablesTypes(tablesTypes),
+    outputDatabaseType(tablesTypes, options)
+  ].join('\n')
+}
+
 export const outputTablesTypes = (
   tablesTypes: TablesTypes
 ) => {
@@ -182,6 +199,25 @@ export const outputTableTypes = (
     ...Object.values(tableTypes.actions),
     tableTypes.tableType,
     ''
+  ].join('\n')
+}
+
+export const outputDatabaseType = (
+  tablesTypes: TablesTypes,
+  options: OutputTypesConfig = { databaseTypeName: 'MyDatabase' }
+) => {
+  const { databaseTypeName } = options
+  return [
+    '//---------------------------------------------------------------------------',
+    `// database`,
+    '//---------------------------------------------------------------------------',
+    `export interface ${databaseTypeName} {`,
+    `  tables: {`,
+    ...Object.values(tablesTypes).map(
+      tableType => `    ${tableType.table}: ${tableType.tableTypeName}`,
+    ),
+    '  }',
+    '}'
   ].join('\n')
 }
 
