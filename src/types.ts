@@ -1,9 +1,29 @@
+export type DatabaseSpec = {
+  tables: TablesSpec
+}
+
+export type TableSpec = {
+  table?: string
+  columns: TableColumnsSpec
+  queries?: NamedQueries
+  fragments?: QueryFragments
+  relations?: RelationSpec[]
+  id?: string
+  keys?: string | string[]
+}
+
+export type TablesSpec = Record<string, TableSpec>
+export type NamedQueries = Record<string, string>
+export type QueryFragments = Record<string, string>
+
 export type TableColumnSpec = Partial<TableColumn> | string
 export type TableColumnsSpec = Record<string, TableColumnSpec> | string | string[]
 
 export type TableColumn = {
   id?:         boolean
+  key?:        boolean
   readonly?:   boolean
+  fixed?:      boolean
   required?:   boolean
   type?:       string
   column:      string
@@ -13,7 +33,7 @@ export type TableColumn = {
 export type TableColumns = Record<string, TableColumn>
 
 // export type TableColumnBitKey = keyof TableColumnSpec
-export type TableColumnFragmentKey = 'id' | 'readonly' | 'required'
+export type TableColumnFragmentKey = 'id' | 'readonly' | 'required' | 'fixed' | 'key'
 export type TableColumnFragmentValuableKey = 'type' | 'column'
 export type TableColumnFragmentKeyValue = `${TableColumnFragmentValuableKey}=${string}`
 

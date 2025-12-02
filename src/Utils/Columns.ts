@@ -1,7 +1,7 @@
-import { isArray, isObject, isString, joinListAnd, noValue, objMap, splitList } from '@abw/badger-utils'
+import { isArray, isObject, isString, joinList, joinListAnd, noValue, objMap, splitList } from '@abw/badger-utils'
 import { bitSplitter, defaultIdColumn } from '../Constants'
 import { throwColumnValidationError } from './Error.js'
-import { TableColumn, TableColumnFragments, TableColumns, TableColumnSpec, TableColumnsSpec } from '../types'
+import { TableColumn, TableColumnFragments, TableColumns, TableColumnSpec, TableColumnsSpec, TableSpec } from '../types'
 import { areValidColumnFragments, invalidColumnFragments, invalidTableColumnObjectKeys, isValidTableColumnObject } from './Types'
 
 /**
@@ -346,35 +346,116 @@ export const prepareColumnsObject = (
 
 /**
  * Function to determine the id and/or keys columns for a table.
- * If the keys are explicitly listed in the schema then they are used.
- * Otherwise it looks for each column that defines the `key` flag.
- * If the `id` column is set in the schema, or as an `id` flag on a
- * column then that is assumed to be both the id and single key.
- * If no keys or id is defined then we assume it's an `id` column.
- * @param {!Object} schema - scheme containing table properties
- * @param {!String} [schema.table] - the database table name
- * @param {Object} columns - the table columns
- * @return {Array} - an array of keys
+ * If an `id` column is explicitly listed in the schema then it is assumed
+ * to be the single id column which is both the (single entry) array of keys
+ * and the id.  Otherwise we look for all the columns (hopefully no more than
+ * one) that have the `id` flag set.  If there is more than one then an error
+ * is thrown.  Failing that it looks for either an explicit list of keys in
+ * the table specification (either a whitespace delimited string of column
+ * names or array of column name strings), or all the columns that have the
+ * `key` flag set.  If none of those cases hold then the default `id` key is
+ * assumed.
+ * @example
+ * Specifying an explicit `id` column in the schema
+ * ```ts
+ * const { id, keys } = prepareKeys(
+ *   'artists',
+ *   {
+ *     id: 'artist_id', // explicit id column
+ *   },
+ *   {
+ *     artist_id: { type: 'number', required: true, readonly: true },
+ *     name:      { type: 'string', required: true },
+ *   },
+ * )
+ * ```
+ * @example
+ * Specifying an explicit array of `keys` column in the schema
+ * ```ts
+ * const { id, keys } = prepareKeys(
+ *   'artists',
+ *   {
+ *     keys: ['label_id', 'artist_id'], // explicit keys array
+ *   },
+ *   {
+ *     label_id:  { type: 'number', required: true },
+ *     artist_id: { type: 'number', required: true, readonly: true },
+ *     name:      { type: 'string', required: true },
+ *   },
+ * )
+ * ```
+ * @example
+ * Specifying a column with the `id` flag set
+ * ```ts
+ * const { id, keys } = prepareKeys(
+ *   'artists',
+ *   { ... },
+ *   {
+ *     artist_id: { type: 'number', required: true, readonly: true, id: true },
+ *     name:      { type: 'string', required: true },
+ *   }
+ * )
+ * @example
+ * Specifying the `key` flag on one or more columns
+ * ```ts
+ * const { id, keys } = prepareKeys(
+ *   'artists',
+ *   { ... },
+ *   {
+ *     label_id:  { type: 'number', required: true, key: true },
+ *     artist_id: { type: 'number', required: true, readonly: true, key: true },
+ *     name:      { type: 'string', required: true },
+ *   },
+ * )
+ * ```
  */
-export const prepareKeys = (schema, columns={}) => {
-  let keys  = splitList(schema.keys);
-  const ids = Object.keys(columns).filter( key => columns[key].id );
+export const prepareKeys = (
+  table: string,
+  spec: TableSpec,
+  columns: TableColumns
+) => {
+  // Look for an explicit id column defined in the spec
+  if (spec.id) {
+    return {
+      keys: [spec.id],
+      id: spec.id
+    }
+  }
+
+  // Look for all the columns that have the id flag set...
+  const ids = Object.keys(columns).filter(
+    key => columns[key].id
+  )
+  // ...if there are any then, like Connor MacLeod, there should be only one
   if (ids.length > 1) {
-    return throwColumnValidationError('multipleIds', { table: schema.table });
-  }
-  if (keys.length === 0) {
-    keys = Object.keys(columns).filter( key => columns[key].key );
-  }
-  if (schema.id) {
-    keys.unshift(schema.id);
+    return throwColumnValidationError(
+      'multipleIds', {
+        table,
+        ids: joinListAnd( ids.map(i => `"${i}"` ) )
+      }
+    )
   }
   else if (ids.length) {
-    schema.id = ids[0];
-    keys.unshift(schema.id);
+    return {
+      keys: ids,
+      id: ids[0]
+    }
   }
-  else if (keys.length === 0) {
-    schema.id = defaultIdColumn;
-    keys.unshift(schema.id);
+
+  // Look for an explicit keys definition in the schema - this can be a
+  // whitespace delimited string or array of strings.  Otherwise find all
+  // columns that have the key flag set
+  const keys = spec.keys
+    ? splitList(spec.keys) as string[]
+    : Object.keys(columns).filter( key => columns[key].key )
+
+  if (keys.length) {
+    return { keys }
   }
-  return keys;
+
+  // No keys or id defined so we assume an 'id' column
+  return {
+    id: defaultIdColumn,
+    keys: [defaultIdColumn]
+  }
 }

@@ -49,7 +49,7 @@ export const ROLLBACK         = 'ROLLBACK'
 export const COMMIT           = 'COMMIT'
 
 export const VALID_TABLE_COLUMN_KEYS = splitHash(
-  'id readonly required type column tableColumn'
+  'id readonly required fixed key type column tableColumn'
 )
 
-export const MATCH_VALID_FRAGMENT_KEY = /^(id|readonly|required|(type|column)=.*)/
+export const MATCH_VALID_FRAGMENT_KEY = /^(id|readonly|required|fixed|key|(type|column)=.*)/

@@ -1,6 +1,9 @@
 import { expect, test } from 'vitest'
-import { prepareColumnFragments, prepareColumn, prepareColumnsArray, splitColumnFragments, prepareColumnsObject, prepareColumnsString, prepareColumns } from '../../src/Utils/Columns'
-// import { TableColumnsSpec } from '@/src/types'
+import {
+  prepareColumnFragments, prepareColumn, prepareColumnsArray,
+  splitColumnFragments, prepareColumnsObject, prepareColumnsString,
+  prepareColumns, prepareKeys
+} from '../../src/Utils/Columns'
 
 
 //--------------------------------------------------------------------------
@@ -395,6 +398,111 @@ test( 'prepareColumns() with invalid columns',
       )
     ).toThrowError(
       'Invalid columns specified for the artists table: 11'
+    )
+  }
+)
+
+//--------------------------------------------------------------------------
+// prepareKeys()
+//--------------------------------------------------------------------------
+
+test( 'prepareKeys() with an explicit id column',
+  () => {
+    expect(
+      prepareKeys(
+        'artists',
+        { id: 'artist_id', columns: 'not important here' },
+        prepareColumns('artists', 'artist_id:readonly:type=number name:required:type=string')
+      )
+    ).toStrictEqual({
+      id: 'artist_id',
+      keys: [ 'artist_id' ]
+    })
+  }
+)
+
+test( 'prepareKeys() with explicit keys as string',
+  () => {
+    expect(
+      prepareKeys(
+        'artists',
+        { keys: 'label_id artist_id', columns: 'not important here' },
+        prepareColumns(
+          'artists',
+          'label_id:required:type=number artist_id:readonly:type=number name:required:type=string'
+        )
+      )
+    ).toStrictEqual({
+      keys: [ 'label_id', 'artist_id' ]
+    })
+  }
+)
+
+test( 'prepareKeys() with explicit keys as an array',
+  () => {
+    expect(
+      prepareKeys(
+        'artists',
+        { keys: ['label_id', 'artist_id'], columns: 'not important here' },
+        prepareColumns(
+          'artists',
+          'label_id:required:type=number artist_id:readonly:type=number name:required:type=string'
+        )
+      )
+    ).toStrictEqual({
+      keys: [ 'label_id', 'artist_id' ]
+    })
+  }
+)
+
+test( 'prepareKeys() with multiple columns having the key flag',
+  () => {
+    expect(
+      prepareKeys(
+        'artists',
+        { columns: 'not important here' },
+        prepareColumns(
+          'artists',
+          'label_id:required:key:type=number artist_id:readonly:key:type=number name:required:type=string'
+        )
+      )
+    ).toStrictEqual({
+      keys: [ 'label_id', 'artist_id' ]
+    })
+  }
+)
+
+test( 'prepareKeys() with a single column with the id flag set',
+  () => {
+    expect(
+      prepareKeys(
+        'artists',
+        { columns: 'not important here' },
+        prepareColumns(
+          'artists',
+          'artist_id:id:type=number name:required:type=string'
+        )
+      )
+    ).toStrictEqual({
+      id: 'artist_id',
+      keys: [ 'artist_id' ]
+    })
+  }
+)
+
+test( 'prepareKeys() with multiple columns having the id flag set',
+  () => {
+    expect(
+      () => prepareKeys(
+        'artists',
+        { columns: 'not important here' },
+        prepareColumns(
+          'artists',
+          'label_id:id artist_id:id:type=number name:required:type=string'
+        )
+      )
+    ).toThrowError(
+      'Multiple columns are marked as "id" in the artists table ("label_id" and "artist_id")'
     )
   }
 )
