@@ -27,28 +27,3 @@ export const invalidColumnFragments = (fragments: string[]) =>
   fragments.filter( f => ! isValidColumnFragment(f) )
 
 
-
-
-export type RelationType = 'any' | 'one' | 'many' | 'map'
-export type RelationArrow = '~>' | '->' | '=>' | '#>'
-export type RelationArrowMap = Record<RelationArrow, RelationType>
-export type RelationKey = 'table' | 'type' | 'from' | 'to' | 'where' | 'order' | 'key' | 'value' | 'relation'
-export type RelationAliases = Record<string, RelationKey>
-
-// tmp hacks
-export type RelationWhere = Record<string, any>
-export type RelationRecord = { row: Record<string, any> }
-
-export type RelationSpec = {
-  name?:  string
-  table:  string
-  type:   RelationType
-  from:   string
-  to:     string
-  where?: RelationWhere
-  order?: string
-  key?:   string
-  value?: string
-  relation?: string
-  load?: any        // fixme
-}
