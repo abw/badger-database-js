@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { notImplemented, notImplementedInBaseClass, notImplementedInModule } from '../../src/Utils/Error.js';
+import { notImplemented, notImplementedInBaseClass, notImplementedInModule } from '../../src/Utils/Error'
 
 test( 'notImplemented()',
   () => {

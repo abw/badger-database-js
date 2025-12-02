@@ -1,6 +1,6 @@
 import { isArray, isObject, isString, joinList, joinListAnd, noValue, objMap, splitList } from '@abw/badger-utils'
 import { bitSplitter, defaultIdColumn } from '../Constants'
-import { throwColumnValidationError } from './Error.js'
+import { throwColumnValidationError } from './Error'
 import { TableColumn, TableColumnFragments, TableColumns, TableColumnSpec, TableColumnsSpec, TableSpec } from '../types'
 import { areValidColumnFragments, invalidColumnFragments, invalidTableColumnObjectKeys, isValidTableColumnObject } from './Types'
 

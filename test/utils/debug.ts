@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { debug, setDebug, getDebug } from '../../src/Utils/Debug.js'
+import { debug, setDebug, getDebug } from '../../src/Utils/Debug'
 
 test( 'inital debugging state',
   () => {

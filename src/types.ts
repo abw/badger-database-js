@@ -44,7 +44,8 @@ export type RelationType = 'any' | 'one' | 'many' | 'map'
 export type RelationArrow = '~>' | '->' | '=>' | '#>'
 export type RelationArrowMap = Record<RelationArrow, RelationType>
 export type RelationKey = 'table' | 'type' | 'from' | 'to' | 'where' | 'order' | 'key' | 'value' | 'relation'
-export type RelationAliases = Record<string, RelationKey>
+export type RelationAlias = 'localKey' | 'local_key' | 'remoteKey' | 'remote_key' | 'orderBy' | 'order_by'
+export type RelationAliases = Record<RelationAlias, RelationKey>
 
 // tmp hacks
 export type RelationWhere = Record<string, any>
@@ -63,3 +64,7 @@ export type RelationSpec = {
   relation?: string
   load?: any        // fixme
 }
+
+export type RelationConfig = Partial<
+  RelationSpec & Record<RelationAlias, string>
+>

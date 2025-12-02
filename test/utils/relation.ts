@@ -86,7 +86,7 @@ test( 'relation config rewriting',
     expect(config.from).toBe('wibble')
     expect(config.to).toBe('wobble')
     expect(config.table).toBe('frusset')
-    expect(config.type).toBe('pouch')
+    expect(config.type).toBe('any')
     expect(config.name).toBe('users.pleasantries');
   }
 );
@@ -147,10 +147,11 @@ test( 'relation with missing "from"',
         'users',
         'pleasantries',
         {
+          // @ts-expect-error: thanks TS, but we're testing the runtime validation
           frim:  'wibble',
           to:    'wobble',
           table: 'frusset',
-          type:  'pouch',
+          type:  'any',
         }
       )
     ).toThrowError(

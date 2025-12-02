@@ -1,5 +1,5 @@
 import { fail, hasValue, isString, noValue, remove } from "@abw/badger-utils";
-import { RelationAliases, RelationArrowMap, RelationRecord, RelationSpec } from '../types'
+import { RelationAliases, RelationArrowMap, RelationConfig, RelationRecord, RelationSpec } from '../types'
 
 const relationStringRegex = /^(\w+)\s*([-~=#]>)\s*(\w+)\.(\w+)$/;
 
@@ -39,7 +39,7 @@ const relationAliases: RelationAliases = {
 export const relationConfig = (
   table: string,
   name: string,
-  config: string | RelationSpec
+  config: string | RelationConfig
 ) => {
   if (isString(config)) {
     config = parseRelationString(config);
@@ -76,7 +76,7 @@ export const relationConfig = (
   // set the name
   config.name = `${table}.${name}`;
 
-  return config;
+  return config as RelationSpec
 }
 
 /**

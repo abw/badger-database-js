@@ -1,10 +1,14 @@
-import { ANSIescape, ANSIreset } from "./Color.js";
-import { doNothing, fail, isBoolean, isObject } from "@abw/badger-utils";
+import { ANSIescape, ANSIreset } from './Color'
+import { doNothing, fail, isBoolean, isObject } from '@abw/badger-utils'
 
-export function Debugger(enabled, prefix='', color) {
+export function Debugger(
+  enabled: boolean,
+  prefix='',
+  color: string     // TODO
+) {
   return enabled
     ? prefix
-      ? (format, ...args) =>
+      ? (format: string, ...args: any[]) =>
           console.log(
             '%s' + prefix + '%s' + format,
             color ? ANSIescape(color) : '',
@@ -15,8 +19,16 @@ export function Debugger(enabled, prefix='', color) {
     : doNothing;
 }
 
-export function addDebug(obj, enabled, prefix='', color) {
-  obj.debug = Debugger(enabled, prefix, color);
+export function addDebug(
+  obj: object,
+  enabled: boolean,
+  prefix='',
+  color?: string
+) {
+  Object.assign(
+    obj,
+    { debug: Debugger(enabled, prefix, color) }
+  )
 }
 
 /**
@@ -29,7 +41,19 @@ const debugWidth = 16;
  * @ignore
  * Default debugging options
  */
-export let debug = {
+export type DebugSetting = {
+  debug: boolean
+  prefix?: string
+  color?: string
+  debugPrefix?: string
+  debugColor?: string
+}
+
+export type DebugComponent =
+  'database' | 'engine' | 'query' | 'tables' | 'table' | 'record' |
+  'builder' | 'transaction' | 'test'
+
+export let debug: Record<DebugComponent, DebugSetting> = {
   database: {
     debug:  false,
     prefix: 'Database',
@@ -81,16 +105,17 @@ export let debug = {
  * @ignore
  * Function to throw an error for an invalid debug option
  */
-const invalidDebugItem = item =>
+const invalidDebugItem = (item: string) =>
   fail(`Invalid debug item "${item}" specified`)
+
+export type DebugOption = boolean | Partial<DebugSetting>
 
 /**
  * Function to set debugging options.  Each key in the `options` should be
- * one of the components that supports debugging: `database`, `engine`, `queries`,
- * `table` or `record`.  The corresponding values should be a boolean value to
- * enable or disable debugging for the option or an object containing a `debug`
- * flag, and optionally, a `prefix` and/or `color`.
- * @param {!Object} options - debugging options
+ * one of the components that supports debugging: `database`, `engine`,
+ * `queries`, etc.  The corresponding values should either be boolean values
+ * to enable or disable debugging for the option, or an object containing a
+ * `debug` flag, and optionally, a `prefix` and/or `color`.
  * @example
  * setDebug({ engine: true })
  * @example
@@ -102,27 +127,28 @@ const invalidDebugItem = item =>
  *   }
  * })
  */
-export const setDebug = options => {
+export const setDebug = (
+  options: Partial<Record<DebugComponent, DebugOption>>
+) => {
   Object.entries(options).map(
     ([key, value]) => {
-      const set = debug[key] || invalidDebugItem(key);
+      const set = debug[key] || invalidDebugItem(key)
       if (isBoolean(value)) {
-        set.debug = value;
+        set.debug = value
       }
       else if (isObject(value)) {
-        Object.assign(set, value);
+        Object.assign(set, value)
       }
     }
   )
 }
 
 /**
- * Function to get debugging options for one of the components that supports debugging:
- * `database`, `engine`, `queries`, `table` or `record`.  One or more additional
- * objects can be passed that contain further configuration options. The returned object
- * will contained a merged set of the defaults and those options.
- * @param {!String} name - debugging options
- * @param {...Object} configs - additional debugging options
+ * Function to get debugging options for one of the components that supports
+ * debugging: `database`, `engine`, `queries`, `table`, etc. One or more
+ * additional objects can be passed that contain further configuration
+ * options. The returned object will contained a merged set of the defaults
+ * and those options.
  * @example
  * getDebug('engine')
  * @example
@@ -132,7 +158,10 @@ export const setDebug = options => {
  * @example
  * getDebug('engine', { debug: true }, { color: 'green' })
  */
-export const getDebug = (name, ...configs) => {
+export const getDebug = (
+  name: DebugComponent,
+  ...configs: Partial<DebugSetting>[]
+): DebugSetting => {
   const defaults = debug[name] || invalidDebugItem(name);
   return Object.assign(
     {},
@@ -143,18 +172,19 @@ export const getDebug = (name, ...configs) => {
 
 /**
  * Function to add the `debug()` and `debugData()` methods to an object.
- * `database`, `engine`, `queries`, `table` or `record`.  One or more additional
- * objects can be passed that contain further configuration options. The returned object
- * will contained a merged set of the defaults and those options.
- * @param {!Object} object - object to receive methods
- * @param {!String} name - name of component type
- * @param {...Object} configs - additional debugging options
+ * The `name` should be the name of a debug component, e.g. `database`,
+ * `engine`, `queries`, `table`, etc.  One or more additional objects can
+ * be passed that contain further configuration options.
  * @example
  * addDebugMethod(myObject, 'engine', { debug: true })
  * @example
  * getDebug(myObject, 'engine', { debug: true }, { color: 'green' })
  */
-export const addDebugMethod = (object, name, ...configs) => {
+export const addDebugMethod = (
+  object: object,
+  name: DebugComponent,
+  ...configs: DebugSetting[]
+) => {
   const options = getDebug(name, ...configs);
   const enabled = options.debug;
   const prefix  = options.debugPrefix || options.prefix;
@@ -163,16 +193,21 @@ export const addDebugMethod = (object, name, ...configs) => {
     ? prefix + "\n" + "".padEnd(debugWidth, '-') + '> '
     : (prefix + ' ').padEnd(debugWidth, '-') + '> ';
   addDebug(object, enabled, preline, color);
-  object.debugData = DataDebugger(enabled, preline, color);
+  Object.assign(object, { debugData: DataDebugger(enabled, preline, color) })
 }
 
 /**
  * @ignore
  * Function to generate a debugData() method for the above.
  */
-function DataDebugger(enabled, prefix, color, length=debugWidth) {
+function DataDebugger(
+  enabled: boolean,
+  prefix: string,
+  color: string,
+  length:number = debugWidth
+) {
   return enabled
-    ? (message, data={}) => {
+    ? (message: string, data={}) => {
         console.log(
           '%s' + prefix + '%s' + message,
           color ? ANSIescape(color) : '',

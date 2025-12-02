@@ -57,7 +57,7 @@ export const notImplementedInModule = (module: string) => (method: string) =>
  * @param {!String} module - the name of the module
  * @example
  * ```ts
- * const thrower = notImplementedInModule('FrussetPouch');
+ * const thrower = notImplementedInBaseClass('FrussetPouch');
  * thrower('wibble');  // throws error: wibble is not implemented in the FrussetPouch base class
  * ```
  */

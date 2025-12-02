@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { InsertValidationError, thrower } from "../../src/Utils/Error.js"
+import { InsertValidationError, thrower } from '../../src/Utils/Error'
 
 const throwInsertValidationError = thrower(
   {
@@ -54,6 +54,7 @@ test( 'readonly insert validation error',
 test( 'missing format for insert validation error',
   () => {
     expect(
+      // @ts-expect-error: testing invalid message format
       () => throwInsertValidationError('missing', { column: 'wibble', table: 'users'} )
     ).toThrowError(
       'Invalid message format: missing'
