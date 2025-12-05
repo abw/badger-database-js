@@ -1,24 +1,7 @@
-import { extract, hasValue, isString, remove } from "@abw/badger-utils";
-import { invalid, missing } from "./Error.js";
-
-/**
- * @ignore
- * Regex to parse database string.
- */
-export const databaseStringRegex = /^(\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
-
-/**
- * @ignore
- * Lookup table mapping captures from above regex to configuration option.
- */
-export const databaseStringElements = {
-  engine:   1,
-  user:     2,
-  password: 3,
-  host:     4,
-  port:     5,
-  database: 6,
-};
+import { extract, hasValue, isString, remove } from '@abw/badger-utils'
+import { invalid, missing } from './Error'
+import { DatabaseConfig, DatabaseConnection, DatabaseConnectionConfig } from '../types'
+import { MATCH_DATABASE_ELEMENTS, MATCH_DATABASE_URL } from '../Constants'
 
 /**
  * @ignore
@@ -35,19 +18,6 @@ export const databaseAliases = {
 /**
  * Function to create and sanitize a database configuration.  If the argument
  * is a string then it is passed to {@link parseDatabaseString}.
- * @param {!(Object|String)} config - database connection string or configuration object
- * @param {!String} [config.engine] - database engine, one of `sqlite`, `mysql` or `postgres`
- * @param {?String} [config.username] - alias for `user` option
- * @param {?String} [config.user] - name of user to connect to database
- * @param {?String} [config.password] - password for user to connect to database
- * @param {?String} [config.pass] - alias for `password` option
- * @param {?String} [config.host] - database host name
- * @param {?String} [config.hostname] - alias for `host` option
- * @param {?String} [config.port] - database port
- * @param {?String} [config.database] - database name
- * @param {?String} [config.filename] - database filename for sqlite databases
- * @param {?String} [config.file] - alias for `filename` option
- * @return {Object} the database config object
  * @example
  * const config = databaseConfig('sqlite://dbfile.db')
  * @example
@@ -69,11 +39,16 @@ export const databaseAliases = {
  *   port:     '5150'
  * })
  */
-export const databaseConfig = config => {
+export const databaseConfig = (
+  config: DatabaseConnectionConfig
+) => {
   if (config.env) {
-    Object.assign(config, configEnv(config.env, { prefix: config.envPrefix }))
+    Object.assign(
+      config,
+      configEnv(config.env, { prefix: config.envPrefix })
+    )
   }
-  let database = config.database || missing('database');
+  let database: DatabaseConnection | string = config.database || missing('database');
 
   if (isString(database)) {
     // parse connection string
@@ -101,10 +76,22 @@ export const databaseConfig = config => {
   return config;
 }
 
-export const configEnv = (env, options={}) => {
-  const prefix   = options.prefix || 'DATABASE'
-  const uscore   = prefix.match(/_$/) ? '' : '_';
-  const regex    = new RegExp(`^${prefix}${uscore}`);
+/**
+ * Function to extract any environment variables that match a particular prefix
+ * (default: `DATABASE`), including any optional underscore, e.g. `DATABASE_USER`.
+ * @example
+ * const config = configEnv(process.env)
+ * @example
+ * const config = configEnv(process.env, { prefix: 'MY_DB' })
+ */
+
+export const configEnv = (
+  env: Record<string, string>,
+  options: { prefix?: string } = { }
+) => {
+  const prefix = options.prefix || 'DATABASE'
+  const uscore = prefix.match(/_$/) ? '' : '_'
+  const regex  = new RegExp(`^${prefix}${uscore}`)
 
   // if there's an environment variable that exactly matches the prefix,
   // e.g. DATABASE or MY_DATABASE then it's assumed to be a connection
@@ -125,30 +112,20 @@ export const configEnv = (env, options={}) => {
 /**
  * Function to parse a database configuration string and return an object of
  * configuration options.
- * @param {!String} string - database connection string
- * @return {Object} a database config object parsed from the string
  * @example
- * config config = parseDatabaseString('postgresql://user:password@host:port/database')
+ * const config = parseDatabaseString('postgresql://user:password@host:port/database')
  * @example
  * const config = parseDatabaseString('sqlite://filename.db')
  * @example
  * const config = parseDatabaseString('sqlite://:memory:')
  * @example
  * const config = parseDatabaseString('sqlite:memory')
- * @example
  */
-export const parseDatabaseString = string => {
-  let config = { };
-  let match;
+export const parseDatabaseString = (string: string) => {
+  let config = { } as DatabaseConnection
+  let match: RegExpMatchArray
 
-  if (string.match(/^postgres(ql)?:/)) {
-    // special case for postgres which can handle a connectionString
-    // NOTE: we accept postgresql: or postgres: as prefixes and Do The
-    // Right Thing
-    config.engine = 'postgres';
-    config.connectionString = string.replace(/^postgres:/, 'postgresql:');
-  }
-  else if ((match = string.match(/^sqlite:\/\/(.*)/))) {
+  if ((match = string.match(/^sqlite:\/\/(.*)/))) {
     // special case for sqlite which only has a filename (or ":memory:")
     config.engine   = 'sqlite';
     config.filename = match[1];
@@ -158,19 +135,26 @@ export const parseDatabaseString = string => {
     config.engine   = 'sqlite';
     config.filename = ':memory:';
   }
-  else if ((match = string.match(databaseStringRegex))) {
+  else if ((match = string.match(MATCH_DATABASE_URL))) {
     // all other cases (e.g. mysql)
-    Object.entries(databaseStringElements).map(
+    Object.entries(MATCH_DATABASE_ELEMENTS).map(
       ([key, index]) => {
         const value = match[index];
         if (hasValue(value)) {
           config[key] = value;
         }
       }
-    );
+    )
+    if (config.engine.match(/^postgres(ql)?/)) {
+      // special case for postgres which can handle a connectionString
+      // NOTE: we accept postgresql: or postgres: as prefixes and Do The
+      // Right Thing
+      config.engine = 'postgres'
+      config.connectionString = string.replace(/^postgres:/, 'postgresql:')
+    }
   }
   else {
-    invalid('database', string);
+    invalid('database', string)
   }
-  return config;
+  return config
 }

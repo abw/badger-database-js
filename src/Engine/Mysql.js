@@ -1,6 +1,6 @@
 import Engine from '../Engine.js';
 import { backtick, defaultIdColumn, COMMIT, ROLLBACK, BEGIN } from '../Constants'
-import { throwEngineDriver } from '../Utils/Error.js';
+import { throwEngineDriver } from '../Utils/Error';
 
 export class MysqlEngine extends Engine {
   static driver     = 'mysql2/promise'

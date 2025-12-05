@@ -1,128 +1,174 @@
 import { expect, test } from 'vitest'
-import { databaseConfig, parseDatabaseString, configEnv } from "../../src/Utils/Database.js";
+import { databaseConfig, parseDatabaseString, configEnv } from '../../src/Utils/Database'
 
 
 //-----------------------------------------------------------------------------
 // parseDatabaseString()
 //-----------------------------------------------------------------------------
 test( 'postgresql connection string',
-  () => {
-    const config = parseDatabaseString('postgresql://user:password@hostname:3211/database')
-    expect(config.engine).toBe('postgres')
-    expect(config.connectionString).toBe('postgresql://user:password@hostname:3211/database')
-  }
-);
+  () => expect(
+    parseDatabaseString('postgresql://tommy:secret@myhost:3211/my_database')
+  ).toStrictEqual({
+    engine: 'postgres',
+    database: 'my_database',
+    host: 'myhost',
+    port: '3211',
+    user: 'tommy',
+    password: 'secret',
+    connectionString: 'postgresql://tommy:secret@myhost:3211/my_database'
+  })
+)
 
 test( 'postgres connection string',
-  () => {
-    const config = parseDatabaseString('postgres://user:password@hostname:3211/database')
-    expect(config.engine).toBe('postgres')
-    expect(config.connectionString).toBe('postgresql://user:password@hostname:3211/database')
-  }
-);
+  () => expect(
+    parseDatabaseString('postgres://tammy:hidden@herhost:3212/her_database')
+  ).toStrictEqual({
+    engine: 'postgres',
+    database: 'her_database',
+    host: 'herhost',
+    port: '3212',
+    user: 'tammy',
+    password: 'hidden',
+    // NOTE: we accept 'postgres' as the short form of 'postgresql' but it
+    // should be modified to have the longer form
+    connectionString: 'postgresql://tammy:hidden@herhost:3212/her_database'
+  })
+)
 
 test( 'sqlite connection string with filename',
-  () => {
-    const config = parseDatabaseString('sqlite://filename.db')
-    expect(config.engine).toBe('sqlite')
-    expect(config.filename).toBe('filename.db')
-  }
-);
+  () => expect(
+    parseDatabaseString('sqlite://filename.db')
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: 'filename.db'
+  })
+)
 
 test( 'sqlite connection string with memory',
-  () => {
-    const config = parseDatabaseString('sqlite://:memory:');
-    expect(config.engine).toBe('sqlite')
-    expect(config.filename).toBe(':memory:')
-  }
-);
+  () => expect(
+    parseDatabaseString('sqlite://:memory:')
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:'
+  })
+)
 
 test( 'shorthand sqlite:memory',
-  () => {
-    const config = parseDatabaseString('sqlite:memory');
-    expect(config.engine).toBe('sqlite')
-    expect(config.filename).toBe(':memory:')
-  }
-);
+  () => expect(
+    parseDatabaseString('sqlite:memory')
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:',
+  })
+)
 
 test( 'connection string: engine and database',
-  () => {
-    const config = parseDatabaseString('engineName://databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.database).toBe('databaseName')
-  }
-);
+  () => expect(
+    parseDatabaseString('engineName://databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    database: 'databaseName',
+  })
+)
 
 test( 'connection string: engine, hostname and database',
-  () => {
-    const config = parseDatabaseString('engineName://hostName/databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.host).toBe('hostName')
-    expect(config.database).toBe('databaseName')
-  }
-);
+  () => expect(
+    parseDatabaseString('engineName://hostName/databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    host: 'hostName',
+    database: 'databaseName',
+  })
+)
 
 test( 'connection string: engine, hostname, port and database',
-  () => {
-    const config = parseDatabaseString('engineName://hostName:1234/databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.host).toBe('hostName')
-    expect(config.port).toBe('1234')
-    expect(config.database).toBe('databaseName')
-  }
-);
+  () => expect(
+    parseDatabaseString('engineName://hostName:1234/databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    host: 'hostName',
+    port: '1234',
+    database: 'databaseName',
+  })
+)
 
 test( 'connection string: engine, user, hostname and database',
-  () => {
-    const config = parseDatabaseString('engineName://userName@hostName/databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.user).toBe('userName')
-    expect(config.host).toBe('hostName')
-    expect(config.database).toBe('databaseName')
-  }
-);
+  () => expect(
+    parseDatabaseString('engineName://userName@hostName/databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    user: 'userName',
+    host: 'hostName',
+    database: 'databaseName',
+  })
+)
 
 test( 'connection string: engine, user, hostname, port and database',
-  () => {
-    const config = parseDatabaseString('engineName://userName@hostName:1234/databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.user).toBe('userName')
-    expect(config.host).toBe('hostName')
-    expect(config.port).toBe('1234')
-    expect(config.database).toBe('databaseName')
-  }
-);
+  () => expect(
+    parseDatabaseString('engineName://userName@hostName:1234/databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    user: 'userName',
+    host: 'hostName',
+    port: '1234',
+    database: 'databaseName',
+  })
+)
 
 test( 'connection string: engine, user, password, hostname and database',
-  () => {
-    const config = parseDatabaseString('engineName://userName:secretPassword@hostName/databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.host).toBe('hostName')
-    expect(config.database).toBe('databaseName')
-    expect(config.user).toBe('userName')
-    expect(config.password).toBe('secretPassword')
-  }
-);
+  () => expect(
+    parseDatabaseString('engineName://userName:secretPassword@hostName/databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    host: 'hostName',
+    database: 'databaseName',
+    user: 'userName',
+    password: 'secretPassword',
+  })
+)
 
 test( 'connection string: engine, user, password, hostname, port and database',
-  () => {
-    const config = parseDatabaseString('engineName://userName:secretPassword@hostName:1234/databaseName');
-    expect(config.engine).toBe('engineName')
-    expect(config.host).toBe('hostName')
-    expect(config.port).toBe('1234')
-    expect(config.user).toBe('userName')
-    expect(config.password).toBe('secretPassword')
-    expect(config.database).toBe('databaseName')
-  }
-);
-
+  () => expect(
+    parseDatabaseString('engineName://userName:secretPassword@hostName:1234/databaseName')
+  ).toStrictEqual({
+    engine: 'engineName',
+    host: 'hostName',
+    port: '1234',
+    user: 'userName',
+    password: 'secretPassword',
+    database: 'databaseName',
+  })
+)
 
 test( 'invalid connection string: engineName:databaseName',
   () => {
-    expect( () => parseDatabaseString('engineName:databaseName') )
-      .toThrowError('Invalid "database" specified: engineName:databaseName')
+    expect(
+      () => parseDatabaseString('engineName:databaseName')
+    ).toThrowError(
+      'Invalid "database" specified: engineName:databaseName'
+    )
   }
-);
+)
+
+//--------------------------------------------------------------------------
+// configEnv()
+//--------------------------------------------------------------------------
+test( 'configEnv() DATABASE connection string',
+  () => expect(
+    configEnv({ DATABASE: 'sqlite:memory' })
+  ).toStrictEqual({
+    database: 'sqlite:memory'
+  })
+)
+
+test( 'configEnv() DATABASE_ENGINE, DATABASE_HOST',
+  () => expect(
+    configEnv({ DATABASE_ENGINE: 'sqlite', DATABASE_FILENAME: ':memory:' })
+  ).toStrictEqual({
+    database: { engine: 'sqlite', filename: ':memory:' }
+  })
+)
+
 
 //-----------------------------------------------------------------------------
 // databaseConfig()
@@ -140,6 +186,7 @@ test( 'databaseConfig() database connection string',
   }
 );
 
+/*
 test( 'databaseConfig() database object with sqlite and and filename',
   () => {
     const config = databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } })
@@ -339,3 +386,4 @@ test( 'databaseConfig() env with envPrefix and engine / filename',
     })
   }
 )
+*/

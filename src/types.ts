@@ -1,6 +1,43 @@
 export type DatabaseSpec = {
   tables: TablesSpec
 }
+export type DatabaseConnection = {
+  engine:    string
+  database?: string,
+  user?:     string
+  password?: string
+  host?:     string
+  port?:     string | number
+  // SQLite only
+  filename?: string
+  // Postgres only
+  connectionString?: string
+};
+
+export type DatabaseConfig = {
+  database:  DatabaseConnection
+}
+
+export type DatabaseConnectionConfig = { //Exclude<Partial<DatabaseConnection>, 'database'> & {
+  database?:      string | DatabaseConnection
+  engine?:        string
+  name?:          string
+  user?:          string
+  username?:      string
+  password?:      string
+  pass?:          string
+  hostname?:      string
+  host?:          string
+  port?:          string | number
+  env?:           Record<string, string>
+  envPrefix?:     string
+  engineOptions?: Record<string, any>
+  // SQLite only
+  filename?:      string
+  file?:          string
+  // Postgres only
+  connectionString?: string
+}
 
 export type TableSpec = {
   table?: string
