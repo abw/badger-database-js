@@ -57,6 +57,16 @@ working with SQL queries when you need to.
 It has support for Postgres, MySQL, MariaDB and SQLite.  It is around 4k
 lines of code, with a bundle size of around 17kB, minified and compressed.
 
+## Version 2 - With Added Typescript Goodliness
+
+For version 2 the code has been ported from Javascript to Typescript.  At the
+time of writing, this is still a work in progress.
+
+To facilitate more robust type checking of configuration options, method
+parameters, and so on, there have been a few minor [breaking changes](v2-changes).
+If you have an existing project using version 1 of Badger Database then you
+should pay close attention to the information given on that page.
+
 ## Opinionated and Selfish Software
 
 ::: warning WARNING - People Who Share Their Source Code Do Not Owe You Anything!

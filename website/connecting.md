@@ -195,14 +195,24 @@ const db = connect({
 ```
 
 When using this expanded format, any additional configuration options for the engine
-module can be included directly in the `database` specification.
+module can be included in the `database` specification as an `options` object.
+
+::: warning BREAKING CHANGE! Versions 1 to 2
+In version 1 any engine-specific options could be added directly into the
+`database` configuration object.  In version 2 they **must** be specified in the
+`database.options` object or as the top-level `engineOptions` object, described
+above.
+:::
+
 
 ```js
 const db = connect({
   database: {
     engine:   'sqlite',
     filename: ':memory:',
-    verbose:  console.log
+    options: {
+      verbose:  console.log
+    }
   }
 })
 ```
@@ -212,7 +222,9 @@ const db = connect({
   database: {
     engine:      'mysql',
     database:    'animals',
-    dateStrings: true
+    options: {
+      dateStrings: true
+    }
   }
 })
 ```
@@ -222,7 +234,9 @@ const db = connect({
   database: {
     engine:       'postgres',
     database:     'animals',
-    queryTimeout: 3000
+    options: {
+      queryTimeout: 3000
+    }
   }
 })
 ```
@@ -378,7 +392,9 @@ const db = connect({
 
 The Postgres and Mysql database engines use a connection pool for efficiency.
 By default, the minimum number of connections is 2 and the maximum is 10.  You
-can change these values using the `pool` option.
+can change these values using the `pool` option.  The connection pool is
+implemented using [Tarn](https://github.com/vincit/tarn.js).  See the
+documentation for other configuration options.
 
 ```js
 const db = connect({
