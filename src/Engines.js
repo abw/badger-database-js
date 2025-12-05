@@ -23,10 +23,10 @@ registerEngines(Sqlite, Mysql, Postgres);
 // Engine constructor
 //-----------------------------------------------------------------------------
 export const engine = config => {
-  config = databaseConfig(config);
-  const engine = config.engine || missing('database.engine');
+  const connect = databaseConfig(config)
+  const engine = connect.engine || missing('database.engine');
   const handler = Engines[engine] || invalid('database.engine', engine);
-  return handler(config);
+  return handler(connect);
 }
 
 export default Engines;

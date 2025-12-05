@@ -7,31 +7,19 @@ import { expectToThrowAsyncErrorTypeMessage, pass } from '../library/expect.js';
 let sqlite;
 
 const config = {
-  database: {
-    engine:   'sqlite',
-    filename: ':memory:'
-  }
-};
+  engine:   'sqlite',
+  filename: ':memory:'
+}
 
-test( 'no engine error',
+test( 'no filename error',
   () => expect(
     () => new Sqlite()
   ).toThrowError(
-    'No "engine" specified'
+    'No "filename" specified'
   )
 )
 
-test( 'no database error',
-  () => expect(
-    () => new Sqlite({
-      engine: 'sqlite'
-    })
-  ).toThrowError(
-    'No "database" specified'
-  )
-)
-
-test( 'no filename error',
+test( 'no filename error from empty database',
   () => expect(
     () => new Sqlite({
       engine: 'sqlite',
@@ -57,28 +45,29 @@ test( 'engine in database',
   }
 )
 
-test( 'engine outside database',
-  async () => {
-    const sqlite = await engine({
-      engine: 'sqlite',
-      database: {
-        filename: ':memory:'
-      }
-    })
-    const conn = await sqlite.acquire()
-    expect(conn.open).toBe(true)
-    await sqlite.release(conn)
-    await sqlite.destroy()
-  }
+test( 'no engine error',
+  () => expect(
+    () => {
+      const sqlite = engine({
+        database: {
+          filename: ':memory:'
+        }
+      })
+    }
+  ).toThrowError(
+    'No "database.engine" specified'
+  )
 )
 
 test( 'extra options',
   async () => {
     const sqlite = await engine({
-      engine: 'sqlite',
       database: {
+        engine: 'sqlite',
         filename: ':memory:',
-        verbose: 'example'
+        options: {
+          verbose: 'example'
+        }
       }
     })
     expect(sqlite.options).toStrictEqual({ verbose: 'example' })
@@ -87,7 +76,7 @@ test( 'extra options',
 
 test( 'pool size',
   async () => {
-    const sqlite = await engine(config)
+    const sqlite = await engine({ database: config })
     expect(sqlite.pool.min).toBe(1)
     expect(sqlite.pool.max).toBe(1)
     await sqlite.destroy()
@@ -96,7 +85,7 @@ test( 'pool size',
 
 test( 'acquire and release',
   async () => {
-    const sqlite = await engine(config)
+    const sqlite = await engine({ database: config })
     const conn = await sqlite.acquire()
     expect(conn.open).toBe(true)
     expect(sqlite.pool.numUsed()).toBe(1)
@@ -247,4 +236,5 @@ test( 'quote words with escapes',
     await sqlite.destroy()
   }
 )
+
 

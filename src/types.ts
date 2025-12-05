@@ -1,26 +1,26 @@
+// Top-level configuration passed to the connect() method.
+// TODO: add in tables, queries, etc.
+export type ConnectConfig = {
+  database?:      string | DatabaseConnectionConfig
+  env?:           Record<string, string>
+  envPrefix?:     string
+  engineOptions?: Record<string, any>
+  pool?:          PoolOptions
+}
+
+// Work in progress that should be merged into the above
 export type DatabaseSpec = {
   tables: TablesSpec
 }
-export type DatabaseConnection = {
-  engine:    string
-  database?: string,
-  user?:     string
-  password?: string
-  host?:     string
-  port?:     string | number
-  // SQLite only
-  filename?: string
-  // Postgres only
-  connectionString?: string
-};
 
-export type DatabaseConfig = {
-  database:  DatabaseConnection
-}
-
-export type DatabaseConnectionConfig = { //Exclude<Partial<DatabaseConnection>, 'database'> & {
-  database?:      string | DatabaseConnection
+// The loosely-defined object for specifying connection options.  It
+// contains all the various parameters and aliases for connecting.
+// Rather problematically, we also allow any engine-specific options to
+// be specified in here.  I think that should be tightened down to require
+// a specific options object.
+export type DatabaseConnectionConfig = {
   engine?:        string
+  database?:      string
   name?:          string
   user?:          string
   username?:      string
@@ -29,15 +29,46 @@ export type DatabaseConnectionConfig = { //Exclude<Partial<DatabaseConnection>, 
   hostname?:      string
   host?:          string
   port?:          string | number
-  env?:           Record<string, string>
-  envPrefix?:     string
-  engineOptions?: Record<string, any>
+  options?:       EngineOptions
   // SQLite only
   filename?:      string
   file?:          string
   // Postgres only
   connectionString?: string
 }
+
+// The well-defined database connection options that are parsed from a
+// database connection string, environment variables, or extracted from the
+// DatabaseConnectionConfig.
+export type DatabaseConnection = {
+  engine:    string
+  database?: string,
+  user?:     string
+  password?: string
+  host?:     string
+  port?:     string | number
+  options?:  EngineOptions
+  pool?:     PoolOptions
+  // TODO: put pool options in here too?
+  // SQLite only
+  filename?: string
+  // Postgres only
+  connectionString?: string
+  // TODO: add options in here?  Otherwise we have to all any additional options
+};
+
+export type PoolOptions = {
+  min?: number
+  max?: number
+  acquireTimeoutMillis?: number
+  createTimeoutMillis?: number
+  destroyTimeoutMillis?: number
+  idleTimeoutMillis?: number
+  reapIntervalMillis?: number
+  createRetryIntervalMillis?: number
+  propagateCreateError?: boolean
+}
+export type EngineOptions = Record<string, any>
 
 export type TableSpec = {
   table?: string

@@ -9,12 +9,13 @@ const database = {
   database: 'test',
   user:     'test',
   password: 'test',
+  engine:   'postgres',
 }
 const config = {
-  engine: 'postgres',
   database
 }
 
+/*
 test( 'no engine error',
   () => expect(
     () => new Postgres()
@@ -30,14 +31,17 @@ test( 'no database error',
     'No "database" specified'
   )
 )
+*/
 
 test( 'extra options',
   async () => {
     const postgres = await engine({
-      engine: 'postgres',
       database: {
+        engine: 'postgres',
         database: 'test',
-        queryTimeout: 3000
+        options: {
+          queryTimeout: 3000
+        }
       }
     });
     expect(postgres.database).toStrictEqual({ database: 'test', queryTimeout: 3000 })
@@ -46,7 +50,7 @@ test( 'extra options',
 
 test( 'acquire and release',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const conn = await postgres.acquire()
     expect(conn.connection).toBeTruthy()
     expect(postgres.pool.numUsed()).toBe(1)
@@ -58,7 +62,7 @@ test( 'acquire and release',
 
 test( 'any',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const result = await postgres.any('SELECT 99 AS number')
     expect(result.number).toBe(99)
     await postgres.destroy()
@@ -67,7 +71,7 @@ test( 'any',
 
 test( 'all',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const result = await postgres.all('SELECT 99 as number')
     expect(result[0].number).toBe(99)
     await postgres.destroy()
@@ -76,7 +80,7 @@ test( 'all',
 
 test( 'drop existing table',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const drop = await postgres.run(
       `DROP TABLE IF EXISTS users`,
       { sanitizeResult: true }
@@ -88,7 +92,7 @@ test( 'drop existing table',
 
 test( 'create table',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const create = await postgres.run(
       `CREATE TABLE users (
         id SERIAL,
@@ -104,7 +108,7 @@ test( 'create table',
 
 test( 'insert a row',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id',
       ['Bobby Badger', 'bobby@badgerpower.com'],
@@ -118,7 +122,7 @@ test( 'insert a row',
 
 test( 'insert another row',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const insert = await postgres.run(
       'INSERT INTO users (name, email) VALUES ($1, $2)',
       ['Brian Badger', 'brian@badgerpower.com'],
@@ -131,7 +135,7 @@ test( 'insert another row',
 
 test( 'fetch any row',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const bobby = await postgres.any(
       'SELECT * FROM users WHERE email=$1',
       ['bobby@badgerpower.com']
@@ -143,7 +147,7 @@ test( 'fetch any row',
 
 test( 'fetch all rows',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const rows = await postgres.all(
       `SELECT id, name, email FROM users`
     )
@@ -155,7 +159,7 @@ test( 'fetch all rows',
 
 test( 'fetch one row',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     const row = await postgres.one(
       `SELECT id, name, email FROM users WHERE email=$1`,
       ['bobby@badgerpower.com']
@@ -167,7 +171,7 @@ test( 'fetch one row',
 
 test( 'fetch one row but none returned',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     await expectToThrowAsyncErrorTypeMessage(
       () => postgres.one(
         `SELECT id, name, email FROM users WHERE email=$1`,
@@ -182,7 +186,7 @@ test( 'fetch one row but none returned',
 
 test( 'fetch one row but two returned',
   async () => {
-    const postgres = new Postgres(config);
+    const postgres = new Postgres(database);
     await expectToThrowAsyncErrorTypeMessage(
       () => postgres.one(
         `SELECT id, name, email FROM users`
@@ -196,7 +200,7 @@ test( 'fetch one row but two returned',
 
 test( 'quote word',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     expect(postgres.quote('hello')).toBe('"hello"')
     await postgres.destroy()
   }
@@ -204,7 +208,7 @@ test( 'quote word',
 
 test( 'quote words',
   async () => {
-    const postgres = new Postgres(config)
+    const postgres = new Postgres(database)
     expect(postgres.quote('hello.world')).toBe('"hello"."world"')
     await postgres.destroy()
   }
@@ -212,7 +216,7 @@ test( 'quote words',
 
 test( 'quote words with escapes',
   async () => {
-    const postgres = new Postgres(config);
+    const postgres = new Postgres(database)
     expect(postgres.quote('hello "world"')).toBe('"hello \\"world\\""')
     await postgres.destroy()
   }

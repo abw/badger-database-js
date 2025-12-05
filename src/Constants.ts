@@ -48,7 +48,7 @@ export const BEGIN            = 'BEGIN'
 export const ROLLBACK         = 'ROLLBACK'
 export const COMMIT           = 'COMMIT'
 
-export const MATCH_DATABASE_URL = /^(\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
+export const MATCH_DATABASE_URL = /^(\w+):\/\/(?:(?:(\w+)(?::([^@\/]+))?@)?(\w+)(?::(\d+))?\/)?(\w+)/;
 
 export const MATCH_DATABASE_ELEMENTS = {
   engine:   1,
@@ -65,11 +65,12 @@ export const DATABASE_CONNECTION_ALIASES = {
   hostname: 'host',
   file:     'filename',
   name:     'database',
+  engineOptions: 'options'
 };
 
 export const VALID_CONNECTION_KEYS = splitHash(
   // TODO: rename connectionString to url/uri?
-  'engine user password host port database filename connectionString'
+  'engine user password host port database filename connectionString options'
 )
 
 export const VALID_CONNECTION_ALIASES = splitHash(

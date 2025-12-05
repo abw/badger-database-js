@@ -1,6 +1,6 @@
 import Engine from '../Engine.js';
 import { backtick, defaultIdColumn, COMMIT, ROLLBACK, BEGIN } from '../Constants'
-import { throwEngineDriver } from '../Utils/Error';
+import { missing, throwEngineDriver } from '../Utils/Error';
 
 export class MysqlEngine extends Engine {
   static driver     = 'mysql2/promise'
@@ -8,6 +8,13 @@ export class MysqlEngine extends Engine {
   static alias      = 'maria mariadb'
   static quoteChar  = backtick
   static beginTrans = 'START TRANSACTION'
+
+  configure(config) {
+    if (! config.database) {
+      missing('database')
+    }
+    return config;
+  }
 
   //-----------------------------------------------------------------------------
   // Pool connections methods

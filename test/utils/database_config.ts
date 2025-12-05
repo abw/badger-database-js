@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { databaseConfig, parseDatabaseString, configEnv } from '../../src/Utils/Database'
+import { databaseConfig, parseDatabaseString, configEnv, extractDatabaseConfig } from '../../src/Utils/Database'
 
 
 //-----------------------------------------------------------------------------
@@ -140,6 +140,21 @@ test( 'connection string: engine, user, password, hostname, port and database',
   })
 )
 
+test( 'connection string: postgres example',
+  () => expect(
+    parseDatabaseString('postgres://tommy:top-secret@mydbhost:1234/mydb')
+  ).toStrictEqual({
+    engine: 'postgres',
+    host: 'mydbhost',
+    port: '1234',
+    user: 'tommy',
+    password: 'top-secret',
+    database: 'mydb',
+    connectionString: 'postgresql://tommy:top-secret@mydbhost:1234/mydb'
+  })
+)
+
+
 test( 'invalid connection string: engineName:databaseName',
   () => {
     expect(
@@ -157,7 +172,8 @@ test( 'configEnv() DATABASE connection string',
   () => expect(
     configEnv({ DATABASE: 'sqlite:memory' })
   ).toStrictEqual({
-    database: 'sqlite:memory'
+    engine: 'sqlite',
+    filename: ':memory:'
   })
 )
 
@@ -165,74 +181,164 @@ test( 'configEnv() DATABASE_ENGINE, DATABASE_HOST',
   () => expect(
     configEnv({ DATABASE_ENGINE: 'sqlite', DATABASE_FILENAME: ':memory:' })
   ).toStrictEqual({
-    database: { engine: 'sqlite', filename: ':memory:' }
+    engine: 'sqlite',
+    filename: ':memory:'
   })
 )
 
+
+//-----------------------------------------------------------------------------
+// extractDatabaseConfig()
+//-----------------------------------------------------------------------------
+test( 'extractDatabaseConfig() with valid keys',
+  () => expect(
+    extractDatabaseConfig({
+      engine: 'postgres',
+      user: 'tommy',
+      password: 'testing',
+      host: 'mydbhost',
+      port: 9876,
+      database: 'mydb'
+    })
+  ).toStrictEqual({
+      engine: 'postgres',
+      user: 'tommy',
+      password: 'testing',
+      host: 'mydbhost',
+      port: 9876,
+      database: 'mydb'
+  })
+)
+
+test( 'extractDatabaseConfig() with valid aliases',
+  () => expect(
+    extractDatabaseConfig({
+      engine: 'postgres',
+      username: 'tommy',
+      pass: 'testing',
+      hostname: 'mydbhost',
+      port: 9876,
+      name: 'mydb'
+    })
+  ).toStrictEqual({
+      engine: 'postgres',
+      user: 'tommy',
+      password: 'testing',
+      host: 'mydbhost',
+      port: 9876,
+      database: 'mydb'
+  })
+)
+
+test( 'extractDatabaseConfig() with sqlite and filename',
+  () => expect(
+    extractDatabaseConfig({
+      engine: 'sqlite',
+      filename: 'wibble.db'
+    })
+  ).toStrictEqual({
+      engine: 'sqlite',
+      filename: 'wibble.db'
+  })
+)
+
+test( 'extractDatabaseConfig() with sqlite and file alias',
+  () => expect(
+    extractDatabaseConfig({
+      engine: 'sqlite',
+      file: 'wibble.db'
+    })
+  ).toStrictEqual({
+      engine: 'sqlite',
+      filename: 'wibble.db'
+  })
+)
 
 //-----------------------------------------------------------------------------
 // databaseConfig()
 //-----------------------------------------------------------------------------
 
 test( 'databaseConfig() database connection string',
-  () => {
-    const config = databaseConfig({ database: 'engineName://userName:secretPassword@hostName:1234/databaseName' });
-    expect(config.engine).toBe('engineName')
-    expect(config.database.host).toBe('hostName')
-    expect(config.database.port).toBe('1234')
-    expect(config.database.database).toBe('databaseName')
-    expect(config.database.user).toBe('userName')
-    expect(config.database.password).toBe('secretPassword')
-  }
-);
+  () => expect(
+    databaseConfig({
+      database: 'engineName://userName:secretPassword@hostName:1234/databaseName'
+    })
+  ).toStrictEqual({
+    engine: 'engineName',
+    host: 'hostName',
+    port: '1234',
+    database: 'databaseName',
+    user: 'userName',
+    password: 'secretPassword',
+  })
+)
 
-/*
 test( 'databaseConfig() database object with sqlite and and filename',
-  () => {
-    const config = databaseConfig({ database: { engine: 'sqlite', filename: 'wibble.db' } })
-    expect(config.engine).toBe('sqlite')
-    expect(config.database.filename).toBe('wibble.db')
-  }
-);
+  () => expect(
+    databaseConfig({
+      database: { engine: 'sqlite', filename: 'wibble.db' }
+    })
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: 'wibble.db'
+  })
+)
 
 test( 'databaseConfig() database object with sqlite and file',
-  () => {
-    const config = databaseConfig({ database: { engine: 'sqlite', file: 'wibble.db' } })
-    expect(config.engine).toBe('sqlite')
-    expect(config.database.filename).toBe('wibble.db')
-  }
-);
+  () => expect(
+    databaseConfig({
+      database: {
+        engine: 'sqlite',
+        file:   'wibble.db'
+      }
+    })
+  ).toStrictEqual({
+    engine:   'sqlite',
+    filename: 'wibble.db',
+  })
+)
 
 test( 'databaseConfig() database object renaming user, password, hostname',
-  () => {
-    const config = databaseConfig({
-      database: { engine: 'mysql', username: 'fred', pass: 'secret', hostname: 'wibble.com' }
-    });
-    expect(config.engine).toBe('mysql')
-    expect(config.database.user).toBe('fred')
-    expect(config.database.password).toBe('secret')
-    expect(config.database.host).toBe('wibble.com')
-  }
-);
+  () => expect(
+    databaseConfig({
+      database: {
+        engine:   'mysql',
+        username: 'fred',
+        pass:     'secret',
+        hostname: 'wibble.com'
+      }
+    })
+  ).toStrictEqual({
+    engine:   'mysql',
+    user:     'fred',
+    password: 'secret',
+    host:     'wibble.com',
+  })
+)
 
-test( 'databaseConfig() - database object with extra option',
-  () => {
-    const config = databaseConfig({
+test( 'databaseConfig() - database object with extra options',
+  () => expect(
+    databaseConfig({
       database: {
         engine: 'mysql',
         database: 'example',
-        extraOption: 'wibble'
+        options: {
+          wibble: 'Frusset Pouch'
+        }
       }
-    });
-    expect(config.engine).toBe('mysql')
-    expect(config.database.database).toBe('example')
-    expect(config.database.extraOption).toBe('wibble')
-  }
-);
+    })
+  ).toStrictEqual({
+    engine:   'mysql',
+    database: 'example',
+    options: {
+      wibble: 'Frusset Pouch'
+    }
+  })
+)
 
 test( 'databaseConfig() - database object and separate engineOptions',
-  () => {
-    const config = databaseConfig({
+  () => expect(
+    databaseConfig({
       database: {
         engine: 'mysql',
         database: 'example',
@@ -240,150 +346,136 @@ test( 'databaseConfig() - database object and separate engineOptions',
       engineOptions: {
         extraOption: 'wibble'
       }
-    });
-    expect(config.engine).toBe('mysql')
-    expect(config.database.database).toBe('example')
-    expect(config.database.extraOption).toBe('wibble')
-  }
-);
+    })
+  ).toStrictEqual({
+    engine: 'mysql',
+    database: 'example',
+    options: {
+      extraOption: 'wibble',
+    }
+  })
+)
+
+test( 'databaseConfig() - database string and separate engineOptions',
+  () => expect(
+    databaseConfig({
+      database: 'postgres://tommy:top-secret@mydbhost:1234/mydb',
+      engineOptions: {
+        lock_timeout: 2000,
+      }
+    })
+  ).toStrictEqual({
+    engine: 'postgres',
+    connectionString: 'postgresql://tommy:top-secret@mydbhost:1234/mydb',
+    database: 'mydb',
+    user: 'tommy',
+    password: 'top-secret',
+    host: 'mydbhost',
+    port: '1234',
+    options: {
+      lock_timeout: 2000,
+    }
+  })
+)
 
 test( 'databaseConfig() database object with pool',
-  () => {
-    const config = databaseConfig({ database: 'sqlite:memory', pool: { min: 1, max: 1 } });
-    expect(config.engine).toBe('sqlite')
-    expect(config.database.filename).toBe(':memory:')
-    expect(config.pool.min).toBe(1)
-    expect(config.pool.max).toBe(1)
-  }
-);
+  () => expect(
+    databaseConfig({
+      database: 'sqlite:memory',
+      pool: { min: 1, max: 1 }
+    })
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:',
+    pool: { min: 1, max: 1 }
+  })
+)
 
 test( 'databaseConfig() database with invalid engine name',
-  () => {
-    expect( () => databaseConfig({ database: 'engineName:databaseName' }) )
-      .toThrowError('Invalid "database" specified: engineName:databaseName')
-  }
-);
+  () => expect(
+    () => databaseConfig({ database: 'engineName:databaseName' })
+  ).toThrowError(
+    'Invalid "database" specified: engineName:databaseName'
+  )
+)
 
 test( 'databaseConfig() empty object - no database',
-  () => {
-    expect( () => databaseConfig({ }) )
-      .toThrowError('No "database" specified')
-  }
-);
-
-test( 'configEnv() DATABASE connection string',
-  () => {
-    expect(configEnv({ DATABASE: 'sqlite:memory' }))
-      .toStrictEqual({ database: 'sqlite:memory' })
-  }
-);
-
-test( 'configEnv() DATABASE_ENGINE, DATABASE_HOST',
-  () => {
-    expect(configEnv({ DATABASE_ENGINE: 'sqlite', DATABASE_FILENAME: ':memory:' }))
-      .toStrictEqual({ database: { engine: 'sqlite', filename: ':memory:' } })
-  }
-);
+  () => expect(
+    () => databaseConfig({ })
+  ).toThrowError(
+    'No "database" specified'
+  )
+)
 
 test( 'databaseConfig() env with DATABASE connection string',
-  () => {
-    expect(
-      databaseConfig({
-        env: { DATABASE: 'sqlite:memory' }
-      })
-    ).toStrictEqual(
-      {
-        database: { filename: ':memory:' },
-        engine: 'sqlite',
-        env: {
-          DATABASE: 'sqlite:memory'
-        }
-      }
-    )
-  }
-);
+  () => expect(
+    databaseConfig({
+      env: { DATABASE: 'sqlite:memory' }
+    })
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:'
+  })
+)
 
 test( 'databaseConfig() env with DATABASE_ENGINE and DATABASE_FILENAME',
-  () => {
-    expect(
-      databaseConfig({
-        env: {
-          DATABASE_ENGINE: 'sqlite',
-          DATABASE_FILENAME: ':memory:'
-        }
-      })
-    ).toStrictEqual({
-      database: { filename: ':memory:' },
-      engine: 'sqlite',
+  () => expect(
+    databaseConfig({
       env: {
         DATABASE_ENGINE: 'sqlite',
-        DATABASE_FILENAME: ':memory:',
+        DATABASE_FILENAME: ':memory:'
       }
     })
-  }
-);
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:'
+  })
+)
 
 test( 'databaseConfig() env with extra engineOptions object for options',
-  () => {
-    expect(
-      databaseConfig({
-        env: {
-          DATABASE_ENGINE: 'sqlite',
-          DATABASE_FILENAME: ':memory:'
-        },
-        engineOptions: {
-          extraOption: 'wibble'
-        }
-      })
-    ).toStrictEqual({
-      database: { filename: ':memory:', extraOption: 'wibble' },
-      engine: 'sqlite',
+  () => expect(
+    databaseConfig({
       env: {
         DATABASE_ENGINE: 'sqlite',
-        DATABASE_FILENAME: ':memory:',
+        DATABASE_FILENAME: ':memory:'
+      },
+      engineOptions: {
+        extraOption: 'wibble'
       }
     })
-  }
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:',
+    options: {
+      extraOption: 'wibble'
+    }
+  })
 )
 
 
 test( 'databaseConfig() env with envPrefix and connection string',
-  () => {
-    expect(
-      databaseConfig({
-        env: { MY_DB: 'sqlite:memory' },
-        envPrefix: 'MY_DB',
-      })
-    ).toStrictEqual({
-      database: { filename: ':memory:' },
-      engine: 'sqlite',
-      env: {
-        MY_DB: 'sqlite:memory'
-      },
-      envPrefix: 'MY_DB'
+  () => expect(
+    databaseConfig({
+      env: { MY_DB: 'sqlite:memory' },
+      envPrefix: 'MY_DB',
     })
-  }
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:'
+  })
 )
 
 test( 'databaseConfig() env with envPrefix and engine / filename',
-  () => {
-    expect(
-      databaseConfig({
-        env: {
-          MY_DB_ENGINE: 'sqlite',
-          MY_DB_FILENAME: ':memory:'
-        },
-        envPrefix: 'MY_DB',
-      })
-    ).toStrictEqual({
-      database: { filename: ':memory:' },
-      engine: 'sqlite',
+  () => expect(
+    databaseConfig({
       env: {
         MY_DB_ENGINE: 'sqlite',
-        MY_DB_FILENAME: ':memory:',
+        MY_DB_FILENAME: ':memory:'
       },
       envPrefix: 'MY_DB',
     })
-  }
+  ).toStrictEqual({
+    engine: 'sqlite',
+    filename: ':memory:',
+  })
 )
-*/

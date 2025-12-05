@@ -1,7 +1,7 @@
-import Engine from '../Engine.js';
-import { missing, throwEngineDriver } from '../Utils/Error.js';
+import Engine from '../Engine.js'
+import { missing, throwEngineDriver } from '../Utils/Error'
 import { defaultIdColumn } from '../Constants'
-import { remove } from '@abw/badger-utils';
+import { remove } from '@abw/badger-utils'
 
 export class SqliteEngine extends Engine {
   static driver   = 'better-sqlite3'
@@ -10,8 +10,12 @@ export class SqliteEngine extends Engine {
   configure(config) {
     // sqlite expects the filename first and then any options, so we copy
     // the database configuration into the options and then extract filename
-    this.options  = { ...config.database };
-    this.filename = remove(this.options, 'filename') || missing('filename');
+    // console.log(`sqlite config: `, config)
+
+    this.filename = config.filename || missing('filename')
+    // this.filename = remove(config, 'filename') || missing('filename')
+    // this.options  = { ...config.database };
+    // this.filename = remove(config, 'filename') || missing('filename');
 
     // better-sqlite3 is synchronous (because Sqlite serialises all
     // requests anyway), so there's no need/benefit in using a pool

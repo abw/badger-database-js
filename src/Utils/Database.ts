@@ -1,79 +1,112 @@
-import { extract, hasValue, isString, remove } from '@abw/badger-utils'
+import { extract, hasValue, isString } from '@abw/badger-utils'
 import { invalid, missing } from './Error'
-import { DatabaseConfig, DatabaseConnection, DatabaseConnectionConfig } from '../types'
-import { MATCH_DATABASE_ELEMENTS, MATCH_DATABASE_URL } from '../Constants'
+import { ConnectConfig, DatabaseConnection, DatabaseConnectionConfig } from '../types'
+import {
+  DATABASE_CONNECTION_ALIASES, MATCH_DATABASE_ELEMENTS, MATCH_DATABASE_URL,
+  VALID_CONNECTION_KEYS
+} from '../Constants'
 
 /**
- * @ignore
- * Lookup table of aliases for configuration options.
- */
-export const databaseAliases = {
-  username: 'user',
-  pass:     'password',
-  hostname: 'host',
-  file:     'filename',
-  name:     'database',
-};
-
-/**
- * Function to create and sanitize a database configuration.  If the argument
- * is a string then it is passed to {@link parseDatabaseString}.
- * @example
- * const config = databaseConfig('sqlite://dbfile.db')
- * @example
- * const config = databaseConfig('mysql://user:password@hostname:port//database')
- * @example
- * const config = databaseConfig('postgres://user:password@hostname:port//database')
+ * Function to create and sanitize a database configuration.
  * @example
  * const config = databaseConfig({
- *   engine:   'sqlite',
- *   filename: 'dbfile.db'
+ *   database: 'sqlite://dbfile.db'
  * })
  * @example
  * const config = databaseConfig({
- *   engine:   'postgres',
- *   database: 'musicdb',
- *   user:     'bobby',
- *   password: 'secret',
- *   host:     'mydbhost.com',
- *   port:     '5150'
+ *   database: 'mysql://user:password@hostname:port/database'
+ * })
+ * @example
+ * const config = databaseConfig({
+ *   database: 'postgres://user:password@hostname:port/database'
+ * })
+ * @example
+ * const config = databaseConfig({
+ *   database: {
+ *     engine:   'sqlite',
+ *     filename: 'dbfile.db'
+ *   }
+ * })
+ * @example
+ * const config = databaseConfig({
+ *   database: {
+ *     engine:   'postgres',
+ *     database: 'musicdb',
+ *     user:     'bobby',
+ *     password: 'secret',
+ *     host:     'mydbhost.com',
+ *     port:     '5150',
+ *     options:  {
+ *       lock_timeout: 2000,
+ *     }
+ *   }
+ * })
+ * @example
+ * const config = databaseConfig({
+ *   database: 'postgres://user:password@hostname:port/database',
+ *   engineOptions: {
+ *     lock_timeout: 2000,
+ *   },
+ *   pool: {
+ *     min: 10,
+ *     max: 20
+ *   }
  * })
  */
 export const databaseConfig = (
-  config: DatabaseConnectionConfig
+  config: ConnectConfig
 ) => {
-  if (config.env) {
-    Object.assign(
-      config,
-      configEnv(config.env, { prefix: config.envPrefix })
+  const database = config.database ||
+    ( config.env
+        ? configEnv(config.env, { prefix: config.envPrefix })
+        : missing('database')
     )
+
+  const connection: DatabaseConnection = isString(database)
+    ? parseDatabaseString(database)
+    : extractDatabaseConfig(database)
+
+  // merge in any engineOptions and pool specified in the top-level config
+  if (config.engineOptions) {
+    connection.options = config.engineOptions
   }
-  let database: DatabaseConnection | string = config.database || missing('database');
-
-  if (isString(database)) {
-    // parse connection string
-    config.database = database = parseDatabaseString(database);
+  if (config.pool) {
+    connection.pool = config.pool
   }
 
-  // extract the engine name to top level config
-  config.engine ||= database.engine || missing('database.engine');
-  delete database.engine;
+  return connection
+}
 
-  // fixup any aliases
-  Object.entries(databaseAliases).map(
-    ([key, value]) => {
-      if (hasValue(database[key])) {
-        database[value] ||= remove(database, key);
+/**
+ * Function to extract any valid database connection options from `config`,
+ * including any specified using aliases.
+ */
+export const extractDatabaseConfig = (
+  config: DatabaseConnectionConfig
+): DatabaseConnection => {
+  // first look for any valid connection options
+  const connection = Object.keys(VALID_CONNECTION_KEYS).reduce(
+    (connection, key) => {
+      if (hasValue(config[key])) {
+        connection[key] = config[key]
       }
-    }
+      return connection
+    },
+    { } as DatabaseConnection
   )
 
-  // merge in any engineOptions
-  if (config.engineOptions) {
-    Object.assign(database, remove(config, 'engineOptions'));
-  }
+  // then any valid aliases
+  Object.entries(DATABASE_CONNECTION_ALIASES).reduce(
+    (connection, [alias, key]) => {
+      if (hasValue(config[alias])) {
+        connection[key] = config[alias]
+      }
+      return connection
+    },
+    connection
+  )
 
-  return config;
+  return connection
 }
 
 /**
@@ -99,13 +132,14 @@ export const configEnv = (
   // start with the prefix (and an underscore if there isn't already one)
   // on the prefix), e.g. DATABASE_ENGINE, DATABASE_HOST, etc., and put
   // them in an object
-  const database = env[prefix]
-    || extract(
+  return hasValue(env[prefix])
+    ? parseDatabaseString(env[prefix])
+    // TODO: we should make this more robust and assert that the required
+    // options (e.g. engine, name, etc) are specified
+    : extract(
       env, regex,
       { key: key => key.replace(regex, '').toLowerCase() }
-    );
-
-  return { database }
+    )
 }
 
 

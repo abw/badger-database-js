@@ -5,29 +5,21 @@ import { UnexpectedRowCount } from '../../src/Utils/Error.js'
 import { expectToThrowAsyncErrorTypeMessage } from '../library/expect.js'
 
 const database = {
+  engine:   'mysql',
   host:     'localhost',
   database: 'test',
   user:     'test',
   password: 'test',
 }
 const config = {
-  engine: 'mysql',
   database
 }
 
 const engineString = `mysql://${database.user}:${database.password}@${database.host}/${database.database}`;
 
-test( 'no engine error',
-  () => expect(
-    () => new Mysql()
-  ).toThrow(
-    'No "engine" specified'
-  )
-)
-
 test( 'no database error',
   () => expect(
-    () => new Mysql({ engine: 'mysql' })
+    () => new Mysql()
   ).toThrow(
     'No "database" specified'
   )
@@ -36,14 +28,19 @@ test( 'no database error',
 test( 'extra options',
   async () => {
     const mysql = await engine({
-      engine: 'mysql',
       database: {
+        engine: 'mysql',
         database: 'test',
-        dateStrings: true
+        options: {
+          dateStrings: true
+        }
       }
     })
     expect(mysql.database).toStrictEqual({
       database: 'test',
+      dateStrings: true
+    })
+    expect(mysql.options).toStrictEqual({
       dateStrings: true
     })
   }
@@ -51,7 +48,7 @@ test( 'extra options',
 
 test( 'acquire and release',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const conn = await mysql.acquire()
     expect(conn.connection).toBeTruthy()
     expect(mysql.pool.numUsed()).toBe(1)
@@ -63,7 +60,7 @@ test( 'acquire and release',
 
 test( 'any',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const result = await mysql.any('SELECT 99 AS number')
     expect(result.number).toBe(99)
     await mysql.destroy()
@@ -72,7 +69,7 @@ test( 'any',
 
 test( 'all',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const result = await mysql.all('SELECT 99 as number')
     expect(result[0].number).toBe(99)
     await mysql.destroy()
@@ -81,7 +78,7 @@ test( 'all',
 
 test( 'drop existing table',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const drop = await mysql.run(
       `DROP TABLE IF EXISTS user`,
       { sanitizeResult: true }
@@ -93,7 +90,7 @@ test( 'drop existing table',
 
 test( 'create table',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const create = await mysql.run(
       `CREATE TABLE user (
         id SERIAL,
@@ -109,7 +106,7 @@ test( 'create table',
 
 test( 'insert a row',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const insert = await mysql.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       ['Bobby Badger', 'bobby@badgerpower.com'],
@@ -123,7 +120,7 @@ test( 'insert a row',
 
 test( 'insert another row',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const insert = await mysql.run(
       'INSERT INTO user (name, email) VALUES (?, ?)',
       ['Brian Badger', 'brian@badgerpower.com'],
@@ -136,7 +133,7 @@ test( 'insert another row',
 
 test( 'fetch any row',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const bobby = await mysql.any(
       'SELECT * FROM user WHERE email=?',
       ['bobby@badgerpower.com']
@@ -148,7 +145,7 @@ test( 'fetch any row',
 
 test( 'fetch all rows',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const rows = await mysql.all(
       `SELECT id, name, email FROM user`
     )
@@ -160,7 +157,7 @@ test( 'fetch all rows',
 
 test( 'fetch one row',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']
@@ -172,7 +169,7 @@ test( 'fetch one row',
 
 test( 'fetch one row but none returned',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     await expectToThrowAsyncErrorTypeMessage(
       () => mysql.one(
         `SELECT id, name, email FROM user WHERE email=?`,
@@ -186,7 +183,7 @@ test( 'fetch one row but none returned',
 )
 test( 'fetch one row but two returned',
   async () => {
-    const mysql = new Mysql(config);
+    const mysql = new Mysql(database);
     await expectToThrowAsyncErrorTypeMessage(
       () => mysql.one(
         `SELECT id, name, email FROM user`
@@ -200,7 +197,7 @@ test( 'fetch one row but two returned',
 
 test( 'fetch one row via database()',
   async () => {
-    const mysql = await engine({ database: { ...database, engine: 'mysql' } })
+    const mysql = await engine(config)
     const row   = await mysql.one(
       `SELECT id, name, email FROM user WHERE email=?`,
       ['bobby@badgerpower.com']
@@ -224,7 +221,7 @@ test( 'fetch one row via database() with string',
 
 test( 'quote word',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     expect(mysql.quote("hello")).toBe("`hello`")
     await mysql.destroy()
   }
@@ -232,7 +229,7 @@ test( 'quote word',
 
 test( 'quote words',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     expect(mysql.quote("hello.world")).toBe("`hello`.`world`")
     await mysql.destroy()
   }
@@ -240,7 +237,7 @@ test( 'quote words',
 
 test( 'quote words with escapes',
   async () => {
-    const mysql = new Mysql(config)
+    const mysql = new Mysql(database)
     expect(mysql.quote("foo`bar")).toBe("`foo\\`bar`")
     await mysql.destroy()
   }

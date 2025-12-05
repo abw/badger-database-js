@@ -16,14 +16,27 @@ export class Engine {
   static returning  = false
 
   constructor(config={}) {
-    this.engine    = config.engine || missing('engine');
-    this.database  = config.database || missing('database');
+    const {
+      engine,
+      pool = { },
+      options = { },
+      ...connect
+    } = this.configure(config)
+    console.log(`Engine engine:`, engine)
+    console.log(`Engine pool:`, pool)
+    console.log(`Engine options:`, options)
+    console.log(`Engine connect:`, connect)
+    /*
+    */
+
+    this.engine    = engine || missing('engine');
+    this.options   = options
+    this.database  = { ...connect, ...options }
     this.driver    = this.constructor.driver || missing('driver');
     this.quoteChar = this.constructor.quoteChar;
     this.returning = this.constructor.returning;
     this.messages  = this.constructor.messages;
-    this.config    = this.configure(config);
-    this.pool      = this.initPool(config.pool);
+    this.pool      = this.initPool(pool);
     this.escQuote  = `\\${this.quoteChar}`;
     addDebugMethod(this, 'engine', config);
   }

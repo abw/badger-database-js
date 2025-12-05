@@ -113,6 +113,7 @@ export class Database extends Queryable {
 
 export const connect = config => {
   const e = engine(config);
+  // console.log(`new Database: `, config)
   return new Database(e, config)
 }
 

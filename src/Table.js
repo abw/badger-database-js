@@ -26,11 +26,12 @@ export class Table extends Queryable {
     this.config        = this.configure(config) || config;
     this.database      = database || fail("No database specified");
     this.table         = config.table;
-    this.columns       = prepareColumns(config);
+    this.columns       = prepareColumns(config.table, config.columns);
     this.readonly      = Object.keys(this.columns).filter( key => this.columns[key].readonly );
     this.required      = Object.keys(this.columns).filter( key => this.columns[key].required );
-    this.keys          = prepareKeys(config, this.columns);
-    this.id            = config.id;
+    const { id, keys } = prepareKeys(config.table, config, this.columns);
+    this.keys          = keys
+    this.id            = id
     this.recordClass   = config.recordClass || Record;
     this.recordConfig  = config.recordConfig;
     this.queries       = config.queries || { };
