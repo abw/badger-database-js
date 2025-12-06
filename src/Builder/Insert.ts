@@ -1,5 +1,11 @@
-import Builder from '../Builder.js';
+import Builder from '../Builder'
 import { comma, INSERT } from '../Constants'
+
+export type InsertBuilderColumn = {
+  column?: string
+  columns?: string
+  table?: string
+}
 
 export class Insert extends Builder {
   static buildMethod = 'insert'
@@ -24,18 +30,19 @@ export class Insert extends Builder {
     }
   }
 
-  resolveLinkString(columns) {
+  resolveLinkString(columns: string) {
     return this.quoteTableColumns(undefined, columns)
   }
 
-  resolveLinkArray(columns) {
+  resolveLinkArray(columns: string[]) {
     return this.quoteTableColumns(undefined, columns)
   }
 
-  resolveLinkObject(column) {
+  resolveLinkObject(column: InsertBuilderColumn) {
     const cols = column.column || column.columns;
     if (cols) {
-      return this.resolveLinkString(cols, column.table)
+      return this.resolveLinkString(cols)
+      // return this.resolveLinkString(cols, column.table)    // Hmmm... that column.table shouldn't be there???
     }
     this.errorMsg('object', { keys: Object.keys(column).sort().join(', ') });
   }

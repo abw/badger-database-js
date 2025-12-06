@@ -1,4 +1,6 @@
 // Top-level configuration passed to the connect() method.
+import Database from './Database'
+
 // TODO: add in tables, queries, etc.
 export type ConnectConfig = {
   database?:      string | DatabaseConnectionConfig
@@ -151,3 +153,6 @@ export type ExecuteOptions = SanitizeResultOptions & {
   transact?: { connection: any },
   sanitizeResult?: boolean
 }
+
+export type DatabaseInstance = InstanceType<typeof Database>
+export type Stringable = string | number | boolean

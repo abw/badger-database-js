@@ -1,7 +1,10 @@
 import Builder from '../Builder.js';
+import { DatabaseInstance } from '../types'
 
 export class Database extends Builder {
-  initBuilder(database) {
+  database: DatabaseInstance
+
+  initBuilder(database: DatabaseInstance) {
     this.database = database;
   }
   resolve(context) {

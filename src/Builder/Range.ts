@@ -1,5 +1,12 @@
-import Builder from '../Builder.js';
-import { isInteger, isObject } from '@abw/badger-utils';
+import Builder, { BuilderContext } from '../Builder'
+import { isInteger, isObject } from '@abw/badger-utils'
+
+export type RangeBuilderObject = {
+  from?: number
+  to?: number
+  limit?: number
+  offset?: number
+}
 
 export class Range extends Builder {
   static buildMethod = 'range'
@@ -9,17 +16,18 @@ export class Range extends Builder {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "from", "to", "limit" and "offset".',
   }
 
-  initBuilder(...args) {
+  initBuilder(...args: any[]) {
     if (args.length === 2) {
-      this.args = this.twoNumberArgs(...args);
+      const [from, to] = args
+      this.args = this.twoNumberArgs(from, to)
     }
     else if (args.length === 1) {
-      const arg = args[0];
+      const arg = args[0]
       if (isInteger(arg)) {
-        this.args = this.oneNumberArg(arg);
+        this.args = this.oneNumberArg(arg)
       }
       else if (isObject(arg)) {
-        this.args = this.objectArgs(arg);
+        this.args = this.objectArgs(arg)
       }
       else {
         this.errorMsg('arg');
@@ -30,20 +38,20 @@ export class Range extends Builder {
     }
   }
 
-  twoNumberArgs(from, to) {
+  twoNumberArgs(from: number, to: number) {
     return {
       offset: from,
       limit: (to - from) + 1
     }
   }
 
-  oneNumberArg(from) {
+  oneNumberArg(from: number) {
     return {
       offset: from
     }
   }
 
-  objectArgs(args) {
+  objectArgs(args: RangeBuilderObject) {
     if (args.from && args.to) {
       return this.twoNumberArgs(args.from, args.to);
     }
@@ -66,7 +74,7 @@ export class Range extends Builder {
     }
   }
 
-  resolve(context) {
+  resolve(context: BuilderContext) {
     this.context = {
       ...context,
       ...this.args,

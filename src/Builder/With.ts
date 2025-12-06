@@ -1,5 +1,7 @@
-import Builder from './Builder.js';
+import Builder from '../Builder';
 import { comma, WITH } from '../Constants'
+
+// Hmmm... this doesn't appear to be used
 
 export class With extends Builder {
   static buildMethod = 'with'

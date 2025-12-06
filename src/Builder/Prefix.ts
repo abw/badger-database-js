@@ -1,13 +1,14 @@
-import Builder from '../Builder.js';
+import Builder, { BuilderContext } from '../Builder'
 
 export class Prefix extends Builder {
   static buildMethod = 'prefix'
+  prefix: string
 
-  initBuilder(prefix) {
+  initBuilder(prefix: string) {
     this.prefix = prefix;
   }
 
-  resolve(context) {
+  resolve(context: BuilderContext) {
     this.context = {
       ...context,
       prefix: this.prefix

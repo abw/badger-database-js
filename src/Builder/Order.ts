@@ -1,6 +1,15 @@
-import Builder from '../Builder.js';
-import { splitList } from '@abw/badger-utils';
+import Builder from '../Builder'
+import { splitList } from '@abw/badger-utils'
 import { comma, ASC, DESC, ORDER_BY, space } from '../Constants'
+
+export type OrderBuilderOrder = {
+  direction?: string
+  dir?: string
+  asc?: boolean
+  desc?: boolean
+  column?: string
+  columns?: string
+}
 
 export class Order extends Builder {
   static buildMethod = 'order'
@@ -13,20 +22,21 @@ export class Order extends Builder {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "direction", "dir", "asc" and "desc".',
   };
 
-  resolveLinkString(order, dir) {
+  resolveLinkString(order: string | string[], dir?: string) {
     return splitList(order).map(
-      column => this.constructOrder(column)
-    ).join(', ') + (dir ? space + dir : '');
+      (column: string) => this.constructOrder(column)
+    ).join(', ') + (dir ? space + dir : '')
   }
 
-  resolveLinkArray(order) {
+  resolveLinkArray(order: string[]) {
     if (order.length === 2 || order.length === 1) {
-      return this.constructOrder(...order);
+      const [column, dir] = order
+      return this.constructOrder(column, dir)
     }
     this.errorMsg('array', { n: order.length });
   }
 
-  resolveLinkObject(order) {
+  resolveLinkObject(order: OrderBuilderOrder) {
     const dir = order.direction || order.dir
       || (order.desc && DESC)
       || (order.asc  && ASC);
@@ -40,7 +50,7 @@ export class Order extends Builder {
     this.errorMsg('object', { keys: Object.keys(order).sort().join(', ') });
   }
 
-  constructOrder(column, dir) {
+  constructOrder(column: string, dir?: string) {
     return this.quote(column) + (dir ? space + dir : '');
   }
 }

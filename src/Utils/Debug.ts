@@ -42,7 +42,7 @@ const debugWidth = 16;
  * Default debugging options
  */
 export type DebugSetting = {
-  debug: boolean
+  debug?: boolean
   prefix?: string
   color?: string
   debugPrefix?: string

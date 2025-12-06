@@ -1,6 +1,6 @@
 import { IN, NOT_IN } from '../Constants'
 
-const inOrNotIn = {
+const inOrNotIn: Record<string, string> = {
   [IN]:     IN,
   [NOT_IN]: NOT_IN
 }

@@ -1,12 +1,12 @@
-import Simple from './Simple.js';
+import Simple from './Simple'
 import { LIMIT } from '../Constants'
 
-export class Limit extends Simple {
+export class Limit extends Simple<number> {
   static buildMethod = 'limit'
   static buildOrder  = 90
   static keyword     = LIMIT
 
-  initBuilder(limit) {
+  initBuilder(limit: number) {
     this.value = limit;
   }
 }

@@ -1,7 +1,7 @@
-import Builder from '../Builder.js';
-import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils';
+import Builder from '../Builder'
+import { isIn, toArray } from '../Utils'
 import { AND, WHERE, space } from '../Constants'
-import { isIn, toArray } from '../Utils/index.js'
+import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils'
 
 export class Where extends Builder {
   static buildMethod = 'where'
@@ -13,8 +13,8 @@ export class Where extends Builder {
     object: 'Invalid value array with <n> items specified for query builder "<method>" component. Expected [value] or [operator, value].',
   }
 
-  resolveLinkString(columns) {
-    const database = this.lookupDatabase();
+  resolveLinkString(columns: string) {
+    const database = this.lookupDatabase()
     // split columns into a list and generate criteria with placeholders
     return splitList(columns).map(
       column => database.engine.formatWherePlaceholder(
@@ -25,10 +25,10 @@ export class Where extends Builder {
     )
   }
 
-  resolveLinkArray(criteria) {
+  resolveLinkArray(criteria: string[]) {
     const database = this.lookupDatabase();
     if (criteria.length === 2) {
-      let match;
+      let match: RegExpMatchArray
 
       // a two-element array can be [column, [operator]] or [column, [operator, value]]
       if (isArray(criteria[1])) {
@@ -74,7 +74,7 @@ export class Where extends Builder {
     }
   }
 
-  resolveLinkObject(criteria) {
+  resolveLinkObject(criteria: Record<string, any>) {
     const database = this.lookupDatabase();
     let values = [ ];
     const result = Object.entries(criteria).map(
@@ -83,7 +83,7 @@ export class Where extends Builder {
           // the value can be a two element array: [operator, value]
           // or a single element array: [operator]
           if (value.length === 2) {
-            const inOrNotIn = isIn(value[0])
+            const inOrNotIn = isIn(value[0] as string)
             const inValues = toArray(value[1])
             if (inOrNotIn) {
               values.push(...inValues)
@@ -120,7 +120,7 @@ export class Where extends Builder {
     return result;
   }
 
-  resolveIn(column, operator, values) {
+  resolveIn(column: string, operator: string, values: any[]) {
     const database = this.lookupDatabase();
     // console.log(`adding ${column} ${operator} values: `, values);
     const ph = this.context.placeholder
@@ -133,7 +133,7 @@ export class Where extends Builder {
     )
   }
 
-  addValues(...values) {
+  addValues(...values: any[]) {
     // Subclasses Having.js and Set.js redefine this to save the values
     // in different lists (havingValues() and setValues() respectively)
     this.whereValues(...values)

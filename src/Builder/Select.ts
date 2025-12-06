@@ -1,5 +1,13 @@
-import Builder from '../Builder.js';
+import Builder from '../Builder';
 import { comma, SELECT } from '../Constants'
+
+export type SelectBuilderColumn  = {
+  column?: string
+  columns?: string
+  as?: string
+  table?: string
+  prefix?: string
+}
 
 export class Select extends Builder {
   static buildMethod = 'select'
@@ -12,23 +20,25 @@ export class Select extends Builder {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "table", "prefix" and "as".',
   }
 
-  resolveLinkString(columns, table, prefix) {
+  resolveLinkString(columns: string | string[], table: string, prefix?: string) {
     return this.quoteTableColumns(table, columns, prefix)
   }
 
-  resolveLinkArray(columns) {
+  resolveLinkArray(columns: string[]) {
     if (columns.length === 2) {
       // a two-element array is [column, alias]
-      return this.quoteColumnAs(...columns);
+      const [column, alias] = columns
+      return this.quoteColumnAs(column, alias)
     }
     else if (columns.length === 3) {
       // a three-element array is [table, column, alias]
-      return this.quoteTableColumnAs(...columns)
+      const [table, column, alias] = columns
+      return this.quoteTableColumnAs(table, column, alias)
     }
     this.errorMsg('array', { n: columns.length });
   }
 
-  resolveLinkObject(column) {
+  resolveLinkObject(column: SelectBuilderColumn) {
     if (column.column && column.as) {
       // object can contain "column", "as" and optional "table"
       return column.table

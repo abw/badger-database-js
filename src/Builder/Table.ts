@@ -1,13 +1,15 @@
-import Builder from '../Builder.js';
+import Builder, { BuilderContext } from '../Builder'
 
 export class Table extends Builder {
   static buildMethod = 'table'
 
-  initBuilder(table) {
+  tableName: string
+
+  initBuilder(table: string) {
     this.tableName = table;
   }
 
-  resolve(context) {
+  resolve(context: BuilderContext) {
     this.context = {
       ...context,
       table: this.tableName

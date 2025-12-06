@@ -1,6 +1,9 @@
-import Builder from '../Builder.js';
-import { blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, AS, ON, RIGHT_JOIN } from '../Constants'
-import { spaceAfter, spaceAround } from '../Utils/Space.js';
+import Builder from '../Builder'
+import { spaceAfter, spaceAround } from '../Utils/Space'
+import {
+  blank, equals, FULL_JOIN, INNER_JOIN, JOIN, LEFT_JOIN, newline, AS, ON,
+  RIGHT_JOIN
+} from '../Constants'
 
 const tableColumnRegex = /^(\w+)\.(\w+)$/;
 const joinRegex = /^(.*?)\s*(<?=>?)\s*(\w+)\.(\w+)(?:\s+as\s+(\w+))?$/;
@@ -22,6 +25,15 @@ const joinTypes = {
   full:    FULL_JOIN,
   '<=>':   FULL_JOIN,
 };
+type JoinType = 'inner' | 'left' | 'right' | 'full'
+
+export type JoinBuilderJoinObject = {
+  type?: JoinType
+  table?: string
+  from?: string
+  to?: string
+  as?: string
+}
 
 export class Join extends Builder {
   static buildMethod = 'join'
@@ -35,7 +47,7 @@ export class Join extends Builder {
     array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [type, from, table, to], [from, table, to] or [from, table.to].',
   }
 
-  resolveLinkString(join) {
+  resolveLinkString(join: string) {
     // join('a=b.c')
     // join('a.b=c.d')
     let match = join.match(joinRegex);
@@ -51,10 +63,13 @@ export class Join extends Builder {
     // return this.resolveLinkArray(splitList(columns), context);
   }
 
-  resolveLinkArray(join) {
+  resolveLinkArray(join: string[]) {
     if (join.length === 4) {
       const [type, from, table, to] = join;
-      return this.resolveLinkObject({ type, from, table, to });
+      return this.resolveLinkObject({
+        type: type as JoinType,
+        from, table, to
+      });
     }
     else if (join.length === 3) {
       const [from, table, to] = join;
@@ -71,7 +86,7 @@ export class Join extends Builder {
     this.errorMsg('array', { n: join.length });
   }
 
-  resolveLinkObject(join) {
+  resolveLinkObject(join: JoinBuilderJoinObject) {
     const type = joinTypes[join.type || 'default']
       || this.errorMsg('type', { joinType: join.type });
 
@@ -99,7 +114,7 @@ export class Join extends Builder {
     this.errorMsg('object', { keys: Object.keys(join).sort().join(', ') });
   }
 
-  constructJoin(type, from, table, to) {
+  constructJoin(type: string, from: string, table: string, to: string) {
     return spaceAfter(type)
       + this.quote(table)
       + spaceAround(ON)
@@ -107,7 +122,7 @@ export class Join extends Builder {
       + spaceAround(equals)
       + this.quote(to);
   }
-  constructJoinAs(type, from, table, as, to) {
+  constructJoinAs(type: string, from: string, table: string, as: string, to: string) {
     return spaceAfter(type)
       + this.quote(table)
       + spaceAround(AS)

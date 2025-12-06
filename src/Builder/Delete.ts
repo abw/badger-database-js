@@ -1,7 +1,14 @@
-import { isArray } from '@abw/badger-utils';
-import Builder from '../Builder.js';
+import { isArray } from '@abw/badger-utils'
+import Builder from '../Builder.js'
 import { comma, DELETE } from '../Constants'
-import { spaceAfter } from '../Utils/Space.js';
+import { spaceAfter } from '../Utils/Space'
+
+export type DeleteBuilderColumn = {
+  column?: string
+  columns?: string | string[]
+  table?: string
+  prefix?: string
+}
 
 export class Delete extends Builder {
   static buildMethod = 'delete'
@@ -13,7 +20,7 @@ export class Delete extends Builder {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns", "column", "table" and "prefix".',
   }
 
-  static generateSQL(values) {
+  static generateSQL(values?: string[]) {
     const keyword = this.keyword;
     const joint   = this.joint;
     return values && values.length
@@ -30,11 +37,15 @@ export class Delete extends Builder {
     }
   }
 
-  resolveLinkString(columns, table, prefix) {
+  resolveLinkString(
+    columns: string | string[],
+    table: string,
+    prefix?: string
+  ) {
     return this.quoteTableColumns(table, columns, prefix)
   }
 
-  resolveLinkObject(column) {
+  resolveLinkObject(column: DeleteBuilderColumn) {
     const cols = column.column || column.columns;
     if (cols) {
       return this.resolveLinkString(cols, column.table, column.prefix)

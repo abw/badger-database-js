@@ -1,4 +1,4 @@
-import Where from './Where.js';
+import Where from './Where'
 import { comma, SET } from '../Constants'
 
 export class Set extends Where {
@@ -13,11 +13,11 @@ export class Set extends Where {
 
   // This works in a similar way to Where, EXCEPT for the fact that
   // we save values in a separate list, this.context.setValues.
-  addValues(...values) {
+  addValues(...values: any[]) {
     this.setValues(...values)
   }
 
-  resolveLinkObject(criteria) {
+  resolveLinkObject(criteria: Record<string, any>) {
     const database = this.lookupDatabase();
     let values = [ ];
     const result = Object.entries(criteria).map(
@@ -40,7 +40,7 @@ export class Set extends Where {
     return result;
   }
 
-  resolveLinkArray(criteria) {
+  resolveLinkArray(criteria: [string, any]) {
     // don't allow three arguments - comparisons are not valid here
     if (criteria.length == 2) {
       this.addValues(criteria[1]);

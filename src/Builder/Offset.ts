@@ -1,12 +1,12 @@
-import Simple from './Simple.js';
+import Simple from './Simple'
 import { OFFSET } from '../Constants'
 
-export class Offset extends Simple {
+export class Offset extends Simple<number> {
   static buildMethod = 'offset'
   static buildOrder  = 95
   static keyword     = OFFSET
 
-  initBuilder(offset) {
+  initBuilder(offset: number) {
     this.value = offset;
   }
 }

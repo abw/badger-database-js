@@ -1,7 +1,8 @@
+import Builder, { BuilderContext } from '../Builder';
+import { parens, spaceAfter, spaceBefore } from '../Utils/Space'
 import { blank, comma, INTO, newline, VALUES } from '../Constants'
 import { isArray, isString } from '@abw/badger-utils';
-import Builder from '../Builder.js';
-import { parens, spaceAfter, spaceBefore } from '../Utils/Space.js';
+import { Stringable } from '../types'
 
 export class Into extends Builder {
   static buildMethod = 'into'
@@ -9,7 +10,9 @@ export class Into extends Builder {
   static keyword     = INTO
   static joint       = comma
 
-  static generateSQL(values, context) {
+  tableName: string
+
+  static generateSQL(values: Stringable | Stringable[], context?: BuilderContext) {
     const keyword  = this.keyword;
     const joint    = this.joint;
     const database = context.database;
@@ -27,14 +30,14 @@ export class Into extends Builder {
     return into + cols + vals;
   }
 
-  initBuilder(...tables) {
+  initBuilder(...tables: any[]) {
     // store the table name for subsequent columns() calls to use, but
     if (tables.length === 1 && isString(tables[0])) {
       this.tableName = tables[0];
     }
   }
 
-  resolve(context) {
+  resolve(context: BuilderContext) {
     return super.resolve(
       context,
       // if we've got a table defined then add it to the context
@@ -44,7 +47,7 @@ export class Into extends Builder {
     )
   }
 
-  resolveLinkString(table) {
+  resolveLinkString(table: string) {
     // split a string of table names and quote each one
     return [
       this.quote(table)

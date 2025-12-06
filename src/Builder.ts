@@ -1,46 +1,91 @@
 import { newline, unknown } from './Constants'
-import { addDebugMethod, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from "./Utils/index";
-import { fail, format, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from "@abw/badger-utils";
+import { DatabaseInstance } from './types'
+import { addDebugMethod, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from './Utils'
+import { fail, format, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from '@abw/badger-utils'
 
-export let Builders   = { };
-export let Generators = { };
+export let Builders   = { }
+export let Generators = { }
 
-const defaultContext = () => ({
+const defaultContext = (): BuilderContext => ({
   setValues:    [ ],
   whereValues:  [ ],
   havingValues: [ ],
   placeholder:  1,
-});
+})
 
 const notImplemented = notImplementedInBaseClass('Builder');
 
+type BuilderMessages = Record<string, string>
+type BuilderValue = string | number | boolean | null
+type BuilderValues = BuilderValue[]
+type AllValuesWhereFunction = (
+  setValues: BuilderValues,
+  whereValues: BuilderValues,
+  havingValues: BuilderValues,
+) => BuilderValues
+type AllValuesWhere = BuilderValues | AllValuesWhereFunction
+export type Stringable = string | number | boolean
+export type BuilderContext = Record<string, any>
+export type ObjectWithSql = { sql: string }
+/*
+type BuilderResolveLinkItem =
+    return this.args.map(
+      (item: any) => (isObject(item) && item.sql)
+        ? item.sql
+        : this.resolveLinkItem(item)
+    ).flat()
+  }
+*/
+
 export class Builder {
-  static generateSQL(values) {
+  static keyword?: string
+  static joint?: string
+  static messages?: BuilderMessages
+  static buildMethod?: string
+  static buildAlias?: string
+  static buildOrder?: number
+  static contextSlot?: string
+
+  static generateSQL(values: Stringable | Stringable[], _context?: BuilderContext) {
     const keyword = this.keyword;
     const joint   = this.joint;
     return spaceAfter(keyword)
       + (isArray(values) ? values.join(joint) : values);
   }
 
-  constructor(parent, ...args) {
+  parent?: Builder
+  args: any
+  messages: BuilderMessages
+  method: string
+  slot: string
+  errorType: new (message: string) => void
+  context: BuilderContext
+  debug!: (message: string) => void
+  debugData!: (message: string, data: any) => void
+
+  constructor(parent: Builder, ...args: any[]) {
     this.parent   = parent;
     this.args     = args;
 
     // copy static class variables into this, including messages for generating
     // error messages via errorMsg(), the name of the build method which is also
     // the default slot for storing things in the context
-    this.messages = this.constructor.messages;
-    this.method   = this.constructor.buildMethod;
-    this.slot     = this.constructor.contextSlot || this.method;
+    this.messages = (this.constructor as typeof Builder).messages;
+    this.method   = (this.constructor as typeof Builder).buildMethod;
+    this.slot     = (this.constructor as typeof Builder).contextSlot || this.method;
 
     // call the initialisation method to allow subclasses to tweak these
     this.initBuilder(...args);
 
     // add debug() and debugData() methods
-    addDebugMethod(this, 'builder', { debugPrefix: this.method && `Builder:${this.method}` });
+    addDebugMethod(
+      this,
+      'builder',
+      { debugPrefix: this.method && `Builder:${this.method}` }
+    );
   }
 
-  initBuilder() {
+  initBuilder(...args: any[]) {
     // stub for subclasses
   }
 
@@ -81,7 +126,7 @@ export class Builder {
     return { setValues, whereValues, havingValues };
   }
 
-  allValues(where=[]) {
+  allValues(where: AllValuesWhere=[]): BuilderValues {
     const { setValues, whereValues, havingValues } = this.resolveChain();
 
     // In the usual case we just get one set of extra args and they
@@ -141,7 +186,7 @@ export class Builder {
   }
 
   // resolve the complete chain from top to bottom
-  resolveChain() {
+  resolveChain(): BuilderContext {
     return this.context || this.resolve(
       this.parent
         ? this.parent.resolveChain()
@@ -150,7 +195,7 @@ export class Builder {
   }
 
   // resolve a link in the chain and merge into parent context
-  resolve(context, args={}) {
+  resolve(context: BuilderContext, args={}) {
     const slot = this.slot;
     this.context = {
       ...context,
@@ -166,14 +211,14 @@ export class Builder {
   // resolve a link in the chain
   resolveLink() {
     return this.args.map(
-      item => (isObject(item) && item.sql)
-        ? item.sql
+      (item: any) => (isObject(item) && (item as ObjectWithSql).sql)
+        ? (item as ObjectWithSql).sql
         : this.resolveLinkItem(item)
     ).flat()
   }
 
   // resolve an individual argument for a link in the chain
-  resolveLinkItem(item) {
+  resolveLinkItem(item: any) {
     if (isString(item)) {
       return this.resolveLinkString(item);
     }
@@ -192,90 +237,94 @@ export class Builder {
     fail("Invalid query builder value: ", item);
   }
 
-  resolveLinkString() {
+  resolveLinkString(..._args: any[]): string | string[] | void {
     notImplemented("resolveLinkString()");
   }
 
-  resolveLinkArray() {
+  resolveLinkArray(_array: any[]) {
     notImplemented("resolveLinkArray()");
   }
 
-  resolveLinkObject() {
+  resolveLinkObject(_object: object) {
     notImplemented("resolveLinkObject()");
   }
 
-  resolveLinkNothing() {
+  resolveLinkNothing(_nothing: any) {
     return [ ];
   }
 
   // utility methods
-  lookup(key, error) {
+  lookup(key: string, error?: string) {
     return this[key] ||
       (this.parent
         ? this.parent.lookup(key)
         : fail(error || `Missing item in query chain: ${key}`))
   }
 
-  lookupDatabase() {
+  lookupDatabase(): DatabaseInstance {
     return this.context.database || this.lookup('database');
   }
 
-  lookupTable() {
+  lookupTable(): string {
     return this.context.table || this.lookup('table');
   }
 
-  quote(item) {
-    return this.lookupDatabase().quote(item)
+  quote(item: string) {
+    return this.lookupDatabase().quote(item) as string    // FIXME
   }
 
-  quoteTableColumns(table, columns, prefix) {
+  quoteTableColumns(
+    table: string,
+    columns: string | string[],
+    prefix?: string
+  ): string[] {
     // function to map columns to depends on table and/or prefix being defined
     const func = table
       ? prefix
-        ? column => this.quoteTableColumnAs(table, column, prefix + column)
-        : column => this.quoteTableColumn(table, column)
+        ? (column: string) => this.quoteTableColumnAs(table, column, prefix + column)
+        : (column: string) => this.quoteTableColumn(table, column)
       : prefix
-        ? column => this.quoteColumnAs(column, prefix + column)
-        : column => this.quote(column)
+        ? (column: string) => this.quoteColumnAs(column, prefix + column)
+        : (column: string) => this.quote(column)
     ;
     // split string into items and apply function
-    return splitList(columns).map(func);
+    return splitList(columns).map(func) as string[];
   }
 
-  tableColumn(table, column) {
+  tableColumn(table: string, column: string) {
     return column.match(/\./)
       ? column
       : `${table}.${column}`;
   }
 
-  quoteTableColumn(table, column) {
+  quoteTableColumn(table: string, column: string) {
     return this.quote(
       this.tableColumn(table, column)
     )
   }
 
-  quoteTableAs(table, as) {
+  quoteTableAs(table: string, as: string) {
     return [
       this.quote(table),
       this.quote(as)
     ].join(' AS ');
   }
 
-  quoteTableColumnAs(table, column, as) {
+  quoteTableColumnAs(table: string, column: string, as: string) {
     return [
       this.quoteTableColumn(table, column),
       this.quote(as)
     ].join(' AS ')
   }
 
-  quoteColumnAs(column, as) {
+  quoteColumnAs(column: string, as: string) {
     return [
       this.quote(column),
       this.quote(as)
     ].join(' AS ')
   }
 
-  errorMsg(msgFormat, args) {
+  errorMsg(msgFormat: string, args: Record<string, any> = { }) {
     const method = this.method || unknown;
     return this.error(
       format(
@@ -289,7 +338,7 @@ export class Builder {
     return this.sql();
   }
 
-  error(...args) {
+  error(...args: any[]): never {
     const etype   = this.errorType || QueryBuilderError;
     throw new etype(args.join(''))
   }

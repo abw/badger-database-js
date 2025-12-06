@@ -1,6 +1,11 @@
-import Builder from '../Builder.js';
-import { splitList } from '@abw/badger-utils';
+import Builder from '../Builder'
+import { splitList } from '@abw/badger-utils'
 import { comma, GROUP_BY } from '../Constants'
+
+export type GroupBuilderGroupObject = {
+  column?: string
+  columns?: string
+}
 
 export class Group extends Builder {
   static buildMethod = 'group'
@@ -13,20 +18,20 @@ export class Group extends Builder {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "columns" and "column".',
   }
 
-  resolveLinkString(group) {
+  resolveLinkString(group: string) {
     return splitList(group).map(
-      column => this.quote(column)
+      (column: string) => this.quote(column)
     )
   }
 
-  resolveLinkArray(group) {
+  resolveLinkArray(group: string[]) {
     if (group.length === 1) {
       return this.quote(group[0]);
     }
     this.errorMsg('array', { n: group.length });
   }
 
-  resolveLinkObject(group) {
+  resolveLinkObject(group: GroupBuilderGroupObject) {
     if (group.column) {
       return this.quote(group.column);
     }

@@ -1,4 +1,4 @@
-import Builder from '../Builder.js';
+import Builder from '../Builder';
 
 export class Before extends Builder {
   static buildMethod = 'before'

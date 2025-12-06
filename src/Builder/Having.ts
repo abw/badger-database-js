@@ -1,4 +1,4 @@
-import Where from './Where.js';
+import Where from './Where'
 import { HAVING } from '../Constants'
 
 export class Having extends Where {
@@ -14,7 +14,7 @@ export class Having extends Where {
   // generate a query like 'SELECT ... WHERE a=? AND b=? ... HAVING c=?'.
   // The where() values for a and b (10, 20) must come before the having()
   // value for b (30)
-  addValues(...values) {
+  addValues(...values: any[]) {
     this.havingValues(...values)
   }
 }

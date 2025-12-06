@@ -1,4 +1,4 @@
-import From from './From.js';
+import From from './From'
 import { comma, UPDATE } from '../Constants'
 
 export class Update extends From {

@@ -1,4 +1,4 @@
-import Select from './Select.js';
+import Select from './Select'
 import { RETURNING } from '../Constants'
 
 export class Returning extends Select {

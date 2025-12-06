@@ -1,4 +1,4 @@
-import Select from './Select.js';
+import Select, { SelectBuilderColumn } from './Select';
 
 export class Columns extends Select {
   static buildMethod = 'columns'
@@ -9,28 +9,35 @@ export class Columns extends Select {
     // this.key = 'select';
   }
 
-  resolveLinkString(columns, table=this.lookupTable(), prefix=this.context.prefix) {
+  resolveLinkString(
+    columns: string | string[],
+    table: string = this.lookupTable(),
+    prefix: string = this.context.prefix
+  ) {
     // this is the same as Select, but with table defaulting to last defined
     // table and prefix defaulting to last defined prefix
     return super.resolveLinkString(columns, table, prefix);
   }
 
-  resolveLinkArray(columns) {
+  resolveLinkArray(
+    columns: string[]
+  ) {
     const table = this.lookupTable()
 
     if (columns.length === 2) {
       // two-element array is [column, alias]
-      return this.quoteTableColumnAs(table, ...columns);
-      // table, columns[0], prefix ? `${prefix}${columns[1]}` : columns[1]);
+      const [column, alias] = columns
+      return this.quoteTableColumnAs(table, column, alias);
     }
     else if (columns.length === 3) {
       // three-element array is [table, column, alias]
-      return this.quoteTableColumnAs(...columns)
+      const [table, column, alias] = columns
+      return this.quoteTableColumnAs(table, column, alias)
     }
     this.errorMsg('array', { n: columns.length });
   }
 
-  resolveLinkObject(column) {
+  resolveLinkObject(column: SelectBuilderColumn) {
     const table = this.lookupTable()
 
     if (column.column && column.as) {
