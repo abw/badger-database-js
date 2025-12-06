@@ -4,7 +4,7 @@ export * from './Constants'
 export * from './Database.js';
 export * from './Engine';
 export * from './Engine/index';
-export * from './Engines.js';
+export * from './Engines';
 export * from './Proxy/index.js';
 export * from './Record.js';
 export * from './Table.js';

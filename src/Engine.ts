@@ -19,6 +19,8 @@ export abstract class Engine<Client=AnyClient> {
   static driver: string | null = null
   static quoteChar  = doubleQuote
   static returning  = false
+  static protocol?: string
+  static alias?: string
 
   engine: string
   options: EngineOptions
