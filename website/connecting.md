@@ -211,7 +211,7 @@ const db = connect({
     engine:   'sqlite',
     filename: ':memory:',
     options: {
-      verbose:  console.log
+      verbose: console.log
     }
   }
 })
@@ -220,8 +220,8 @@ const db = connect({
 ```js
 const db = connect({
   database: {
-    engine:      'mysql',
-    database:    'animals',
+    engine:   'mysql',
+    database: 'animals',
     options: {
       dateStrings: true
     }
@@ -232,8 +232,8 @@ const db = connect({
 ```js
 const db = connect({
   database: {
-    engine:       'postgres',
-    database:     'animals',
+    engine:   'postgres',
+    database: 'animals',
     options: {
       queryTimeout: 3000
     }

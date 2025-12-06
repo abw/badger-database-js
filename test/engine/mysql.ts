@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
-import Mysql from '../../src/Engine/Mysql.js'
+import Mysql from '../../src/Engine/Mysql'
 import { engine } from '../../src/Engines.js'
-import { UnexpectedRowCount } from '../../src/Utils/Error.js'
+import { UnexpectedRowCount } from '../../src/Utils/Error'
 import { expectToThrowAsyncErrorTypeMessage } from '../library/expect.js'
 
 const database = {

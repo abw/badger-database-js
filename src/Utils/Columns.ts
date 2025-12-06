@@ -62,6 +62,9 @@ export const splitColumnFragments = (
   column: string,
   spec: string
 ): TableColumnFragments => {
+  if (! spec || spec.length === 0) {
+    return [ ]
+  }
   const fragments = spec.split(bitSplitter)
   if (areValidColumnFragments(fragments)) {
     return fragments

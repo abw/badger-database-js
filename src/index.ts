@@ -2,8 +2,8 @@ export * from './Builder.js';
 export * from './Builders.js';
 export * from './Constants'
 export * from './Database.js';
-export * from './Engine.js';
-export * from './Engine/index.js';
+export * from './Engine';
+export * from './Engine/index';
 export * from './Engines.js';
 export * from './Proxy/index.js';
 export * from './Record.js';

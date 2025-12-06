@@ -1,8 +1,16 @@
-import Engine from '../Engine.js';
+import Engine from '../Engine'
 import { defaultIdColumn } from '../Constants'
-import { throwEngineDriver } from '../Utils/Error';
+import { throwEngineDriver } from '../Utils/Error'
+import { QueryArgs, SanitizeResultOptions } from '../types'
 
-export class PostgresEngine extends Engine {
+// Dummy type for the postgres client
+type PostgresClient = {
+  connect(): Promise<void>
+  end(): void
+  connection?: any
+}
+
+export class PostgresEngine extends Engine<PostgresClient> {
   static driver    = 'pg'
   static protocol  = 'postgres'
   static alias     = 'postgresql'
@@ -16,12 +24,12 @@ export class PostgresEngine extends Engine {
     const { default: pg } = await import(this.driver).catch(
       e => throwEngineDriver(this.driver, e)
     );
-    const client = new pg.Client(this.database);
+    const client = new pg.Client(this.database) as PostgresClient;
     await client.connect();
     return client;
   }
 
-  async disconnect(client) {
+  async disconnect(client: PostgresClient) {
     this.debug("disconnect()");
     client.end();
   }
@@ -29,12 +37,19 @@ export class PostgresEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async clientExecute(client, sql, action) {
+  async clientExecute(
+    client: PostgresClient,
+    _sql: string,
+    action: (client: PostgresClient) => any
+  ) {
     // Postgres doesn't have a prepare stage
     return await action(client);
   }
 
-  async run(sql, ...args) {
+  async run(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("run()", { sql, params, options });
     return this.execute(
@@ -44,7 +59,9 @@ export class PostgresEngine extends Engine {
     )
   }
 
-  async any(sql, ...args) {
+  async any(
+    sql: string,
+    ...args: QueryArgs) {
     const [params, options] = this.queryArgs(args);
     this.debugData("any()", { sql, params, options });
     return this.execute(
@@ -54,7 +71,10 @@ export class PostgresEngine extends Engine {
     )
   }
 
-  async all(sql, ...args) {
+  async all(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("all()", { sql, params, options });
     return this.execute(
@@ -73,7 +93,10 @@ export class PostgresEngine extends Engine {
     };
   }
 
-  sanitizeResult(result, options={}) {
+  sanitizeResult(
+    result: any,
+    options: SanitizeResultOptions = { }
+  ) {
     result.changes ||= result.rowCount || 0;
     if (result.command === 'INSERT' && result.rows?.length) {
       const keys = options.keys || [defaultIdColumn];
@@ -88,7 +111,7 @@ export class PostgresEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
-  formatPlaceholder(n) {
+  formatPlaceholder(n: number) {
     return '$' + n;
   }
 }

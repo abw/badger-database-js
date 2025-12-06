@@ -1,11 +1,18 @@
-import Engine from '../Engine.js'
-import { missing, throwEngineDriver } from '../Utils/Error'
+import Engine from '../Engine'
 import { defaultIdColumn } from '../Constants'
-import { remove } from '@abw/badger-utils'
+import { missing, throwEngineDriver } from '../Utils/Error'
+import { QueryArgs, SanitizeResultOptions } from '../types'
 
-export class SqliteEngine extends Engine {
+export type SqliteClient = {
+  open: boolean
+  close(): void
+}
+
+export class SqliteEngine extends Engine<SqliteClient> {
   static driver   = 'better-sqlite3'
   static protocol = 'sqlite'
+
+  filename: string
 
   configure(config) {
     // sqlite expects the filename first and then any options, so we copy
@@ -33,23 +40,26 @@ export class SqliteEngine extends Engine {
     this.debugData("connect()", { filename: this.filename, options: this.options });
     const { default: Database } = await import(this.driver).catch(
       e => throwEngineDriver(this.driver, e)
-    );
-    return new Database(this.filename, this.options);
+    )
+    return new Database(this.filename, this.options) as SqliteClient
   }
 
-  async connected(db) {
-    return db.open;
+  connected(db: SqliteClient) {
+    return db.open
   }
 
-  async disconnect(db) {
+  async disconnect(db: SqliteClient) {
     this.debug("disconnect()");
-    db.close();
+    db.close()
   }
 
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, ...args) {
+  async run(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("run()", { sql, params, options });
     return this.execute(
@@ -59,7 +69,10 @@ export class SqliteEngine extends Engine {
     );
   }
 
-  async any(sql, ...args) {
+  async any(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("any()", { sql, params, options });
     return this.execute(
@@ -69,7 +82,10 @@ export class SqliteEngine extends Engine {
     );
   }
 
-  async all(sql, ...args) {
+  async all(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("all()", { sql, params, options });
     return this.execute(
@@ -82,7 +98,10 @@ export class SqliteEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
-  sanitizeResult(result, options={}) {
+  sanitizeResult(
+    result: any,
+    options: SanitizeResultOptions = { }
+  ) {
     result.changes ||= result.rowCount || 0;
     const keys = options.keys || [defaultIdColumn];
     const id = keys[0];

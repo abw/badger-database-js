@@ -1,7 +1,9 @@
 import { Pool } from 'tarn'
 import { allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK } from './Constants'
-import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount, addDebugMethod } from "./Utils/index"
-import { hasValue, isArray, isObject, splitList } from '@abw/badger-utils'
+import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount, addDebugMethod, DebugSetting } from "./Utils/index"
+import { hasValue, isArray, isObject, ListSource, splitList } from '@abw/badger-utils'
+import { DatabaseConnection, EngineOptions, ExecuteOptions, QueryArgs, QueryOptions, QueryParams, QueryRow, SanitizeResultOptions } from './types'
+import Transaction from './Transaction'
 
 const notImplemented = notImplementedInBaseClass('Engine')
 
@@ -11,9 +13,23 @@ const poolDefaults = {
   propagateCreateError: true
 }
 
-export class Engine {
+export type AnyClient = any
+
+export abstract class Engine<Client=AnyClient> {
+  static driver: string | null = null
   static quoteChar  = doubleQuote
   static returning  = false
+
+  engine: string
+  options: EngineOptions
+  database: DatabaseConnection
+  driver: string
+  quoteChar: string
+  returning: boolean
+  pool: Pool<unknown>
+  escQuote: string
+  debug!: (message: string) => void
+  debugData!: (message: string, data: any) => void
 
   constructor(config={}) {
     const {
@@ -22,23 +38,23 @@ export class Engine {
       options = { },
       ...connect
     } = this.configure(config)
+    /*
     console.log(`Engine engine:`, engine)
     console.log(`Engine pool:`, pool)
     console.log(`Engine options:`, options)
     console.log(`Engine connect:`, connect)
-    /*
     */
 
     this.engine    = engine || missing('engine');
     this.options   = options
     this.database  = { ...connect, ...options }
-    this.driver    = this.constructor.driver || missing('driver');
-    this.quoteChar = this.constructor.quoteChar;
-    this.returning = this.constructor.returning;
-    this.messages  = this.constructor.messages;
+    this.driver    = (this.constructor as typeof Engine).driver || missing('driver');
+    this.quoteChar = (this.constructor as typeof Engine).quoteChar;
+    this.returning = (this.constructor as typeof Engine).returning;
+    // this.messages  = this.constructor.messages;
     this.pool      = this.initPool(pool);
     this.escQuote  = `\\${this.quoteChar}`;
-    addDebugMethod(this, 'engine', config);
+    addDebugMethod(this, 'engine', config as DebugSetting);
   }
   configure(config) {
     return config;
@@ -47,18 +63,19 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Pool configuration
   //-----------------------------------------------------------------------------
+  // TODO: add a generic type so that subclasses can have typed client connections
   initPool(options={}) {
-    return new Pool({
+    return new Pool<Client>({
       create: () => {
-        this.debug("connecting to pool");
-        return this.connect();
+        this.debug("connecting to pool")
+        return this.connect()
       },
-      validate: connection => {
-        return this.connected(connection);
+      validate: client => {
+        return this.connected(client)
       },
-      destroy: connection => {
-        this.debug("disconnecting from pool");
-        return this.disconnect(connection);
+      destroy: client => {
+        this.debug("disconnecting from pool")
+        return this.disconnect(client)
       },
       ...poolDefaults,
       ...options
@@ -68,32 +85,43 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Pool connections methods - must be implemented by subclasses
   //-----------------------------------------------------------------------------
-  async connect()    { notImplemented("connect()")    }
-  async connected()  { return true }
-  async disconnect() { notImplemented("disconnect()") }
+  abstract connect(): Promise<Client>
+  abstract disconnect(_client: Client): void
+  connected(_client: Client) {
+    return true
+  }
 
   //-----------------------------------------------------------------------------
   // Methods to acquire and release connections from the pool
   //-----------------------------------------------------------------------------
-  async acquire() {
-    this.debug("acquire()");
-    return this.pool.acquire().promise;
+  async acquire(): Promise<Client> {
+    this.debug("acquire()")
+    return this.pool.acquire().promise as Promise<Client>
   }
 
   async release(connection) {
     this.debug("release()");
-    await this.pool.release(connection);
+    // await this.pool.release(connection);
+    this.pool.release(connection);
   }
 
   //-----------------------------------------------------------------------------
   // Query execution methods
   //-----------------------------------------------------------------------------
-  async clientExecute(client, sql, action) {
+  async clientExecute(
+    client: any,      // yuk
+    sql: string,
+    action: (query: any) => unknown
+  ) {
     const query = await client.prepare(sql)
     return await action(query);
   }
 
-  async execute(sql, action, options={}) {
+  async execute(
+    sql: string,
+    action: (query: any) => unknown,
+    options: ExecuteOptions = { }
+  ) {
     this.debugData("execute()", { sql, options });
 
     // if we have a transaction in effect then we use the transaction's
@@ -125,14 +153,28 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Generic query methods - most must be defined by subclasses
   //-----------------------------------------------------------------------------
-  async run() { notImplemented('run()') }
-  async any() { notImplemented('any()') }
-  async all() { notImplemented('all()') }
+  abstract run(
+    sql: string,
+    ...args: QueryArgs
+  ): Promise<any>
 
-  async one(sql, ...args) {
+  abstract any<T=QueryRow>(
+    sql: string,
+    ...args: QueryArgs
+  ): Promise<T|undefined>
+
+  abstract all<T=QueryRow>(
+    sql: string,
+    ...args: QueryArgs
+  ): Promise<T[]>
+
+  async one<T=QueryRow>(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("one()", { sql, params, options });
-    const rows = await this.all(sql, params, options);
+    const rows = await this.all<T>(sql, params, options);
     if (rows.length === 1) {
       return rows[0];
     }
@@ -144,17 +186,17 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Transaction queries
   //-----------------------------------------------------------------------------
-  async begin(transact) {
+  async begin(transact: Transaction) {
     this.debug('begin()')
     return await this.run(BEGIN, { transact })
   }
 
-  async commit(transact) {
+  async commit(transact: Transaction) {
     this.debug('commit()');
     return await this.run(COMMIT, { transact });
   }
 
-  async rollback(transact) {
+  async rollback(transact: Transaction) {
     this.debug('rollback()');
     return await this.run(ROLLBACK, { transact });
   }
@@ -162,7 +204,7 @@ export class Engine {
   //-----------------------------------------------------------------------------
   // Query utility methods
   //-----------------------------------------------------------------------------
-  parseError(sql, e) {
+  parseError(sql: string, e: any) {
     throw new SQLParseError(sql, this.parseErrorArgs(e));
   }
 
@@ -175,17 +217,21 @@ export class Engine {
     };
   }
 
-  queryArgs(args) {
-    const params = isArray(args[0])
-      ? args.shift()
+  queryArgs(
+    args?: QueryArgs
+  ): [QueryParams, QueryOptions] {
+    const params: QueryParams = isArray(args[0])
+      ? args.shift() as QueryParams
       : [ ];
-    const options = args.length
+    const options: QueryOptions = args.length
       ? args.shift()
       : { };
     return [params, options];
   }
 
-  prepareValues(values) {
+  prepareValues(
+    values: Array<any|any[]>
+  ) {
     return values.map(
       // values can be arrays with a comparison, e.g. ['>', 1973], in which case
       // we only want the second element
@@ -195,18 +241,23 @@ export class Engine {
     )
   }
 
-  sanitizeResult(result) {
+  sanitizeResult(
+    result: any,
+    _options: SanitizeResultOptions
+  ) {
     return result;
   }
 
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
-  quote(name) {
+  quote(
+    name: string | { sql?: string }
+  ) {
     if (isObject(name) && name.sql) {
       return name.sql;
     }
-    return name
+    return (name as string)
       .split(/\./)
       .map(
         part => part === allColumns
@@ -215,7 +266,10 @@ export class Engine {
       .join('.');
   }
 
-  quoteTableColumn(table, column) {
+  quoteTableColumn(
+    table: string,
+    column: string
+  ) {
     // if the column already has a dot then we quote it as is,
     // otherwise we explicitly add the table name
     return column.match(/\./)
@@ -223,61 +277,89 @@ export class Engine {
       : this.quote(`${table}.${column}`);
   }
 
-  formatPlaceholder() {
+  formatPlaceholder(
+    _n: number
+  ) {
     return '?';
   }
 
-  formatColumnPlaceholder(column, n) {
+  formatColumnPlaceholder(
+    column: string,
+    n: number
+  ) {
     return `${this.quote(column)}=${this.formatPlaceholder(n)}`;
   }
 
-  formatWherePlaceholder(column, value, n) {
+  formatWherePlaceholder(
+    column: string,
+    value: any | [string, any],
+    n: number
+  ) {
     // value can be an array containing a comparison operator and a value,
     // e.g. ['>' 1973], otherwise we assume it's an equality operator, '='
     const cmp = isArray(value) ? value[0] : equals;
     return `${this.quote(column)} ${cmp} ${this.formatPlaceholder(n)}`;
   }
 
-  formatWhereInPlaceholder(column, operator, values, n) {
+  formatWhereInPlaceholder(
+    column: string,
+    operator: string,
+    values: any[],
+    n: number
+  ) {
     const placeholders = values.map(
-      (v, i) => this.formatPlaceholder(n + i)
+      (_v, i) => this.formatPlaceholder(n + i)
     )
     return `${this.quote(column)} ${operator} (${placeholders})`;
   }
 
-  formatWhereNull(column) {
+  formatWhereNull(column: string) {
     return `${this.quote(column)} is NULL`;
   }
 
-  formatSetPlaceholder(column, n) {
+  formatSetPlaceholder(column: string, n: number) {
     return `${this.quote(column)} ${equals} ${this.formatPlaceholder(n)}`;
   }
 
-  formatPlaceholders(values, n=1) {
+  formatPlaceholders(
+    values: any[],
+    n=1
+  ) {
     return values.map(
       () => this.formatPlaceholder(n++)
     ).join(', ');
   }
 
-  formatColumnPlaceholders(columns, n=1, joint=', ') {
+  formatColumnPlaceholders(
+    columns: string[],
+    n=1,
+    joint=', '
+  ) {
     return columns.map(
       column => this.formatColumnPlaceholder(column, n++)
     ).join(joint);
   }
 
-  formatWherePlaceholders(columns, values, n=1, joint=' AND ') {
+  formatWherePlaceholders(
+    columns: string[],
+    values: any[],
+    n=1,
+    joint=' AND '
+  ) {
     let i = 0;
     return columns.map(
       column => this.formatWherePlaceholder(column, values[i++], n++)
     ).join(joint) || whereTrue;
   }
 
-  formatColumns(columns) {
+  formatColumns(
+    columns: string | { sql?: string }
+  ) {
     if (isObject(columns) && columns.sql) {
       return columns.sql;
     }
     return hasValue(columns)
-      ? splitList(columns)
+      ? splitList(columns as ListSource)
         .map(
           column => this.quote(column)
         )

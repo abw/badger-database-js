@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest'
-import Sqlite from '../../src/Engine/Sqlite.js'
+import Sqlite from '../../src/Engine/Sqlite'
 import Engines, { engine } from '../../src/Engines.js'
-import { UnexpectedRowCount } from '../../src/Utils/Error.js'
+import { UnexpectedRowCount } from '../../src/Utils/Error'
 import { expectToThrowAsyncErrorTypeMessage, pass } from '../library/expect.js';
 
-let sqlite;
+let sqlite: Sqlite
 
 const config = {
   engine:   'sqlite',

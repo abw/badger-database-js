@@ -136,3 +136,18 @@ export type RelationSpec = {
 export type RelationConfig = Partial<
   RelationSpec & Record<RelationAlias, string>
 >
+
+export type QueryArgs = [] | [QueryParams] | [QueryOptions] | [QueryParams, QueryOptions]
+export type QueryParams = any[]
+// TODO: lock this down
+export type QueryOptions = Record<string, any>
+export type QueryRow = Record<string, any>
+
+export type SanitizeResultOptions = {
+  keys?: string[]
+}
+
+export type ExecuteOptions = SanitizeResultOptions & {
+  transact?: { connection: any },
+  sanitizeResult?: boolean
+}

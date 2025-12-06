@@ -1,8 +1,22 @@
-import Engine from '../Engine.js';
+import Engine from '../Engine'
 import { backtick, defaultIdColumn, COMMIT, ROLLBACK, BEGIN } from '../Constants'
-import { missing, throwEngineDriver } from '../Utils/Error';
+import { missing, throwEngineDriver } from '../Utils/Error'
+import { QueryArgs, SanitizeResultOptions } from '../types'
+import Transaction from '../Transaction'
 
-export class MysqlEngine extends Engine {
+// Dummy types for MysqlClient and its connection property
+type MysqlConnection = {
+  _closing?: boolean
+  _badger_veryNaughtyBoy?: boolean
+}
+type MysqlClient = {
+  open: boolean
+  connection?: MysqlConnection
+  prepare: (sql: string) => Promise<MysqlClient>
+  destroy(): void
+}
+
+export class MysqlEngine extends Engine<MysqlClient> {
   static driver     = 'mysql2/promise'
   static protocol   = 'mysql'
   static alias      = 'maria mariadb'
@@ -24,27 +38,31 @@ export class MysqlEngine extends Engine {
     const { default: mysql } = await import(this.driver).catch(
       e => throwEngineDriver(this.driver, e)
     );
-    return await mysql.createConnection(this.database);
+    return await mysql.createConnection(this.database) as MysqlClient;
   }
 
-  async connected(db) {
+  connected(client: MysqlClient) {
     // work-around for https://github.com/sidorares/node-mysql2/issues/939
-    const connection = db?.connection || { }
+    const connection = client?.connection || { }
     return ! (connection._closing || connection._badger_veryNaughtyBoy);
   }
 
-  async disconnect(connection) {
+  async disconnect(client: MysqlClient) {
     this.debug("disconnect()");
-    connection.destroy();
+    client.destroy();
   }
 
   //-----------------------------------------------------------------------------
   // Low-level execute method - with hack to catch jammed connections
   //-----------------------------------------------------------------------------
-  async clientExecute(client, sql, action) {
+  async clientExecute(
+    client: MysqlClient,
+    sql: string,
+    action: (client: MysqlClient) => any
+  ) {
     try {
       const query = await client.prepare(sql)
-      return await action(query);
+      return await action(query)
     }
     catch (e) {
       // Hack to work around connection with errors getting jammed
@@ -56,7 +74,10 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query methods
   //-----------------------------------------------------------------------------
-  async run(sql, ...args) {
+  async run(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("run()", { sql, params, options });
     return this
@@ -67,7 +88,10 @@ export class MysqlEngine extends Engine {
       )
   }
 
-  async any(sql, ...args) {
+  async any(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("any()", { sql, params, options });
     return this
@@ -78,7 +102,10 @@ export class MysqlEngine extends Engine {
       )
   }
 
-  async all(sql, ...args) {
+  async all(
+    sql: string,
+    ...args: QueryArgs
+  ) {
     const [params, options] = this.queryArgs(args);
     this.debugData("all()", { sql, params, options });
     return this
@@ -92,17 +119,17 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Transaction methods - MySQL requires special handling
   //-----------------------------------------------------------------------------
-  async begin(transact) {
+  async begin(transact: Transaction) {
     this.debug('begin()')
     return await transact.connection.query(BEGIN)
   }
 
-  async commit(transact) {
+  async commit(transact: Transaction) {
     this.debug('commit()');
     return await transact.connection.query(COMMIT);
   }
 
-  async rollback(transact) {
+  async rollback(transact: Transaction) {
     this.debug('rollback()');
     return await transact.connection.query(ROLLBACK);
   }
@@ -110,7 +137,10 @@ export class MysqlEngine extends Engine {
   //-----------------------------------------------------------------------------
   // Query formatting
   //-----------------------------------------------------------------------------
-  sanitizeResult(result, options={}) {
+  sanitizeResult(
+    result: any,
+    options: SanitizeResultOptions = { }
+  ) {
     const keys = options.keys || [defaultIdColumn];
     const id = keys[0];
     result.changes ||= result.affectedRows || 0;

@@ -48,7 +48,7 @@ export const notImplemented = (method: string, module: string) =>
  * thrower('wibble');  // throws error: wibble is not implemented in FrussetPouch
  * ```
  */
-export const notImplementedInModule = (module: string) => (method: string) =>
+export const notImplementedInModule = (module: string) => (method: string): never =>
   notImplemented(method, module)
 
 /**
@@ -162,7 +162,7 @@ export class TransactionError extends CustomError { }
  * unexpectedRowCount(10, 'updated');
  * ```
  */
-export function unexpectedRowCount(n: number, action='returned') {
+export function unexpectedRowCount(n: number, action='returned'): never {
   throw new UnexpectedRowCount(`${n} rows were ${action} when one was expected`)
 }
 

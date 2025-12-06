@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
-import Postgres from '../../src/Engine/Postgres.js'
+import Postgres from '../../src/Engine/Postgres'
 import { engine } from '../../src/Engines.js'
-import { UnexpectedRowCount } from '../../src/Utils/Error.js'
+import { UnexpectedRowCount } from '../../src/Utils/Error'
 import { expectToThrowAsyncErrorTypeMessage } from '../library/expect.js'
 
 const database = {
