@@ -1,7 +1,7 @@
 import Record from './Record.js'
-import Queryable from './Queryable.js'
+import Queryable, { QueryableConfig } from './Queryable'
 import recordProxy from './Proxy/Record.js'
-import { databaseBuilder } from './Builders.js'
+import { databaseBuilder } from './Builders'
 import { fail, firstValue, isArray, noValue, splitList } from '@abw/badger-utils'
 import {
   isQuery, addDebugMethod, aliasMethods, prepareColumns, prepareKeys,
@@ -18,6 +18,10 @@ const methodAliases = {
   fetch:         "fetchAll",
   fetchRecord:   "fetchOneRecord",
   fetchRecords:  "fetchAllRecords",
+}
+
+export type TableConfig = QueryableConfig & {
+  TODO?: string
 }
 
 export class Table extends Queryable {

@@ -1,20 +1,33 @@
-import Queryable from './Queryable.js';
-import Table from './Table.js';
-import Tables from './Tables.js';
-import Transaction from "./Transaction.js";
+import Queryable from './Queryable'
+import Table, { TableConfig } from './Table.js'
+import Tables from './Tables.js'
+import Transaction from './Transaction'
 import proxymise from 'proxymise';
 import modelProxy from './Proxy/Model.js';
-import { engine } from './Engines.js';
-import { addDebugMethod } from './Utils/index';
-import { databaseBuilder } from './Builders.js';
-import { fail } from '@abw/badger-utils';
+import { engine } from './Engines'
+import { addDebugMethod } from './Utils'
+import { databaseBuilder } from './Builders'
+import { fail } from '@abw/badger-utils'
+import { BuilderInstance, ConnectConfig, EngineInstance, TableInstance, TablesInstance } from './types'
+import { AnyClient } from './Engine'
+import { BuilderProxy } from './Proxy'
 
-const defaults = {
+const defaults: ConnectConfig = {
   tablesClass: Tables
 };
 
 export class Database extends Queryable {
-  constructor(engine, config={}) {
+  config: ConnectConfig
+  tables: TablesInstance
+  build: BuilderProxy
+  state: {
+    table: Record<string, TableInstance>
+  }
+
+  constructor(
+    engine: EngineInstance,
+    config: ConnectConfig = { }
+  ) {
     super(engine, config);
     this.config    = config = { ...defaults, ...config };
     this.queries   = config.queries;
@@ -23,7 +36,7 @@ export class Database extends Queryable {
     this.initDatabase(config)
     addDebugMethod(this, 'database', config);
   }
-  initDatabase() {
+  initDatabase(_config: ConnectConfig) {
     // We do this part separately so that we can call this method when
     // we create a transaction, allowing it to create wrappers around
     // the new "this" that has the transaction stored in it
@@ -43,21 +56,21 @@ export class Database extends Queryable {
   acquire() {
     return this.engine.acquire();
   }
-  release(connection) {
+  release(connection: AnyClient) {
     this.engine.release(connection);
   }
 
   //-----------------------------------------------------------------------------
   // Tables
   //-----------------------------------------------------------------------------
-  async table(name, options={}) {
+  async table(name: string, options={}) {
     return this.state.table[name]
       ||= await this.initTable(name, options);
   }
-  async hasTable(name) {
+  async hasTable(name: string) {
     return await this.tables.table(name);
   }
-  async initTable(name, options) {
+  async initTable(name: string, options: TableConfig): Promise<TableInstance> {
     const schema   = await this.hasTable(name) || fail(`Invalid table specified: ${name}`);
     const tclass   = schema.tableClass   || Table;
     const topts    = schema.tableOptions || { };
@@ -111,7 +124,7 @@ export class Database extends Queryable {
   }
 }
 
-export const connect = config => {
+export const connect = (config: ConnectConfig) => {
   const e = engine(config)
   // console.log(`new Database: `, config)
   return new Database(e, config)

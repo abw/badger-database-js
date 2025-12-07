@@ -2,11 +2,12 @@ import Builder, { BuilderContext } from '../Builder'
 import { isArray, isObject, isString, splitList } from '@abw/badger-utils'
 import { comma, FROM } from '../Constants'
 
-export type FromBuilderTable = string | string[] | FromBuilderTableObject
-export type FromBuilderTableObject = {
+export type FromTable = string | string[] | FromTableObject
+export type FromTableObject = {
   table?: string
   tables?: string
   as?: string
+  sql?: string | TemplateStringsArray
 }
 
 export class From extends Builder {
@@ -26,15 +27,15 @@ export class From extends Builder {
     // we need to be careful to only handle the valid cases, e.g. where
     // it's a string (which might contain multiple table names), an
     // array of [table, alias], or an object containing 'table'
-    const table: FromBuilderTable = tables.at(-1);
+    const table: FromTable = tables.at(-1);
     if (isString(table)) {
       this.tableName = splitList(table).at(-1) as string;
     }
     else if (isArray(table) && (table as string[]).length === 2) {
       this.tableName = table[1];
     }
-    else if (isObject(table) && (table as FromBuilderTableObject).as) {
-      this.tableName = (table as FromBuilderTableObject).as;
+    else if (isObject(table) && (table as FromTableObject).as) {
+      this.tableName = (table as FromTableObject).as;
     }
   }
 
@@ -62,7 +63,7 @@ export class From extends Builder {
       : this.errorMsg('array', { n: table.length });
   }
 
-  resolveLinkObject(table: FromBuilderTableObject) {
+  resolveLinkObject(table: FromTableObject) {
     if (table.table) {
       // if it's an object then it should have a table and optionally an 'as' for an alias
       return table.as

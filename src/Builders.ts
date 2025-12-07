@@ -76,3 +76,31 @@ export const databaseBuilder = (database: DatabaseInstance) =>
 export const tableBuilder = (table: string) =>
   Proxy(Builders, new Table(undefined, table))
 
+/*
+export type BuildersMethods = {
+  after: After,
+  before: Before,
+  columns: Columns
+  delete: Delete
+  from: From
+  group: Group
+  groupBy: Group
+  having: Having
+  insert: Insert
+  into: Into
+  join: Join
+  limit: Limit
+  offset: Offset
+  order: Order
+  orderBy: Order
+  prefix: Prefix
+  range: Range
+  returning: Returning
+  select: Select
+  set: Set
+  table: Table
+  update: Update
+  values: Values
+  where: Where
+}
+*/

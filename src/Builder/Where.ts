@@ -3,6 +3,17 @@ import { isIn, toArray } from '../Utils'
 import { AND, WHERE, space } from '../Constants'
 import { hasValue, isArray, isNull, splitList } from '@abw/badger-utils'
 
+export type WhereColumn = string | string[] | WhereColumnObject
+export type WhereColumnName = any
+export type WhereColumnComparison =
+    [string, string, any?]                // ['added_on', '<'] or ['added_on', '<', '2025']
+  | [string, [string, any?]]              // ['added_on', ['<']] or ['added_on', ['<', '2025']]
+  | [string, 'in' | 'not in', any[]]      // ['status', 'in', ['pending', 'active']]
+  | [string, ['in' | 'not in', any[]]]    // ['status', ['in', ['pending', 'active']]]
+
+export type WhereColumnValue = WhereColumnName | WhereColumnComparison
+export type WhereColumnObject = Record<string, WhereColumnValue>
+
 export class Where extends Builder {
   static buildMethod = 'where'
   static buildOrder  = 50
@@ -18,7 +29,7 @@ export class Where extends Builder {
     // split columns into a list and generate criteria with placeholders
     return splitList(columns).map(
       column => database.engine.formatWherePlaceholder(
-        column,
+        column as string,
         undefined,
         this.context.placeholder++
       )
@@ -74,7 +85,7 @@ export class Where extends Builder {
     }
   }
 
-  resolveLinkObject(criteria: Record<string, any>) {
+  resolveLinkObject(criteria: WhereColumnObject) {
     const database = this.lookupDatabase();
     let values = [ ];
     const result = Object.entries(criteria).map(

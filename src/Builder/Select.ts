@@ -1,12 +1,14 @@
 import Builder from '../Builder';
 import { comma, SELECT } from '../Constants'
 
-export type SelectBuilderColumn  = {
+export type SelectColumn = string | string[] | SelectColumnObject
+export type SelectColumnObject  = {
   column?: string
-  columns?: string
+  columns?: string | string[]
   as?: string
   table?: string
   prefix?: string
+  sql?: string
 }
 
 export class Select extends Builder {
@@ -38,7 +40,7 @@ export class Select extends Builder {
     this.errorMsg('array', { n: columns.length });
   }
 
-  resolveLinkObject(column: SelectBuilderColumn) {
+  resolveLinkObject(column: SelectColumnObject) {
     if (column.column && column.as) {
       // object can contain "column", "as" and optional "table"
       return column.table

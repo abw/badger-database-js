@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest'
-import From from '../../src/Builder/From.js'
+import From from '../../src/Builder/From'
 import { connect } from '../../src/Database.js'
-import { QueryBuilderError } from '../../src/Utils/Error.js'
-import { sql } from '../../src/Utils/Tags.js'
+import { QueryBuilderError, sql } from '../../src/Utils'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -104,6 +104,7 @@ test( 'from aliased table',
 
 test( 'invalid object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: incorrect usage
     () => db.build.from({ users: 'email email_address', oops: 'This is wrong' }).sql(),
     QueryBuilderError,
     'Invalid object with "oops, users" properties specified for query builder "from" component.  Valid properties are "tables", "table" and "as".'

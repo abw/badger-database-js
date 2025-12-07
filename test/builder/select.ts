@@ -4,8 +4,9 @@ import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { sql } from '../../src/Utils/Tags.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -120,7 +121,7 @@ test( 'object with columns, table and prefix',
 
 test( 'two element array',
   () => expectOpTypeSql(
-    db.select(['email', 'email_address']),
+    db.build.select(['email', 'email_address']),
     Select,
     'SELECT "email" AS "email_address"'
   )

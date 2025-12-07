@@ -3,16 +3,21 @@ import Builder from './Builder'
 import Database from './Database'
 import Engine from './Engine'
 import Query from './Query'
-import Queryable from './Queryable'
+import Queryable, { QueryableConfig } from './Queryable'
+import Table from './Table'
+import Tables from './Tables'
 import Transaction from './Transaction'
 
 // TODO: add in tables, queries, etc.
-export type ConnectConfig = {
+export type ConnectConfig = QueryableConfig & {
   database?:      string | DatabaseConnectionConfig
   env?:           Record<string, string>
   envPrefix?:     string
   engineOptions?: Record<string, any>
   pool?:          PoolOptions
+  tables?:        TablesConfig
+  tablesClass?:   TablesConstructor
+  tablesObject?:  TablesInstance
 }
 
 // Work in progress that should be merged into the above
@@ -86,6 +91,9 @@ export type TableSpec = {
   id?: string
   keys?: string | string[]
 }
+
+export type TablesConfig = Record<string, any>       // TODO
+export type TablesConstructor = new (config: TablesConfig) => TablesInstance
 
 export type TablesSpec = Record<string, TableSpec>
 export type NamedQueries = Record<string, string>
@@ -161,6 +169,8 @@ export type ExecuteOptions = SanitizeResultOptions & {
 
 export type DatabaseInstance = InstanceType<typeof Database>
 export type EngineInstance = InstanceType<typeof Engine>
+export type TablesInstance = InstanceType<typeof Tables>
+export type TableInstance = InstanceType<typeof Table>
 export type BuilderInstance = InstanceType<typeof Builder>
 export type TransactionInstance = InstanceType<typeof Transaction>
 export type QueryableInstance = InstanceType<typeof Queryable>

@@ -1,6 +1,10 @@
-import { extract, splitHash } from "@abw/badger-utils";
-import { article } from "../Utils/Article.js";
-import { QueryBuilderError } from "../Utils/Error.js";
+import { extract, splitHash } from '@abw/badger-utils'
+import { article, QueryBuilderError } from '../Utils'
+import { SelectColumn } from '../Builder/Select'
+import { FromTable } from '../Builder/From'
+import Builder from '../Builder'
+import { BuilderInstance } from '../types'
+import { WhereColumn } from '../Builder/Where'
 
 // In the usual case we have an object mapping methods names to
 // builder classes (`builders`) and a `parent` object.  However a
@@ -12,11 +16,54 @@ import { QueryBuilderError } from "../Utils/Error.js";
 // This allows us to generate a better error if an invalid method
 // is added, e.g. "SELECT cannot be added to a DELETE query".
 
-export const builderProxy = (builders, parent, options={}) =>
+// export type BuildSelect = (column: SelectColumn, ...more: SelectColumn[]) => BuilderProxy
+export interface BuilderMethods {
+  /**
+   * Add a select to the current query builder.
+   * @example
+   * query.select('id', 'name', 'email') // select multiple columns
+   * @example
+   * query.select('id name email')  // short-hand form
+   * @example
+   * query.select('users.id companies.name') // with explicit table names
+   * @example
+   * query.select(['id', 'userId']) // with alias: select `id` as `userId`
+   * @example
+   * query.select({ column: 'id', as: 'userId' }) // alias as above
+   * @example
+   * // selects users.id as user_id, users.name as user_name
+   * query.select({ table: 'users', columns: 'id name', prefix: 'user_' })
+   */
+  select(column: SelectColumn, ...moreColumns: SelectColumn[]): this
+  from(table: FromTable, ...moreTables: FromTable[]): this
+  where(criteria: WhereColumn, ...moreCriteria: WhereColumn[]): this
+}
+
+export type BuilderProxy = Builder & BuilderMethods
+
+interface BuilderProxyOptions {
+  valid?: Record<string, boolean>
+  keyword?: string
+}
+
+/*
+type BuilderClass<T = any> = {
+  new (parent: any, ...args: any[]): T;
+  subMethods?: string[];
+  validFor?: string;
+  keyword?: string;
+}
+*/
+
+export const builderProxy = (
+  builders,
+  parent: BuilderInstance,
+  options: BuilderProxyOptions = { }
+): BuilderProxy =>
   new Proxy(
     parent,
     {
-      get(target, prop) {
+      get(target, prop: string) {
         // console.log('builderProxy %s', prop);
 
         if (prop === 'toString') {
@@ -59,7 +106,10 @@ export const builderProxy = (builders, parent, options={}) =>
             if (methods) {
               return builderProxy(
                 builders, builder,
-                { valid: extract(builders, methods), keyword: bclass.keyword }
+                {
+                  valid: extract(builders, methods) as Record<string, boolean>,
+                  keyword: bclass.keyword
+                }
               )
             }
             else {
@@ -69,6 +119,6 @@ export const builderProxy = (builders, parent, options={}) =>
         ).bind(target);
       }
     }
-  );
+  ) as BuilderProxy
 
 export default builderProxy

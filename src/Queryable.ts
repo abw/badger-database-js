@@ -1,7 +1,7 @@
 import Query, { QueryConfig } from './Query'
 import { singleWord } from './Constants'
 import { fail, isFunction, isString } from '@abw/badger-utils'
-import { expandFragments, missing } from './Utils'
+import { DebugSetting, expandFragments, missing } from './Utils'
 import {
   BuilderInstance, DatabaseInstance, EngineInstance, QueryableInstance,
   QueryOptions,
@@ -10,8 +10,10 @@ import {
   TransactionInstance
 } from './types'
 
-export type QueryableConfig = {
+export type QueryableConfig = DebugSetting & {
   transact?: TransactionInstance
+  queries?: QueryableQueries
+  fragments?: QueryableFragments
 }
 export type QuerySource = string | BuilderInstance
 export type QueryFunction = (queryable: QueryableInstance) => QuerySource

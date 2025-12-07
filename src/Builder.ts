@@ -3,7 +3,7 @@ import { DatabaseInstance } from './types'
 import { addDebugMethod, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from './Utils'
 import { fail, format, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from '@abw/badger-utils'
 
-export let Builders   = { }
+export let Builders: Record<string, typeof Builder> = { }
 export let Generators = { }
 
 const defaultContext = (): BuilderContext => ({
