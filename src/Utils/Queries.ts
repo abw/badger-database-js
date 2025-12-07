@@ -1,14 +1,15 @@
 import Builder from '../Builder.js'
 import { fail, isString } from '@abw/badger-utils'
 import Queryable from '../Queryable'
+import { QueryableInstance } from '../types'
 
 export const isQuery = (query: any) =>
   isString(query) || (query instanceof Builder)
 
 export const expandFragments = (
   query: string,
-  queryable:
-  Queryable, maxDepth=16
+  queryable: QueryableInstance,
+  maxDepth=16
 ) => {
   query = query.trim();
   let sql = query;

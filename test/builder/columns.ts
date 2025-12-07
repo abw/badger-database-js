@@ -1,11 +1,12 @@
 import { expect, test } from 'vitest'
-import Columns from '../../src/Builder/Columns.js'
+import Columns from '../../src/Builder/Columns'
 import { connect } from '../../src/Database.js'
-import { QueryBuilderError } from '../../src/Utils/Error.js'
-import { sql } from '../../src/Utils/Tags.js'
+import { QueryBuilderError } from '../../src/Utils/Error'
+import { sql } from '../../src/Utils/Tags'
 import { expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance;
 
 test( 'connect',
   () => {

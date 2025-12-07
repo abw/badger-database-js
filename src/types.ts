@@ -1,5 +1,10 @@
 // Top-level configuration passed to the connect() method.
+import Builder from './Builder'
 import Database from './Database'
+import Engine from './Engine'
+import Query from './Query'
+import Queryable from './Queryable'
+import Transaction from './Transaction'
 
 // TODO: add in tables, queries, etc.
 export type ConnectConfig = {
@@ -155,4 +160,9 @@ export type ExecuteOptions = SanitizeResultOptions & {
 }
 
 export type DatabaseInstance = InstanceType<typeof Database>
+export type EngineInstance = InstanceType<typeof Engine>
+export type BuilderInstance = InstanceType<typeof Builder>
+export type TransactionInstance = InstanceType<typeof Transaction>
+export type QueryableInstance = InstanceType<typeof Queryable>
+export type QueryInstance = InstanceType<typeof Query>
 export type Stringable = string | number | boolean

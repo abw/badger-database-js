@@ -1,11 +1,17 @@
 import { Pool } from 'tarn'
-import { allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK } from './Constants'
-import { missing, notImplementedInBaseClass, SQLParseError, unexpectedRowCount, addDebugMethod, DebugSetting } from "./Utils/index"
 import { hasValue, isArray, isObject, ListSource, splitList } from '@abw/badger-utils'
-import { DatabaseConnection, EngineOptions, ExecuteOptions, QueryArgs, QueryOptions, QueryParams, QueryRow, SanitizeResultOptions } from './types'
-import Transaction from './Transaction'
+import {
+  allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK
+} from './Constants'
+import {
+  missing, SQLParseError, unexpectedRowCount, addDebugMethod, DebugSetting
+} from "./Utils/index"
+import {
+  DatabaseConnection, EngineOptions, ExecuteOptions, QueryArgs, QueryOptions,
+  QueryParams, QueryRow, SanitizeResultOptions, TransactionInstance
+} from './types'
 
-const notImplemented = notImplementedInBaseClass('Engine')
+// const notImplemented = notImplementedInBaseClass('Engine')
 
 const poolDefaults = {
   min: 2,
@@ -101,7 +107,7 @@ export abstract class Engine<Client=AnyClient> {
     return this.pool.acquire().promise as Promise<Client>
   }
 
-  async release(connection) {
+  async release(connection: Client) {
     this.debug("release()");
     // await this.pool.release(connection);
     this.pool.release(connection);
@@ -188,17 +194,17 @@ export abstract class Engine<Client=AnyClient> {
   //-----------------------------------------------------------------------------
   // Transaction queries
   //-----------------------------------------------------------------------------
-  async begin(transact: Transaction) {
+  async begin(transact: TransactionInstance) {
     this.debug('begin()')
     return await this.run(BEGIN, { transact })
   }
 
-  async commit(transact: Transaction) {
+  async commit(transact: TransactionInstance) {
     this.debug('commit()');
     return await this.run(COMMIT, { transact });
   }
 
-  async rollback(transact: Transaction) {
+  async rollback(transact: TransactionInstance) {
     this.debug('rollback()');
     return await this.run(ROLLBACK, { transact });
   }

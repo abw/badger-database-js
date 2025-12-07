@@ -1,9 +1,39 @@
-import Builder from './Builder.js'
-import { fail, isArray, isFunction, isString } from "@abw/badger-utils";
-import { addDebugMethod, missing } from './Utils/index.js';
+import Builder from './Builder'
+import { addDebugMethod, DebugSetting, missing } from './Utils'
+import { fail, isArray, isFunction, isString } from '@abw/badger-utils'
+import {
+  BuilderInstance, EngineInstance, QueryArgs, QueryOptions, QueryParams,
+  TransactionInstance
+} from './types'
+
+export type QueryValues = any[]
+export type QueryConfig = DebugSetting & {
+  setValues?: QueryValues
+  whereValues?: QueryValues
+  havingValues?: QueryValues
+  transact?: TransactionInstance
+}
+export type QueryWhere = QueryValues | QueryWhereFunction
+export type QueryWhereFunction = (
+  whereValues: QueryValues,
+  havingValues: QueryValues
+) => QueryValues
 
 export class Query {
-  constructor(engine, query, config={}) {
+  engine: EngineInstance
+  setValues: any[]
+  whereValues: any[]
+  havingValues: any[]
+  query: string
+  transact?: TransactionInstance
+  debug!: (message: string) => void
+  debugData!: (message: string, data: any) => void
+
+  constructor(
+    engine: EngineInstance,
+    query: string | BuilderInstance,
+    config: QueryConfig={}
+  ) {
     this.engine       = engine || missing('engine');
     this.setValues    = config.setValues    || [ ];
     this.whereValues  = config.whereValues  || [ ];
@@ -27,46 +57,48 @@ export class Query {
       fail(`Invalid query type: `, query);
     }
 
-    addDebugMethod(this, 'query', this.config);
+    addDebugMethod(this, 'query', config);
   }
 
   sql() {
     return this.query;
   }
 
-  run(...args) {
+  run(...args: QueryArgs) {
     const sql = this.sql();
     const [values, options] = this.queryArgs(args);
     this.debugData("run()", { sql, values, options });
     return this.engine.run(sql, values, options)
   }
 
-  one(...args) {
+  one(...args: QueryArgs) {
     const sql    = this.sql();
     const [values, options] = this.queryArgs(args);
     this.debugData("one()", { sql, values, options });
     return this.engine.one(sql, values, options)
   }
 
-  any(...args) {
+  any(...args: QueryArgs) {
     const sql = this.sql();
     const [values, options] = this.queryArgs(args);
     this.debugData("any()", { sql, values, options });
     return this.engine.any(sql, values, options)
   }
 
-  all(...args) {
+  all(...args: QueryArgs) {
     const sql = this.sql();
     const [values, options] = this.queryArgs(args);
     this.debugData("all()", { sql, values, options });
     return this.engine.all(sql, values, options)
   }
 
-  queryArgs(args) {
-    const params = isArray(args[0])
-      ? args.shift()
+  queryArgs(
+    args?: QueryArgs
+  ): [QueryParams, QueryOptions] {
+    const params: QueryParams = isArray(args[0])
+      ? args.shift() as QueryParams
       : [ ];
-    const options = args.length
+    const options: QueryOptions = args.length
       ? args.shift()
       : { };
     return [
@@ -77,7 +109,10 @@ export class Query {
     ];
   }
 
-  allValues(where=[]) {
+
+  allValues(
+    where: QueryWhere=[]
+  ): QueryValues {
     const wvalues = this.whereValues;
     const hvalues = this.havingValues;
     // In the usual case we just get one set of extra args and they
@@ -90,7 +125,7 @@ export class Query {
   }
 
   toString() {
-    return this.sql();
+    return this.sql()
   }
 }
 

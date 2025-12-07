@@ -1,7 +1,27 @@
-import { addDebugMethod, missing, TransactionError } from "./Utils/index.js";
+import { AnyClient } from './Engine'
+import { EngineInstance, Stringable } from './types'
+import {
+  addDebugMethod, DebugSetting, missing, TransactionError
+} from './Utils'
+
+export type TransactionConfig = DebugSetting & {
+  autoCommit?: boolean
+  autoRollback?: boolean
+}
 
 export class Transaction {
-  constructor(engine, config={}) {
+  engine: EngineInstance
+  completed: boolean
+  autoCommit: boolean
+  autoRollback: boolean
+  connection: AnyClient
+  debug!: (message: string) => void
+  debugData!: (message: string, data: any) => void
+
+  constructor(
+    engine: EngineInstance,
+    config: TransactionConfig = { }
+  ) {
     this.engine       = engine || missing('engine')
     this.completed    = false
     this.autoCommit   = config.autoCommit
@@ -95,7 +115,7 @@ export class Transaction {
     this.completed = action;
   }
 
-  fail(...args) {
+  fail(...args: Stringable[]) {
     throw new TransactionError(args.join(''));
   }
 }

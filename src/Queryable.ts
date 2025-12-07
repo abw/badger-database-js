@@ -1,15 +1,42 @@
-import Query from './Query.js'
+import Query, { QueryConfig } from './Query'
 import { singleWord } from './Constants'
 import { fail, isFunction, isString } from '@abw/badger-utils'
 import { expandFragments, missing } from './Utils'
+import {
+  BuilderInstance, DatabaseInstance, EngineInstance, QueryableInstance,
+  QueryOptions,
+  QueryParams,
+  QueryRow,
+  TransactionInstance
+} from './types'
+
+export type QueryableConfig = {
+  transact?: TransactionInstance
+}
+export type QuerySource = string | BuilderInstance
+export type QueryFunction = (queryable: QueryableInstance) => QuerySource
+export type QueryableQueries = Record<string, QuerySource | QueryFunction>
+export type QueryableFragments = Record<string, string>
 
 export class Queryable {
-  constructor(engine, config={}) {
-    this.engine   = engine || missing('engine');
-    this.transact = config.transact;
+  engine: EngineInstance
+  transact?: TransactionInstance
+  database?: DatabaseInstance
+  queries: QueryableQueries
+  fragments: QueryableFragments
+
+  debug!: (message: string) => void
+  debugData!: (message: string, data: any) => void
+
+  constructor(
+    engine: EngineInstance,
+    config: QueryableConfig = { }
+  ) {
+    this.engine   = engine || missing('engine')
+    this.transact = config.transact
   }
 
-  query(source) {
+  query(source: string): QuerySource {
     this.debugData("query()", { source });
     const query = this.queries[source]
       || (this.database && this.database.query(source))
@@ -21,14 +48,14 @@ export class Queryable {
       : query;
   }
 
-  fragment(name) {
+  fragment(name: string): string {
     this.debugData("fragment()", { name });
     return this.fragments[name]
       || (this.database && this.database.fragment(name))
       || fail("Invalid query fragment in SQL expansion: <", name, ">");
   }
 
-  buildQuery(source, config={}) {
+  buildQuery(source: QuerySource, config: QueryConfig={}) {
     config.transact ||= this.transact;
     this.debugData("buildQuery()", { source, config });
     return new Query(
@@ -38,7 +65,7 @@ export class Queryable {
     );
   }
 
-  expandQuery(source, config) {
+  expandQuery(source: string, config?: QueryConfig) {
     this.debugData("expandQuery()", { source });
     // if the source is a single word then it must be a named query
     // otherwise it's an SQL query possibly with embedded fragments
@@ -47,7 +74,7 @@ export class Queryable {
       : expandFragments(source, this);
   }
 
-  expandNamedQuery(name) {
+  expandNamedQuery(name: string, _config?: QueryConfig) {
     this.debugData("expandNamedQuery()", { name });
     const query = this.query(name);
     // the named query can be a string with embedded fragments that should
@@ -57,17 +84,25 @@ export class Queryable {
       : query;
   }
 
-  sql(name, config) {
+  sql(name: QuerySource, config?: QueryConfig) {
     this.debugData("sql()", { name, config });
-    return this.buildQuery(name, config).sql();
+    return this.buildQuery(name, config).sql()
   }
 
-  async run(query, params, options) {
+  async run(
+    query: QuerySource,
+    params: QueryParams,
+    options: QueryOptions
+  ) {
     this.debugData("run()", { query, params, options });
     return this.buildQuery(query).run(params, options)
   }
 
-  async one(query, params, options) {
+  async one(
+    query: QuerySource,
+    params: QueryParams,
+    options: QueryOptions
+  ) {
     this.debugData("one()", { query, params, options });
     return this.loadedOne(
       await this.buildQuery(query).one(params, options),
@@ -75,7 +110,11 @@ export class Queryable {
     )
   }
 
-  async any(query, params, options) {
+  async any(
+    query: QuerySource,
+    params: QueryParams,
+    options: QueryOptions
+  ) {
     this.debugData("any()", { query, params, options });
     return this.loadedAny(
       await this.buildQuery(query).any(params, options),
@@ -83,7 +122,11 @@ export class Queryable {
     )
   }
 
-  async all(query, params, options) {
+  async all(
+    query: QuerySource,
+    params: QueryParams,
+    options: QueryOptions
+  ) {
     this.debugData("all()", { query, params, options });
     return this.loadedAll(
       await this.buildQuery(query).all(params, options),
@@ -91,15 +134,15 @@ export class Queryable {
     )
   }
 
-  loadedOne(row) {
+  loadedOne(row: QueryRow, _options: QueryOptions) {
     return row;
   }
 
-  loadedAny(row) {
+  loadedAny(row: QueryRow, _options: QueryOptions) {
     return row;
   }
 
-  loadedAll(rows) {
+  loadedAll(rows: QueryRow[], _options: QueryOptions) {
     return rows;
   }
 }
