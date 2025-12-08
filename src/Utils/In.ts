@@ -4,6 +4,7 @@ const inOrNotIn: Record<string, string> = {
   [IN]:     IN,
   [NOT_IN]: NOT_IN
 }
-export const isIn = (value: string) => inOrNotIn[
+
+export const isInOrNotIn = (value: string) => inOrNotIn[
   value.toUpperCase().replaceAll(/\s+/g, ' ')
 ]

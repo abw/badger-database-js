@@ -1,12 +1,9 @@
 import { expect, test } from 'vitest'
-import Where from '../../src/Builder/Where.js'
 import { connect } from '../../src/Database.js'
-import { sql } from '../../src/index.js'
-import { QueryBuilderError } from '../../src/Utils/Error.js'
-import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
 import { lt, le, gt, ge, eq, ne, isIn, notIn, isNull, notNull } from '../../src/Comparators.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance;
 
 test( 'connect',
   () => {
