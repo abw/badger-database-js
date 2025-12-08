@@ -49,6 +49,11 @@ export default defineConfig({
         items: [
           { text: 'Query Builder', link: '/query-builder' },
           { text: 'Query Builder Methods', link: '/builder-methods' },
+          { text: 'Select Query Methods', link: '/select-query' },
+          { text: 'Insert Query Methods', link: '/insert-query' },
+          { text: 'Update Query Methods', link: '/update-query' },
+          { text: 'Delete Query Methods', link: '/delete-query' },
+          { text: 'Query Execution Methods', link: '/query-execute' },
         ]
       },
       {

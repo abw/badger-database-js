@@ -86,14 +86,20 @@ db.disconnect()
 ```
 
 The database object provides four methods for creating different
-query types:
+query types.  There are separate documentation pages describing each of
+them in detail.
 
-* [`select()`](builder-methods#select-columns)
-* [`insert()`](builder-methods#insert-columns)
-* [`update()`](builder-methods#update-table)
-* [`delete()`](builder-methods#delete)
+* [`select()`](select-query)
+* [`insert()`](insert-query)
+* [`update()`](update-query)
+* [`delete()`](delete-query)
 
-Here's a [`select()`](builder-methods#select-columns) query.
+In this page we'll give you a basic overview of each of them without going
+into too much nitty-gritty detail.
+
+## Basic Examples
+
+Here's an example of a [`select()`](select-query) query.
 
 ```js
 const row = await db
@@ -103,7 +109,7 @@ const row = await db
   .one();
 ```
 
-Here's an [`insert()`](builder-methods#insert-columns) query.
+Here's an [`insert()`](insert-query) query.
 
 ```js
 await db
@@ -113,7 +119,7 @@ await db
   .run();
 ```
 
-Here's an [`update()`](builder-methods#update-table) query.
+Here's an [`update()`](update-query) query.
 
 ```js
 await db
@@ -123,7 +129,7 @@ await db
   .run();
 ```
 
-And here's a [`delete()`](builder-methods#delete) query.
+And here's a [`delete()`](delete-query) query.
 
 ```js
 await db
@@ -134,7 +140,7 @@ await db
 ```
 
 When you create a query, or part of a query, you can call the
-[`sql()`](builder-methods#sql) method to see what the
+[`sql()`](query-execute#sql) method to see what the
 generated SQL looks like.
 
 ```js
@@ -144,15 +150,15 @@ console.log(
 ```
 
 In these examples we'll omit the `console.log()` and
-[`sql()`](builder-methods#sql) calls for brevity.
+[`sql()`](query-execute#sql) calls for brevity.
 
 ## Select Queries
 
 The main database object has a
-[`select()`](builder-methods#select-columns) method which
+[`select()`](select-query) method which
 allows you to start a query by specifying the columns you want to select.
 You can then chain further methods onto it, e.g.
-[`from()`](builder-methods#from-table) to specify one or
+[`from()`](select-query#from-table) to specify one or
 more tables that you want to select from.
 
 ```js
@@ -202,10 +208,10 @@ db.select('name').where({ id: 12345 }).from('users')
 ```
 
 If you want to start a query with anything other than
-[`select()`](builder-methods#select-columns),
-[`insert()`](builder-methods#insert-columns),
-[`update()`](builder-methods#update-table),  or
-[`delete()`](builder-methods#delete)
+[`select()`](select-query),
+[`insert()`](insert-query),
+[`update()`](update-query),  or
+[`delete()`](delete-query)
 then you should prefix it with `.build`.
 
 ```js
@@ -230,7 +236,7 @@ db.select('id', 'name').from('users')
 ```
 
 For example, the
-[`select()`](builder-methods#select-columns)
+[`select()`](select-query)
 method allows you to pass an array of
 two elements.  The first is the column name, the second is an alias.
 
@@ -239,7 +245,7 @@ db.select(['name', 'user_name']).from('users')
 // -> SELECT "name" AS "user_name" FROM "users"
 ```
 
-The [`from()`](builder-methods#from-table) method
+The [`from()`](select-query#from-table) method
 supports the same syntax for creating a table alias.
 
 ```js
@@ -273,12 +279,12 @@ db.select('id', { table: 'users', columns: 'name email', prefix: 'user_' }).from
 ## Insert Queries
 
 Use the
-[`insert()`](builder-methods#insert-columns)
+[`insert()`](insert-query)
 method to start an `INSERT` query.  The arguments it expects are the names
 of the columns you're inserting.  You should follow that with the
-[`into()`](builder-methods#into-table) method to specify the table
+[`into()`](insert-query#into-table) method to specify the table
 you're inserting into.  Values for the columns can be provided via the
-[`values()`](builder-methods#values-values) method, either as
+[`values()`](insert-query#values-values) method, either as
 separate arguments or an array.
 
 ```js
@@ -292,7 +298,7 @@ await db
 ```
 
 Or you can pass an array of values as the first argument to the
-[`run()`](builder-methods#run-values-options) method.
+[`run()`](query-execute#run-values-options) method.
 This is useful when you want to reuse the query to insert multiple rows.
 
 ```js
@@ -306,7 +312,7 @@ await insert.run(['Frank Ferret', 'frank@ferretfactory.com'])
 ```
 
 The second argument to the
-[`run()`](builder-methods#run-values-options) method can be
+[`run()`](query-execute#run-values-options) method can be
 an object containing options.  The `sanitizeResult` option is useful if
 you want to inspect the result of the insert operation.
 
@@ -320,7 +326,7 @@ console.log("Inserted ID:", result.id)
 ```
 
 If you're using Postgres then you should use the
-[`returning()`](builder-methods#returning-columns) method
+[`returning()`](insert-query#returning-columns) method
 to add a `RETURNING` clause on the end of the query to get the
 inserted ID returned.
 
@@ -334,18 +340,18 @@ const insert = await db
 ## Update Queries
 
 Use the
-[`update()`](builder-methods#update-table) method to start an
+[`update()`](update-query) method to start an
 `UPDATE` query.  The argument it expects is the name of the table that you're
 updating.  You should follow that with the
-[`set()`](builder-methods#set-values) method to specify the changes
+[`set()`](update-query#set-values) method to specify the changes
 you want to make, and optionally, a
-[`where()`](builder-methods#where-criteria) clause to define which
+[`where()`](select-query#where-criteria) clause to define which
 rows you want to change.
 
-The [`set()`](builder-methods#set-values) and
-[`where()`](builder-methods#where-criteria) methods can be passed a list
+The [`set()`](update-query#set-values) and
+[`where()`](select-query#where-criteria) methods can be passed a list
 of column names with the values being provided to the
-[`run()`](builder-methods#run-values-options) method:
+[`run()`](query-execute#run-values-options) method:
 
 ```js
 await db
@@ -359,8 +365,8 @@ await db
 ```
 
 Or you can provide values directly to the
-[`set()`](builder-methods#set-values) and/or
-[`where()`](builder-methods#where-criteria) methods.  In both
+[`set()`](update-query#set-values) and/or
+[`where()`](select-query#where-criteria) methods.  In both
 cases placeholders are used for the values so the SQL generated is identical.
 
 ```js
@@ -376,11 +382,11 @@ await db
 
 ## Delete Queries
 
-Use the [`delete()`](builder-methods#delete) method to start a
+Use the [`delete()`](delete-query) method to start a
 `DELETE` query.  It usually doesn't take any arguments but should be followed
-with a [`from()`](builder-methods#from-table) call to set the
+with a [`from()`](select-query#from-table) call to set the
 name of the table that you're deleting from, and optionally, a
-[`where()`](builder-methods#where-criteria)
+[`where()`](select-query#where-criteria)
 clause to define which rows you want to delete.
 
 ```js
@@ -394,10 +400,10 @@ await db
 ```
 
 This also allows you to define parameter values in the
-[`where()`](builder-methods#where-criteria) method, as
+[`where()`](select-query#where-criteria) method, as
 shown above, or specify columns names in the
-[`where()`](builder-methods#where-criteria) method and pass all
-values as an array to the [`run()`](builder-methods#run-values-options)
+[`where()`](select-query#where-criteria) method and pass all
+values as an array to the [`run()`](query-execute#run-values-options)
 method.
 
 ```js
@@ -438,12 +444,12 @@ other parts that don't.
 
 ## Placeholder Values
 
-The [`where()`](builder-methods#where-criteria) method is used to specify
+The [`where()`](select-query#where-criteria) method is used to specify
 selection criteria.  Any user supplied values are embedded into the query using
 placeholders.
 
 The SQL query generated will use placeholders for any
-[`where()`](builder-methods#where-criteria) clauses included.
+[`where()`](select-query#where-criteria) clauses included.
 
 For example, this query:
 
@@ -461,7 +467,7 @@ FROM "users"
 WHERE "id"=?
 ```
 
-You can also define values in the [`where()`](builder-methods#where-criteria)
+You can also define values in the [`where()`](select-query#where-criteria)
 clause.
 
 ```js
@@ -476,7 +482,7 @@ The query generated will still use placeholders.  It will also
 automatically keep track of the values that go with each placeholder.
 
 If you want to see what placeholder values a query has collected then
-you can call the [`allValues()`](builder-methods#allvalues) method.
+you can call the [`allValues()`](query-execute#allvalues) method.
 
 ```js
 const query = db
@@ -488,14 +494,14 @@ console.log(query.allValues())
 // -> [12345]
 ```
 
-The query builder also provides a [`having()`](builder-methods#having-criteria)
+The query builder also provides a [`having()`](select-query#having-criteria)
 method which works in a similar way.  The query builder collects placeholder values
 associated with `WHERE` clauses separately from those associated with `HAVING` clauses.
 This is because any `WHERE` clauses come before any `HAVING` clauses and the placeholder
 values must be ordered in that way.
 
-You can call the [`whereValues()`](builder-methods#wherevalues) and
-[`havingValues()`](builder-methods#havingvalues) methods to see what values have
+You can call the [`whereValues()`](query-execute#wherevalues) and
+[`havingValues()`](query-execute#havingvalues) methods to see what values have
 been collected for them separately.
 
 ```js
@@ -505,13 +511,13 @@ console.log(query.havingValues())
 // -> []
 ```
 
-If you're building an [`insert()`](builder-methods#insert-columns)
-or [`update()`](builder-methods#update-table) query then you may also
-have [`setValues()`](builder-methods#setvalues) defined.
+If you're building an [`insert()`](insert-query)
+or [`update()`](update-query) query then you may also
+have [`setValues()`](query-execute#setvalues) defined.
 This will contain placeholders values provided via
-the [`values()`](builder-methods#values-values) or
-[`set()`](builder-methods#set-values) methods.
-For [`select()`](builder-methods#select-columns)
+the [`values()`](insert-query#values-values) or
+[`set()`](update-query#set-values) methods.
+For [`select()`](select-query)
 queries this list will be empty.
 
 ```js
@@ -519,11 +525,11 @@ console.log(query.setValues())
 // -> [ ]
 ```
 
-The [`allValues()`](builder-methods#allvalues) method returns a
+The [`allValues()`](query-execute#allvalues) method returns a
 concatenated list of all the
-[`setValues()`](builder-methods#setvalues),
-[`whereValues()`](builder-methods#wherevalues) and
-[`havingValues()`](builder-methods#havingvalues),
+[`setValues()`](query-execute#setvalues),
+[`whereValues()`](query-execute#wherevalues) and
+[`havingValues()`](query-execute#havingvalues),
 *in that order*.
 
 Instead of baking placeholder values into a query using the above methods you can
@@ -532,7 +538,7 @@ provider them all in one go when you run the query.
 ## Running Queries
 
 When you've constructed a query you can call the
-[`run()`](builder-methods#run-values-options) method to execute
+[`run()`](query-execute#run-values-options) method to execute
 the query. This is used for queries that aren't expected to return any rows
 from the database, e.g. for `INSERT`, `UPDATE` or `DELETE` queries.  It's an
 asynchronous method (as are all the other execution methods) so you'll need
@@ -546,7 +552,7 @@ await db
   .run();
 ```
 
-The [`all()`](builder-methods#all-values-options) method can be used
+The [`all()`](query-execute#all-values-options) method can be used
 to fetch all rows matching the query.  It will return an array of objects
 containing the data for each row.
 
@@ -558,7 +564,7 @@ const rows = await db
 console.log(rows.length, 'rows returned')
 ```
 
-The [`any()`](builder-methods#any-values-options)
+The [`any()`](query-execute#any-values-options)
 method can be used to return a single row.  The method will return
 an object containing the row data or `undefined` if it doesn't match a row.
 
@@ -572,7 +578,7 @@ console.log(row ? 'got a row' : 'row not found')
 ```
 
 If you're expecting to get one and only one row returned then use the
-[`one()`](builder-methods#one-values-options) method instead.
+[`one()`](query-execute#one-values-options) method instead.
 This will throw an error if the row isn't found or if the query returns
 multiple rows.
 
@@ -588,10 +594,10 @@ console.log('got a row:', row)
 You can provide values for placeholders when you're building queries,
 as shown in the exampels above.  Or you can save them all up and pass
 them as an array to the
-[`run()`](builder-methods#run-values-options),
-[`one()`](builder-methods#one-values-options),
-[`any()`](builder-methods#any-values-options) or
-[`all()`](builder-methods#all-values-options) methods.
+[`run()`](query-execute#run-values-options),
+[`one()`](query-execute#one-values-options),
+[`any()`](query-execute#any-values-options) or
+[`all()`](query-execute#all-values-options) methods.
 
 ```js
 const row = await db
@@ -602,28 +608,28 @@ const row = await db
 ```
 
 Although it's possible to provide some placeholder values in methods where
-you're building the query (e.g. in [`where()`](builder-methods#where-criteria))
+you're building the query (e.g. in [`where()`](select-query#where-criteria))
 and others when you run the query (e.g. in
-[`all()`](builder-methods#all-values-options)), you do have to be
+[`all()`](query-execute#all-values-options)), you do have to be
 careful to ensure the placeholder values end up in the right order.
 
 When the query is executed, the default order for placeholder values is the
 concatenation of
-[`setValues()`](builder-methods#setvalues),
-[`whereValues()`](builder-methods#wherevalues),
-[`havingValues()`](builder-methods#havingvalues),
+[`setValues()`](query-execute#setvalues),
+[`whereValues()`](query-execute#wherevalues),
+[`havingValues()`](query-execute#havingvalues),
 and finally any values you provide to the execution methods:
-[`run()`](builder-methods#run-values-options),
-[`one()`](builder-methods#one-values-options),
-[`any()`](builder-methods#any-values-options) or
-[`all()`](builder-methods#all-values-options).
+[`run()`](query-execute#run-values-options),
+[`one()`](query-execute#one-values-options),
+[`any()`](query-execute#any-values-options) or
+[`all()`](query-execute#all-values-options).
 
 If you need to re-arrange the order of placeholder values then you can
 pass a function to any of the query execution methods.  This will be
 passed three arrays: the
-[`setValues()`](builder-methods#setvalues),
-[`whereValues()`](builder-methods#wherevalues) and
-[`havingValues()`](builder-methods#havingvalues).  Your
+[`setValues()`](query-execute#setvalues),
+[`whereValues()`](query-execute#wherevalues) and
+[`havingValues()`](query-execute#havingvalues).  Your
 function should return an array containing the concatenated values
 including any other placeholder values you need to provide.
 
@@ -692,7 +698,7 @@ Each query is entirely independent from the others.
 Furthermore, the fact that the query builder allows you to call methods
 out of sequence means that you're not limited to tagging new method calls
 onto the end of the base query.  For example, you can
-[`select()`](builder-methods#select-columns) additional
+[`select()`](select-query) additional
 columns in one of the new queries if there's something extra you need that
 isn't in the base query.
 
@@ -801,7 +807,7 @@ const db = connect({
 const badgers = await db.all('fetchAllBadgers')
 ```
 
-The [`sql()`](builder-methods#sql) method can be used to view the SQL generated by a named
+The [`sql()`](query-execute#sql) method can be used to view the SQL generated by a named
 query builder.
 
 ```js
@@ -812,7 +818,7 @@ db.sql('fetchAllBadgers')
 ```
 
 If you want to see what placeholder values the query has got defined then
-you can call the [`allValues()`](builder-methods#allvalues) method.
+you can call the [`allValues()`](query-execute#allvalues) method.
 
 ```js
 db.query('fetchAllBadgers').allValues()
@@ -820,15 +826,15 @@ db.query('fetchAllBadgers').allValues()
 ```
 
 Placeholder values are stored in three separate arrays internally: one
-for any values being set via an [`insert()`](builder-methods#insert-columns)
-or [`update()`](builder-methods#update-table) query
-([`setValues()`](builder-methods#setvalues)),
-another for any values set via [`where()`](builder-methods#where-criteria)
-([`whereValues()`](builder-methods#wherevalues)),
+for any values being set via an [`insert()`](insert-query)
+or [`update()`](update-query) query
+([`setValues()`](update-query#set-values)),
+another for any values set via [`where()`](select-query#where-criteria)
+([`whereValues()`](query-execute#wherevalues)),
 and the third for values set via
-[`having()`](builder-methods#having-criteria)
-([`havingValues()`](builder-methods#havingvalues)).
-The [`allValues()`](builder-methods#allvalues)
+[`having()`](select-query#having-criteria)
+([`havingValues()`](query-execute#havingvalues)).
+The [`allValues()`](query-execute#allvalues)
 method returns the concatenation of these three arrays.
 
 ```js

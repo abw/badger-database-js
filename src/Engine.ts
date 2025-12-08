@@ -325,6 +325,10 @@ export abstract class Engine<Client=AnyClient> {
     return `${this.quote(column)} is NULL`;
   }
 
+  formatWhereNotNull(column: string) {
+    return `${this.quote(column)} is not NULL`;
+  }
+
   formatSetPlaceholder(column: string, n: number) {
     return `${this.quote(column)} ${equals} ${this.formatPlaceholder(n)}`;
   }
