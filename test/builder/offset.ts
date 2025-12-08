@@ -2,8 +2,9 @@ import { expect, test } from 'vitest'
 import Offset from '../../src/Builder/Offset.js'
 import { connect } from '../../src/Database.js'
 import { expectOpTypeSql } from '../library/expect.js';
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {

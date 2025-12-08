@@ -2,13 +2,15 @@ import Builder from '../Builder'
 import { splitList } from '@abw/badger-utils'
 import { comma, ASC, DESC, ORDER_BY, space } from '../Constants'
 
-export type OrderBuilderOrder = {
+export type OrderColumn = string | string[] | OrderColumnObject
+export type OrderColumnObject = {
   direction?: string
   dir?: string
   asc?: boolean
   desc?: boolean
   column?: string
   columns?: string
+  sql?: string | TemplateStringsArray
 }
 
 export class Order extends Builder {
@@ -36,7 +38,7 @@ export class Order extends Builder {
     this.errorMsg('array', { n: order.length });
   }
 
-  resolveLinkObject(order: OrderBuilderOrder) {
+  resolveLinkObject(order: OrderColumnObject) {
     const dir = order.direction || order.dir
       || (order.desc && DESC)
       || (order.asc  && ASC);

@@ -4,8 +4,9 @@ import { connect } from '../../src/Database.js'
 import { sql } from '../../src/index.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {

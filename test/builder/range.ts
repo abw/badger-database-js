@@ -3,8 +3,9 @@ import Range from '../../src/Builder/Range.js'
 import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js';
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -78,6 +79,7 @@ test( 'range with object specifying offset',
 
 test( 'range with no args',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: no range parameters to test error reporting
     () => db.build.range().sql(),
     QueryBuilderError,
     'Invalid arguments with 0 items specified for query builder "range" component. Expected (from, to), (from) or object.'
@@ -86,6 +88,7 @@ test( 'range with no args',
 
 test( 'range with three args',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: too many range parameters to test error reporting
     () => db.build.range(10, 20, 30).sql(),
     QueryBuilderError,
     'Invalid arguments with 3 items specified for query builder "range" component. Expected (from, to), (from) or object.'
@@ -94,6 +97,7 @@ test( 'range with three args',
 
 test( 'range with invalid object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: invalid range object to test error reporting
     () => db.build.range({ a: 10, b: 20 }).sql(),
     QueryBuilderError,
     'Invalid object with "a, b" properties specified for query builder "range" component.  Valid properties are "from", "to", "limit" and "offset".'
@@ -102,6 +106,7 @@ test( 'range with invalid object',
 
 test( 'range with invalid argument',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: invalid range string to test error reporting
     () => db.build.range("a string").sql(),
     QueryBuilderError,
     'Invalid argument specified for query builder "range" component. Expected (from, to), (from) or object.'

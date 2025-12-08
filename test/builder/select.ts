@@ -1,8 +1,7 @@
 import { expect, test } from 'vitest'
-import Select from '../../src/Builder/Select.js'
-import { connect } from '../../src/Database.js'
-import { QueryBuilderError } from '../../src/Utils/Error.js'
-import { sql } from '../../src/Utils/Tags.js'
+import Select from '../../src/Builder/Select'
+import { connect } from '../../src/Database'
+import { QueryBuilderError, sql } from '../../src/Utils'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
 import { DatabaseInstance } from '@/src/types'
 
@@ -197,6 +196,7 @@ test( 'columns with table name and prefix in object',
 
 test( 'invalid object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberately invalid keys to check error handling
     () => db.select({ users: 'email email_address', oops: 'This is wrong' }).sql(),
     QueryBuilderError,
     'Invalid object with "oops, users" properties specified for query builder "select" component.  Valid properties are "columns", "column", "table", "prefix" and "as".'

@@ -27,7 +27,8 @@ const joinTypes = {
 };
 type JoinType = 'inner' | 'left' | 'right' | 'full'
 
-export type JoinBuilderJoinObject = {
+export type JoinTable = string | string[] | JoinTableObject
+export type JoinTableObject = {
   type?: JoinType
   table?: string
   from?: string
@@ -86,7 +87,7 @@ export class Join extends Builder {
     this.errorMsg('array', { n: join.length });
   }
 
-  resolveLinkObject(join: JoinBuilderJoinObject) {
+  resolveLinkObject(join: JoinTableObject) {
     const type = joinTypes[join.type || 'default']
       || this.errorMsg('type', { joinType: join.type });
 

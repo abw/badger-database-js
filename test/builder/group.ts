@@ -4,8 +4,9 @@ import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { sql } from '../../src/Utils/Tags.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -96,6 +97,7 @@ test( 'invalid group array',
 
 test( 'invalid group object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: Deliberate mistake to test error reporting
     () => db.build.group({ table: 'a', from: 'b' }).sql(),
     QueryBuilderError,
     'Invalid object with "from, table" properties specified for query builder "group" component.  Valid properties are "columns" and "column".',

@@ -8,7 +8,7 @@ export type SelectColumnObject  = {
   as?: string
   table?: string
   prefix?: string
-  sql?: string
+  sql?: string | TemplateStringsArray
 }
 
 export class Select extends Builder {

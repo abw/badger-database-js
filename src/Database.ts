@@ -11,6 +11,7 @@ import { fail } from '@abw/badger-utils'
 import { BuilderInstance, ConnectConfig, EngineInstance, TableInstance, TablesInstance } from './types'
 import { AnyClient } from './Engine'
 import { BuilderProxy } from './Proxy'
+import { SelectColumn } from './Builder/Select'
 
 const defaults: ConnectConfig = {
   tablesClass: Tables
@@ -85,8 +86,8 @@ export class Database extends Queryable {
   //-----------------------------------------------------------------------------
   // Query builder
   //-----------------------------------------------------------------------------
-  select(...args) {
-    return this.build.select(...args);
+  select(column: SelectColumn, ...moreColumns: SelectColumn[]) {
+    return this.build.select(column, ...moreColumns)
   }
   insert(...args) {
     return this.build.insert(...args);

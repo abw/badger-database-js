@@ -2,8 +2,9 @@ import { expect, test } from 'vitest'
 import Limit from '../../src/Builder/Limit.js'
 import { connect } from '../../src/Database.js'
 import { expectOpTypeSql } from '../library/expect.js';
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {

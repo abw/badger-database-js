@@ -2,9 +2,11 @@ import Builder from '../Builder'
 import { splitList } from '@abw/badger-utils'
 import { comma, GROUP_BY } from '../Constants'
 
-export type GroupBuilderGroupObject = {
+export type GroupByColumn = string | string[] | GroupByObject
+export type GroupByObject = {
   column?: string
   columns?: string
+  sql?: string | TemplateStringsArray
 }
 
 export class Group extends Builder {
@@ -31,7 +33,7 @@ export class Group extends Builder {
     this.errorMsg('array', { n: group.length });
   }
 
-  resolveLinkObject(group: GroupBuilderGroupObject) {
+  resolveLinkObject(group: GroupByObject) {
     if (group.column) {
       return this.quote(group.column);
     }

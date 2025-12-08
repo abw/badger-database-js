@@ -201,6 +201,7 @@ test( 'columns with table name and prefix in object',
 
 test( 'invalid object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: invalid object key to test error reporting
     () => db.build.from('a').columns({ users: 'email email_address', oops: 'This is wrong' }).sql(),
     QueryBuilderError,
     'Invalid object with "oops, users" properties specified for query builder "columns" component.  Valid properties are "columns", "column", "table", "prefix" and "as".'

@@ -1,4 +1,4 @@
-import Select, { SelectBuilderColumn } from './Select';
+import Select, { SelectColumnObject } from './Select';
 
 export class Columns extends Select {
   static buildMethod = 'columns'
@@ -37,7 +37,7 @@ export class Columns extends Select {
     this.errorMsg('array', { n: columns.length });
   }
 
-  resolveLinkObject(column: SelectBuilderColumn) {
+  resolveLinkObject(column: SelectColumnObject) {
     const table = this.lookupTable()
 
     if (column.column && column.as) {

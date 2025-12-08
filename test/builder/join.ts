@@ -3,8 +3,9 @@ import Join from '../../src/Builder/Join.js'
 import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js';
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -231,6 +232,7 @@ test( 'multiple joins',
 
 test( 'invalid join type',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate invalid type to check error
     () => db.build.join({ type: 'wibble', table: 'a', from: 'b', to: 'c' }).sql(),
     QueryBuilderError,
     'Invalid join type "wibble" specified for query builder "join" component.  Valid types are "left", "right", "inner" and "full".'
@@ -239,6 +241,7 @@ test( 'invalid join type',
 
 test( 'invalid join object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate mis-spelling of "table" to check error
     () => db.build.join({ talbe: 'a', from: 'b', to: 'c' }).sql(),
     QueryBuilderError,
     'Invalid object with "from, talbe, to" properties specified for query builder "join" component.  Valid properties are "type", "table", "from" and "to".',

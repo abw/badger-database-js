@@ -4,9 +4,10 @@ import { expect, test } from 'vitest'
 import Database from '../../src/Builder/Database.js'
 import From from '../../src/Builder/From.js'
 import { connect } from '../../src/Database.js'
-// import Table from '../../src/builder/Table.js';
+import { DatabaseInstance } from '@/src/types'
 
-let db, users;
+let db: DatabaseInstance
+let users;
 
 test( 'connect',
   () => {

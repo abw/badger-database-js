@@ -1,7 +1,7 @@
 import Builder, { BuilderContext } from '../Builder'
 import { isInteger, isObject } from '@abw/badger-utils'
 
-export type RangeBuilderObject = {
+export type RangeObject = {
   from?: number
   to?: number
   limit?: number
@@ -51,7 +51,7 @@ export class Range extends Builder {
     }
   }
 
-  objectArgs(args: RangeBuilderObject) {
+  objectArgs(args: RangeObject) {
     if (args.from && args.to) {
       return this.twoNumberArgs(args.from, args.to);
     }

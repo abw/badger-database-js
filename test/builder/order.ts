@@ -1,11 +1,12 @@
 import { expect, test } from 'vitest'
-import Order from '../../src/Builder/Order.js'
-import { connect } from '../../src/Database.js'
-import { QueryBuilderError } from '../../src/Utils/Error.js'
-import { sql } from '../../src/Utils/Tags.js'
+import Order from '../../src/Builder/Order'
+import { connect } from '../../src/Database'
+import { QueryBuilderError } from '../../src/Utils/Error'
+import { sql } from '../../src/Utils/Tags'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -152,6 +153,7 @@ test( 'invalid order array',
 
 test( 'invalid order object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate invalid keys to test error handling
     () => db.build.order({ table: 'a', from: 'b' }).sql(),
     QueryBuilderError,
     'Invalid object with "from, table" properties specified for query builder "order" component.  Valid properties are "columns", "column", "direction", "dir", "asc" and "desc".',
