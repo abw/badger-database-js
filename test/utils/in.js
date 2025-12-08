@@ -1,29 +1,29 @@
 import { expect, test } from 'vitest'
-import { isIn } from '../../src/Utils/index.js'
+import { isInOrNotIn } from '../../src/Utils/index.js'
 import { IN, NOT_IN } from '../../src/Constants.js'
 
-test( 'isIn("in")',
+test( 'isInOrNotIn("in")',
   () => expect(
-    isIn("in")
+    isInOrNotIn("in")
   ).toBe(IN)
 )
-test( 'isIn("IN")',
+test( 'isInOrNotIn("IN")',
   () => expect(
-    isIn("in")
+    isInOrNotIn("in")
   ).toBe(IN)
 )
-test( 'isIn("In")',
+test( 'isInOrNotIn("In")',
   () => expect(
-    isIn("in")
+    isInOrNotIn("in")
   ).toBe(IN)
 )
-test( 'isIn("not in")',
+test( 'isInOrNotIn("not in")',
   () => expect(
-    isIn("not in")
+    isInOrNotIn("not in")
   ).toBe(NOT_IN)
 )
-test( 'isIn("nOt    iN")',
+test( 'isInOrNotIn("nOt    iN")',
   () => expect(
-    isIn("nOt    iN")
+    isInOrNotIn("nOt    iN")
   ).toBe(NOT_IN)
 )

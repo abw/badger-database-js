@@ -236,6 +236,10 @@ export class Engine {
     return `${this.quote(column)} is NULL`;
   }
 
+  formatWhereNotNull(column) {
+    return `${this.quote(column)} is not NULL`;
+  }
+
   formatSetPlaceholder(column, n) {
     return `${this.quote(column)} ${equals} ${this.formatPlaceholder(n)}`;
   }

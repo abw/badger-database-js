@@ -4,6 +4,6 @@ const inOrNotIn = {
   [IN]:     IN,
   [NOT_IN]: NOT_IN
 }
-export const isIn = value => inOrNotIn[
+export const isInOrNotIn = value => inOrNotIn[
   value.toUpperCase().replaceAll(/\s+/g, ' ')
 ]

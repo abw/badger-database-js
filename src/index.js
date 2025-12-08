@@ -1,5 +1,6 @@
 export * from './Builder.js';
 export * from './Builders.js';
+export * from './Comparators.js';
 export * from './Constants.js';
 export * from './Database.js';
 export * from './Engine.js';
