@@ -2,7 +2,7 @@ import { expect, test } from 'vitest'
 import { range } from '@abw/badger-utils'
 import { DatabaseInstance } from '@/src/types'
 import { expectToThrowErrorTypeMessage } from '../library/expect.js'
-import { connect, Builder, registerBuilder, comma, QueryBuilderError } from '../../src/index'
+import { connect, Builder, registerBuilder, comma, QueryBuilderError, BuilderMethods } from '../../src/index'
 
 let db: DatabaseInstance
 
@@ -49,6 +49,13 @@ class Animal extends Builder {
 
 registerBuilder(Animal)
 
+// Extend the BuilderMethods interface to include our animal method
+declare module "../../src/index" {
+  interface BuilderMethods {
+    animal(name: AnimalName, ...moreNames: AnimalName[]): this
+  }
+}
+
 test( 'connect',
   () => {
     db = connect({ database: 'sqlite:memory' });
@@ -58,6 +65,8 @@ test( 'connect',
 
 test( 'animal',
   () => expect(
+    // Bah!  db.build is a pre-defined proxy so we can't use a generic
+    // parameter to extend it, e.g. db.build<MyExtraBuilders>
     db.build.animal('badger')
   ).toBeInstanceOf(
     Animal
@@ -105,6 +114,7 @@ test( 'multiple calls',
 
 test( 'invalid array',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate mistake to check error reporting
     () => db.build.animal(['Badger', 'Mushroom', 'Snake']).sql(),
     QueryBuilderError,
     'Invalid array with 3 items specified for query builder "animal" component. Expected [animal, count].'
@@ -125,6 +135,7 @@ test( "valid method for insert",
 
 test( 'invalid method for update',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate mistake to check error reporting
     () => db.build.update('name').animal(['Badger', 'Mushroom', 'Snake']).sql(),
     QueryBuilderError,
     'animal() is not a valid builder method for an UPDATE query.'
@@ -133,6 +144,7 @@ test( 'invalid method for update',
 
 test( 'invalid method for delete',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate mistake to check error reporting
     () => db.build.delete().animal(['Badger', 'Mushroom', 'Snake']).sql(),
     QueryBuilderError,
     'animal() is not a valid builder method for a DELETE query.'
