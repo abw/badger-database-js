@@ -1,11 +1,11 @@
 import { isArray, isUndefined } from '@abw/badger-utils'
 
-export const comparatorFactory = operator => arg =>
+export const comparatorFactory = (operator: string) => (arg: any) =>
   isUndefined(arg)
     ? [operator]
     : [operator, arg]
 
-export const inFactory = operator => (...args) =>
+export const inFactory = (operator: string) => (...args: any[]) =>
   (args.length === 1 && isArray(args[0]))
     ? { [operator]: args[0] }
     : { [operator]: [...args] }
