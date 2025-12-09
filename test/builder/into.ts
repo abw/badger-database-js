@@ -1,10 +1,11 @@
 import { expect, test } from 'vitest'
-import Into from '../../src/Builder/Into.js'
-import { connect } from '../../src/Database.js'
-import { sql } from '../../src/Utils/Tags.js'
+import Into from '../../src/Builder/Into'
+import { connect } from '../../src/Database'
+import { sql } from '../../src/Utils/Tags'
 import { expectOpTypeSql } from '../library/expect.js';
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {

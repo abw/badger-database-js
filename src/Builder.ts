@@ -1,9 +1,10 @@
 import { newline, unknown } from './Constants'
-import { DatabaseInstance } from './types'
+import { DatabaseInstance, QueryOptions, QueryParams } from './types'
 import { addDebugMethod, spaceAfter, notImplementedInBaseClass, QueryBuilderError } from './Utils'
 import { fail, format, hasValue, isArray, isFunction, isObject, isString, noValue, splitList } from '@abw/badger-utils'
 
-export let Builders: Record<string, typeof Builder> = { }
+export type BuildersTable = Record<string, typeof Builder>
+export let Builders: BuildersTable = { }
 export let Generators = { }
 
 const defaultContext = (): BuilderContext => ({
@@ -15,7 +16,7 @@ const defaultContext = (): BuilderContext => ({
 
 const notImplemented = notImplementedInBaseClass('Builder');
 
-type BuilderMessages = Record<string, string>
+export type BuilderMessages = Record<string, string>
 type BuilderValue = string | number | boolean | null
 type BuilderValues = BuilderValue[]
 type AllValuesWhereFunction = (
@@ -45,6 +46,8 @@ export class Builder {
   static buildAlias?: string
   static buildOrder?: number
   static contextSlot?: string
+  static validFor?: string | Record<string, boolean>
+  static subMethods?: string | Record<string, boolean>
 
   static generateSQL(values: Stringable | Stringable[], _context?: BuilderContext) {
     const keyword = this.keyword;
@@ -89,34 +92,46 @@ export class Builder {
     // stub for subclasses
   }
 
-  async one(args, options) {
+  async one(
+    params?: QueryParams,
+    options?: QueryOptions
+  ) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.allValues(args);
+    const values = this.allValues(params);
     this.debugData("one()", { sql, values });
     return db.one(sql, values, options);
   }
 
-  async any(args, options) {
+  async any(
+    params?: QueryParams,
+    options?: QueryOptions
+  ) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.allValues(args);
+    const values = this.allValues(params);
     this.debugData("any()", { sql, values });
     return db.any(sql, values, options);
   }
 
-  async all(args, options={}) {
+  async all(
+    params?: QueryParams,
+    options: QueryOptions = { }
+  ) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.allValues(args);
+    const values = this.allValues(params);
     this.debugData("all()", { sql, values });
     return db.all(sql, values, options);
   }
 
-  async run(args, options={}) {
+  async run(
+    params?: QueryParams,
+    options?: QueryOptions
+  ) {
     const sql    = this.sql();
     const db     = this.lookupDatabase();
-    const values = this.allValues(args);
+    const values = this.allValues(params);
     this.debugData("all()", { sql, values });
     return db.run(sql, values, { ...options, sanitizeResult: true });
   }

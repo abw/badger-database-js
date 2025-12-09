@@ -1,5 +1,8 @@
-import Where from './Where'
+import Where, { WhereColumnObject } from './Where'
 import { comma, SET } from '../Constants'
+
+export type SetColumn = string | string[] | SetColumnObject
+export type SetColumnObject = WhereColumnObject
 
 export class Set extends Where {
   static buildMethod = 'set'
@@ -17,7 +20,7 @@ export class Set extends Where {
     this.setValues(...values)
   }
 
-  resolveLinkObject(criteria: Record<string, any>) {
+  resolveLinkObject(criteria: SetColumnObject) {
     const database = this.lookupDatabase();
     let values = [ ];
     const result = Object.entries(criteria).map(

@@ -4,8 +4,9 @@ import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { sql } from '../../src/Utils/Tags.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -123,6 +124,7 @@ test( 'update set where with values',
 
 test( 'invalid object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate mistake to test error reporting
     () => db.build.update({ users: 'email email_address', oops: 'This is wrong' }).sql(),
     QueryBuilderError,
     'Invalid object with "oops, users" properties specified for query builder "update" component.  Valid properties are "tables", "table" and "as".'

@@ -3,11 +3,13 @@ import Builder from '../Builder.js'
 import { comma, DELETE } from '../Constants'
 import { spaceAfter } from '../Utils/Space'
 
-export type DeleteBuilderColumn = {
+export type DeleteColumn = string | string[] | DeleteColumnObject
+export type DeleteColumnObject = {
   column?: string
   columns?: string | string[]
   table?: string
   prefix?: string
+  sql: string | TemplateStringsArray
 }
 
 export class Delete extends Builder {
@@ -45,7 +47,7 @@ export class Delete extends Builder {
     return this.quoteTableColumns(table, columns, prefix)
   }
 
-  resolveLinkObject(column: DeleteBuilderColumn) {
+  resolveLinkObject(column: DeleteColumnObject) {
     const cols = column.column || column.columns;
     if (cols) {
       return this.resolveLinkString(cols, column.table, column.prefix)

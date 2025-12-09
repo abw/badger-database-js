@@ -1,4 +1,4 @@
-import Builder from '../Builder'
+import Builder, { BuilderMessages } from '../Builder'
 import { isInOrNotIn, toArray } from '../Utils'
 import { AND, WHERE, IN, NOT_IN, space } from '../Constants'
 import { hasValue, isArray, isNull, isObject, isString, joinListAnd, splitList } from '@abw/badger-utils'
@@ -19,7 +19,7 @@ export class Where extends Builder {
   static buildOrder  = 50
   static keyword     = WHERE
   static joint       = space + AND + space
-  static messages = {
+  static messages: BuilderMessages = {
     array:  'Invalid array with <n> items specified for query builder "<method>" component. Expected [column, value] or [column, operator, value].',
     object: 'Invalid value array with <n> items specified for query builder "<method>" component. Expected [value] or [operator, value].',
     comparator: 'Invalid comparator object with <keys> specified for query builder "<method>" component. Expected object to contain "isNull", "notNull", etc.',

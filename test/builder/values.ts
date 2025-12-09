@@ -1,8 +1,9 @@
 import { expect, test } from 'vitest'
 import Values from '../../src/Builder/Values.js'
 import { connect } from '../../src/Database.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {

@@ -1,8 +1,9 @@
 import { expect, test } from 'vitest'
 import { connect } from '../../src/Database.js'
 import { setDebug } from '../../src/Utils/Debug.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 setDebug({ builder: false })
 

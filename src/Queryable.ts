@@ -93,8 +93,8 @@ export class Queryable {
 
   async run(
     query: QuerySource,
-    params: QueryParams,
-    options: QueryOptions
+    params?: QueryParams,
+    options?: QueryOptions
   ) {
     this.debugData("run()", { query, params, options });
     return this.buildQuery(query).run(params, options)
@@ -102,8 +102,8 @@ export class Queryable {
 
   async one(
     query: QuerySource,
-    params: QueryParams,
-    options: QueryOptions
+    params?: QueryParams,
+    options?: QueryOptions
   ) {
     this.debugData("one()", { query, params, options });
     return this.loadedOne(
@@ -114,8 +114,8 @@ export class Queryable {
 
   async any(
     query: QuerySource,
-    params: QueryParams,
-    options: QueryOptions
+    params?: QueryParams,
+    options?: QueryOptions
   ) {
     this.debugData("any()", { query, params, options });
     return this.loadedAny(

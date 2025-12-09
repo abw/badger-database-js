@@ -4,6 +4,11 @@ import { blank, comma, INTO, newline, VALUES } from '../Constants'
 import { isArray, isString } from '@abw/badger-utils';
 import { Stringable } from '../types'
 
+export type IntoTable = string | IntoTableObject
+export type IntoTableObject = {
+  sql: string | TemplateStringsArray
+}
+
 export class Into extends Builder {
   static buildMethod = 'into'
   static buildOrder  = 29

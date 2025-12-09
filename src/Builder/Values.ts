@@ -1,6 +1,8 @@
 import Builder from '../Builder'
 import { isFloat, isInteger } from '@abw/badger-utils'
 
+export type ValuesValue = any | any[]
+
 export class Values extends Builder {
   static buildMethod = 'values'
   static buildOrder  = 0

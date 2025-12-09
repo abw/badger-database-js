@@ -1,7 +1,16 @@
 import { expect, test } from 'vitest'
-import { connect, Builder, registerBuilder, comma, QueryBuilderError } from '../../src/index.js'
 import { range } from '@abw/badger-utils'
+import { DatabaseInstance } from '@/src/types'
 import { expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { connect, Builder, registerBuilder, comma, QueryBuilderError } from '../../src/index'
+
+let db: DatabaseInstance
+
+type AnimalName = string | [string, number] | AnimalObject
+type AnimalObject = {
+  animal: string
+  count?: number
+}
 
 class Animal extends Builder {
   static buildMethod = 'animal'
@@ -14,32 +23,31 @@ class Animal extends Builder {
     object: 'Invalid object with "<keys>" properties specified for query builder "<method>" component.  Valid properties are "animal" and "count".',
   }
 
-  resolveLinkString(arg) {
+  resolveLinkString(arg: string) {
     return arg;
   }
 
-  resolveLinkArray(arg) {
+  resolveLinkArray(arg: [string, number?]) {
     if (arg.length === 2) {
+      // const [animal, count] = arg
       return this.repeatAnimal(...arg);
     }
     this.errorMsg('array', { n: arg.length });
   }
 
-  resolveLinkObject(arg) {
+  resolveLinkObject(arg: AnimalObject) {
     if (arg.animal) {
       return this.repeatAnimal(arg.animal, arg.count);
     }
     this.errorMsg('object', { keys: Object.keys(arg).sort().join(', ') });
   }
 
-  repeatAnimal(animal, count=1) {
+  repeatAnimal(animal: string, count=1) {
     return range(1, count).map( () => animal )
   }
 }
 
 registerBuilder(Animal)
-
-let db;
 
 test( 'connect',
   () => {

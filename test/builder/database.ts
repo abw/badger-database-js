@@ -6,8 +6,9 @@ import Insert from '../../src/Builder/Insert.js'
 import Update from '../../src/Builder/Update.js'
 import Delete from '../../src/Builder/Delete.js'
 import { connect } from '../../src/Database.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -26,7 +27,7 @@ test( 'builder',
 
 test( 'from',
   () => expect(
-    db.build.from()
+    db.build.from('tablename')
   ).toBeInstanceOf(
     From
   )
@@ -34,7 +35,7 @@ test( 'from',
 
 test( 'select',
   () => expect(
-    db.select()
+    db.select('columns')
   ).toBeInstanceOf(
     Select
   )

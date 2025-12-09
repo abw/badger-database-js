@@ -1,7 +1,8 @@
 import Builder from '../Builder'
 import { comma, INSERT } from '../Constants'
 
-export type InsertBuilderColumn = {
+export type InsertColumn = string | string[] | InsertColumnObject
+export type InsertColumnObject = {
   column?: string
   columns?: string
   table?: string
@@ -38,7 +39,7 @@ export class Insert extends Builder {
     return this.quoteTableColumns(undefined, columns)
   }
 
-  resolveLinkObject(column: InsertBuilderColumn) {
+  resolveLinkObject(column: InsertColumnObject) {
     const cols = column.column || column.columns;
     if (cols) {
       return this.resolveLinkString(cols)

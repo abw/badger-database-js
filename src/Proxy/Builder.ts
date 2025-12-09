@@ -1,16 +1,20 @@
+import Builder, { BuildersTable } from '../Builder'
+import { BuilderInstance } from '../types'
 import { extract, splitHash } from '@abw/badger-utils'
 import { article, QueryBuilderError } from '../Utils'
 import { SelectColumn } from '../Builder/Select'
 import { FromTable } from '../Builder/From'
-import Builder from '../Builder'
-import { BuilderInstance } from '../types'
 import { WhereColumn } from '../Builder/Where'
 import { JoinTable } from '../Builder/Join'
 import { OrderColumn } from '../Builder/Order'
 import { GroupByColumn } from '../Builder/Group'
 import { RangeObject } from '../Builder/Range'
+import { InsertColumn } from '../Builder/Insert'
+import { IntoTable } from '../Builder/Into'
+import { ValuesValue } from '../Builder/Values'
+import { SetColumn } from '../Builder/Set'
+import { DeleteColumn } from '../Builder/Delete'
 
-// export type BuildSelect = (column: SelectColumn, ...more: SelectColumn[]) => BuilderProxy
 export interface BuilderMethods {
   /**
    * Add a `select ...` clause to the query.
@@ -186,6 +190,83 @@ export interface BuilderMethods {
    * query.columns({ table: 'users', columns: 'id name', prefix: 'user_' })
    */
   columns(column: SelectColumn, ...moreColumns: SelectColumn[]): this
+  /**
+   * Create an `insert ...` query
+   * @example
+   * query.insert() // insert all columns
+   * @example
+   * query.insert('id', 'name', 'email') // insert multiple columns
+   * @example
+   * query.insert('id name email')  // short-hand form
+   * @example
+   * query.insert({ columns: 'id name email' }) // object form
+   */
+  insert(column?: InsertColumn, ...moreColumns: InsertColumn[]): this
+  /**
+   * Add an `into ...` clause to an insert query
+   * @example
+   * query.insert().into('users') // insert into users table
+   */
+  into(table?: IntoTable): this
+  /**
+   * Add a `values ...` clause to an insert query
+   * @example
+   * query.values('foo', 'bar') // values to insert
+   * @example
+   * query.values(['foo', 'bar']) // array of values to insert
+   */
+  values(value?: ValuesValue, ...moreValues: ValuesValue[]): this
+  /**
+   * Add a `returning ...` clause to an insert.
+   * @example
+   * query.returning('id', 'name', 'email') // returning multiple columns
+   * @example
+   * query.returning('id name email')  // short-hand form
+   * @example
+   * query.returning('users.id companies.name') // with explicit table names
+   * @example
+   * query.returning(['id', 'userId']) // with alias: returning `id` as `userId`
+   * @example
+   * query.returning({ column: 'id', as: 'userId' }) // alias as above
+   * @example
+   * // returning users.id as user_id, users.name as user_name
+   * query.returning({ table: 'users', columns: 'id name', prefix: 'user_' })
+   */
+  returning(column: SelectColumn, ...moreColumns: SelectColumn[]): this
+  /**
+   * Create an `update ...` query.
+   * @example
+   * query.update('users') // update the users table
+   * @example
+   * query.from({ table: 'users' }) // object form
+   */
+  update(table: FromTable, ...moreTables: FromTable[]): this
+  /**
+   * Add a `set ...` clause to an update query.
+   * @example
+   * query.set('id') // single column placeholder
+   * @example
+   * query.set('id name') // multiple column placeholders
+   * @example
+   * query.set('users.id companies.id') // columns with table names
+   * @example
+   * query.set(['id', 123]) // column with value provided for placeholder
+   * @example
+   * query.set({ id: 123, status: 'active' }) // multiple columns with values provided for placeholder
+   * @example
+   * query.set(['age', gt(18)]) // column with comparison
+   * @example
+   * query.set({ age: gt(18), status: in('active', 'pending') }) // multiple comparison operators
+   * @example
+   * query.set({ age: isNull(), status: notNull() }) // `IS NULL` / `NOT NULL`
+   */
+  set(criteria: SetColumn, ...moreCriteria: WhereColumn[]): this
+  /**
+   * Create a `delete ...` query.
+   * @example
+   * query.delete().from('users').where(...)
+   */
+  delete(table?: DeleteColumn, ...moreTables: DeleteColumn[]): this
 }
 
 export type BuilderProxy = Builder & BuilderMethods
@@ -215,7 +296,7 @@ type BuilderClass<T = any> = {
 // is added, e.g. "SELECT cannot be added to a DELETE query".
 
 export const builderProxy = (
-  builders,
+  builders: BuildersTable,
   parent: BuilderInstance,
   options: BuilderProxyOptions = { }
 ): BuilderProxy =>

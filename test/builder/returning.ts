@@ -4,8 +4,9 @@ import { connect } from '../../src/Database.js'
 import { QueryBuilderError } from '../../src/Utils/Error.js'
 import { sql } from '../../src/Utils/Tags.js'
 import { expectOpTypeSql, expectToThrowErrorTypeMessage } from '../library/expect.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance
 
 test( 'connect',
   () => {
@@ -197,6 +198,7 @@ test( 'columns with table name and prefix in object',
 
 test( 'invalid object',
   () => expectToThrowErrorTypeMessage(
+    // @ts-expect-error: deliberate mistake to check error reporting
     () => db.build.returning({ users: 'email email_address', oops: 'This is wrong' }).sql(),
     QueryBuilderError,
     'Invalid object with "oops, users" properties specified for query builder "returning" component.  Valid properties are "columns", "column", "table", "prefix" and "as".'
