@@ -7,8 +7,8 @@ outline: deep
 ## run(values, options)
 
 This method can be used to run query where you're not expecting to get
-any rows returned.  This is typically used for [`insert()`](builder-insert),
-[`update()`](#builder-update) and [`delete()`](#builder-delete) queries.
+any rows returned.  This is typically used for [`insert()`](insert-query),
+[`update()`](#update-query) and [`delete()`](#delete-query) queries.
 
 If you have any placeholders in the query that you haven't already defined
 values for then you should provide them as an array.
@@ -44,7 +44,7 @@ console.log("changes: ", result.changes)
 If you specify any placeholder values in the query then these will automatically
 be provided to the `run()` method.  For example, the
 [`values()`](#values-values) method can be used to provide values to an
-[`insert()`](builder-insert) query.
+[`insert()`](insert-query) query.
 
 ```js
 const result = await db
@@ -62,7 +62,7 @@ returns more than one row or no rows then an error will be thrown.
 If you have any placeholders in the query that you haven't already defined
 values for then you should provide them as an array.
 
-In this query the value for `id` is specified in the [`where()`](builder-select#where-criteria)
+In this query the value for `id` is specified in the [`where()`](select-query#where-criteria)
 method so you don't need to pass anything to the `one()` method.
 
 ```js
@@ -91,13 +91,13 @@ const row = await db
 
 Although it generally isn't recommended you can mix and match the two approaches.
 However you should note that all placeholder values that have been specified
-in [`where()`](builder-select#where-criteria) clauses will be provided first, followed by
-any in [`having()`](builder-select#having-criteria) clauses. Any additional values that you
+in [`where()`](select-query#where-criteria) clauses will be provided first, followed by
+any in [`having()`](select-query#having-criteria) clauses. Any additional values that you
 provide to the `one()` method will come last.  It is your responsibility to
 ensure that these are in the correct order for your query!
 
-If you have a mixture of [`where()`](builder-select#where-criteria) and
-[`having()`](builder-select#having-criteria) calls, then you might find yourself
+If you have a mixture of [`where()`](select-query#where-criteria) and
+[`having()`](select-query#having-criteria) calls, then you might find yourself
 in a tight spot if you've mixed and matched.
 
 Consider this somewhat contrived example:
