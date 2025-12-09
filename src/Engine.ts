@@ -4,10 +4,10 @@ import {
   allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK
 } from './Constants'
 import {
-  missing, SQLParseError, unexpectedRowCount, addDebugMethod, DebugSetting
+  missing, SQLParseError, unexpectedRowCount, addDebugMethod, DebugConfig
 } from "./Utils/index"
 import {
-  DatabaseConnection, EngineOptions, ExecuteOptions, QueryArgs, QueryOptions,
+  DatabaseConnection, EngineConfig, EngineOptions, ExecuteOptions, QueryArgs, QueryOptions,
   QueryParams, QueryRow, SanitizeResultOptions, TransactionInstance
 } from './types'
 
@@ -30,7 +30,7 @@ export abstract class Engine<Client=AnyClient> {
 
   engine: string
   options: EngineOptions
-  database: DatabaseConnection
+  database: Omit<DatabaseConnection, 'engine'>
   driver: string
   quoteChar: string
   returning: boolean
@@ -39,7 +39,7 @@ export abstract class Engine<Client=AnyClient> {
   debug!: (message: string) => void
   debugData!: (message: string, data: any) => void
 
-  constructor(config={}) {
+  constructor(config: EngineConfig) {
     const {
       engine,
       pool = { },
@@ -62,9 +62,9 @@ export abstract class Engine<Client=AnyClient> {
     // this.messages  = this.constructor.messages;
     this.pool      = this.initPool(pool);
     this.escQuote  = `\\${this.quoteChar}`;
-    addDebugMethod(this, 'engine', config as DebugSetting);
+    addDebugMethod(this, 'engine', config);
   }
-  configure(config) {
+  configure(config: EngineConfig) {
     return config;
   }
 

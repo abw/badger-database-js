@@ -4,9 +4,11 @@ import Database from './Database'
 import Engine from './Engine'
 import Query from './Query'
 import Queryable, { QueryableConfig } from './Queryable'
+import RecordClass from './Record'
 import Table from './Table'
 import Tables from './Tables'
 import Transaction from './Transaction'
+import { DebugConfig } from './Utils'
 
 // TODO: add in tables, queries, etc.
 export type ConnectConfig = QueryableConfig & {
@@ -80,28 +82,31 @@ export type PoolOptions = {
   createRetryIntervalMillis?: number
   propagateCreateError?: boolean
 }
+export type EngineConfig = DebugConfig & DatabaseConnection
 export type EngineOptions = Record<string, any>
 
-export type TableSpec = {
+export type TablesConstructor = new (config: TablesConfig) => TablesInstance
+// Loosely defined tables configuration
+export type TablesConfig = Record<string, any>       // TODO
+
+// More rigidly defined specification after pre-processing
+export type TablesSpec = Record<string, TableSpec>
+
+export type TableSpec = DebugConfig & {
   table?: string
-  columns: TableColumnsSpec
+  columns: TableColumnsConfig
   queries?: NamedQueries
   fragments?: QueryFragments
-  relations?: RelationSpec[]
+  relations?: RelationsConfig
   id?: string
   keys?: string | string[]
+  recordClass?: RecordConstructor
+  recordConfig?: RecordConfig
 }
 
-export type TablesConfig = Record<string, any>       // TODO
-export type TablesConstructor = new (config: TablesConfig) => TablesInstance
-
-export type TablesSpec = Record<string, TableSpec>
-export type NamedQueries = Record<string, string>
-export type QueryFragments = Record<string, string>
-
-export type TableColumnSpec = Partial<TableColumn> | string
-export type TableColumnsSpec = Record<string, TableColumnSpec> | string | string[]
-
+export type TableColumnsConfig = Record<string, TableColumnConfig> | string | string[]
+export type TableColumnConfig = Partial<TableColumn> | string
+export type TableColumns = Record<string, TableColumn>
 export type TableColumn = {
   id?:         boolean
   key?:        boolean
@@ -113,16 +118,54 @@ export type TableColumn = {
   tableColumn: string
 }
 
-export type TableColumns = Record<string, TableColumn>
 
-// export type TableColumnBitKey = keyof TableColumnSpec
 export type TableColumnFragmentKey = 'id' | 'readonly' | 'required' | 'fixed' | 'key'
 export type TableColumnFragmentValuableKey = 'type' | 'column'
 export type TableColumnFragmentKeyValue = `${TableColumnFragmentValuableKey}=${string}`
-
 export type TableColumnFragment = TableColumnFragmentKey | TableColumnFragmentKeyValue
 export type TableColumnFragments = TableColumnFragment[]
 
+export type FetchOptions = {
+  columns?: boolean
+  orderBy?: string
+  order?: string
+  record?: boolean
+  pick?: boolean
+}
+export type InsertOptions = {
+  reload?: boolean
+  record?: boolean
+  pick?: boolean
+}
+export type UpdateOptions = {
+  reload?: boolean
+  record?: boolean
+  pick?: boolean
+}
+export type DeleteOptions = {
+  // reload?: boolean
+  // record?: boolean
+  pick?: boolean
+}
+export type CheckColumnsOptions = FetchOptions & InsertOptions & UpdateOptions & {
+  writable?: true
+  fixed?: true
+}
+
+export type CheckedColumnsData = Record<string, any>
+// TODO
+export type InsertResult = Record<string, any>
+export type UpdateResult = Record<string, any>
+export type DeleteResult = Record<string, any>
+
+export type RecordConstructor = new (table: TableInstance, row: QueryRow, config: RecordConfig, ) => RecordInstance
+export type RecordConfig = {
+}
+
+export type NamedQueries = Record<string, string>
+export type QueryFragments = Record<string, string>
+
+export type RelationsConfig = Record<string, RelationConfig>
 export type RelationType = 'any' | 'one' | 'many' | 'map'
 export type RelationArrow = '~>' | '->' | '=>' | '#>'
 export type RelationArrowMap = Record<RelationArrow, RelationType>
@@ -167,12 +210,13 @@ export type ExecuteOptions = SanitizeResultOptions & {
   sanitizeResult?: boolean
 }
 
+export type QueryableInstance = InstanceType<typeof Queryable>
 export type DatabaseInstance = InstanceType<typeof Database>
 export type EngineInstance = InstanceType<typeof Engine>
+export type BuilderInstance = InstanceType<typeof Builder>
+export type QueryInstance = InstanceType<typeof Query>
 export type TablesInstance = InstanceType<typeof Tables>
 export type TableInstance = InstanceType<typeof Table>
-export type BuilderInstance = InstanceType<typeof Builder>
+export type RecordInstance = InstanceType<typeof RecordClass>
 export type TransactionInstance = InstanceType<typeof Transaction>
-export type QueryableInstance = InstanceType<typeof Queryable>
-export type QueryInstance = InstanceType<typeof Query>
 export type Stringable = string | number | boolean

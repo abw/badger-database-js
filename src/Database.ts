@@ -20,7 +20,7 @@ const defaults: ConnectConfig = {
 export class Database extends Queryable {
   config: ConnectConfig
   tables: TablesInstance
-  build: BuilderProxy
+  // build: BuilderProxy
   state: {
     table: Record<string, TableInstance>
   }

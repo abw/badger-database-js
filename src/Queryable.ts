@@ -1,16 +1,14 @@
 import Query, { QueryConfig } from './Query'
 import { singleWord } from './Constants'
 import { fail, isFunction, isString } from '@abw/badger-utils'
-import { DebugSetting, expandFragments, missing } from './Utils'
+import { DebugConfig, expandFragments, missing } from './Utils'
 import {
-  BuilderInstance, DatabaseInstance, EngineInstance, QueryableInstance,
-  QueryOptions,
-  QueryParams,
-  QueryRow,
-  TransactionInstance
+  BuilderInstance, DatabaseInstance, EngineInstance, FetchOptions, QueryableInstance,
+  QueryParams, QueryRow, TransactionInstance
 } from './types'
+import { BuilderProxy } from './Proxy'
 
-export type QueryableConfig = DebugSetting & {
+export type QueryableConfig = DebugConfig & {
   transact?: TransactionInstance
   queries?: QueryableQueries
   fragments?: QueryableFragments
@@ -26,6 +24,7 @@ export class Queryable {
   database?: DatabaseInstance
   queries: QueryableQueries
   fragments: QueryableFragments
+  build: BuilderProxy
 
   debug!: (message: string) => void
   debugData!: (message: string, data: any) => void
@@ -86,7 +85,10 @@ export class Queryable {
       : query;
   }
 
-  sql(name: QuerySource, config?: QueryConfig) {
+  sql(
+    name: QuerySource,
+    config?: QueryConfig
+  ) {
     this.debugData("sql()", { name, config });
     return this.buildQuery(name, config).sql()
   }
@@ -94,7 +96,7 @@ export class Queryable {
   async run(
     query: QuerySource,
     params?: QueryParams,
-    options?: QueryOptions
+    options?: FetchOptions
   ) {
     this.debugData("run()", { query, params, options });
     return this.buildQuery(query).run(params, options)
@@ -103,7 +105,7 @@ export class Queryable {
   async one(
     query: QuerySource,
     params?: QueryParams,
-    options?: QueryOptions
+    options?: FetchOptions
   ) {
     this.debugData("one()", { query, params, options });
     return this.loadedOne(
@@ -115,8 +117,8 @@ export class Queryable {
   async any(
     query: QuerySource,
     params?: QueryParams,
-    options?: QueryOptions
-  ) {
+    options?: FetchOptions
+  ): Promise<QueryRow|undefined> {
     this.debugData("any()", { query, params, options });
     return this.loadedAny(
       await this.buildQuery(query).any(params, options),
@@ -127,7 +129,7 @@ export class Queryable {
   async all(
     query: QuerySource,
     params: QueryParams,
-    options: QueryOptions
+    options: FetchOptions
   ) {
     this.debugData("all()", { query, params, options });
     return this.loadedAll(
@@ -136,15 +138,15 @@ export class Queryable {
     )
   }
 
-  loadedOne(row: QueryRow, _options: QueryOptions) {
+  loadedOne(row: QueryRow, _options: FetchOptions) {
     return row;
   }
 
-  loadedAny(row: QueryRow, _options: QueryOptions) {
+  loadedAny(row: QueryRow | undefined, _options: FetchOptions): QueryRow | undefined {
     return row;
   }
 
-  loadedAll(rows: QueryRow[], _options: QueryOptions) {
+  loadedAll(rows: QueryRow[], _options: FetchOptions) {
     return rows;
   }
 }

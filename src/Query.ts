@@ -1,5 +1,5 @@
 import Builder from './Builder'
-import { addDebugMethod, DebugSetting, missing } from './Utils'
+import { addDebugMethod, DebugConfig, missing } from './Utils'
 import { fail, isArray, isFunction, isString } from '@abw/badger-utils'
 import {
   BuilderInstance, EngineInstance, QueryArgs, QueryOptions, QueryParams,
@@ -7,7 +7,7 @@ import {
 } from './types'
 
 export type QueryValues = any[]
-export type QueryConfig = DebugSetting & {
+export type QueryConfig = DebugConfig & {
   setValues?: QueryValues
   whereValues?: QueryValues
   havingValues?: QueryValues
@@ -78,7 +78,7 @@ export class Query {
     return this.engine.one(sql, values, options)
   }
 
-  any(...args: QueryArgs) {
+  any(...args: QueryArgs): Promise<any|undefined> {
     const sql = this.sql();
     const [values, options] = this.queryArgs(args);
     this.debugData("any()", { sql, values, options });

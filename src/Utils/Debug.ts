@@ -41,7 +41,7 @@ const debugWidth = 16;
  * @ignore
  * Default debugging options
  */
-export type DebugSetting = {
+export type DebugConfig = {
   debug?: boolean
   prefix?: string
   color?: string
@@ -53,7 +53,7 @@ export type DebugComponent =
   'database' | 'engine' | 'query' | 'tables' | 'table' | 'record' |
   'builder' | 'transaction' | 'test'
 
-export let debug: Record<DebugComponent, DebugSetting> = {
+export let debug: Record<DebugComponent, DebugConfig> = {
   database: {
     debug:  false,
     prefix: 'Database',
@@ -108,7 +108,7 @@ export let debug: Record<DebugComponent, DebugSetting> = {
 const invalidDebugItem = (item: string) =>
   fail(`Invalid debug item "${item}" specified`)
 
-export type DebugOption = boolean | Partial<DebugSetting>
+export type DebugOption = boolean | Partial<DebugConfig>
 
 /**
  * Function to set debugging options.  Each key in the `options` should be
@@ -160,8 +160,8 @@ export const setDebug = (
  */
 export const getDebug = (
   name: DebugComponent,
-  ...configs: Partial<DebugSetting>[]
-): DebugSetting => {
+  ...configs: Partial<DebugConfig>[]
+): DebugConfig => {
   const defaults = debug[name] || invalidDebugItem(name);
   return Object.assign(
     {},
@@ -183,7 +183,7 @@ export const getDebug = (
 export const addDebugMethod = (
   object: object,
   name: DebugComponent,
-  ...configs: DebugSetting[]
+  ...configs: DebugConfig[]
 ) => {
   const options = getDebug(name, ...configs);
   const enabled = options.debug;

@@ -1,10 +1,10 @@
 import { AnyClient } from './Engine'
 import { EngineInstance, Stringable } from './types'
 import {
-  addDebugMethod, DebugSetting, missing, TransactionError
+  addDebugMethod, DebugConfig, missing, TransactionError
 } from './Utils'
 
-export type TransactionConfig = DebugSetting & {
+export type TransactionConfig = DebugConfig & {
   autoCommit?: boolean
   autoRollback?: boolean
 }

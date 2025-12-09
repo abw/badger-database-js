@@ -1,7 +1,9 @@
 import { expect, test } from 'vitest'
 import { connect } from '../../src/Database.js'
+import { DatabaseInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance;
+
 const dbConfig = {
   database: 'sqlite:memory',
   tables: {
