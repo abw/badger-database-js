@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { connect } from '../../src/Database.js'
-import Table from '../../src/Table.js'
+import { connect } from '../../src/Database'
+import Table from '../../src/Table'
 
 const db = connect({ database: 'sqlite:memory' })
 

@@ -5,6 +5,7 @@ import {
   BuilderInstance, EngineInstance, QueryArgs, QueryOptions, QueryParams,
   TransactionInstance
 } from './types'
+import { BuilderProxy } from './Proxy'
 
 export type QueryValues = any[]
 export type QueryConfig = DebugConfig & {
@@ -31,7 +32,7 @@ export class Query {
 
   constructor(
     engine: EngineInstance,
-    query: string | BuilderInstance,
+    query: string | BuilderProxy,
     config: QueryConfig={}
   ) {
     this.engine       = engine || missing('engine');

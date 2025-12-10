@@ -1,9 +1,11 @@
 import { expect, test } from 'vitest'
 import { connect } from '../../src/Database.js'
+import { ConnectConfig, DatabaseInstance, TableInstance } from '@/src/types'
 
-let db;
+let db: DatabaseInstance;
 let floydId;
-const dbConfig = {
+
+const dbConfig: ConnectConfig = {
   database: 'sqlite:memory',
   fragments: {
     selectStar: 'SELECT *',

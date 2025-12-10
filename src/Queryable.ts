@@ -1,29 +1,20 @@
 import Query, { QueryConfig } from './Query'
 import { singleWord } from './Constants'
 import { fail, isFunction, isString } from '@abw/badger-utils'
-import { DebugConfig, expandFragments, missing } from './Utils'
+import { expandFragments, missing } from './Utils'
 import {
-  BuilderInstance, DatabaseInstance, EngineInstance, FetchOptions, QueryableInstance,
-  QueryParams, QueryRow, TransactionInstance
+  DatabaseInstance, EngineInstance, FetchOptions, NamedQueries, NamedQuery, NamedQueryBuilder, QueryableConfig, QueryableInstance,
+  QueryFragments,
+  QueryParams, QueryRow, QuerySource, TransactionInstance
 } from './types'
 import { BuilderProxy } from './Proxy'
-
-export type QueryableConfig = DebugConfig & {
-  transact?: TransactionInstance
-  queries?: QueryableQueries
-  fragments?: QueryableFragments
-}
-export type QuerySource = string | BuilderInstance
-export type QueryFunction = (queryable: QueryableInstance) => QuerySource
-export type QueryableQueries = Record<string, QuerySource | QueryFunction>
-export type QueryableFragments = Record<string, string>
 
 export class Queryable {
   engine: EngineInstance
   transact?: TransactionInstance
   database?: DatabaseInstance
-  queries: QueryableQueries
-  fragments: QueryableFragments
+  queries: NamedQueries
+  fragments: QueryFragments
   build: BuilderProxy
 
   debug!: (message: string) => void
@@ -37,7 +28,7 @@ export class Queryable {
     this.transact = config.transact
   }
 
-  query(source: string): QuerySource {
+  query(source: string): string | BuilderProxy {
     this.debugData("query()", { source });
     const query = this.queries[source]
       || (this.database && this.database.query(source))
@@ -45,7 +36,7 @@ export class Queryable {
     // a named query can be a function which we call, returning either a string
     // or a query builder
     return isFunction(query)
-      ? query(this)
+      ? (query as NamedQueryBuilder)(this)
       : query;
   }
 
@@ -108,7 +99,7 @@ export class Queryable {
     options?: FetchOptions
   ) {
     this.debugData("one()", { query, params, options });
-    return this.loadedOne(
+    return await this.loadedOne(
       await this.buildQuery(query).one(params, options),
       options
     )
@@ -120,7 +111,7 @@ export class Queryable {
     options?: FetchOptions
   ): Promise<QueryRow|undefined> {
     this.debugData("any()", { query, params, options });
-    return this.loadedAny(
+    return await this.loadedAny(
       await this.buildQuery(query).any(params, options),
       options
     )
@@ -128,25 +119,25 @@ export class Queryable {
 
   async all(
     query: QuerySource,
-    params: QueryParams,
-    options: FetchOptions
+    params?: QueryParams,
+    options?: FetchOptions
   ) {
     this.debugData("all()", { query, params, options });
-    return this.loadedAll(
+    return await this.loadedAll(
       await this.buildQuery(query).all(params, options),
       options
     )
   }
 
-  loadedOne(row: QueryRow, _options: FetchOptions) {
+  async loadedOne(row: QueryRow, _options: FetchOptions) {
     return row;
   }
 
-  loadedAny(row: QueryRow | undefined, _options: FetchOptions): QueryRow | undefined {
+  async loadedAny(row: QueryRow | undefined, _options: FetchOptions): Promise<QueryRow | undefined> {
     return row;
   }
 
-  loadedAll(rows: QueryRow[], _options: FetchOptions) {
+  async loadedAll(rows: QueryRow[], _options: FetchOptions) {
     return rows;
   }
 }

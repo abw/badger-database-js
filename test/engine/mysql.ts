@@ -19,7 +19,8 @@ const engineString = `mysql://${database.user}:${database.password}@${database.h
 
 test( 'no database error',
   () => expect(
-    () => new Mysql()
+    // @ts-expect-error: deliberate mis-configuration to check error reporting
+    () => new Mysql({ })
   ).toThrow(
     'No "database" specified'
   )

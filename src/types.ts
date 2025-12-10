@@ -2,8 +2,9 @@
 import Builder from './Builder'
 import Database from './Database'
 import Engine from './Engine'
+import { BuilderProxy } from './Proxy'
 import Query from './Query'
-import Queryable, { QueryableConfig } from './Queryable'
+import Queryable from './Queryable'
 import RecordClass from './Record'
 import Table from './Table'
 import Tables from './Tables'
@@ -85,9 +86,39 @@ export type PoolOptions = {
 export type EngineConfig = DebugConfig & DatabaseConnection
 export type EngineOptions = Record<string, any>
 
+export type QueryableConfig = DebugConfig & {
+  transact?: TransactionInstance
+  queries?: NamedQueries
+  fragments?: QueryFragments
+}
+// export type QuerySource = string | BuilderProxy
+// export type QuerySource = NamedQuery
+export type QuerySource = string | BuilderProxy
+// export type QueryFunction = (queryable: QueryableInstance) => QuerySource
+// export type QueryableQueries = Record<string, QuerySource | QueryFunction>
+
+export type NamedQueries<Q extends QueryableInstance = QueryableInstance> = Record<string, NamedQuery<Q>>
+export type NamedQuery<Q extends QueryableInstance = QueryableInstance> = string | NamedQueryBuilder<Q>
+export type NamedQueryBuilder<Q extends QueryableInstance = QueryableInstance> = (queryable: Q) => BuilderProxy
+export type QueryFragments = Record<string, string>
+
+
 export type TablesConstructor = new (config: TablesConfig) => TablesInstance
 // Loosely defined tables configuration
-export type TablesConfig = Record<string, any>       // TODO
+export type TablesConfig = Record<string, TableConfig>
+// export type TableConfig = Record<string, any>       // TODO
+export type TableConfig = DebugConfig & {
+  table?: string
+  columns: TableColumnsConfig
+  queries?: NamedQueries<TableInstance>
+  fragments?: QueryFragments
+  relations?: RelationsConfig
+  id?: string
+  keys?: string | string[]
+  recordClass?: RecordConstructor
+  recordConfig?: RecordConfig
+}
+
 
 // More rigidly defined specification after pre-processing
 export type TablesSpec = Record<string, TableSpec>
@@ -126,7 +157,7 @@ export type TableColumnFragment = TableColumnFragmentKey | TableColumnFragmentKe
 export type TableColumnFragments = TableColumnFragment[]
 
 export type FetchOptions = {
-  columns?: boolean
+  columns?: string | string[]
   orderBy?: string
   order?: string
   record?: boolean
@@ -162,8 +193,6 @@ export type RecordConstructor = new (table: TableInstance, row: QueryRow, config
 export type RecordConfig = {
 }
 
-export type NamedQueries = Record<string, string>
-export type QueryFragments = Record<string, string>
 
 export type RelationsConfig = Record<string, RelationConfig>
 export type RelationType = 'any' | 'one' | 'many' | 'map'

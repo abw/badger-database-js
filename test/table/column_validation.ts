@@ -3,9 +3,10 @@ import { connect } from '../../src/Database.js'
 import { setDebug } from '../../src/Utils/Debug.js'
 import { ColumnValidationError } from '../../src/Utils/Error.js'
 import { expectToThrowAsyncErrorTypeMessage } from '../library/expect.js';
+import { DatabaseInstance, TableInstance } from '@/src/types'
 
-let db;
-let users;
+let db: DatabaseInstance
+let users: TableInstance
 
 setDebug({
   // table: true

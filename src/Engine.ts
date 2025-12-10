@@ -1,5 +1,5 @@
 import { Pool } from 'tarn'
-import { hasValue, isArray, isObject, ListSource, splitList } from '@abw/badger-utils'
+import { fail, hasValue, isArray, isObject, ListSource, splitList } from '@abw/badger-utils'
 import {
   allColumns, doubleQuote, equals, whereTrue, BEGIN, COMMIT, ROLLBACK
 } from './Constants'
@@ -40,6 +40,9 @@ export abstract class Engine<Client=AnyClient> {
   debugData!: (message: string, data: any) => void
 
   constructor(config: EngineConfig) {
+    if (! config) {
+      fail('Engine configuration not specified')
+    }
     const {
       engine,
       pool = { },

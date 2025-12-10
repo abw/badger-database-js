@@ -1,5 +1,5 @@
 import RecordClass from './Record.js'
-import Queryable, { QueryableConfig } from './Queryable'
+import Queryable from './Queryable'
 import recordProxy from './Proxy/Record.js'
 import { databaseBuilder } from './Builders'
 import { fail, firstValue, isArray, noValue, splitList } from '@abw/badger-utils'
@@ -7,7 +7,7 @@ import {
   isQuery, addDebugMethod, aliasMethods, prepareColumns, prepareKeys,
   throwColumnValidationError, unexpectedRowCount
 } from './Utils'
-import { CheckColumnsOptions, CheckedColumnsData, DatabaseInstance, DeleteOptions, DeleteResult, FetchOptions, InsertOptions, InsertResult, BuilderInstance, QueryOptions, QueryParams, RecordConfig, RecordConstructor, RelationsConfig, TableColumns, TableSpec, UpdateOptions, UpdateResult, QueryRow } from './types'
+import { CheckColumnsOptions, CheckedColumnsData, DatabaseInstance, DeleteOptions, DeleteResult, FetchOptions, InsertOptions, InsertResult, BuilderInstance, QueryOptions, QueryParams, RecordConfig, RecordConstructor, RelationsConfig, TableColumns, TableSpec, UpdateOptions, UpdateResult, QueryRow, TableConfig, NamedQuery, QuerySource, NamedQueries, TableInstance } from './types'
 import { SelectColumn } from './Builder/Select'
 
 const methodAliases = {
@@ -22,9 +22,9 @@ const methodAliases = {
   fetchRecords:  "fetchAllRecords",
 }
 
-export type TableConfig = QueryableConfig & {
-  TODO?: string
-}
+//export type TableConfig = QueryableConfig & {
+//  TODO?: string
+//}
 
 type SelectData = Record<string, any>
 type InsertData = Record<string, any>
@@ -37,6 +37,7 @@ export class Table extends Queryable {
   config: TableSpec
   table: string
   columns: TableColumns
+  queries: NamedQueries<TableInstance>
   readonly: string[]
   required: string[]
   keys: string[]
@@ -59,7 +60,7 @@ export class Table extends Queryable {
 
   constructor(
     database: DatabaseInstance,
-    config: TableSpec
+    config: TableConfig
   ) {
     super(database.engine, config);
     this.config        = this.configure(config) || config;
@@ -81,7 +82,7 @@ export class Table extends Queryable {
     addDebugMethod(this, 'table', { debugPrefix: `Table:${this.table}` }, config);
   }
 
-  configure(config: TableSpec) {
+  configure(config: TableConfig) {
     return config;
   }
 
@@ -318,7 +319,7 @@ export class Table extends Queryable {
     set: UpdateData,
     where: SelectData | undefined,
     result: UpdateResult,
-    options?: UpdateOptions
+    options: UpdateOptions = { }
   ) {
     return options.reload
       ? this.updateReload(set, where, options)
@@ -382,7 +383,7 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   prepareFetch(
     where: SelectData,
-    options: FetchOptions
+    options: FetchOptions = { }
   ) {
     const table = this.table;
     const columns = options.columns || Object.keys(this.columns);
@@ -403,7 +404,7 @@ export class Table extends Queryable {
   ) {
     this.debugData("fetchOne()", { where, options });
     const row = await this.prepareFetch(where, options).one();
-    return this.loadedOne(row, options);
+    return await this.loadedOne(row, options);
   }
 
   async fetchAny(
@@ -413,7 +414,7 @@ export class Table extends Queryable {
     this.debugData("fetchAny()", { where, options });
     const row = await this.prepareFetch(where, options).any();
     return row
-      ? this.loadedOne(row, options)
+      ? await this.loadedOne(row, options)
       : undefined;
   }
 
@@ -423,7 +424,7 @@ export class Table extends Queryable {
   ) {
     this.debugData("fetchAllRows()", { where, options });
     const rows = await this.prepareFetch(where, options).all();
-    return this.loadedAll(rows, options);
+    return await this.loadedAll(rows, options);
   }
 
   async fetchOneRecord(
@@ -456,7 +457,7 @@ export class Table extends Queryable {
   // to the select method, otherwise to the fetch method.
   //-----------------------------------------------------------------------------
   async oneRow(
-    query?: SelectData | BuilderInstance,
+    query?: SelectData | QuerySource,
     ...args: [QueryParams, QueryOptions?] | [FetchOptions?]
   ) {
     this.debugData("oneRow()", { query, args });
@@ -466,7 +467,7 @@ export class Table extends Queryable {
   }
 
   async anyRow(
-    query?: SelectData | BuilderInstance,
+    query?: SelectData | QuerySource,
     ...args: [QueryParams?, FetchOptions?] | [FetchOptions?]
   ) {
     this.debugData("anyRow()", { query, ...args });
@@ -476,7 +477,7 @@ export class Table extends Queryable {
   }
 
   async allRows(
-    query?: SelectData | BuilderInstance,
+    query?: SelectData | QuerySource,
     ...args: [QueryParams?, FetchOptions?] | [FetchOptions?]
   ) {
     this.debugData("allRows()", { query, ...args });
@@ -486,7 +487,7 @@ export class Table extends Queryable {
   }
 
   async oneRecord(
-    query?: SelectData | BuilderInstance,
+    query?: SelectData | QuerySource,
     ...args: [QueryParams?, FetchOptions?] | [FetchOptions?]
   ) {
     this.debugData("oneRecord()", { query, args });
@@ -496,7 +497,7 @@ export class Table extends Queryable {
   }
 
   async anyRecord(
-    query?: SelectData | BuilderInstance,
+    query?: SelectData | QuerySource,
     ...args: [QueryParams?, FetchOptions?] | [FetchOptions?]
   ) {
     this.debugData("anyRecord()", { query, args });
@@ -506,7 +507,7 @@ export class Table extends Queryable {
   }
 
   async allRecords(
-    query?: SelectData | BuilderInstance,
+    query?: SelectData | QuerySource,
     ...args: [QueryParams?, FetchOptions?] | [FetchOptions?]
   ) {
     this.debugData("allRecords()", { query, args });
@@ -515,7 +516,7 @@ export class Table extends Queryable {
       : this.fetchAll(query, this.withRecordOption(args[0] as FetchOptions))
   }
 
-  loaded(
+  async loaded(
     row: QueryRow,
     options: FetchOptions = { }
   ) {
@@ -524,14 +525,14 @@ export class Table extends Queryable {
       : row;
   }
 
-  loadedOne(
+  async loadedOne(
     row: QueryRow,
     options?: FetchOptions
   ) {
     return this.loaded(row, options);
   }
 
-  loadedAny(
+  async loadedAny(
     row?: QueryRow,
     options?: FetchOptions
   ) {
@@ -540,8 +541,8 @@ export class Table extends Queryable {
       : undefined;
   }
 
-  // @ts-expect-error: loadedAll is not defined as async in base class - WHY?
-  loadedAll(
+  // @NOT-ts-expect-error: loadedAll is not defined as async in base class - WHY?
+  async loadedAll(
     rows: QueryRow[],
     options?: FetchOptions
   ) {
@@ -650,7 +651,7 @@ export class Table extends Queryable {
   //-----------------------------------------------------------------------------
   // Query builder methods
   //-----------------------------------------------------------------------------
-  select(...args: [column: SelectColumn, ...moreColumns: SelectColumn[]]) {
+  select(...args: [column?: SelectColumn, ...moreColumns: SelectColumn[]]) {
     if (args.length === 0) {
       args.push({
         table:   this.table,

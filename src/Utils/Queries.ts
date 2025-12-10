@@ -1,9 +1,9 @@
 import Builder from '../Builder.js'
 import { fail, isString } from '@abw/badger-utils'
 import Queryable from '../Queryable'
-import { QueryableInstance } from '../types'
+import { QueryableInstance, QuerySource } from '../types'
 
-export const isQuery = (query: any) =>
+export const isQuery = (query: any): query is QuerySource =>
   isString(query) || (query instanceof Builder)
 
 export const expandFragments = (

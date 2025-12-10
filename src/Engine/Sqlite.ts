@@ -15,6 +15,8 @@ export class SqliteEngine extends Engine<SqliteClient> {
   filename: string
 
   configure(config) {
+    console.log(`config: `, config);
+
     // sqlite expects the filename first and then any options, so we copy
     // the database configuration into the options and then extract filename
     // console.log(`sqlite config: `, config)

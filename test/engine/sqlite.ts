@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest'
-import Sqlite from '../../src/Engine/Sqlite'
+import Sqlite, { SqliteEngine } from '../../src/Engine/Sqlite'
 import Engines, { engine } from '../../src/Engines.js'
 import { UnexpectedRowCount } from '../../src/Utils/Error'
 import { expectToThrowAsyncErrorTypeMessage, pass } from '../library/expect.js';
 
-let sqlite: Sqlite
+let sqlite: SqliteEngine
 
 const config = {
   engine:   'sqlite',
@@ -13,9 +13,10 @@ const config = {
 
 test( 'no filename error',
   () => expect(
+    // @ts-expect-error: deliberately excluding config to check error reporting
     () => new Sqlite()
   ).toThrowError(
-    'No "filename" specified'
+    'Engine configuration not specified'
   )
 )
 
@@ -23,6 +24,7 @@ test( 'no filename error from empty database',
   () => expect(
     () => new Sqlite({
       engine: 'sqlite',
+      // @ts-expect-error: deliberately specifying invalid database to check error reporting
       database: { }
     })
   ).toThrowError(
@@ -32,7 +34,7 @@ test( 'no filename error from empty database',
 
 test( 'engine in database',
   async () => {
-    const sqlite = await engine({
+    const sqlite = engine({
       database: {
         engine: 'sqlite',
         filename: ':memory:'
@@ -61,7 +63,7 @@ test( 'no engine error',
 
 test( 'extra options',
   async () => {
-    const sqlite = await engine({
+    const sqlite = engine({
       database: {
         engine: 'sqlite',
         filename: ':memory:',
@@ -76,8 +78,10 @@ test( 'extra options',
 
 test( 'pool size',
   async () => {
-    const sqlite = await engine({ database: config })
+    const sqlite = engine({ database: config })
+    // @ts-expect-error: Property 'min' is protected and only accessible within class 'Pool<T>' and its subclasses.ts(2445)
     expect(sqlite.pool.min).toBe(1)
+    // @ts-expect-error: Property 'max' is protected and only accessible within class 'Pool<T>' and its subclasses.ts(2445)
     expect(sqlite.pool.max).toBe(1)
     await sqlite.destroy()
   }
@@ -97,7 +101,8 @@ test( 'acquire and release',
 
 test( 'connect',
   async () => {
-    sqlite = await Engines.sqlite(config)
+    // @ts-expect-error: Property 'filename' is missing in type 'Engine<any>' but required in type 'SqliteEngine'.ts(2741)
+    sqlite = Engines.sqlite(config)
     expect(sqlite).toBeInstanceOf(Sqlite)
   }
 )

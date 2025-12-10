@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
-import Table from '../../src/Table.js'
-import { connect } from '../../src/Database.js'
+import Table from '../../src/Table'
+import { connect } from '../../src/Database'
+import { ConnectConfig, DatabaseInstance } from '@/src/types'
 
 export class Users extends Table {
   badgers() {
@@ -8,8 +9,9 @@ export class Users extends Table {
   }
 }
 
-let db;
-const dbConfig = {
+let db: DatabaseInstance
+
+const dbConfig: ConnectConfig = {
   database: 'sqlite:memory',
   tables: {
     users: {
@@ -69,7 +71,9 @@ test( 'insert users',
 
 test( 'fetch badgers',
   async () => {
+
     const users   = await db.table('users');
+    // @ts-expect-error: FIXME - Property 'badgers' does not exist on type 'Table'.ts(2339)
     const badgers = await users.badgers();
     expect(badgers.length).toBe(2)
     expect(badgers[0].name).toBe('Bobby Badger')
