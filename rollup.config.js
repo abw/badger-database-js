@@ -2,7 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import pkg from './package.json' with { type: "json" };
-import terser from '@rollup/plugin-terser';
+// import terser from '@rollup/plugin-terser';
 
 // Silence circular dependency warnings
 const ignoreWarnings = [
@@ -58,14 +58,14 @@ export default [
         format: 'cjs',
         sourcemap: true,
         exports: 'named',
-        plugins: [terser()]
+        // plugins: [terser()]
       },
       {
         file: pkg.module,
         format: 'es',
         sourcemap: true,
         exports: 'named',
-        plugins: [terser()]
+        // plugins: [terser()]
       }
     ]
   }
