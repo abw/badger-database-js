@@ -88,7 +88,8 @@ $PSQL -c "CREATE USER $USERNAME PASSWORD '$PASSWORD'"
 # create database
 #---------------------------------------------------------------------------
 echo "Creating Postgres database: $DATABASE"
-$PSQL -c "CREATE DATABASE $DATABASE WITH OWNER test"
+# $PSQL -c "CREATE DATABASE $DATABASE WITH OWNER test"
+$PSQL -c "CREATE DATABASE $DATABASE"
 
 #---------------------------------------------------------------------------
 # grant user access

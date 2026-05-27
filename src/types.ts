@@ -119,7 +119,6 @@ export type TableConfig = DebugConfig & {
   recordConfig?: RecordConfig
 }
 
-
 // More rigidly defined specification after pre-processing
 export type TablesSpec = Record<string, TableSpec>
 
