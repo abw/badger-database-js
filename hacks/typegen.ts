@@ -30,10 +30,5 @@ const types = generateDatabaseTypes({
   }
 })
 
-// console.log(
-//   `types: `,
-//   inspect(types, { depth: null, colors: true })
-// );
-
 const output = outputDatabaseTypes(types)
 console.log(output)
