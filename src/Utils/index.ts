@@ -1,5 +1,6 @@
 export * from './Array'
 export * from './Article'
+export * from './Case'
 export * from './Color'
 export * from './Columns'
 export * from './Database'

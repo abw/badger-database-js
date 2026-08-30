@@ -1,22 +1,39 @@
-import { DatabaseSpec, TableSpec } from '../types'
+import { TableSpec, TablesSpec } from '../types'
 import { prepareColumns, prepareKeys, throwColumnValidationError } from '../Utils'
-import { TableColumnTypeSpec, TablesTypeSpecs, TableTypeSpecs } from './types'
+import { TableColumnSpecs, TableActionsColumnSpecs, TablesActionsColumnSpecs } from './types'
 
-export const prepareTablesTypes = (
-  database: DatabaseSpec
-): TablesTypeSpecs =>
-  Object.entries(database.tables).reduce(
+export const prepareTablesActionsColumnSpecs = (
+  tables: TablesSpec
+): TablesActionsColumnSpecs =>
+  Object.entries(tables).reduce(
     (tableTypes, [table, spec]) => {
-      tableTypes[table] = prepareTableTypes(table, spec)
+      tableTypes[table] = prepareTableActionsColumnSpecs(table, spec)
       return tableTypes
     },
-    { } as TablesTypeSpecs
+    { } as TablesActionsColumnSpecs
   )
 
-export const prepareTableTypes = (
+export const prepareTableColumnSpecs = (
   table: string,
   spec: TableSpec
-): TableTypeSpecs => {
+): TableColumnSpecs => {
+  const columns = prepareColumns(table, spec.columns)
+
+  return Object.entries(columns).reduce(
+    (columns, [name, column]) => {
+      const { required=false, type='string' } = column
+      columns.push({ name, type, optional: ! required })
+      return columns
+    },
+    [ ] as TableColumnSpecs
+  )
+}
+
+
+export const prepareTableActionsColumnSpecs = (
+  table: string,
+  spec: TableSpec
+): TableActionsColumnSpecs => {
   const columns = prepareColumns(table, spec.columns)
   const { keys } = prepareKeys(table, spec, columns)
 
@@ -28,7 +45,7 @@ export const prepareTableTypes = (
         }
         return columns
       },
-      [ ] as TableColumnTypeSpec[]
+      [ ] as TableColumnSpecs
     )
 
     const updateColumns = Object.entries(columns).reduce(
@@ -39,7 +56,7 @@ export const prepareTableTypes = (
         }
         return columns
       },
-      [ ] as TableColumnTypeSpec[]
+      [ ] as TableColumnSpecs
     )
 
     const selectColumns = Object.entries(columns).reduce(
@@ -48,7 +65,7 @@ export const prepareTableTypes = (
         columns.push({ name, type, optional: true })
         return columns
       },
-      [ ] as TableColumnTypeSpec[]
+      [ ] as TableColumnSpecs
     )
 
     const deleteColumns = keys.reduce(
@@ -61,7 +78,7 @@ export const prepareTableTypes = (
         deleteColumns.push({ name, type, optional: false })
         return deleteColumns
       },
-      [ ] as TableColumnTypeSpec[]
+      [ ] as TableColumnSpecs
     )
 
   return {

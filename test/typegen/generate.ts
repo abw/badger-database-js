@@ -1,6 +1,19 @@
-import { defaultTableActionTypeNameGenerator, defaultTableTypeNameGenerator, generateTableTypeNames } from '@/src/TypeGen'
-import { snakeToStudly } from '@abw/badger-utils'
 import { expect, test } from 'vitest'
+import { snakeToStudly } from '@abw/badger-utils'
+import {
+  defaultDatabaseTypeNameGenerator,
+  defaultTableActionTypeNameGenerator,
+  defaultTableTypeNameGenerator,
+  generateTableTypeNames
+} from '@/src/TypeGen'
+
+test( 'defaultDatabaseTypeNameGenerator("music")',
+  () => expect(
+    defaultDatabaseTypeNameGenerator('music')
+  ).toEqual(
+    'MusicDatabase'
+  )
+)
 
 test( 'defaultTableTypeNameGenerator("artists")',
   () => expect(
@@ -15,6 +28,14 @@ test( 'generateTableTypeName("space_cadets")',
     defaultTableTypeNameGenerator('space_cadets')
   ).toEqual(
     'SpaceCadetsTable'
+  )
+)
+
+test( 'generateTableTypeName("MyDiningRoom")',
+  () => expect(
+    defaultTableTypeNameGenerator('MyDiningRoom')
+  ).toEqual(
+    'MyDiningRoomTable'
   )
 )
 

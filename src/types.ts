@@ -25,6 +25,7 @@ export type ConnectConfig = QueryableConfig & {
 
 // Work in progress that should be merged into the above
 export type DatabaseSpec = {
+  name: string
   tables: TablesSpec
 }
 

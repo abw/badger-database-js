@@ -1,3 +1,4 @@
+// DEPRECATED - moved into ../TypeGen
 import { capitalise, fail } from '@abw/badger-utils'
 import { DatabaseSpec, TableColumn, TableSpec } from '../types'
 import { prepareColumns, prepareKeys } from './Columns'

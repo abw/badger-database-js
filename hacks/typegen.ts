@@ -1,7 +1,10 @@
 #!/usr/bin/env tsx
-import { generateTypes, outputTypes } from '../src/Utils/TypeGen'
+import { generateDatabaseTypes } from '../src/TypeGen/Generate'
+import { outputDatabaseTypes } from '../src/TypeGen/Output'
+import { inspect } from 'node:util'
 
-const tt = generateTypes({
+const types = generateDatabaseTypes({
+  name: 'music',
   tables: {
     artists: {
       columns: 'id:fixed:type=number name:required:type=string label:type=string volume:type=number'
@@ -27,9 +30,10 @@ const tt = generateTypes({
   }
 })
 
-const output = outputTypes(
-  tt,
-  { databaseTypeName: 'MusicDatabase' }
-)
-console.log(output)
+// console.log(
+//   `types: `,
+//   inspect(types, { depth: null, colors: true })
+// );
 
+const output = outputDatabaseTypes(types)
+console.log(output)
